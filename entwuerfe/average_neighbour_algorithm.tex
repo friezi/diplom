@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage{isolatin1}
+\usepackage{latexsym}
+\usepackage[german]{babel}
+\usepackage[a4paper]{geometry}
+\geometry{textwidth=18cm, textheight=24cm} 
+\parindent0em
+\pagenumbering{arabic}
+\begin{document}
+
+\section*{Bestimmung der Nachbarn eines RSS-Subscribers}
+
+
+Ein Subscriber subscribiert sich bei einem RSS-Publisher, indem er seinen ge\-wünschten Channel und seine grobe Location mitteilt
+(z.B. USA, Germany o. Westeuropa, ...). Sofern vorhanden erhält er vom Publisher bis zu vier Adressen weiterer Subscriber (potentielle Nachbarn, wenn
+möglich aus der gleichen Location ) und den aktuellen RSS-Feed (muss aktuelles Erstellungsdatum enthalten). Der Publisher merkt sich dabei
+die Adresse des neuen Subscribers (grundsätzlich behält der Publisher die Adressen der letzten Subscriber, welche den aktuellen Feed von ihm erhalten
+haben).
+\\
+Möchte ein Subscriber den aktuellen Feed erfragen, so sendet er eine Anfrage (TTL=2) an seine vier Nachbarn, dabei beinhaltet diese Anfrage den Channel,
+das letzte aktuelle Erstellungsdatum, seine Adresse und die Adresse der Quelle der Anfrage (also ebenfalls seine).
+Besitzt ein Nachbar einen aktuelleren Feed
+(ist natürlich abhängig vom absoluten Datum, je nach Auffrischungsintervall des Publishers),
+wird dieser an den Subscriber gesand (da Aktualität nicht vollkommen gewährleistet werden kann, können u.U. verschiedene Feeds an den Subscriber gesand
+werden, wobei eine den aktuellsten Stand besitzt). Falls ein Nachbar keinen aktuelleren Feed besitzt, wird die Anfrage an alle weiteren vier Nachbarn
+weitergeleitet, mit eigener Adresse und Quelladresse; der TTL wird dabei um eins erniedrigt. Jeder Empfänger, der einen aktuelleren Feed besitzt, sendet
+diesen direkt an den Anfragenden. Abgesehen davon senden die unmittelbaren Nachbarn die Adressen aller ihrer Nachbarn an den Anfragenden. Dieser
+rekombiniert seine Liste der Nachbarn mit den neuen Werten. Erreicht den Subscriber kein aktuellerer Feed, wird dieser beim Publisher direkt erfragt,
+welcher sich wiederum die Adresse des Subscribers merkt und ihm zusätzlich vier Adressen potentieller Nachbarn zusendet. Auch in diesem Fall rekombiniert
+der Subscriber seine Nachbarliste mit den neuen Adressen. Hat sich ein Nachbar unsubscribiert für eine Channel, so sendet er bei Anfrage diese Information
+an den Anfragenden, welcher den bisherigen Nachbarn aus seine Liste entfernt.
+\\\\
+Mithilfe der übersendeten Adressen können die Nachbarverbindungen dynamisch eingerichtet werden, das System ist selbstkonfigurierend. Da auch während
+des Updatings von Nachrichtenfeeds Informationen über aktuelle Adressen und über nicht mehr bestehende mitgeteilt werden, ist das System selbsadaptierend
+und selbststabilisierend. Rekombination von Nachbaradressen soll eine Optimierung der Verbindungen bezüglich Entfernung der
+beteiligten Knoten gewährleisten. Somit ist das System selbstoptimierend.
+\\\\
+Maximale Anzahl kontaktierter Nachbarn MaxN berechnet sich durch:
+\[MaxN=\sum_{i=1}^{TTL}n^i\]
+ wobei n die maximale Anzahl von Nachbarn eines Knotens ist; in unserem Falle ist also $MaxN=20$, da n=4 und TTL=2.
+Rekombination der Nachbaradressen:
+
+Ziel ist eine Verbindung zu möglichst nahe gelegenen Nachbarn. Werden neue Nachbaradressen übersand, werden Entfernungen zu den neuen Adressen berechnet
+(ping?) und alle Adressen neu kombiniert entsprechend der Entfernungen. Um zu vermeiden, dass abgeschlossene Gruppen entstehen, zwischen denen kein
+Austausch stattfinden kann, kann wie folgt vorgegangen werden (Inspiration: genetische Algorithmen):
+Von allen Kombinationen aus möglichen vier Nachbarn werden die Mittelwerte der Entfernungen berechnet (ping-Zeiten). Nun wird aber nicht die Gruppe
+mit dem minimalen Wert als Lösung betrachtet, sondern eine zufällige(?) Gruppe, welche bestimmt wird aus dem zweiten Viertel der in geordneter
+aufsteigender Reihenfolge ermittelten Mittelwerte, deren Indizes die Gruppennummer bestimmen. Dies gewährleistet, dass bei sehr nahen Nachbarn auch
+ein entfernter vorhanden sein muss. Gleichzeitig befindet sich die Mehrheit der Nachbarn in relativ nahr Entfernung, da ja die Gruppe aus einem
+unteren Viertel bestimmt wurde.
+Eine andere mögliche Methode wäre, die zwei nächsten Nachbarn festzuhalten und die anderen beiden neu zu betimmen (Crossover). Im nächsten Schritt
+könnte ein Nachbar durch einen zufälligen anderen ausgetauscht werden (Mutation).
+\\\\
+Da in einem Netz, was die Small-world-property erfüllt, davon ausgegangen werden kann, dass es mindestens einen Knoten gibt, der die neueste
+Information bereits hat, kommt es zu weniger Anfragen an den Publisher. Allerdings geht es ( da es sich nicht um ein Notifikationssystem handelt)
+auf Kosten der Aktualität.
+
+\newpage
+
+\section*{Literaturliste}
+\subsection*{Peer-To-Peer}
+\begin{itemize}
+\item Peer-to-peer information systems, Folien,  Karl Aberer, Manfred Hauswirth
+\item P2P Overlay Broker Networks in an Event Based Middleware, P.Pietzuch, J.Bacon
+\item PeerCQ: A Decentralized and Self-Configuring Peer-To-Peer Information-Monitoring System, Bugra Gedik, Ling Liu
+\item A Definition of Peer-to-Peer Networking for the Classification of Peer-to-Peer Architectures and Applications, Rüdiger Schollmeier
+\item Towards Adaptive, Resilient and Self-Organizing Peer-To-Peero Systems, Alberto Montresor, Hein Meling, Özalp Babaoglu
+\subitem $\rightarrow$ genetic algorithms
+\item A Genetic-Algorithm-Based Neighbour-Selection Strategie for Hybrid Peer-To-Peer Networks, Koo, Lee, Kannan
+\end{itemize}
+\subsection*{Genetic Algorithms}
+\begin{itemize}
+\item An Overview of Genetic Algorithms: Part 1, David Beasley, David R.Bull, Ralph R. Martin
+\item Parallel Genetic Algorithms for Distributed Computing over Internet, Alessio Ceroni
+\end{itemize}
+\subsection*{PubSub}
+\begin{itemize}
+\item A Genetic Algorithm for Multicast-Mapping in Publish-Subscribe Systems, Mario Guimaraes, Luis Rodrigues
+\item Self-Stabilizing Publish/Subscribe Systems: Algorithms and Evaluation, Gero Mühl, Michael Jaeger, ...
+\end{itemize}
+\subsection*{RSS}
+\begin{itemize}
+\item Client Behaviour and Feed Characteristics of RSS, a Publish-Subscribe System for Web Micronews, Honghzou Liou, V.Ramasubramaniam, E. Gün Sirer
+\end{itemize}
+\subsection*{andere}
+\begin{itemize}
+\item Self-Mamagement: The Solution to Complexity or Just another Problem?, K.Herrmann, G.Mühl, K.Geihs
+\item Diplom H.P.
+\item Diplom M.Jäger
+\item BitTorrent-Protocol
+\end{itemize}
+\end{document}

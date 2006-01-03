@@ -1,0 +1,85 @@
+\documentclass{article}
+\usepackage{isolatin1}
+\usepackage{latexsym}
+\usepackage[german]{babel}
+\usepackage[a4paper]{geometry}
+\geometry{textwidth=18cm, textheight=24cm} 
+\parindent0em
+\pagenumbering{arabic}
+\begin{document}
+
+\section*{Pastry}
+
+\begin{itemize}
+
+\item KnotenIDs zwischen 0 und $2^{128}-1$ (zufällig generiert)
+\item Message wird an Knoten weitergeleitet, dessen KnotenID am dichtesten an Message-hash-value liegt
+\item Jeder Knoten speichert Routing-tabel, Neighbourhood-set, Leaf-set
+\item aufgrund einer Nachbarschaftsmetrik werden Nachrichten an den nahegelegensten Knoten unter denen aus den Tabellen in Frage kommenden Knoten gesendet
+
+\end{itemize}
+
+\section*{Scribe}
+\begin{itemize}
+\item scalable group communication-system (PubSub) built on top of Pastry
+\item each group has a 160bit groupID
+\item nodes which subscribe to a group, form a multicast-tree, nodeID of the root-node (Broker) is numerically closest to topicID 
+\end{itemize}
+
+\section*{FeedTree}
+\begin{itemize}
+\item a micronews distribution-system
+\item uses p2p-overlay network to distribute RSS-feeds
+\item peers in network share bandwith costs $\rightarrow$ reduces load on provider
+\item distribution via Scribe
+\end{itemize}
+
+\section*{TMTP}
+\begin{itemize}
+\item Tree-based Multicast Transport Protocol
+\item designed for efficient delivery of messages to nodes dynamically joining and leaving the network
+\item group-leaders are organized in a hierarchical tree
+\item group-members are as well organized in a hierarchical tree (subnet/domain)
+\item Transmission rate controlled by sliding window based protocol
+\item packets are sent only to direct children
+\item children multicast NACK in combination with nack supression when missing packets are detected
+\item parent sends packet again (multicast) with TTL
+\item multicast sending and suppression of nacks reduces number of nacks
+\item ACKs are sent directly and immediately to the parent after receiving packet
+\item periodic positive ACKs ensure reliability of children
+\item retransmission timers ensure receive of packets
+\item two timers for retransmitting: $T_{retrans}$: after expiring packets will be resend; $T_{ack}$: after expiring ACK will be sent
+\item this helps to reduce resending of packets if ACKs are lost
+
+\end{itemize}
+\newpage
+\section*{Algorithmus zur Abstimmung der Broker untereinander}
+Zunächst muss gesagt werden, dass es grundsätzlich nicht möglich ist, eine gleichzeitige Aktualisierung und Verbreitung der RSS-Feeds seitens der
+Broker zum
+Zeitpunkt der Aktualisierung seitens der Publisher zu erreichen, da zu keinem Zeitpunkt ermittelt werden kann, wann genau die nächste Aktualisierung
+durch die Publisher erfolgen wird. Es kann nur versucht werden, sich diesem Verhalten anzunähern. Je kürzer das Pollintervall desto kleiner die maximale
+Zeitspanne zwischen
+Aktualisierung und nächstem Polling. Eine sehr kurze Zeitspanne zwischen zwei Polls würde aber ein hohes Netzaufkommen bedeuten
+(erst recht bei voneinander unabhängigem Pollen der Broker), was nicht wünschenswert ist. Es sollte deshalb versucht werden,
+das Polling der Broker aufeinander abzustimmen und ein angemessenes Pollintervall zu erreichen.
+\subsection*{Besschreibung des Algorithmus}
+{\bf Voraussetzung:} RSS-Feeds sollten das Tag ``lastBuildDate'' unterstützen und ein Tag, welches Auskunft über ein minimales Update-Intervall 
+(z.B. ``minUpdateInterval'') liefert.
+Das minimale Update-Intervall sagt aus, welche Zeitspanne mindestens vergehen muss, bevor eine neue Aktualisierung der Feeds erfolgt.\\
+
+Bei diesem Algorithmus handelt es sich eigentlich ganz und gar nicht um ein Abstimmung. Vielmehr soll erreicht werden, dass verhältnismässig möglichst
+wenige Broker eine gleichzeitige Aktualisierung der Feeds vornehmen. Die neuen Feeds werden dann den übrigen Brokern über das Netzwerk übersand.\\
+Notwendig ist pro Broker ein Polltimer, der bestimmt, wann das nächste Polling zu erfolgen hat. Ist dieser Timer abgelaufen, erfragt der Broker beim
+Publisher den aktuellen Feed. Ist dieser nicht neuer als der bisherige beim Broker vorhandene Feed, wird lediglich der Polltimer neu gesetzt (s.u.).
+Ist der neue Feed hingegen aktueller, wird sowohl der Polltimer neu gesetzt als auch dieser neue Feed jedem Nachbarbroker entsprechend den vorhandenen
+Filterregeln übersand, welche ihrerseits diesen neuen Feed an Nachbarbroker weiterleiten,
+falls der Feed hier ebenfalls aktueller ist als der bisherige. Allerdings
+wird der Polltimer nur in diesem Fall neu gesetzt. Das setzen des Polltimers geschieht folgendermaßen: Aus ``lastBuildDate'' und ``minUpdateInterval''
+wird die ungefähre Zeitspanne ``nextAktualisation'' zur nächsten Aktualisierung durch den Publisher berechnet. Für den Wert des Polltimers $pt$ soll
+nun gelten: $nextAktualisation \leq pt \leq 2*nextAktualisation$. $pt$ wird in diesem Bereich zufällig gewählt. Somit sollte es relativ wenige Broker
+geben, die gleichzeitig den aktuellen Stand beim Publisher erfragen. Nach erfolgreicher Aktualisierung wird mit hoher Wahrscheinlichkeit ein anderer Broker
+den Stand beim nächsten Mal erfragen. Ausserdem ist gewährleistet, dass bei hoher Brokerzahl nach Ablauf der Polltimer in regelmässigen Abständen der
+Publisher kontaktiert wird, falls zu diesem Zeitpunnkt noch keine Aktualisierung vorlag.\\
+Tritt ein neuer Knoten dem Netzwerk bei, so wird dieser den aktuellen Stand bei seinem nächsten Nachbarn erfragen.
+
+\end{document}

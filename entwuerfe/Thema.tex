@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage{isolatin1}
+\usepackage{latexsym}
+\usepackage[german]{babel}
+\usepackage[a4paper]{geometry}
+\geometry{textwidth=18cm, textheight=24cm} 
+\parindent0em
+\pagenumbering{arabic}
+\begin{document}
+
+\section*{Konstruktion eines Overlay-Broker-Netzwerkes für das Publish/Subscribe-System RSS}
+
+In der herkömmlichen Beschreibung von Publish/Subscribe-Systemen (kurz: Pub/Sub-Systeme) finden sich drei Parteien: \glqq Publisher\grqq{} stellen
+Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren sich für bestimmte Informationen und können diese abonnieren;
+\glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen/Informationen an die Subscriber.
+Aufgrund der logischen Trennung von Subscribern und Publishern durch die Einheit der Broker brauchen sich Publisher nicht um eine Vielzahl von
+Interessenten zu kümmern.
+Zudem lässt die zentrale Sammlung einer Reihe von Informationen die Definition von Filtern zu, durch die
+anbieterübergreifend Informationen seitens der Subscriber abgefragt werden können.\\
+RSS (Really Simple Syndication) ist ein Pub/Sub-System und folgt dem klassischen Client-Server-Ansatz,
+Message-Broker sind hierbei im Gegensatz zu herkömmlichen Pub/Sub-Systemen nicht vorgesehen:
+auf einer Webpage wird ein RSS-Feed (aktueller Beitrag) als XML-Datei abgelegt. Interessenten (Subscriber) können nun diese Feeds erfragen. Da nicht
+vorhersehbar ist, zu welchem Zeitpunkt eine Aktualisierung der Feeds seitens der Server bzw. Publisher erfolgen wird,
+müssen die Subscriber in regelmäßigen
+Zeitabständen beim Server nachfragen (Polling). Die Definition von Filtern ist nicht vorgesehen, d.h. Subscriber erhalten \glqq alles oder nichts\grqq.
+
+RSS-Feeds sind zwar themenbasiert (vgl. \cite{ClieBeh}), jedoch wird die thematische Zuordnung auf Publisherseite vorgenommen. Eine thematische Filterung 
+aus Subscribersicht vor allem auf höherer Ebene ist nicht möglich; allerdings kann natürlich eine Filterung lokal auf Subscriberseite erfolgen.\\
+Das ständige Polling der Server durch möglichrweise hunderttausende von Clienten führt zu einer starken serverseitigen Last (vgl. \cite{feedtree}).\\
+Um eine Lastverteilung und eine höhere Flexibilität in Bezug auf die Auswahl der Informationen seitens der Subscriber zu erreichen, bietet es
+sich an, ein Overlay-Netzwerk bestehend aus Brokern und Subscribern zu konstruieren. Die Broker sorgen hierbei für die Abfrage neuer RSS-Feeds und
+deren Verteilung an die entsprechenden übrigen Broker bzw. Subscriber. Ein Subscriber braucht nun nicht mehr eigenmächtig Anfragen an einen Publisher
+zu stellen, da diese Aufgabe von den Brokern übernommen wird. Die Broker des Netzes übermitteln sich die Feeds gegenseitig,
+so dass nicht jeder Broker separat einen Publisher kontaktieren muss, um den aktuellen Feed zu erhalten. Da es nun bei den Publishern zu weniger
+Anfragen kommt, haben wir es hier mit einer Lastminderung zu tun. Bisher war das Update-Intervall u.U. serverseitig begrenzt: ein Subscriber,
+dessen Poll-Rate zu hoch war (um ein möglichst zeigleiches Aktualisieren zu erreichen), konnte vom Server vorübergehend geblockt werden.
+Nun ist es möglich, ein hohes Update-Intervall zu erreichen, da sich die Broker beim Polling abwechseln. Im neuen Design können außerdem die
+RSS-Feeds mit Hilfe von Filtern (definiert durch Subscriber) schon auf der Broker-Ebene gefiltert werden. Die Filterung kann darüber hinaus
+anbieterübergreifend wirken, da sich Feeds von unterschiedlichen Publishern an einem Broker sammeln. Die Filter werden von Brokern an die entsprechenden
+Nachbarbroker weitergeleitet.\\
+Es sind folgende Aufgaben zu bewältigen:
+\begin{itemize}
+\item Hotspots (gleichzeitige Anfrage aller Broker an einen Publisher) sollen nach Möglichkeit vermieden werden
+\item Broker können spontan dem Netz beitreten und es verlassen: in diesem Fall muss gewährleistet werden, dass trotzdem immer ein voll funktionsfähiges
+Netz besteht.
+\item Subscriber können ebenfalls spontan dem Netz beitreten und es verlassen. Dies sollte möglich sein, ohne einen vollständigen Verlust der
+Subscribierungsdaten nach sich zu ziehen.
+\item Filtertechniken müssen entwickelt werden, bzw. bestehende Filter-Algorithmen umgesetzt werden
+\item Filter sollen anbieterübergreifend wirken
+\end{itemize}
+
+Diese Aufgabestellungen werfen folgende Fragen auf:
+\begin{itemize}
+\item Muss es zu einer Absprache unter den Brokern kommen, oder gibt es andere Möglichkeiten ein verteiltes Erfragen der Feeds zu
+erreichen?
+\item Wie soll das Netz strukturiert werden?
+\item Sollen bestimmte Broker nur bestimmte Publisher abfragen?
+\item Nach welcher Metrik bestimmen sich die Nachbarn eines Brokers?
+\item Wonach bestimmt sich der Broker, den ein Subscriber kontaktiert?
+\item Muss es sich immer um ein zusammenhängendes Netz handeln, oder soll es zulässig sein, dass ein Netz (zeitweise?) aus mehreren Fragmenten besteht?
+\item Sollen nur die Feeds übermittelt werden oder auch die durch sie repräsentierten Daten?
+\item Wonach bestimmt sich das Pollintervall?
+\end{itemize}
+
+Im Verlauf der Arbeit sollen diese Fragen erörtert und eine angemessene Lösung gefunden werden.
+
+\begin{thebibliography}{1}
+  \bibitem{feedtree} D.Sandler, A.Mislove, A.Post, P.Druschel, FeedTree: Sharing Web micronews with peer-to-peer event notification,
+                     4th International Workshop on Peer-To-Peer Systems, Ithaca, New York, 2005
+  \bibitem{ClieBeh} H.Liu, V.Ramasubramanian, E.G.Sirer, A Measurement Study of {RSS}, {A} Publish-Subscribe
+                    System for Web Micronews, Internet Measurement Conference (IMC), 2005
+\end{thebibliography}
+
+\end{document}

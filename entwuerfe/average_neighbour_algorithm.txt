@@ -1,0 +1,40 @@
+Ein Subscriber subscribiert sich bei einem RSS-Publisher, indem er seinen gewünschten Channel und seine grobe Location mitteilt
+(z.B. USA, Germany o. Westeuropa, ...). Sofern vorhanden erhält er vom Publisher bis zu vier Adressen weiterer Subscriber (potentielle Nachbarn)
+der gleichen Location (oder auch anderer?) und den aktuellen RSS-Feed (muss aktuelles WErstellungsdatum enthalten). Der Publisher merkt sich dabei
+die Adresse des neuen Subscribers (grundsätzlich behält der Publisher die Adressen der letzten Subscriber, welche den aktuellen Feed von ihm erhalten
+haben).
+Möchte ein Subscriber den aktuellen Feed erfragen, so sendet er eine Anfrage (TTL=2) an seine vier Nachbarn, dabei beinhaltet diese Anfrage den Channel,
+das letzte aktuelle Erstellungsdatum, seine Adresse und die Adresse der Quelle der Anfrage (also auch seine). Besitzt ein Nachbar einen aktuelleren Feed
+(ist natürlich abhängig vom absoluten datum, je nach Auffrischungsintervall des Publishers),
+wird dieser an den Subscriber gesand (da Aktualität nicht vollkommen gewährleistet werden kann, können u.U. verschiedene Feeds an den Subscriber gesand
+werden, wobei eine den aktuellsten Stand hat). Falls ein Nachbar keinen aktuelleren Feed besitzt, wird die Anfrage an alle weiteren vier Nachbarn
+weitergeleitet, mit eigener Adresse und Quelladresse; der TTL wird dabei um eins erniedrigt. Jeder Empfänger, der einen aktuelleren Feed besitzt, sendet
+diesen direkt an den Anfragenden. Abgesehen davon senden die unmittelbaren Nachbarn die Adressen aller ihrer Nachbarn an den Anfragenden. Dieser
+rekombiniert seine Liste der Nachbarn mit den neuen Werten. Erreicht den Subscriber kein aktuellerer Feed, wird dieser beim Publisher direkt erfragt,
+welcher sich wiederum die Adresse des Subscribers merkt und ihm zusätzlich vier Adressen potentieller Nachbarn zusendet. Auch in diesem Fall rekombiniert
+der Subscriber seine Nachbarliste mit den neuen Adressen. Hat sich ein Nachbar unsubscribiert für eine Channel, so sendet er bei Anfrage diese Information
+an den Anfragenden, welcher den bisherigen Nachbarn aus seine Liste entfernt.
+
+Mithilfe der übersendeten Adressen können die Nachbarverbindungen dynamisch eingerichtet werden, das System ist selbstkonfigurierend. Da auch während
+des Updatings von Nachrichtenfeeds Informationen über aktuelle Adressen und über nicht mehr bestehende mitgeteilt werden, ist das System selbsadaptierend
+und selbststabilisierend. Rekombination von Nachbaradressen soll eine Optimierung der Verbindungen bezüglich Entfernung der
+beteiligten Knoten gewährleisten. Somit ist das System sselbstoptimierend.
+
+Rekombination der Nachbaradressen:
+
+Ziel ist eine Verbindung zu möglichst nahe gelegenen Nachbarn. Werden neue Nachbaradressen übersand, werden Entfernungen zu den neuen Adressen berechnet
+(ping?) und alle Adressen neu kombiniert entsprechend der Entfernungen. Um zu vermeiden, dass abgeschlossene Gruppen entstehen, zwischen denen kein
+Austausch stattfinden kann, kann wie folgt vorgegangen werden (Inspiration: genetische Algorithmen):
+Von allen Kombinationen aus möglichen vier Nachbarn werden die Mittelwerte der Entfernungen berechnet (ping-Zeiten). Nun wird aber nicht die Gruppe
+mit dem minimalen Wert als Lösung betrachtet, sondern eine zufällige(?) Gruppe, welche bestimmt wird aus dem zweiten Viertel der in geordneter
+aufsteigender Reihenfolge ermittelten Mittelwerte, deren Indizes die Gruppennummer bestimmen. Dies gewährleistet, dass bei sehr nahen Nachbarn auch
+ein entfernter vorhanden sein muss. Gleichzeitig befindet sich die Mehrheit der Nachbarn in relativ nahr Entfernung, da ja die Gruppe aus einem
+unteren Viertel bestimmt wurde.
+Eine andere mögliche Methode wäre, die zwei nächsten Nachbarn festzuhalten und die anderen beiden neu zu betimmen (Crossover). Im nächsten Schritt
+könnte ein Nachbar durch einen zufälligen anderen ausgetauscht werden (Mutation).
+
+Da in einem Netz, was die Small-world-property erfüllt, davon ausgegangen werden kann, dass es mindestens einen Knoten gibt, der die neueste
+Information bereits hat, kommt es zu weniger Anfragen an den Publisher. Allerdings geht es ( da es sich nicht um ein Notifikationssystem handelt)
+auf Kosten der Aktualität.
+
+
