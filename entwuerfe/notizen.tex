@@ -53,33 +53,33 @@
 
 \end{itemize}
 \newpage
-\section*{Algorithmus zur Abstimmung der Broker untereinander}
+\section*{Algorithmus zur Koordination der Broker bezüglich des Pollings der Publisher}
 Zunächst muss gesagt werden, dass es grundsätzlich nicht möglich ist, eine gleichzeitige Aktualisierung und Verbreitung der RSS-Feeds seitens der
 Broker zum
 Zeitpunkt der Aktualisierung seitens der Publisher zu erreichen, da zu keinem Zeitpunkt ermittelt werden kann, wann genau die nächste Aktualisierung
-durch die Publisher erfolgen wird. Es kann nur versucht werden, sich diesem Verhalten anzunähern. Je kürzer das Pollintervall desto kleiner die maximale
+durch die Publisher erfolgen wird. Es kann nur versucht werden, sich diesem Verhalten anzunähern. Je kürzer das Poll-Intervall desto kleiner die maximale
 Zeitspanne zwischen
 Aktualisierung und nächstem Polling. Eine sehr kurze Zeitspanne zwischen zwei Polls würde aber ein hohes Netzaufkommen bedeuten
 (erst recht bei voneinander unabhängigem Pollen der Broker), was nicht wünschenswert ist. Es sollte deshalb versucht werden,
-das Polling der Broker aufeinander abzustimmen und ein angemessenes Pollintervall zu erreichen.
-\subsection*{Besschreibung des Algorithmus}
+das Polling der Broker aufeinander abzustimmen und ein angemessenes Poll-Intervall zu erreichen.
+\subsection*{Beschreibung des Algorithmus}
 {\bf Voraussetzung:} RSS-Feeds sollten das Tag ``lastBuildDate'' unterstützen und ein Tag, welches Auskunft über ein minimales Update-Intervall 
 (z.B. ``minUpdateInterval'') liefert.
 Das minimale Update-Intervall sagt aus, welche Zeitspanne mindestens vergehen muss, bevor eine neue Aktualisierung der Feeds erfolgt.\\
 
-Bei diesem Algorithmus handelt es sich eigentlich ganz und gar nicht um ein Abstimmung. Vielmehr soll erreicht werden, dass verhältnismässig möglichst
+Bei diesem Algorithmus soll erreicht werden, dass möglichst verhältnismäßig
 wenige Broker eine gleichzeitige Aktualisierung der Feeds vornehmen. Die neuen Feeds werden dann den übrigen Brokern über das Netzwerk übersand.\\
-Notwendig ist pro Broker ein Polltimer, der bestimmt, wann das nächste Polling zu erfolgen hat. Ist dieser Timer abgelaufen, erfragt der Broker beim
-Publisher den aktuellen Feed. Ist dieser nicht neuer als der bisherige beim Broker vorhandene Feed, wird lediglich der Polltimer neu gesetzt (s.u.).
-Ist der neue Feed hingegen aktueller, wird sowohl der Polltimer neu gesetzt als auch dieser neue Feed jedem Nachbarbroker entsprechend den vorhandenen
-Filterregeln übersand, welche ihrerseits diesen neuen Feed an Nachbarbroker weiterleiten,
+Notwendig ist pro Broker ein Poll-Timer, der bestimmt, wann das nächste Polling zu erfolgen hat. Ist dieser Timer abgelaufen, erfragt der Broker beim
+Publisher den aktuellen Feed. Ist dieser nicht neuer als der bisherige beim Broker vorhandene Feed, wird lediglich der Poll-Timer neu gesetzt (s.u.).
+Ist der neue Feed hingegen aktueller, wird sowohl der Poll-Timer neu gesetzt als auch dieser neue Feed jedem Nachbarbroker entsprechend den vorhandenen
+Filterregeln übersand; jeder Nachbarbroker leitet seinerseits diesen neuen Feed an die jeweiligen Nachbarbroker weiter,
 falls der Feed hier ebenfalls aktueller ist als der bisherige. Allerdings
-wird der Polltimer nur in diesem Fall neu gesetzt. Das setzen des Polltimers geschieht folgendermaßen: Aus ``lastBuildDate'' und ``minUpdateInterval''
-wird die ungefähre Zeitspanne ``nextAktualisation'' zur nächsten Aktualisierung durch den Publisher berechnet. Für den Wert des Polltimers $pt$ soll
+wird der Poll-Timer nur in diesem Fall neu gesetzt. Das setzen des Poll-Timers geschieht folgendermaßen: Aus ``lastBuildDate'' und ``minUpdateInterval''
+wird die ungefähre Zeitspanne ``nextAktualisation'' zur nächsten Aktualisierung durch den Publisher berechnet. Für den Wert des Poll-Timers $pt$ soll
 nun gelten: $nextAktualisation \leq pt \leq 2*nextAktualisation$. $pt$ wird in diesem Bereich zufällig gewählt. Somit sollte es relativ wenige Broker
 geben, die gleichzeitig den aktuellen Stand beim Publisher erfragen. Nach erfolgreicher Aktualisierung wird mit hoher Wahrscheinlichkeit ein anderer Broker
-den Stand beim nächsten Mal erfragen. Ausserdem ist gewährleistet, dass bei hoher Brokerzahl nach Ablauf der Polltimer in regelmässigen Abständen der
-Publisher kontaktiert wird, falls zu diesem Zeitpunnkt noch keine Aktualisierung vorlag.\\
+den Stand beim nächsten Mal erfragen. Außerdem ist gewährleistet, dass bei hoher Brokerzahl nach Ablauf der Poll-Timer in regelmäßigen Abständen der
+Publisher kontaktiert wird, falls zu diesem Zeitpunkt noch keine Aktualisierung vorlag.\\
 Tritt ein neuer Knoten dem Netzwerk bei, so wird dieser den aktuellen Stand bei seinem nächsten Nachbarn erfragen.
 
 \end{document}
