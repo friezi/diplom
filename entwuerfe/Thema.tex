@@ -38,7 +38,7 @@ deren Verteilung an die entsprechenden übrigen Broker bzw. Subscriber. Ein Subsc
 zu stellen, da diese Aufgabe von den Brokern übernommen wird. Die Broker des Netzes übermitteln sich die Feeds gegenseitig,
 so dass nicht jeder Broker separat einen Publisher kontaktieren muss, um den aktuellen Feed zu erhalten. Da es nun bei den Publishern zu weniger
 Anfragen kommt, haben wir es hier mit einer Lastminderung zu tun. Bisher war das Update-Intervall u.U. serverseitig begrenzt: ein Subscriber,
-dessen Poll-Rate zu hoch war (um ein möglichst zeigleiches Aktualisieren zu erreichen), konnte vom Server vorübergehend geblockt werden.
+dessen Poll-Rate zu hoch war (um ein möglichst zeitgleiches Aktualisieren zu erreichen), konnte vom Server vorübergehend geblockt werden.
 Nun ist es möglich, ein hohes Update-Intervall zu erreichen, da sich die Broker beim Polling abwechseln. Im neuen Design können außerdem die
 RSS-Feeds mit Hilfe von Filtern (definiert durch Subscriber) schon auf der Broker-Ebene gefiltert werden. Die Filterung kann darüber hinaus
 anbieterübergreifend wirken, da sich Feeds von unterschiedlichen Publishern an einem Broker sammeln. Die Filter werden von Brokern an die entsprechenden
@@ -49,12 +49,12 @@ Es sind folgende Aufgaben zu bewältigen:
 \item Broker können spontan dem Netz beitreten und es verlassen: in diesem Fall muss gewährleistet werden, dass trotzdem immer ein voll funktionsfähiges
 Netz besteht.
 \item Subscriber können ebenfalls spontan dem Netz beitreten und es verlassen. Dies sollte möglich sein, ohne einen vollständigen Verlust der
-Subscribierungsdaten nach sich zu ziehen.
+Subskribierungsdaten nach sich zu ziehen.
 \item Filtertechniken müssen entwickelt werden, bzw. bestehende Filter-Algorithmen umgesetzt werden
 \item Filter sollen anbieterübergreifend wirken
 \end{itemize}
 
-Diese Aufgabestellungen werfen folgende Fragen auf:
+Diese Aufgabenstellungen werfen folgende Fragen auf:
 \begin{itemize}
 \item Muss es zu einer Absprache unter den Brokern kommen, oder gibt es andere Möglichkeiten ein verteiltes Erfragen der Feeds zu
 erreichen?
@@ -64,7 +64,7 @@ erreichen?
 \item Wonach bestimmt sich der Broker, den ein Subscriber kontaktiert?
 \item Muss es sich immer um ein zusammenhängendes Netz handeln, oder soll es zulässig sein, dass ein Netz (zeitweise?) aus mehreren Fragmenten besteht?
 \item Sollen nur die Feeds übermittelt werden oder auch die durch sie repräsentierten Daten?
-\item Wonach bestimmt sich das Pollintervall?
+\item Wonach bestimmt sich das Poll-Intervall?
 \end{itemize}
 
 Im Verlauf der Arbeit sollen diese Fragen erörtert und eine angemessene Lösung gefunden werden.
