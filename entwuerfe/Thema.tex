@@ -8,7 +8,7 @@
 \pagenumbering{arabic}
 \begin{document}
 
-\section*{Konstruktion eines Overlay-Broker-Netzwerkes für das Publish/Subscribe-System RSS}
+\section*{Integration von RSS mit verteiltem Publish/Subscribe}
 
 In der herkömmlichen Beschreibung von Publish/Subscribe-Systemen (kurz: Pub/Sub-Systeme) finden sich drei Parteien: \glqq Publisher\grqq{} stellen
 Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren sich für bestimmte Informationen und können diese abonnieren;
@@ -22,13 +22,18 @@ Message-Broker sind hierbei im Gegensatz zu herkömmlichen Pub/Sub-Systemen nicht
 auf einer Webpage wird ein RSS-Feed (aktueller Beitrag) als XML-Datei abgelegt. Interessenten (Subscriber) können nun diese Feeds erfragen. Da nicht
 vorhersehbar ist, zu welchem Zeitpunkt eine Aktualisierung der Feeds seitens der Server bzw. Publisher erfolgen wird,
 müssen die Subscriber in regelmäßigen
-Zeitabständen beim Server nachfragen (Polling). Die Definition von Filtern ist nicht vorgesehen, d.h. Subscriber erhalten \glqq alles oder nichts\grqq.
+Zeitabständen beim Server nachfragen (Polling). Die Definition von Filtern ist nicht vorgesehen, d.h. Subscriber erhalten den kompletten Feed und müssen
+sich notfalls bei vielen verschiedenen Publishern subskribieren, um eine große Auswahl an Informationen zu einem bestimmten Thema zu erhalten.
 
 RSS-Feeds sind zwar themenbasiert (vgl. \cite{ClieBeh}), jedoch wird die thematische Zuordnung auf Publisherseite vorgenommen. Eine thematische Filterung 
-aus Subscribersicht vor allem auf höherer Ebene ist nicht möglich; allerdings kann natürlich eine Filterung lokal auf Subscriberseite erfolgen.\\
-Das ständige Polling der Server durch möglicherweise hunderttausende von Clienten führt zu einer starken serverseitigen Last (vgl. \cite{feedtree}).\\
+aus Subscribersicht vor allem auf höherer Ebene ist nicht möglich; allerdings kann eine Filterung lokal auf Subscriberseite erfolgen.\\
+Das ständige Polling der Server durch möglicherweise hunderttausende von Clienten führt zu einer starken serverseitigen Last (vgl. \cite{feedtree},
+\cite{RSSBand}). Diese Last kann dauerhaft sein, auch wenn das Angebot des Servers vielleicht nur auf vorübergehendes Interesse beim Subscriber stößt: Ein
+Browser-Eintrag für einen Feed (Subskription) bleibt bestehen, bis er vom Subscriber eigenhändig entfernt wird,
+was mangels nötigem Interesse möglicherweise nie geschehen wird. Somit wäre der Server gezwungen, dauerhaft Anfragen zu
+beantworten. Beispiele für die (RSS-basierten) Datenmengen, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich in \cite{feedtree}.\\
 Um eine Lastverteilung und eine höhere Flexibilität in Bezug auf die Auswahl der Informationen seitens der Subscriber zu erreichen, bietet es
-sich an, ein Overlay-Netzwerk bestehend aus Brokern und Subscribern zu konstruieren. Die Broker sorgen hierbei für die Abfrage neuer RSS-Feeds und
+sich an, ein Overlay-Netzwerk bestehend aus Brokern und Subscribern zu konstruieren. Die Broker sorgen hierbei für die Abfrage der RSS-Feeds und
 deren Verteilung an die entsprechenden übrigen Broker bzw. Subscriber. Ein Subscriber braucht nun nicht mehr eigenmächtig Anfragen an einen Publisher
 zu stellen, da diese Aufgabe von den Brokern übernommen wird. Die Broker des Netzes übermitteln sich die Feeds gegenseitig,
 so dass nicht jeder Broker separat einen Publisher kontaktieren muss, um den aktuellen Feed zu erhalten. Da es nun bei den Publishern zu weniger
@@ -69,6 +74,8 @@ Im Verlauf der Arbeit sollen diese Fragen erörtert und eine angemessene Lösung g
                      4th International Workshop on Peer-To-Peer Systems, Ithaca, New York, 2005
   \bibitem{ClieBeh} H.Liu, V.Ramasubramanian, E.G.Sirer, A Measurement Study of {RSS}, {A} Publish-Subscribe
                     System for Web Micronews, Internet Measurement Conference (IMC), 2005
+  \bibitem{RSSBand}  M. Hicks. RSS comes with bandwidth price tag. eWeek, Sept. 2004. http://www.eweek.com/article2/0, 1759, 1648625, 00.asp.
+
 \end{thebibliography}
 
 \end{document}
