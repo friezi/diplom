@@ -11,4 +11,4 @@ ed:
 	emacs *.tex ../*.bib Makefile&
 
 clean:
-	\rm *.aux *.bbl *.blg *.log *.dvi *.pdf *.ps
+	\rm *.aux *.bbl *.blg *.log *.dvi *.nav *.out *.snm *.vrb *.toc
