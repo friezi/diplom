@@ -38,7 +38,11 @@ starken serverseitigen Last (vgl. \cite{SandlerEtAl:2005:FeedTree},
 auf vorübergehendes Interesse beim Subscriber stößt: ein
 Browser-Eintrag für einen Feed (Subskription) bleibt bestehen, bis er vom Subscriber eigenhändig entfernt wird,
 was mangels nötigem Interesse möglicherweise nie geschehen wird. Somit wäre der Server gezwungen, dauerhaft Anfragen zu
-beantworten. Beispiele für die (RSS-basierten) Datenmengen, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
+beantworten. Möchte ein Subscriber eine mit dem Publisher möglichst synchronisierte Aktualisierung der Feeds erreichen, so muss er die Poll-Rate
+hoch setzen. Dies bedeutet wiederum eine höhere Serverbelastung. Um eine hohe Belastung durch hohe Poll-Raten zu unterbinden, haben Server die Möglichkeit,
+einen Subscriber (abgrenzbar durch seine IP-Adresse), dessen Poll-Rate zu hoch ist, vorübergehend zu blocken. Dadurch ist der Grad der Aktualität der
+RSS-Feeds begrenzt.
+Beispiele für die (RSS-basierten) Datenmengen, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
 in \cite{SandlerEtAl:2005:FeedTree}.
 \subsection*{Ziel der Arbeit}
 Um eine Lastverteilung und eine höhere Flexibilität in Bezug auf die Auswahl der Informationen seitens der Subscriber zu erreichen, bietet es
@@ -46,9 +50,6 @@ sich an, ein Overlay-Netzwerk bestehend aus Brokern und Subscribern zu konstruie
 deren Verteilung an die entsprechenden übrigen Broker bzw. Subscriber. Ein Subscriber braucht nun nicht mehr eigenmächtig Anfragen an einen Publisher
 zu stellen, da diese Aufgabe von den Brokern übernommen wird. Die Broker des Netzes übermitteln sich die Feeds gegenseitig,
 so dass nicht jeder Broker separat einen Publisher kontaktieren muss, um den aktuellen Feed zu erhalten. Es fallen also weniger Anfragen beim Publisher an.
-Um eine hohe Belastung durch hohe Poll-Raten zu unterbinden, haben Server die Möglichkeit, einen Subscriber (abgrenzbar durch seine IP-Adresse),
-dessen Poll-Rate zu hoch ist (um eine mit dem Publisher möglichst synchronisierte Aktualisierung zu erreichen), vorübergehend zu blocken. Dadurch war
-bisher der Grad der Aktualität der RSS-Feeds begrenzt
 Im neuen Design ist es möglich, ein hohes Update-Intervall ohne Blockierung zu erreichen, da sich die Broker beim Polling abwechseln und die
 Anfragen somit unterschiedliche IP-Adressen als Quelle besitzen. Damit ergibt sich auch ein höherer Grad an Aktualität.\\
 Die RSS-Feeds können mit Hilfe von Filtern, welche durch die Subscriber definiert werden,
