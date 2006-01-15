@@ -8,7 +8,7 @@
 \pagenumbering{arabic}
 \begin{document}
 
-\section*{Konstruktion eines Overlay-Broker-Netzwerkes für das Publish/Subscribe-System RSS}
+\section*{Integration von RSS mit verteiltem Publish/Subscribe}
 \subsection*{Abstract}
 
 RSS ist ein Publish/Subscribe-System nicht im herkömmlichen Sinne. Es gibt keine Message-Broker, die Notifikationen empfangen
@@ -17,9 +17,9 @@ Publisher eigenmächtig kontaktieren, um den aktuellen Stand der Nachrichten/Noti
 bei relativ kleinen Polling-Raten zur dauerhaften Überlastung der entsprechenden Server führen, weshalb manche Server stark-pollende Subscriber blocken.\\
 Ziel dieser Arbeit ist es, ein selbskonfigurierendes
 Overlay-Netzwerk aus Brokern/Subscribern zu konstruieren, bei dem die Broker für die Aktualisierung und Verteilung der Feeds verschiedener Publisher
-an die Subscriber/Broker sorgen, um eine Lastverteilung auf dieses Netzwerk zu erreichen.
+an die Subscriber/Broker sorgen, um eine Lastverteilung in diesem Netzwerk zu erreichen.
 Hierbei soll es den Subscribern möglich sein, inhaltsbasierte Filter zu definieren, durch welche der Möglichkeitsraum zu
-erhaltener RSS-Feeds erweitert bzw. eingeschränkt werden kann. Ein möglichst zeitgleiches Aktualisieren der Feeds auf Subscriberebene soll erreicht werden,
-sprich hohe Pollingraten müssen ereicht werden können.
+erhaltener RSS-Feeds erweitert bzw. eingeschränkt werden kann. Eine mit dem Publisher möglichst synchronisierte Aktualisierung der Feeds auf
+Subscriberebene soll erreicht werden, sprich hohe Pollingraten müssen ereicht werden können.
 
 \end{document}
