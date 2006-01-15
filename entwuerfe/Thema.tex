@@ -11,15 +11,16 @@
 \bibliographystyle{ieeetr}
 
 \section*{Integration von RSS mit verteiltem Publish/Subscribe}
-
-In der herkömmlichen Beschreibung von Publish/Subscribe-Systemen (kurz: Pub/Sub-Systeme) finden sich drei Parteien: \glqq Publisher\grqq{} stellen
-Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren sich für bestimmte Informationen und können diese abonnieren;
+\subsection*{Einleitung}
+In der herkömmlichen Beschreibung des Publish/Subscribe-Paradigmas (kurz: Pub/Sub-Paradigma bzw. Pub/\-Sub-System) finden sich drei
+Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren
+sich für bestimmte Informationen und können diese abonnieren (subskribieren);
 \glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen/Informationen an die Subscriber.
 Aufgrund der indirekten Verbindung zwischen Subscribern und Publishern über die Broker brauchen sich Publisher nicht um eine Vielzahl von
 Interessenten zu kümmern.
 Zudem lässt die zentrale Sammlung einer Reihe von Informationen die Definition von Filtern zu, durch die
 anbieterübergreifend Informationen seitens der Subscriber abgefragt werden können.\\\\
-RSS (Really Simple Syndication) ist zwar ein Pub/Sub-System jedoch nicht im herkömmlichen Sinne, denn es folgt dem klassischen Client-Server-Ansatz.
+RSS (Really Simple Syndication) zählt zwar zu den Pub/Sub-System jedoch nicht im herkömmlichen Sinne, denn es folgt dem klassischen Client-Server-Ansatz.
 Message-Broker sind hierbei nicht vorgesehen:
 auf einer Webpage wird ein RSS-Feed (aktueller Beitrag) als XML-Datei abgelegt. Ein Feed ist einem Thema (Channel) zugeordnet und beinhaltet
 verschiedene Einträge (z.B. Nachrichten-Headlines). Interessenten (Subscriber) können nun diese Feeds erfragen und
@@ -38,30 +39,32 @@ auf vorübergehendes Interesse beim Subscriber stößt: ein
 Browser-Eintrag für einen Feed (Subskription) bleibt bestehen, bis er vom Subscriber eigenhändig entfernt wird,
 was mangels nötigem Interesse möglicherweise nie geschehen wird. Somit wäre der Server gezwungen, dauerhaft Anfragen zu
 beantworten. Beispiele für die (RSS-basierten) Datenmengen, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
-in \cite{SandlerEtAl:2005:FeedTree}.\\\\
+in \cite{SandlerEtAl:2005:FeedTree}.
+\subsection*{Ziel der Arbeit}
 Um eine Lastverteilung und eine höhere Flexibilität in Bezug auf die Auswahl der Informationen seitens der Subscriber zu erreichen, bietet es
 sich an, ein Overlay-Netzwerk bestehend aus Brokern und Subscribern zu konstruieren. Die Broker sorgen hierbei für die Abfrage der RSS-Feeds und
 deren Verteilung an die entsprechenden übrigen Broker bzw. Subscriber. Ein Subscriber braucht nun nicht mehr eigenmächtig Anfragen an einen Publisher
 zu stellen, da diese Aufgabe von den Brokern übernommen wird. Die Broker des Netzes übermitteln sich die Feeds gegenseitig,
-so dass nicht jeder Broker separat einen Publisher kontaktieren muss, um den aktuellen Feed zu erhalten.Es fallen also weniger Anfragen beim Publisher an.
-Bisher war das Update-Intervall u.U. serverseitig begrenzt: ein Subscriber (abgrenzbar durch seine IP-Adresse),
-dessen Poll-Rate zu hoch war (um eine mit dem Publisher möglichst synchronisierte Aktualisierung zu erreichen),
-konnte vom Server vorübergehend geblockt werden.
+so dass nicht jeder Broker separat einen Publisher kontaktieren muss, um den aktuellen Feed zu erhalten. Es fallen also weniger Anfragen beim Publisher an.
+Um eine hohe Belastung durch hohe Poll-Raten zu unterbinden, haben Server die Möglichkeit, einen Subscriber (abgrenzbar durch seine IP-Adresse),
+dessen Poll-Rate zu hoch ist (um eine mit dem Publisher möglichst synchronisierte Aktualisierung zu erreichen), vorübergehend zu blocken. Dadurch war
+bisher der Grad der Aktualität der RSS-Feeds begrenzt
 Im neuen Design ist es möglich, ein hohes Update-Intervall ohne Blockierung zu erreichen, da sich die Broker beim Polling abwechseln und die
-Anfragen somit unterschiedliche IP-Adressen als Quelle besitzen. Außerdem können die
-RSS-Feeds mit Hilfe von Filtern (definiert durch Subscriber) schon auf der Broker-Ebene gefiltert werden (Filter werden von Brokern an Nachbarbroker
-weitergeleitet). Die Filterung kann darüber hinaus
-anbieterübergreifend wirken, da sich Feeds von unterschiedlichen Publishern an einem Broker sammeln. Feeds können analysiert, extrahiert und themembezogen
-wieder neu zusammengestellt werden. Um eine genaue Analyse der Feeds bezüglich der angegebenen Filter zu ermöglichen, wird das inhaltsbasierte Filtern
+Anfragen somit unterschiedliche IP-Adressen als Quelle besitzen. Damit ergibt sich auch ein höherer Grad an Aktualität.\\
+Die RSS-Feeds können mit Hilfe von Filtern, welche durch die Subscriber definiert werden,
+schon auf der Broker-Ebene gefiltert werden (Filter werden von Brokern an
+Nachbarbroker weitergeleitet). Die Filterung kann anbieterübergreifend wirken, da sich Feeds von unterschiedlichen
+Publishern an einem Broker sammeln. Feeds können dabei analysiert, extrahiert und themenbezogen
+wieder neu zusammengestellt werden. Um eine genaue Analyse der Feeds bezüglich der angegebenen Filter zu ermöglichen, wird die inhaltsbasierte Filterung
 (content-based filtering, \cite{Muehl:2001:GenericConstraints}) favorisiert. Hierfür ist es notwendig, nicht nur die Feeds selbst, sondern
 auch die durch sie referenzierten Daten herunterzuladen, um sie in den Filtervorgang mit einzubeziehen. Die notwendigen Filter-Techniken wurden
-bereits im System REBECA \cite{MuFiBu:2001:ArchFrameECommApp} umgesetzt.
-\newpage
-Das Design sollte unter folgenden Gesichtspunkten erfolgen:
+bereits im System REBECA \cite{MuFiBu:2001:ArchFrameECommApp} umgesetzt. Die Filterung der Feeds auf Brokerebene ermöglicht den Subscribern eine
+inhaltsorientierte Sichtweise auf Subskriptionen im Gegensatz zur bisherigen anbieterorientierten Sichtweise.\\\\
+Der Entwurf des Overlay-Brokernetzwerks sollte unter folgenden Gesichtspunkten erfolgen:
 \begin{itemize}
 \item Hotspots (gleichzeitige Anfrage aller Broker an einen Publisher) sollen nach Möglichkeit vermieden werden
-\item Broker können spontan dem Netz beitreten und es verlassen: es muss gewährleistet werden, dass trotzdem immer ein voll funktionsfähiges
-Netz besteht $\longrightarrow$  Selbst-Adaption, Selbst-Stabilisierung \cite{HeMueGei:2005:SelfMa}
+\item Broker können spontan dem Netz beitreten und es verlassen: es soll gewährleistet werden, dass trotzdem immer ein voll funktionsfähiges
+Netz besteht \\ $\longrightarrow$  Selbst-Adaption, Selbst-Konfiguration, Selbst-Stabilisierung \cite{HeMueGei:2005:SelfMa}
 \end{itemize}
 
 Folgende Fragen werden dabei aufgeworfen:
@@ -76,7 +79,7 @@ Folgende Fragen werden dabei aufgeworfen:
 \item Wie bestimmt sich das Poll-Intervall?
 \end{itemize}
 Im Verlauf der Arbeit sollen diese Fragen erörtert und angemessene Lösungen gefunden werden. Ein Overlay-Brokernetzwerk, welches die oben
-genannten Anforderungen erfüllt, soll designed und im Rahmen einer Simulation implementiert werden.
+genannten Anforderungen erfüllt, soll entworfen und im Rahmen einer Simulation implementiert werden.
 
 \bibliography{../bibdatabase}
 
