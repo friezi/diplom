@@ -19,10 +19,15 @@
 
 package rsspubsubframework;
 
+import java.awt.Color;
+
 /**
  * Base class for Node and Message.
  */
-abstract class DisplayableObject {
+public abstract class DisplayableObject {
+	
+	protected java.awt.Color color = Color.white;
+	
     /**
      * Return the color on display.
      * 
@@ -31,7 +36,7 @@ abstract class DisplayableObject {
      * @return Color.
      */
     protected java.awt.Color color() {
-        return java.awt.Color.white;
+        return color;
     }
 
     /**
@@ -92,4 +97,8 @@ abstract class DisplayableObject {
         g.drawString(t, x - fm.stringWidth(t) / 2, y + fm.getHeight() / 2);
         
     }
+
+	public void setColor(java.awt.Color color) {
+		this.color = color;
+	}
 }
