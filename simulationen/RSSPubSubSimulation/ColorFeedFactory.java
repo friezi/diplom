@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class ColorFeedFactory implements RSSFeedFactory {
 
-	Color color = Color.gray;
+	Color color = Color.magenta;
 
 	public RSSFeed newRSSFeed() {
 		cycleColors();

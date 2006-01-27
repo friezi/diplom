@@ -20,6 +20,8 @@ public class RSSServerNode extends Node {
 		}
 	};
 
+	protected RSSFeedRepresentation rssFeedRepresentation;
+
 	public RSSServerNode(int xp, int yp) {
 		super(xp, yp);
 		setColor(java.awt.Color.orange);
@@ -60,8 +62,24 @@ public class RSSServerNode extends Node {
 		this.rssFeedRepresentationFactory = rss_feed_representation_factory;
 	}
 
+	public RSSFeedRepresentationFactory getRssFeedRepresentationFactory() {
+		return rssFeedRepresentationFactory;
+	}
+
 	public void setRssFeedFactory(RSSFeedFactory rssFeedFactory) {
 		this.rssFeedFactory = rssFeedFactory;
+	}
+
+	public RSSFeedFactory getRssFeedFactory() {
+		return rssFeedFactory;
+	}
+
+	public RSSFeedRepresentation getRssFeedRepresentation() {
+		return rssFeedRepresentation;
+	}
+
+	public void setRssFeedRepresentation(RSSFeedRepresentation rssFeedRepresentation) {
+		this.rssFeedRepresentation = rssFeedRepresentation;
 	}
 
 }

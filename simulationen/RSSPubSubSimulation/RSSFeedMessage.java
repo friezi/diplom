@@ -28,4 +28,8 @@ public class RSSFeedMessage extends Message {
 	protected int size() {
 		return SIZE;
 	}
+
+	public RSSFeed getFeed() {
+		return feed;
+	}
 }

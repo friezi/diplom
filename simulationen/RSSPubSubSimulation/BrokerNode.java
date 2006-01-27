@@ -11,6 +11,7 @@ public class BrokerNode extends Node {
 
 	public BrokerNode(int xp, int yp) {
 		super(xp, yp);
+		setColor(new java.awt.Color((float) 0.5, (float) 0.5, 0));
 		// TODO Auto-generated constructor stub
 	}
 
@@ -24,10 +25,6 @@ public class BrokerNode extends Node {
 	protected void receiveMessage(Message m) {
 		// TODO Auto-generated method stub
 
-	}
-
-	protected java.awt.Color color() {
-		return new java.awt.Color((float) 0.5, (float) 0.5, 0);
 	}
 
 	protected int size() {

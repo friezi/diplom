@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 import rsspubsubframework.DisplayableObject;
 import rsspubsubframework.Message;
 import rsspubsubframework.Node;
@@ -11,13 +13,15 @@ public class PubSubNode extends Node {
 		}
 	};
 
+	protected RSSFeedRepresentation rssFeedRepresentation;
+
 	protected RSSServerNode rssServer;
 
 	protected BrokerNode broker;
 
 	public PubSubNode(int xp, int yp) {
 		super(xp, yp);
-		// TODO Auto-generated constructor stub
+		setColor(Color.blue);
 	}
 
 	@Override
@@ -38,10 +42,6 @@ public class PubSubNode extends Node {
 	protected void receiveMessage(Message m) {
 		// TODO Auto-generated method stub
 
-	}
-
-	protected java.awt.Color color() {
-		return java.awt.Color.blue;
 	}
 
 	protected int size() {
@@ -66,8 +66,20 @@ public class PubSubNode extends Node {
 		this.rssFeedRepresentationFactory = rssFeedRepresentationFactory;
 	}
 
+	public RSSFeedRepresentationFactory getRssFeedRepresentationFactory() {
+		return rssFeedRepresentationFactory;
+	}
+
 	public RSSServerNode getRssServer() {
 		return rssServer;
+	}
+
+	public RSSFeedRepresentation getRssFeedRepresentation() {
+		return rssFeedRepresentation;
+	}
+
+	public void setRssFeedRepresentation(RSSFeedRepresentation rssFeedRepresentation) {
+		this.rssFeedRepresentation = rssFeedRepresentation;
 	}
 
 }

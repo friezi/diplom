@@ -8,8 +8,8 @@ public class RSSFeedRequestMessage extends Message {
 
 	private static int SIZE = 5;
 
-	public RSSFeedRequestMessage(PubSubNode pubsub, RSSServerNode rssServer) {
-		super(pubsub, rssServer, RUNTIME);
+	public RSSFeedRequestMessage(PubSubNode src, RSSServerNode dest) {
+		super(src, dest, RUNTIME);
 		setColor(Color.red);
 	}
 
