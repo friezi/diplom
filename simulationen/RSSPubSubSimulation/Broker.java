@@ -1,10 +1,8 @@
-import rsspubsubframework.*;
+public class Broker extends BrokerNode {
 
-public class Broker extends BrokerNode{
+	public Broker(int xp, int yp) {
+		super(xp, yp);
+		// TODO Auto-generated constructor stub
+	}
 
-    public Broker(int xp, int yp) {
-        super(xp, yp);
-        // TODO Auto-generated constructor stub
-    }
-    
 }

@@ -1,4 +1,4 @@
-import rsspubsubframework.*;
+import rsspubsubframework.DisplayableObject;
 
 public class SimRPSContIntervall {
 

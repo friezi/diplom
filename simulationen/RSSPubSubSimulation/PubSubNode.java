@@ -1,12 +1,12 @@
-
-import rsspubsubframework.*;
+import rsspubsubframework.DisplayableObject;
+import rsspubsubframework.Message;
+import rsspubsubframework.Node;
 
 public class PubSubNode extends Node {
 
 	// just to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
-		public RSSFeedRepresentation newRSSFeedRepresentation(
-				DisplayableObject dObj, RSSFeed feed) {
+		public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 			return new RSSFeedRepresentation(null, null);
 		}
 	};
@@ -62,9 +62,12 @@ public class PubSubNode extends Node {
 
 	}
 
-	public void setRssFeedRepresentationFactory(
-			RSSFeedRepresentationFactory rssFeedRepresentationFactory) {
+	public void setRssFeedRepresentationFactory(RSSFeedRepresentationFactory rssFeedRepresentationFactory) {
 		this.rssFeedRepresentationFactory = rssFeedRepresentationFactory;
+	}
+
+	public RSSServerNode getRssServer() {
+		return rssServer;
 	}
 
 }

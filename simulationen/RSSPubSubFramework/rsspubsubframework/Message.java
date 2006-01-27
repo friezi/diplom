@@ -135,6 +135,6 @@ public class Message extends DisplayableObject {
      * @return Size.
      */
     protected int size() {
-        return 20;
+        return 30;
     }
 }

@@ -1,8 +1,7 @@
-import rsspubsubframework.*;
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Date;
 
-public class ColorFeed extends RSSFeed{
+public class ColorFeed extends RSSFeed {
 
 	protected Color color;
 
@@ -23,7 +22,7 @@ public class ColorFeed extends RSSFeed{
 
 	@Override
 	public boolean isNewerThan(RSSFeed feed) {
-		return lastBuiltDate.after(((ColorFeed)feed).getLastBuiltDate());
+		return lastBuiltDate.after(((ColorFeed) feed).getLastBuiltDate());
 	}
 
 }
