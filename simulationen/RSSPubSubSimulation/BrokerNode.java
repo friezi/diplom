@@ -49,4 +49,11 @@ public class BrokerNode extends Node {
 		this.rssFeedRepresentationFactory = rssFeedRepresentationFactory;
 	}
 
+	/**
+	 * @return Returns the rssFeedRepresentationFactory.
+	 */
+	public RSSFeedRepresentationFactory getRssFeedRepresentationFactory() {
+		return rssFeedRepresentationFactory;
+	}
+
 }

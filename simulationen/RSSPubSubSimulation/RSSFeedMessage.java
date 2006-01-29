@@ -1,7 +1,7 @@
 import rsspubsubframework.Message;
 import rsspubsubframework.Node;
 
-public class RSSFeedMessage extends Message {
+public class RSSFeedMessage extends Message implements Cloneable{
 
 	private static int RUNTIME = 15;
 
@@ -32,4 +32,8 @@ public class RSSFeedMessage extends Message {
 	public RSSFeed getFeed() {
 		return feed;
 	}
+//	
+//	public RSSFeedMessage clone(){
+//		return 
+//	}
 }

@@ -158,6 +158,14 @@ abstract public class Node extends DisplayableObject {
         else
             sendAllBut(cn);
     }
+    
+    /**
+     * Adds the node to initList of Engine.
+     * init() will be called automatically by the Engine when simulation is started
+     */
+    public final void addToInitList(){
+    	Engine.getSingleton().addToInitList(this);
+    }
 
     /**
      * Called to initialize the node.

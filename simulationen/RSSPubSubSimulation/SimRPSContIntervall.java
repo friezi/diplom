@@ -1,6 +1,19 @@
 import rsspubsubframework.DisplayableObject;
 
+/**
+ * A Simulation ofn a RSS-Distribution-System integrated in distributed
+ * Publish/Subscribe
+ * 
+ * @author friezi
+ * 
+ */
 public class SimRPSContIntervall {
+
+	protected static int minUpIntv = 1;
+
+	protected static int maxUpIntv = 1;
+
+	protected static int ttl = 7;
 
 	/**
 	 * @param args
@@ -17,15 +30,14 @@ public class SimRPSContIntervall {
 				return new PubSub(xp, yp);
 			}
 
-			public RSSServerNode newRSSServerNode(int xp, int yp) {
-				return new RSSServer(xp, yp);
+			public RSSServerNode newRSSServerNode(int xp, int yp, int minUpIntv, int maxUpIntv, int ttl) {
+				return new RSSServer(xp, yp, minUpIntv, maxUpIntv, ttl);
 			}
 		}, new ColorFeedFactory(), new RSSFeedRepresentationFactory() {
-			public RSSFeedRepresentation newRSSFeedRepresentation(
-					DisplayableObject dObj, RSSFeed feed) {
+			public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 				return new ColorFeedRepresentation(dObj, (ColorFeed) feed);
 			}
-		});
+		}, minUpIntv, maxUpIntv, ttl);
 	}
 
 }

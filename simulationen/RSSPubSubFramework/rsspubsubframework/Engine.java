@@ -19,6 +19,8 @@
 
 package rsspubsubframework;
 
+import java.util.LinkedList;
+
 /**
  * The Engine.
  * 
@@ -46,6 +48,12 @@ final public class Engine extends java.util.TimerTask {
 	 * This list holds all nodes that are registered within the engine.
 	 */
 	private final java.util.Set<Node> nodeList = new java.util.HashSet<Node>();
+
+	/**
+	 * List of all nodes which should be initialized by the engine when
+	 * Simulation started.
+	 */
+	private final java.util.LinkedList<Node> initList = new LinkedList<Node>();
 
 	/**
 	 * List of all edges in the engine.
@@ -87,6 +95,12 @@ final public class Engine extends java.util.TimerTask {
 	 * This value marks whether the engine does contain active messages.
 	 */
 	private boolean active = false;
+
+	private boolean started = false;
+
+	private boolean stopped = false;
+
+	private boolean continued = false;
 
 	/**
 	 * Number of simulation steps.
@@ -152,6 +166,16 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	final synchronized void addEdge(Edge localEdge) {
 		edgeList.add(localEdge);
+	}
+
+	/**
+	 * Adds the node to the initList.
+	 * The Engine calls init() for all nodes in initList when simulation is started.
+	 * 
+	 * @param node the node to be added
+	 */
+	public final synchronized void addToInitList(Node node) {
+		initList.add(node);
 	}
 
 	/**
@@ -323,41 +347,112 @@ final public class Engine extends java.util.TimerTask {
 	 * for pure technical reasons.
 	 */
 	final synchronized public void run() {
-		fixupMessageList();
-		java.util.Iterator<Message> ml = messageList.iterator();
-		while ( ml.hasNext() ) {
-			Message cm = ml.next();
-			if ( cm.tick() )
-				ml.remove();
-		}
-		fixupMessageList();
-		final int numMessages = messageList.size();
-		final java.util.Date d = new java.util.Date();
+
 		if ( active ) {
-			if ( numMessages == 0 ) {
+
+			if ( isStopped() ) {
+
+				setStopped(false);
 				active = false;
+
+				final java.util.Date d = new java.util.Date();
+
 				System.out.println("[" + d + "] ...simulation stopped");
-				System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "." + simSteps
-						% 10 + "s");
+				System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "." + simSteps % 10
+						+ "s");
 				System.out.println("[" + d + "] # of messages    : " + Message.getMessages());
 				System.out.println("[" + d + "] max # of messages: " + maxMessages);
 				System.out.println("[" + d + "] avg # of messages: " + (double) cumMessages / simSteps);
+
 			} else {
+
+				fixupMessageList();
+				java.util.Iterator<Message> ml = messageList.iterator();
+				while ( ml.hasNext() ) {
+					Message cm = ml.next();
+					if ( cm.tick() )
+						ml.remove();
+				}
+				fixupMessageList();
+				final int numMessages = messageList.size();
+
 				++simSteps;
 				cumMessages += numMessages;
 				if ( numMessages > maxMessages )
 					maxMessages = numMessages;
+
+				db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
+
 			}
+
 		} else {
-			if ( numMessages > 0 ) {
+
+			if ( isStarted() ) {
+
+				setStarted(false);
 				active = true;
-				System.out.println("[" + d + "] simulation started...");
-				++simSteps;
-				cumMessages += numMessages;
-				if ( numMessages > maxMessages )
-					maxMessages = numMessages;
+
+				// call init() for all nodes in initList
+				for ( Node node : initList )
+					node.init();
+
+			}
+
+			if ( isContinued() ) {
+
+				setContinued(false);
+				active = true;
+
 			}
 		}
-		db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
+	}
+
+	/**
+	 * 
+	 * @return status of started
+	 */
+	synchronized boolean isStarted() {
+		return started;
+	}
+
+	/**
+	 * Only for internal use.
+	 * 
+	 * @param started
+	 */
+	synchronized void setStarted(boolean started) {
+		this.started = started;
+	}
+
+	/**
+	 * 
+	 * @return status of stopped
+	 */
+	synchronized boolean isStopped() {
+		return stopped;
+	}
+
+	/**
+	 * Only for internal use.
+	 * 
+	 * @param stopped
+	 */
+	synchronized void setStopped(boolean stopped) {
+		this.stopped = stopped;
+	}
+
+	/**
+	 * @return Returns the continued.
+	 */
+	synchronized boolean isContinued() {
+		return continued;
+	}
+
+	/**
+	 * @param continued
+	 *            The continued to set.
+	 */
+	synchronized void setContinued(boolean continued) {
+		this.continued = continued;
 	}
 }

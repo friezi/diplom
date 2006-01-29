@@ -5,9 +5,9 @@ public class ColorFeedFactory implements RSSFeedFactory {
 
 	Color color = Color.magenta;
 
-	public RSSFeed newRSSFeed() {
+	public RSSFeed newRSSFeed(RSSFeedGeneralContent generalContent) {
 		cycleColors();
-		return new ColorFeed(color, new Date());
+		return new ColorFeed(color, generalContent);
 	}
 
 	protected void cycleColors() {

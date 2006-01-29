@@ -1,5 +1,5 @@
 public interface RSSFeedFactory {
 
-	RSSFeed newRSSFeed();
+	RSSFeed newRSSFeed(RSSFeedGeneralContent generalContent);
 
 }

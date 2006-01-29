@@ -2,14 +2,20 @@ import rsspubsubframework.DisplayableObject;
 import rsspubsubframework.Message;
 import rsspubsubframework.Node;
 
+/**
+ * A class representing a RSS-Server
+ * 
+ * @author friezi
+ * 
+ */
 public class RSSServerNode extends Node {
 
 	// protected NodeFactory nf;
 
 	// just to avoid NullPointerException
 	protected RSSFeedFactory rssFeedFactory = new RSSFeedFactory() {
-		public RSSFeed newRSSFeed() {
-			return new RSSFeed();
+		public RSSFeed newRSSFeed(RSSFeedGeneralContent generalContent) {
+			return new RSSFeed(generalContent);
 		}
 	};
 
@@ -22,8 +28,29 @@ public class RSSServerNode extends Node {
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
 
-	public RSSServerNode(int xp, int yp) {
+	protected int minUpIntv;
+
+	protected int maxUpIntv;
+
+	protected int ttl;
+
+	/**
+	 * @param xp
+	 *            x-position
+	 * @param yp
+	 *            y-position
+	 * @param minUpIntv
+	 *            the minimal update-intervall for RSS-feeds
+	 * @param maxUpIntv
+	 *            the maximum update-intervall for RSS-feeds
+	 * @param ttl
+	 *            time-to-live for the RSSFeed
+	 */
+	public RSSServerNode(int xp, int yp, int minUpIntv, int maxUpIntv, int ttl) {
 		super(xp, yp);
+		this.minUpIntv = minUpIntv;
+		this.maxUpIntv = maxUpIntv;
+		this.ttl = ttl;
 		setColor(java.awt.Color.orange);
 	}
 
@@ -33,16 +60,32 @@ public class RSSServerNode extends Node {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.Node#receiveMessage(rsspubsubframework.Message)
+	 */
 	@Override
 	protected void receiveMessage(Message m) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.DisplayableObject#size()
+	 */
 	protected int size() {
 		return 20;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.DisplayableObject#draw(java.awt.Graphics, int,
+	 *      int)
+	 */
 	protected void draw(java.awt.Graphics g, int x, int y) {
 
 		g.setColor(color());
@@ -57,29 +100,91 @@ public class RSSServerNode extends Node {
 
 	}
 
-	public void setRssFeedRepresentationFactory(
-			RSSFeedRepresentationFactory rss_feed_representation_factory) {
+	/**
+	 * @param rss_feed_representation_factory
+	 */
+	public void setRssFeedRepresentationFactory(RSSFeedRepresentationFactory rss_feed_representation_factory) {
 		this.rssFeedRepresentationFactory = rss_feed_representation_factory;
 	}
 
+	/**
+	 * @return the rssFeedRepresentationFactory
+	 */
 	public RSSFeedRepresentationFactory getRssFeedRepresentationFactory() {
 		return rssFeedRepresentationFactory;
 	}
 
+	/**
+	 * @param rssFeedFactory
+	 */
 	public void setRssFeedFactory(RSSFeedFactory rssFeedFactory) {
 		this.rssFeedFactory = rssFeedFactory;
 	}
 
+	/**
+	 * @return the rssFeedFactory
+	 */
 	public RSSFeedFactory getRssFeedFactory() {
 		return rssFeedFactory;
 	}
 
+	/**
+	 * @return the rssFeedRepresentation
+	 */
 	public RSSFeedRepresentation getRssFeedRepresentation() {
 		return rssFeedRepresentation;
 	}
 
+	/**
+	 * @param rssFeedRepresentation
+	 */
 	public void setRssFeedRepresentation(RSSFeedRepresentation rssFeedRepresentation) {
 		this.rssFeedRepresentation = rssFeedRepresentation;
+	}
+
+	/**
+	 * @return Returns the minUpIntv.
+	 */
+	public int getMinUpIntv() {
+		return minUpIntv;
+	}
+
+	/**
+	 * @param minUpIntv
+	 *            The minUpIntv to set.
+	 */
+	public void setMinUpIntv(int minUpIntv) {
+		this.minUpIntv = minUpIntv;
+	}
+
+	/**
+	 * @return Returns the maxUpIntv.
+	 */
+	public int getMaxUpIntv() {
+		return maxUpIntv;
+	}
+
+	/**
+	 * @param maxUpIntv
+	 *            The maxUpIntv to set.
+	 */
+	public void setMaxUpIntv(int maxUpIntv) {
+		this.maxUpIntv = maxUpIntv;
+	}
+
+	/**
+	 * @return Returns the ttl.
+	 */
+	public int getTtl() {
+		return ttl;
+	}
+
+	/**
+	 * @param ttl
+	 *            The ttl to set.
+	 */
+	public void setTtl(int ttl) {
+		this.ttl = ttl;
 	}
 
 }

@@ -12,36 +12,61 @@ public class RSSServer extends RSSServerNode {
 		}
 
 		public void run() {
-			
-			rssServer.setFeed(rssServer.getRssFeedFactory().newRSSFeed());
+
+			rssServer.newFeed();
 			rssServer.newTimer();
-			
+
 		}
 	}
 
 	protected RSSFeed feed;
 
-	protected static long DELAY = 4000;
+	protected Random random;
 
-	public RSSServer(int xp, int yp) {
-		super(xp, yp);
+	/**
+	 * @param xp
+	 *            x-position
+	 * @param yp
+	 *            y-position
+	 * @param minUpIntv
+	 *            the minimum update-intervall for RSS-feeds
+	 * @param maxUpIntv
+	 *            the maximum update-intervall for RSS-feeds
+	 * @param ttl
+	 *            time-to-live for the RSSFeed
+	 */
+	public RSSServer(int xp, int yp, int minUpIntv, int maxUpIntv, int ttl) {
+		super(xp, yp, minUpIntv, maxUpIntv, ttl);
+		random = new Random();
 	}
 
-	private void newFeed() {
-		setFeed(getRssFeedFactory().newRSSFeed());
+	/**
+	 * generates a new feed
+	 */
+	private synchronized void newFeed() {
+
+		RSSFeedGeneralContent generalContent = new RSSFeedGeneralContent();
+		generalContent.setLastBuiltDate(new Date());
+		generalContent.setTtl(getTtl());
+		setFeed(getRssFeedFactory().newRSSFeed(generalContent));
+
 	}
 
+	/**
+	 * gerenates a new feed-update-timer
+	 */
 	protected void newTimer() {
 
 		UpdateFeedTask updatefeed = new UpdateFeedTask(this);
 		Timer timer = new Timer();
-		timer.schedule(updatefeed, DELAY);
+		// int r = random.nextInt((maxUpIntv - minUpIntv) + 1) + minUpIntv;
+		timer.schedule(updatefeed, 1000 * (random.nextInt((maxUpIntv - minUpIntv) + 1) + minUpIntv));
 
 	}
-	
-	public void init(){
 
-		setFeed(getRssFeedFactory().newRSSFeed());
+	public void init() {
+
+		newFeed();
 		newTimer();
 
 	}
@@ -57,13 +82,20 @@ public class RSSServer extends RSSServerNode {
 
 	}
 
+	/**
+	 * @return the feed
+	 */
 	public synchronized RSSFeed getFeed() {
 		return feed;
 	}
 
+	/**
+	 * @param feed
+	 *            the feed
+	 */
 	public synchronized void setFeed(RSSFeed feed) {
 		this.feed = feed;
-		setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this,feed));
+		setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, feed));
 		getRssFeedRepresentation().represent();
 	}
 

@@ -1,28 +1,16 @@
 import java.awt.Color;
-import java.util.Date;
 
 public class ColorFeed extends RSSFeed {
 
 	protected Color color;
 
-	protected Date lastBuiltDate;
-
-	public ColorFeed(Color color, Date lastBuiltDate) {
+	public ColorFeed(Color color, RSSFeedGeneralContent generalContent) {
+		super(generalContent);
 		this.color = color;
-		this.lastBuiltDate = lastBuiltDate;
 	}
 
 	public Color getColor() {
 		return color;
-	}
-
-	public Date getLastBuiltDate() {
-		return lastBuiltDate;
-	}
-
-	@Override
-	public boolean isNewerThan(RSSFeed feed) {
-		return lastBuiltDate.after(((ColorFeed) feed).getLastBuiltDate());
 	}
 
 }
