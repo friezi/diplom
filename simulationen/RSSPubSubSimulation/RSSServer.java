@@ -28,15 +28,11 @@ public class RSSServer extends RSSServerNode {
 	 *            x-position
 	 * @param yp
 	 *            y-position
-	 * @param minUpIntv
-	 *            the minimum update-intervall for RSS-feeds
-	 * @param maxUpIntv
-	 *            the maximum update-intervall for RSS-feeds
-	 * @param ttl
-	 *            time-to-live for the RSSFeed
+	 * @param params
+	 *            relevat parameters
 	 */
-	public RSSServer(int xp, int yp, int minUpIntv, int maxUpIntv, int ttl) {
-		super(xp, yp, minUpIntv, maxUpIntv, ttl);
+	public RSSServer(int xp, int yp, SimParameters params) {
+		super(xp, yp, params);
 		random = new Random();
 	}
 
@@ -76,7 +72,7 @@ public class RSSServer extends RSSServerNode {
 		if ( m instanceof RSSFeedRequestMessage ) {
 
 			new RSSFeedMessage(this, m.getSrc(), getFeed(), getRssFeedRepresentationFactory()
-					.newRSSFeedRepresentation(null, getFeed()), true);
+					.newRSSFeedRepresentation(null, getFeed()), params);
 
 		}
 

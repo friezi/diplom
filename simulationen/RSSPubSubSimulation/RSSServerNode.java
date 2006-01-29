@@ -28,6 +28,8 @@ public class RSSServerNode extends Node {
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
 
+	protected SimParameters params;
+
 	protected int minUpIntv;
 
 	protected int maxUpIntv;
@@ -39,18 +41,15 @@ public class RSSServerNode extends Node {
 	 *            x-position
 	 * @param yp
 	 *            y-position
-	 * @param minUpIntv
-	 *            the minimal update-intervall for RSS-feeds
-	 * @param maxUpIntv
-	 *            the maximum update-intervall for RSS-feeds
-	 * @param ttl
-	 *            time-to-live for the RSSFeed
+	 * @param params
+	 *            relevant parameters
 	 */
-	public RSSServerNode(int xp, int yp, int minUpIntv, int maxUpIntv, int ttl) {
+	public RSSServerNode(int xp, int yp, SimParameters params) {
 		super(xp, yp);
-		this.minUpIntv = minUpIntv;
-		this.maxUpIntv = maxUpIntv;
-		this.ttl = ttl;
+		this.params = params;
+		this.minUpIntv = params.minUpIntv;
+		this.maxUpIntv = params.maxUpIntv;
+		this.ttl = params.ttl;
 		setColor(java.awt.Color.orange);
 	}
 

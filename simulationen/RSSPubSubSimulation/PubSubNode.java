@@ -6,7 +6,7 @@ import rsspubsubframework.Node;
 
 public class PubSubNode extends Node {
 
-	// just to avoid NullPointerException
+	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
 		public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 			return new RSSFeedRepresentation(null, null);
@@ -15,12 +15,23 @@ public class PubSubNode extends Node {
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
 
+	protected SimParameters params;
+
 	protected RSSServerNode rssServer;
 
-	protected BrokerNode broker;
+	private BrokerNode broker;
 
-	public PubSubNode(int xp, int yp) {
+	/**
+	 * @param xp
+	 *            x-position
+	 * @param yp
+	 *            y-position
+	 * @param params
+	 *            relevant parameters
+	 */
+	public PubSubNode(int xp, int yp, SimParameters params) {
 		super(xp, yp);
+		this.params = params;
 		setColor(Color.blue);
 	}
 
@@ -32,10 +43,6 @@ public class PubSubNode extends Node {
 
 	public void setRSSServer(RSSServerNode rss_server) {
 		this.rssServer = rss_server;
-	}
-
-	public void setBroker(BrokerNode broker) {
-		this.broker = broker;
 	}
 
 	@Override
@@ -80,6 +87,21 @@ public class PubSubNode extends Node {
 
 	public void setRssFeedRepresentation(RSSFeedRepresentation rssFeedRepresentation) {
 		this.rssFeedRepresentation = rssFeedRepresentation;
+	}
+
+	/**
+	 * @return Returns the broker.
+	 */
+	public BrokerNode getBroker() {
+		return broker;
+	}
+
+	/**
+	 * @param broker
+	 *            The broker to set.
+	 */
+	public void setBroker(BrokerNode broker) {
+		this.broker = broker;
 	}
 
 }

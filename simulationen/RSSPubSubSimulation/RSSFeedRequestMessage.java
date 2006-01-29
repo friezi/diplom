@@ -3,13 +3,14 @@ import java.awt.Color;
 import rsspubsubframework.Message;
 
 public class RSSFeedRequestMessage extends Message {
-
-	private static int RUNTIME = 10;
+	
+	protected SimParameters params;
 
 	private static int SIZE = 5;
 
-	public RSSFeedRequestMessage(PubSubNode src, RSSServerNode dest) {
-		super(src, dest, RUNTIME);
+	public RSSFeedRequestMessage(PubSubNode src, RSSServerNode dest,SimParameters params) {
+		super(src, dest, params.rssFdReqMsgRT);
+		this.params=params;
 		setColor(Color.red);
 	}
 

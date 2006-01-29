@@ -11,34 +11,32 @@ public interface RPSFactory {
 	 *            x-position
 	 * @param yp
 	 *            y-position
+	 * @param params
+	 *            relevant parameters
 	 * @return a new BrokerNode
 	 */
-	BrokerNode newBrokerNode(int xp, int yp);
+	BrokerNode newBrokerNode(int xp, int yp, SimParameters params);
 
 	/**
 	 * @param xp
 	 *            xp x-position
 	 * @param yp
 	 *            y-position
+	 * @param params
+	 *            relevant parameters
 	 * @return a new PubSubNode
 	 */
-	PubSubNode newPubSubNode(int xp, int yp);
+	PubSubNode newPubSubNode(int xp, int yp, SimParameters params);
 
 	/**
 	 * @param xp
 	 *            xp x-position
 	 * @param yp
 	 *            y-position
-	 * @param minUpIntv
-	 *            minimal update-intervall for RSS-feeds
-	 * @param minUpIntvOffs
-	 *            an offset added to the minimal update-intervall for RSS-feeds;
-	 *            the purpose is to facilitate the possibility of achieving
-	 *            always much greater update-intervals than clients expect.
-	 * @param maxUpIntv
-	 *            maximal update-intervall for RSS-feeds
+	 * @param params
+	 *            relevant parameters
 	 * @return a new RSSServerNode
 	 */
-	RSSServerNode newRSSServerNode(int xp, int yp, int minUpIntv, int minUpIntvOffs, int maxUpIntv);
+	RSSServerNode newRSSServerNode(int xp, int yp, SimParameters params);
 
 }

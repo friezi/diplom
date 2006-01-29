@@ -1,23 +1,28 @@
 import rsspubsubframework.Message;
 import rsspubsubframework.Node;
 
-public class RSSFeedMessage extends Message implements Cloneable{
-
-	private static int RUNTIME = 15;
+public class RSSFeedMessage extends Message {
 
 	private static int SIZE = 7;
 
 	private RSSFeedRepresentation rssFeedRepresentation;
 
+	SimParameters params;
+
 	protected RSSFeed feed;
 
 	public RSSFeedMessage(Node src, Node dst, RSSFeed feed, RSSFeedRepresentation rssFeedRepresentation,
-			boolean representRSSFeed) {
-		super(src, dst, RUNTIME);
+			SimParameters params) {
+		super(src, dst, params.rssFdMsgRT);
 		this.feed = feed;
 		this.rssFeedRepresentation = rssFeedRepresentation;
+		this.params = params;
+
+		// for representing at the correct object
 		getRssFeedRepresentation().setDObj(this);
-		if ( representRSSFeed == true )
+
+		// only represent feed on special demand
+		if ( params.rssFdMsgRepr == true )
 			getRssFeedRepresentation().represent();
 	}
 
@@ -32,8 +37,5 @@ public class RSSFeedMessage extends Message implements Cloneable{
 	public RSSFeed getFeed() {
 		return feed;
 	}
-//	
-//	public RSSFeedMessage clone(){
-//		return 
-//	}
+
 }
