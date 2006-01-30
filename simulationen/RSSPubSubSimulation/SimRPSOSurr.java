@@ -1,13 +1,13 @@
 import rsspubsubframework.*;
-
 /**
- * A Simulation ofn a RSS-Distribution-System integrated in distributed
- * Publish/Subscribe
- * 
- * @author friezi
  * 
  */
-public class SimRPSContIntervall {
+
+/**
+ * @author friezi
+ *
+ */
+public class SimRPSOSurr {
 
 	protected static int minUpIntv = 5;
 
@@ -39,7 +39,7 @@ public class SimRPSContIntervall {
 		params.rssFdMsgRT = rssFdMsgRT;
 		params.rssFdMsgRepr = rssFdMsgRepr;
 
-		SzenarioAllForOne szenario = new SzenarioAllForOne(new RPSFactory() {
+		SzenarioOneSurrounded szenario = new SzenarioOneSurrounded(new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) {
 				return new Broker(xp, yp, params);
 			}

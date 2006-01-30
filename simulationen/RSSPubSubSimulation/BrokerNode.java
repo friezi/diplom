@@ -2,13 +2,6 @@ import rsspubsubframework.*;
 
 public class BrokerNode extends Node {
 
-	// just to avoid NullPointerException
-	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
-		public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
-			return new RSSFeedRepresentation(null, null);
-		}
-	};
-
 	protected SimParameters params;
 
 	/**
@@ -54,17 +47,6 @@ public class BrokerNode extends Node {
 		g.setColor(textColor());
 		g.drawString(t, x - fm.stringWidth(t) / 2, y + fm.getHeight() / 2);
 
-	}
-
-	public void setRssFeedRepresentationFactory(RSSFeedRepresentationFactory rssFeedRepresentationFactory) {
-		this.rssFeedRepresentationFactory = rssFeedRepresentationFactory;
-	}
-
-	/**
-	 * @return Returns the rssFeedRepresentationFactory.
-	 */
-	public RSSFeedRepresentationFactory getRssFeedRepresentationFactory() {
-		return rssFeedRepresentationFactory;
 	}
 
 }

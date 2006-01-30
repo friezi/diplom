@@ -67,9 +67,6 @@ public class SzenarioAllForOne {
 						+ BR_YINTV, params));
 		}
 
-		for ( BrokerNode broker : brokerlist )
-			broker.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-
 		edgefactory.newEdge(brokerlist.get(0), brokerlist.get(1));
 		edgefactory.newEdge(brokerlist.get(0), brokerlist.get(2));
 		edgefactory.newEdge(brokerlist.get(2), brokerlist.get(3));
@@ -108,11 +105,11 @@ public class SzenarioAllForOne {
 
 		rssServer.addToInitList();
 
-		pubsublist.get(0).addToInitList();
+//		pubsublist.get(0).addToInitList();
 
-		// for ( PubSubNode pubsub : pubsublist ) {
-		// pubsub.addToInitList();
-		// }
+		 for ( PubSubNode pubsub : pubsublist ) {
+		 pubsub.addToInitList();
+		 }
 
 	}
 }
