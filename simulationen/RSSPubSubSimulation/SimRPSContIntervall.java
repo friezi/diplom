@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import rsspubsubframework.*;
 
 /**
@@ -9,35 +11,14 @@ import rsspubsubframework.*;
  */
 public class SimRPSContIntervall {
 
-	protected static int minUpIntv = 5;
-
-	protected static int maxUpIntv = 30;
-
-	protected static int ttl = 10;
-
-	protected static int spreadFactor = 3;
-
-	protected static int rssFdReqMsgRT = 10;
-
-	protected static int rssFdMsgRT = 5;
-
-	protected static boolean rssFdMsgRepr = true;
-
 	/**
 	 * @param args
+	 * @throws IOException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 
-		SimParameters params = new SimParameters();
-
-		params.minUpIntv = minUpIntv;
-		params.maxUpIntv = maxUpIntv;
-		params.ttl = ttl;
-		params.spreadFactor = spreadFactor;
-		params.rssFdReqMsgRT = rssFdReqMsgRT;
-		params.rssFdMsgRT = rssFdMsgRT;
-		params.rssFdMsgRepr = rssFdMsgRepr;
+		SimParameters params = new SimParameters(args);
 
 		SzenarioAllForOne szenario = new SzenarioAllForOne(new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) {
