@@ -117,7 +117,7 @@ public class SimParameters {
 		spreadFactor = Integer.valueOf((String) properties.getProperty("spreadFactor"));
 		rssFdReqMsgRT = Integer.valueOf((String) properties.getProperty("rssFdReqMsgRT"));
 		rssFdMsgRT = Integer.valueOf((String) properties.getProperty("rssFdMsgRT"));
-		if ( properties.getProperty("rssFdMsgRepr") == "true" )
+		if ( properties.getProperty("rssFdMsgRepr").toLowerCase().equals("true") )
 			rssFdMsgRepr = true;
 		else
 			rssFdMsgRepr = false;
