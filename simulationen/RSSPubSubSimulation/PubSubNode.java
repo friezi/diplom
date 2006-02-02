@@ -1,8 +1,6 @@
-import java.awt.Color;
+import java.awt.*;
 
-import rsspubsubframework.DisplayableObject;
-import rsspubsubframework.Message;
-import rsspubsubframework.Node;
+import rsspubsubframework.*;
 
 public class PubSubNode extends Node {
 
@@ -102,6 +100,31 @@ public class PubSubNode extends Node {
 	 */
 	public void setBroker(BrokerNode broker) {
 		this.broker = broker;
+	}
+
+	/**
+	 * This method checks if a given point is whithin the borders of the node.
+	 * 
+	 * @param point
+	 *            the point to be checked
+	 * @return true, if whithin borders, false otherwise
+	 */
+	public boolean whithinBorders(Point point) {
+
+		int s = size();
+		int x1 = this.xPos() - (s + 5) / 2;
+		int y1 = this.yPos() - s / 2;
+		int x2 = this.xPos() + (s + 5) / 2;
+		int y2 = this.yPos() + s / 2;
+
+		if ( x1 <= point.getX() && x2 >= point.getX() && y1 <= point.getY() && y2 >= point.getY() )
+			return true;
+		else
+			return false;
+	}
+
+	public void setDefaultColor() {
+		setColor(Color.blue);
 	}
 
 }

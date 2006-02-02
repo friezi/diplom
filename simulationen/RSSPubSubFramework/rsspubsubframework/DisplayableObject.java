@@ -101,4 +101,8 @@ public abstract class DisplayableObject {
 	public void setColor(java.awt.Color color) {
 		this.color = color;
 	}
+
+	public void setDefaultColor() {
+		this.color = Color.white;
+	}
 }

@@ -283,11 +283,14 @@ public class SzenarioOneSurrounded {
 			edgefactory.newEdge(rssServer, currpubsub);
 			currpubsub.setRSSServer(rssServer);
 		}
-		
+
 		rssServer.addToInitList();
-		
-//		pubsublist.get(0).addToInitList();
-		
+
+		for ( BrokerNode broker : brokerlist )
+			broker.addToInitList();
+
+		// pubsublist.get(0).addToInitList();
+
 		for ( PubSubNode currpubsub : pubsublist ) {
 			currpubsub.addToInitList();
 		}

@@ -97,4 +97,7 @@ public class PubSub extends PubSubNode {
 		this.feed = feed;
 	}
 
+	public synchronized void setDefaultColor(){
+		getRssFeedRepresentation().represent();
+	}
 }

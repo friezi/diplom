@@ -19,7 +19,8 @@
 
 package rsspubsubframework;
 
-import java.util.LinkedList;
+import java.util.*;
+import java.awt.*;
 
 /**
  * The Engine.
@@ -169,10 +170,48 @@ final public class Engine extends java.util.TimerTask {
 	}
 
 	/**
-	 * Adds the node to the initList.
-	 * The Engine calls init() for all nodes in initList when simulation is started.
+	 * Creates a new edge and adds it to the simulation engine.
 	 * 
-	 * @param node the node to be added
+	 * This is an internal method. You cannot call this method directly
+	 * 
+	 * @param node1
+	 *            first node
+	 * @param node2
+	 *            second node
+	 */
+	final synchronized void addEdge(Node node1, Node node2) {
+		edgeList.add(new Edge(node1, node2));
+	}
+
+	/**
+	 * removes an edge from the list and disconnects the peers.
+	 * 
+	 * @param edge
+	 *            the edge
+	 */
+	final synchronized void removeEdge(Edge edge) {
+		edgeList.remove(edge);
+		edge.removeConnection();
+	}
+
+	final synchronized void removeEdgeFromNodes(Node node1, Node node2) {
+
+		for ( Edge edge : edgeList ) {
+			if ( (edge.node1() == node1 && edge.node2() == node2)
+					|| (edge.node1() == node2 && edge.node2() == node1) ) {
+				removeEdge(edge);
+				break;
+			}
+		}
+
+	}
+
+	/**
+	 * Adds the node to the initList. The Engine calls init() for all nodes in
+	 * initList when simulation is started.
+	 * 
+	 * @param node
+	 *            the node to be added
 	 */
 	public final synchronized void addToInitList(Node node) {
 		initList.add(node);
@@ -454,5 +493,14 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	synchronized void setContinued(boolean continued) {
 		this.continued = continued;
+	}
+
+	synchronized Node findNode(Point point) {
+
+		for ( Node node : nodeList ) {
+			if ( node.whithinBorders(point) == true )
+				return node;
+		}
+		return null;
 	}
 }

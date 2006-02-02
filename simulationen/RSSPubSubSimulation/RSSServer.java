@@ -94,5 +94,9 @@ public class RSSServer extends RSSServerNode {
 		setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, feed));
 		getRssFeedRepresentation().represent();
 	}
+	
+	public synchronized void setDefaultColor(){
+		getRssFeedRepresentation().represent();
+	}
 
 }

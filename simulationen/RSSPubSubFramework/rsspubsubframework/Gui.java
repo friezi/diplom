@@ -20,6 +20,7 @@
 package rsspubsubframework;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -29,6 +30,79 @@ import java.awt.event.*;
  * This object handles actual drawing of the user interface.
  */
 class Gui extends javax.swing.JComponent implements ActionListener {
+
+	public static int WINDOW_TOP_BORDER_SIZE = 28;
+
+	public static int WINDOW_LEFT_BORDER_SIZE = 6;
+
+	protected class MouseClick extends MouseInputAdapter {
+
+		Node firstnode = null;
+
+		Node secondnode = null;
+
+		public void mouseClicked(MouseEvent event) {
+
+			Point point = new Point(event.getPoint().x - WINDOW_LEFT_BORDER_SIZE, event.getPoint().y
+					- WINDOW_TOP_BORDER_SIZE);
+
+			if ( choice_status == FIRST_CHOICE ) {
+				// check if we hit a Node
+				if ( (firstnode = Engine.getSingleton().findNode(point)) != null ) {
+					if ( choice == ADD_CONN_CMD ) {
+
+						addconnectionbutton.setText(chooseSecondNodeTxt);
+
+					} else if ( choice == DEL_CONN_CMD ) {
+
+						deleteconnectionbutton.setText(chooseSecondNodeTxt);
+
+					}
+					choice_status = SECOND_CHOICE;
+					firstnode.setColor(Color.red);
+				} else {
+
+					choice_status = NO_CHOICE;
+					deleteconnectionbutton.setText(deleteConnectionCmd);
+					deleteconnectionbutton.setEnabled(true);
+					addconnectionbutton.setText(addConnectionCmd);
+					addconnectionbutton.setEnabled(true);
+
+				}
+
+			} else if ( choice_status == SECOND_CHOICE ) {
+
+				if ( (secondnode = Engine.getSingleton().findNode(point)) != null ) {
+					if ( choice == ADD_CONN_CMD ) {
+
+						addconnectionbutton.setText(addCmd);
+						addconnectionbutton.setEnabled(true);
+						deleteconnectionbutton.setText(cancelCmd);
+						deleteconnectionbutton.setEnabled(true);
+
+					} else if ( choice == DEL_CONN_CMD ) {
+
+						deleteconnectionbutton.setText(deleteCmd);
+						deleteconnectionbutton.setEnabled(true);
+						addconnectionbutton.setText(cancelCmd);
+						addconnectionbutton.setEnabled(true);
+
+					}
+					choice_status = DO_IT;
+					secondnode.setColor(Color.red);
+				} else {
+
+					choice_status = NO_CHOICE;
+					deleteconnectionbutton.setText(deleteConnectionCmd);
+					deleteconnectionbutton.setEnabled(true);
+					addconnectionbutton.setText(addConnectionCmd);
+					addconnectionbutton.setEnabled(true);
+					firstnode.setDefaultColor();
+				}
+			}
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -44,9 +118,9 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private int df_height;
 
-	private int cf_xpos = 0;
+	private int cf_xpos = 200;
 
-	private int cf_ypos = 28;
+	private int cf_ypos = 0;
 
 	private static String startSimulationCmd = "Start Simulation";
 
@@ -58,9 +132,51 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String statisticCmd = "Statistics";
 
+	private static String showEdgeIdCmd = "Show edge-ids";
+
+	private static String hideEdgeIdCmd = "Hide edge-ids";
+
+	private static String deleteConnectionCmd = "Delete connection";
+
+	private static String deleteCmd = "Delete!";
+
+	private static String addConnectionCmd = "Add connection";
+
+	private static String addCmd = "Add!";
+
+	private static String cancelCmd = "Cancel";
+
+	private static String chooseFirstNodeTxt = "choose first node ...";
+
+	private static String chooseSecondNodeTxt = "choose second node ...";
+
 	private JButton controlbutton;
 
 	private JButton statisticbutton;
+
+	private JButton edgeidbutton;
+
+	private JButton deleteconnectionbutton;
+
+	private JButton addconnectionbutton;
+
+	private static int NO_CHOICE = 0;
+
+	private static int FIRST_CHOICE = 1;
+
+	private static int SECOND_CHOICE = 2;
+
+	private static int DO_IT = 3;
+
+	private int choice_status = NO_CHOICE;
+
+	private static int ADD_CONN_CMD = 0;
+
+	private static int DEL_CONN_CMD = 1;
+
+	private int choice = ADD_CONN_CMD;
+
+	private MouseClick mouseclick = new MouseClick();
 
 	/**
 	 * Create the gui window.
@@ -74,11 +190,13 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				JFrame displayframe = new JFrame("Messaging Network");
 				displayframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				displayframe.getContentPane().add(guip);
-				
+
 				// open window maximized
 				df_width = displayframe.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth();
 				df_height = displayframe.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight();
 				displayframe.setBounds(new Rectangle(df_width, df_height));
+
+				displayframe.addMouseListener(mouseclick);
 
 				JFrame controlframe = new JFrame("Controls");
 				JPanel buttonpanel = new JPanel();
@@ -94,6 +212,24 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				statisticbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				statisticbutton.addActionListener(guip);
 				buttonpanel.add(statisticbutton);
+
+				edgeidbutton = new JButton(showEdgeIdCmd);
+				edgeidbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				edgeidbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				edgeidbutton.addActionListener(guip);
+				buttonpanel.add(edgeidbutton);
+
+				deleteconnectionbutton = new JButton(deleteConnectionCmd);
+				deleteconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				deleteconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				deleteconnectionbutton.addActionListener(guip);
+				buttonpanel.add(deleteconnectionbutton);
+
+				addconnectionbutton = new JButton(addConnectionCmd);
+				addconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				addconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				addconnectionbutton.addActionListener(guip);
+				buttonpanel.add(addconnectionbutton);
 
 				// displayframe.getContentPane().add(buttonpanel);
 				controlframe.getContentPane().add(buttonpanel);
@@ -169,6 +305,44 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		} else if ( e.getActionCommand().equals(statisticCmd) ) {
 			System.out.println("Statistics");
+		} else if ( e.getActionCommand().equals(showEdgeIdCmd) ) {
+			Edge.setIdOn(true);
+			edgeidbutton.setText(hideEdgeIdCmd);
+		} else if ( e.getActionCommand().equals(hideEdgeIdCmd) ) {
+			Edge.setIdOn(false);
+			edgeidbutton.setText(showEdgeIdCmd);
+		} else if ( e.getActionCommand().equals(deleteConnectionCmd) ) {
+			choice = DEL_CONN_CMD;
+			deleteconnectionbutton.setText(chooseFirstNodeTxt);
+			deleteconnectionbutton.setEnabled(false);
+			addconnectionbutton.setEnabled(false);
+			choice_status = FIRST_CHOICE;
+		} else if ( e.getActionCommand().equals(addConnectionCmd) ) {
+			choice = ADD_CONN_CMD;
+			addconnectionbutton.setText(chooseFirstNodeTxt);
+			addconnectionbutton.setEnabled(false);
+			deleteconnectionbutton.setEnabled(false);
+			choice_status = FIRST_CHOICE;
+		} else if ( e.getActionCommand().equals(deleteCmd) ) {
+			choice = NO_CHOICE;
+			mouseclick.firstnode.setDefaultColor();
+			mouseclick.secondnode.setDefaultColor();
+			addconnectionbutton.setText(addConnectionCmd);
+			deleteconnectionbutton.setText(deleteConnectionCmd);
+			Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode, mouseclick.secondnode);
+		} else if ( e.getActionCommand().equals(addCmd) ) {
+			choice = NO_CHOICE;
+			mouseclick.firstnode.setDefaultColor();
+			mouseclick.secondnode.setDefaultColor();
+			addconnectionbutton.setText(addConnectionCmd);
+			deleteconnectionbutton.setText(deleteConnectionCmd);
+			Engine.getSingleton().addEdge(mouseclick.firstnode,mouseclick.secondnode);
+		} else if ( e.getActionCommand().equals(cancelCmd) ) {
+			choice = NO_CHOICE;
+			mouseclick.firstnode.setDefaultColor();
+			mouseclick.secondnode.setDefaultColor();
+			addconnectionbutton.setText(addConnectionCmd);
+			deleteconnectionbutton.setText(deleteConnectionCmd);
 		}
 	}
 }
