@@ -67,19 +67,37 @@ das Polling der Broker aufeinander abzustimmen und ein angemessenes Poll-Interva
 (z.B. ``minUpdateInterval'') liefert.
 Das minimale Update-Intervall sagt aus, welche Zeitspanne mindestens vergehen muss, bevor eine neue Aktualisierung der Feeds erfolgt.\\
 
-Bei diesem Algorithmus soll erreicht werden, dass möglichst verhältnismäßig
-wenige Broker eine gleichzeitige Aktualisierung der Feeds vornehmen. Die neuen Feeds werden dann den übrigen Brokern über das Netzwerk übersand.\\
-Notwendig ist pro Broker ein Poll-Timer, der bestimmt, wann das nächste Polling zu erfolgen hat. Ist dieser Timer abgelaufen, erfragt der Broker beim
-Publisher den aktuellen Feed. Ist dieser nicht neuer als der bisherige beim Broker vorhandene Feed, wird lediglich der Poll-Timer neu gesetzt (s.u.).
-Ist der neue Feed hingegen aktueller, wird sowohl der Poll-Timer neu gesetzt als auch dieser neue Feed jedem Nachbarbroker entsprechend den vorhandenen
+Bei diesem Algorithmus soll erreicht werden, dass verhältnismäßig möglichst
+wenige Publisher eine gleichzeitige Aktualisierung der Feeds vornehmen. Die neuen Feeds werden dann den Brokern über das Netzwerk übersand.\\
+Notwendig ist pro Publisher ein Poll-Timer, der bestimmt, wann das nächste Polling zu erfolgen hat. Ist dieser Timer abgelaufen, erfragt der Publisher beim
+RSS-Server den aktuellen Feed. Ist dieser nicht neuer als der bisher beim Publisher vorhandene Feed, wird lediglich der Poll-Timer neu gesetzt (s.u.).
+Ist der neue Feed hingegen aktueller, wird sowohl der Poll-Timer neu gesetzt als auch dieser neue Feed dem Nachbarbroker entsprechend den vorhandenen
 Filterregeln übersand; jeder Nachbarbroker leitet seinerseits diesen neuen Feed an die jeweiligen Nachbarbroker weiter,
 falls der Feed hier ebenfalls aktueller ist als der bisherige. Allerdings
 wird der Poll-Timer nur in diesem Fall neu gesetzt. Das setzen des Poll-Timers geschieht folgendermaßen: Aus ``lastBuildDate'' und ``minUpdateInterval''
 wird die ungefähre Zeitspanne ``nextAktualisation'' zur nächsten Aktualisierung durch den Publisher berechnet. Für den Wert des Poll-Timers $pt$ soll
-nun gelten: $nextAktualisation \leq pt \leq 2*nextAktualisation$. $pt$ wird in diesem Bereich zufällig gewählt. Somit sollte es relativ wenige Broker
-geben, die gleichzeitig den aktuellen Stand beim Publisher erfragen. Nach erfolgreicher Aktualisierung wird mit hoher Wahrscheinlichkeit ein anderer Broker
-den Stand beim nächsten Mal erfragen. Außerdem ist gewährleistet, dass bei hoher Brokerzahl nach Ablauf der Poll-Timer in regelmäßigen Abständen der
-Publisher kontaktiert wird, falls zu diesem Zeitpunkt noch keine Aktualisierung vorlag.\\
-Tritt ein neuer Knoten dem Netzwerk bei, so wird dieser den aktuellen Stand bei seinem nächsten Nachbarn erfragen.
+nun gelten: $nextAktualisation \leq pt \leq 2*nextAktualisation$. $pt$ wird in diesem Bereich zufällig gewählt. Somit sollte es relativ wenige Publisher
+geben, die gleichzeitig den aktuellen Stand beim RSS-Server erfragen. Nach erfolgreicher Aktualisierung wird mit hoher Wahrscheinlichkeit ein anderer
+Publisher den Stand beim nächsten Mal erfragen. Außerdem ist gewährleistet, dass bei hoher Publisheranzahl der RSS-Server nach Ablauf der Poll-Timer
+in regelmäßigen Abständen kontaktiert wird, falls zu diesem Zeitpunkt noch keine Aktualisierung vorlag.\\
+Tritt ein neuer Knoten dem Netzwerk bei, so wird dieser den aktuellen Stand bei seinem nächsten Nachbarn erfragen.\\
 
+Beobachtungen der Simulation:
+\begin{itemize}
+\item Anfrageverteilung und -intervall hängen von zwei Faktoren ab: Subscriber-TTL und Skalierungsfaktor
+\item Um Skalierung des Netzes zu erreichen, müssen diese Parameter angepasst werden
+\end{itemize}
+Weitere Ideen:
+\begin{itemize}
+\item Skalierungsfaktor muss an Subscriberanzahl angepasst werden
+\item Subscriber-TTL muss an tatsächliches momentanes Aktualisierungsintervall des RSS-Servers angepasst werden
+\end{itemize}
+
+Ermittlung der Subscriberanzahl:\\
+Broker bestimmen die Netzgröße: Netzgröße bestimmt sich aus Summe aller Teilnetze plus Anzahl der eigenen Subscriber. Größe des Teilnetzes wird an
+die entsprechenden Nachbarbroker übersendet: Gesamtgröße - Teilnetzgröße des Nachbarbrokers. In regelmäßigen Zeitabständen (Aktualisierungstimer -pro
+Nachbarbroker) wird eine Aktualsisierung der
+Teilnetzgröße an die Nachbarbroker übersand. Diese antworten mit einer Bestätigung. Wird nach einer gewissen Zeitspanne keine Bestätigung
+(Bestätigungstimer) erhalten, gilt das Teilnetz als abgekoppelt. Ein Broker, der von einem Nachbarbroker ein Aktualisierung erhält, terminiert bestehende
+Aktualisierungs- und Bestätigungstimer für diesen Nachbarbroker.
 \end{document}
