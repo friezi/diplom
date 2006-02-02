@@ -12,30 +12,39 @@ import java.util.*;
 public class AdjustingBroker extends BrokerNode {
 
 	protected class SubnetSettings {
-		private long size = 0;
 
-		/**
-		 * @return Returns the size.
-		 */
-		public long getSize() {
-			return size;
+		private SubnetParameters subParams = new SubnetParameters();
+
+		public SubnetSettings() {
+		}
+
+		public SubnetSettings(long size) {
+			subParams.setSize(size);
 		}
 
 		/**
-		 * @param size
-		 *            The size to set.
+		 * @return Returns the subParams.
 		 */
-		public void setSize(long size) {
-			this.size = size;
+		public SubnetParameters getSubParams() {
+			return subParams;
 		}
+
+		/**
+		 * @param subParams
+		 *            The subParams to set.
+		 */
+		public void setSubParams(SubnetParameters subParams) {
+			this.subParams = subParams;
+		}
+
 	}
-	
-	protected class PingTask extends TimerTask{
-		
+
+	protected class PingTask extends TimerTask {
+
 		BrokerNode broker;
-		
-		public void run(){
-			
+
+		public void run() {
+
 		}
 	}
 
@@ -44,8 +53,8 @@ public class AdjustingBroker extends BrokerNode {
 
 	// subnets and its settings
 	private HashMap<BrokerNode, SubnetSettings> subnets = new HashMap<BrokerNode, SubnetSettings>();
-	
-	private Timer pingTimer=new Timer();
+
+	private Timer pingTimer = new Timer();
 
 	private int nmbSubscribers = 0;
 
@@ -57,23 +66,23 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	public void init() {
-
-		super.init();
-
-		Set<Node> peers = getPeers();
-
-		// determine neighbourbrokers
-		for ( BrokerNode broker : brokers )
-			getSubnets().put((BrokerNode) broker, new SubnetSettings());
-
-		// determine subscribers
-		nmbSubscribers = subscribers.size();
-
-		adjustNetsize();
-
-		// tell all other neighbourbrokers about subnetsizes
-		for ( BrokerNode broker : brokers )
-			sendSubnetSize(broker);
+		//
+		// super.init();
+		//
+		// Set<Node> peers = getPeers();
+		//
+		// // determine neighbourbrokers
+		// for ( BrokerNode broker : brokers )
+		// getSubnets().put((BrokerNode) broker, new SubnetSettings());
+		//
+		// // determine subscribers
+		// nmbSubscribers = subscribers.size();
+		//
+		// adjustNetsize();
+		//
+		// // tell all other neighbourbrokers about subnetsizes
+		// for ( BrokerNode broker : brokers )
+		// sendSubnetSize(broker);
 
 	}
 
@@ -100,27 +109,38 @@ public class AdjustingBroker extends BrokerNode {
 
 			}
 
-		} else if ( m instanceof SubnetSizeMessage ) {
+		} else if ( m instanceof SubnetParamMessage ) {
 
-			SubnetSizeMessage ssm = (SubnetSizeMessage) m;
+			SubnetParamMessage ssm = (SubnetParamMessage) m;
 			SubnetSettings subnetsettings = getSubnets().get(ssm.getSrc());
 
 			// only adjust if new size differs from old size
-			if ( ssm.getSubnetsize() != subnetsettings.getSize() ) {
+			if ( ssm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
 
 				// add difference to netsize
-				adjustNetsize(ssm.getSubnetsize() - subnetsettings.getSize());
+				adjustNetsize(ssm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
 
 				// set new size
-				subnetsettings.setSize(ssm.getSubnetsize());
+				subnetsettings.getSubParams().setSize(ssm.getSubParams().getSize());
 
 				// send new size to all other neighbourbrokers
-				for ( BrokerNode otherbroker : brokers ) {
-					if ( otherbroker != ssm.getSrc() )
-						sendSubnetSize(otherbroker);
-				}
+				informOtherBrokers(ssm.getSrc());
+
 			}
 
+		} else if ( m instanceof RegisterBrokerMessage ) {
+
+			RegisterBrokerMessage rbm = (RegisterBrokerMessage) m;
+
+			handleNewBroker((BrokerNode) rbm.getSrc());
+
+			informOtherBrokers(rbm.getSrc());
+
+		} else if ( m instanceof RegisterSubscriberMessage ) {
+
+			RegisterSubscriberMessage rsm = (RegisterSubscriberMessage) m;
+
+			handleNewSubscriber((PubSubNode) rsm.getSrc());
 		}
 	}
 
@@ -133,8 +153,9 @@ public class AdjustingBroker extends BrokerNode {
 		setNetsize(0);
 
 		// add size of subnets
-		for ( BrokerNode broker : brokers )
-			setNetsize(getNetsize() + subnets.get(broker).getSize());
+		Set<BrokerNode> currbrokers = getBrokers();
+		for ( BrokerNode broker : currbrokers )
+			setNetsize(getNetsize() + subnets.get(broker).getSubParams().getSize());
 
 		// add number of subscribers
 		setNetsize(getNetsize() + getNmbSubscribers());
@@ -149,27 +170,136 @@ public class AdjustingBroker extends BrokerNode {
 		setNetsize(getNetsize() + delta);
 	}
 
-	protected void sendSubnetSize(BrokerNode broker) {
+	protected long calcNetSizeWithout(BrokerNode broker) {
 
 		long subnetsize = 0;
 
-		for ( BrokerNode otherbroker : brokers )
+		Set<BrokerNode> currbrokers = getBrokers();
+		for ( BrokerNode otherbroker : currbrokers )
 			if ( otherbroker != broker )
-				subnetsize += subnets.get(otherbroker).getSize();
-		subnetsize += subscribers.size();
+				subnetsize += subnets.get(otherbroker).getSubParams().getSize();
+		subnetsize += getSubscribersSize();
 
-		new SubnetSizeMessage(this, broker, subnetsize, params.subntSzMsgRT);
+		return subnetsize;
 
 	}
-//
-//	 synchronized protected PingTask updatePingTimer(PingTask pingtask){
-//		 
-//		 pingtask.cancel();
-//		 pingtask=new PingTask();
-////		 pingtaskTimer
-//		 
-//	 }
-	
+
+	protected void sendSubnetSize(BrokerNode broker) {
+
+		new SubnetParamMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker)),
+				params.subntSzMsgRT);
+
+	}
+
+	//
+	// synchronized protected PingTask updatePingTimer(PingTask pingtask){
+	//		 
+	// pingtask.cancel();
+	// pingtask=new PingTask();
+	// // pingtaskTimer
+	//		 
+	// }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see BrokerNode#update(java.util.Observable, java.lang.Object)
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+
+		if ( o instanceof Peers.AddNotifier ) {
+
+			if ( arg instanceof BrokerNode )
+				addToBrokers((BrokerNode) arg);
+//			else if ( arg instanceof PubSubNode )
+//				addToSubscribers((PubSubNode) arg);
+
+		} else if ( o instanceof Peers.RemoveNotifier ) {
+
+			if ( arg instanceof BrokerNode )
+				removeFromBrokers((BrokerNode) arg);
+			else if ( arg instanceof PubSubNode )
+				removeFromSubscribers((PubSubNode) arg);
+		}
+
+		if ( o instanceof Peers.AddNotifier ) {
+
+			if ( arg instanceof BrokerNode ) {
+
+				// register new broker
+				registerNewBroker((BrokerNode) arg);
+
+			}
+
+		}
+
+	}
+
+	protected void handleNewBroker(BrokerNode broker) {
+
+		// a new broker joined the network, tell him about subnetworks
+
+		getSubnets().put(broker, new SubnetSettings());
+		//
+		// // determine subscribers
+		// nmbSubscribers = getSubscribersSize();
+
+		adjustNetsize();
+
+		sendSubnetSize(broker);
+
+	}
+
+	protected void registerNewBroker(BrokerNode broker) {
+
+		// a new broker joined the network, tell him about subnetworks
+
+		getSubnets().put(broker, new SubnetSettings());
+		//
+		// // determine subscribers
+		// nmbSubscribers = getSubscribersSize();
+
+		//
+		// // PLEASE REMOVE WEHN REGISTERING UF SUBSCRIBERS IS IMPLEMENTED!!!
+		// adjustNetsize();
+
+		// send a RegisterBrokerMessage
+		new RegisterBrokerMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker)),
+				params.subntSzMsgRT);
+
+	}
+
+	protected void handleNewSubscriber(PubSubNode subscriber) {
+
+		addToSubscribers(subscriber);
+
+		// determine subscribers
+		nmbSubscribers = getSubscribersSize();
+
+		adjustNetsize(1);
+//		adjustNetsize();
+
+		informBrokers();
+	}
+
+	protected void informOtherBrokers(Node exclbroker) {
+
+		Set<BrokerNode> currbrokers = getBrokers();
+		for ( BrokerNode otherbroker : currbrokers ) {
+			if ( otherbroker != exclbroker )
+				sendSubnetSize(otherbroker);
+		}
+	}
+
+	protected void informBrokers() {
+
+		Set<BrokerNode> currbrokers = getBrokers();
+		for ( BrokerNode otherbroker : currbrokers ) {
+			sendSubnetSize(otherbroker);
+		}
+	}
+
 	protected String text() {
 		return String.valueOf(getNetsize());
 	}

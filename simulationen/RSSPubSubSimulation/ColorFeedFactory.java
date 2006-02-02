@@ -19,14 +19,14 @@ public class ColorFeedFactory implements RSSFeedFactory {
 		else if ( color == Color.cyan )
 			color = Color.darkGray;
 		else if ( color == Color.darkGray )
-			color = Color.gray;
-		else if ( color == Color.gray )
 			color = Color.green;
 		else if ( color == Color.green )
-			color = Color.lightGray;
-		else if ( color == Color.lightGray )
+			color = Color.gray;
+		else if ( color == Color.gray )
 			color = Color.magenta;
 		else if ( color == Color.magenta )
+			color = Color.lightGray;
+		else if ( color == Color.lightGray )
 			color = Color.orange;
 		else if ( color == Color.orange )
 			color = Color.pink;

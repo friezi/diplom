@@ -50,7 +50,7 @@ public class SimParameters {
 	boolean rssFdMsgRepr = true;
 
 	/**
-	 * SubnetSizeMessage: runtime
+	 * SubnetParamMessage: runtime
 	 */
 	int subntSzMsgRT = 8;
 

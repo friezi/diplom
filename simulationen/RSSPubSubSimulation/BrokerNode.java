@@ -7,10 +7,10 @@ public class BrokerNode extends Node implements Observer {
 	protected SimParameters params;
 
 	// A set of all connected brokers
-	protected Set<BrokerNode> brokers = new HashSet<BrokerNode>();
+	private Set<BrokerNode> brokers = new HashSet<BrokerNode>();
 
 	// A set of all connected subscribers;
-	protected Set<PubSubNode> subscribers = new HashSet<PubSubNode>();
+	private Set<PubSubNode> subscribers = new HashSet<PubSubNode>();
 
 	/**
 	 * @param xp
@@ -60,6 +60,36 @@ public class BrokerNode extends Node implements Observer {
 		g.drawString(t, x - fm.stringWidth(t) / 2, y + fm.getHeight() / 2);
 
 	}
+	
+	synchronized protected void addToBrokers(BrokerNode broker){
+		brokers.add(broker);
+	}
+	
+	synchronized protected void addToSubscribers(PubSubNode subscriber){
+		subscribers.add(subscriber);
+	}
+	
+	synchronized protected void removeFromBrokers(BrokerNode broker){
+		brokers.remove(broker);
+	}
+	
+	synchronized protected void removeFromSubscribers(PubSubNode subscriber){
+		subscribers.remove(subscriber);
+	}
+	
+	synchronized protected int getSubscribersSize(){
+		return subscribers.size();
+	}
+	
+	synchronized protected int getBrokersSize(){
+		return brokers.size();
+	}
+	
+	synchronized protected Set<BrokerNode> getBrokers(){
+		Set<BrokerNode> newbrokers=new HashSet<BrokerNode>();
+		newbrokers.addAll(brokers);
+		return newbrokers;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -67,22 +97,6 @@ public class BrokerNode extends Node implements Observer {
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-
-		if ( o instanceof Peers.AddNotifier ) {
-
-			if ( arg instanceof BrokerNode )
-				brokers.add((BrokerNode) arg);
-			else if ( arg instanceof PubSubNode )
-				subscribers.add((PubSubNode) arg);
-
-		} else if ( o instanceof Peers.RemoveNotifier ) {
-
-			if ( arg instanceof BrokerNode )
-				brokers.remove((BrokerNode) arg);
-			else if ( arg instanceof PubSubNode )
-				subscribers.remove((PubSubNode) arg);
-		}
 
 	}
 

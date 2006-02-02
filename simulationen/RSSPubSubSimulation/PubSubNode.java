@@ -1,8 +1,9 @@
 import java.awt.*;
+import java.util.*;
 
 import rsspubsubframework.*;
 
-public class PubSubNode extends Node {
+public class PubSubNode extends Node implements Observer {
 
 	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
@@ -31,6 +32,10 @@ public class PubSubNode extends Node {
 		super(xp, yp);
 		this.params = params;
 		setColor(Color.blue);
+
+		// add observers
+		peers.newAddObserver(this);
+		peers.newRemoveObserver(this);
 	}
 
 	@Override
@@ -125,6 +130,20 @@ public class PubSubNode extends Node {
 
 	public void setDefaultColor() {
 		setColor(Color.blue);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		if ( o instanceof Peers.AddNotifier ) {
+			if ( arg instanceof BrokerNode ) {
+				new RegisterSubscriberMessage(this, (BrokerNode) arg, params.subntSzMsgRT);
+			}
+		}
 	}
 
 }
