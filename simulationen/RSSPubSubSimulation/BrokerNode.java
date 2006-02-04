@@ -1,4 +1,5 @@
 import rsspubsubframework.*;
+
 import java.util.*;
 import java.awt.*;
 
@@ -130,6 +131,30 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 
 	public void setDefaultColor() {
 		setColor(new java.awt.Color((float) 0.5, (float) 0.5, 0));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.BrokerType#register(rsspubsubframework.BrokerType)
+	 * 
+	 * does nothing so far!
+	 */
+	public void register(BrokerType arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.BrokerType#unregister(rsspubsubframework.BrokerType)
+	 * 
+	 * does nothing so far!
+	 */
+	public void unregister(BrokerType arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

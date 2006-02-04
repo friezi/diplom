@@ -63,7 +63,12 @@ public class SimParameters {
 	/**
 	 * AdjustingBroker: Timeout for the next ping
 	 */
-	int pingTimeout = 8000;
+	int pingTimer = 8000;
+
+	/**
+	 * AdjustingBroker: factor for the time to wait for next ping
+	 */
+	int pingTimeoutFactor = 2;
 
 	/**
 	 * AdjustingBroker: Timeout for informing other brokers about change in
@@ -99,7 +104,8 @@ public class SimParameters {
 		properties.setProperty("rssFdMsgRepr", String.valueOf(rssFdMsgRepr));
 		properties.setProperty("subntSzMsgRT", String.valueOf(subntSzMsgRT));
 		properties.setProperty("showSizeBrokerMsg", String.valueOf(showSizeBrokerMsg));
-		properties.setProperty("pingTimeout", String.valueOf(pingTimeout));
+		properties.setProperty("pingTimer", String.valueOf(pingTimer));
+		properties.setProperty("pingTimeoutFactor", String.valueOf(pingTimeoutFactor));
 		properties.setProperty("subscrChgTimeout", String.valueOf(subscrChgTimeout));
 
 		if ( args.length > 1 ) {
@@ -148,7 +154,8 @@ public class SimParameters {
 			showSizeBrokerMsg = true;
 		else
 			showSizeBrokerMsg = false;
-		pingTimeout = Integer.valueOf((String) properties.getProperty("pingTimeout"));
+		pingTimer = Integer.valueOf((String) properties.getProperty("pingTimer"));
+		pingTimeoutFactor = Integer.valueOf((String) properties.getProperty("pingTimeoutFactor"));
 		subscrChgTimeout = Integer.valueOf((String) properties.getProperty("subscrChgTimeout"));
 		if ( properties.getProperty("rssFdMsgRepr").toLowerCase().equals("true") )
 			rssFdMsgRepr = true;

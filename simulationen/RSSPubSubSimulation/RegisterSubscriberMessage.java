@@ -22,7 +22,7 @@ public class RegisterSubscriberMessage extends Message {
 	 */
 	public RegisterSubscriberMessage(Node src, Node dst, int runtime) {
 		super(src, dst, runtime);
-		setColor(new java.awt.Color(0, 0, (float) 0.5));
+		setColor(MessageColors.registerColor);
 	}
 
 	protected int size() {

@@ -34,6 +34,10 @@ public class PubSub extends PubSubNode {
 
 	public void receiveMessage(Message m) {
 
+		// process only if not blocked
+		if ( isBlocked() == true )
+			return;
+
 		if ( m instanceof RSSFeedMessage ) {
 
 			RSSFeedMessage fm = (RSSFeedMessage) m;
@@ -97,7 +101,46 @@ public class PubSub extends PubSubNode {
 		this.feed = feed;
 	}
 
-	public synchronized void setDefaultColor(){
+	public synchronized void setDefaultColor() {
 		getRssFeedRepresentation().represent();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	public void update(Observable o, Object arg) {
+
+		super.update(o, arg);
+
+		if ( o instanceof Peers.AddNotifier ) {
+			if ( arg instanceof BrokerNode ) {
+				register((BrokerNode) arg);
+			}
+		} else if ( o instanceof Peers.RemoveNotifier ) {
+			if ( arg instanceof BrokerNode ) {
+				unregister((BrokerNode) arg);
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.PubSubType#register(rsspubsubframework.BrokerType)
+	 */
+	public void register(BrokerType broker) {
+		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.PubSubType#unregister(rsspubsubframework.BrokerType)
+	 */
+	public void unregister(BrokerType broker) {
+		// TODO Auto-generated method stub
+		new UnregisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
 	}
 }

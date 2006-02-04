@@ -22,7 +22,7 @@ public class UnregisterSubscriberMessage extends Message {
 	 */
 	public UnregisterSubscriberMessage(Node src, Node dst, int runtime) {
 		super(src, dst, runtime);
-		setColor(new java.awt.Color((float)0.5, 0, 0));
+		setColor(MessageColors.unregisterColor);
 	}
 
 	protected int size() {

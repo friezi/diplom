@@ -69,6 +69,10 @@ public class RSSServer extends RSSServerNode {
 
 	protected void receiveMessage(Message m) {
 
+		// process only if not blocked
+		if ( isBlocked() == true )
+			return;
+
 		if ( m instanceof RSSFeedRequestMessage ) {
 
 			new RSSFeedMessage(this, m.getSrc(), getFeed(), getRssFeedRepresentationFactory()
@@ -94,8 +98,8 @@ public class RSSServer extends RSSServerNode {
 		setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, feed));
 		getRssFeedRepresentation().represent();
 	}
-	
-	public synchronized void setDefaultColor(){
+
+	public synchronized void setDefaultColor() {
 		getRssFeedRepresentation().represent();
 	}
 

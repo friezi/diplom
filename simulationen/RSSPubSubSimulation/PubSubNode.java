@@ -135,33 +135,36 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable o, Object arg) {
-		if ( o instanceof Peers.AddNotifier ) {
-			if ( arg instanceof BrokerNode ) {
-				register((BrokerNode) arg);
-			}
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see rsspubsubframework.PubSubType#register(rsspubsubframework.BrokerType)
+	 * 
+	 * does nothing so far!
+	 * 
 	 */
-	public void register(BrokerType broker) {
-		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
+	public void register(BrokerType arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see rsspubsubframework.PubSubType#unregister(rsspubsubframework.BrokerType)
+	 * 
+	 * does nothing so far!
 	 */
 	public void unregister(BrokerType arg0) {
 		// TODO Auto-generated method stub
-		new UnregisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -13,6 +13,10 @@ public class Broker extends BrokerNode {
 
 	public void receiveMessage(Message m) {
 
+		// process only if not blocked
+		if ( isBlocked() == true )
+			return;
+
 		if ( m instanceof RSSFeedMessage ) {
 
 			RSSFeedMessage fm = (RSSFeedMessage) m;

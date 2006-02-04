@@ -127,6 +127,8 @@ abstract public class Node extends DisplayableObject {
 	// / Y coordinate of the node.
 	private final int y;
 
+	protected boolean blocked = false;
+
 	// / List of peers.
 	protected final Peers peers = new Peers();
 
@@ -247,6 +249,24 @@ abstract public class Node extends DisplayableObject {
 			send(cn);
 		else
 			sendAllBut(cn);
+	}
+
+	/**
+	 * Blocks a node so that it stops processing.
+	 * 
+	 * It just sets the blocked-flag.
+	 */
+	public void block() {
+		setBlocked(true);
+	}
+
+	/**
+	 * Unblocks a node so that it continues processing.
+	 * 
+	 * It just unsets the blocked-flag.
+	 */
+	public void unblock() {
+		setBlocked(false);
 	}
 
 	/**
@@ -373,5 +393,20 @@ abstract public class Node extends DisplayableObject {
 	 */
 	public boolean whithinBorders(Point point) {
 		return false;
+	}
+
+	/**
+	 * @return Returns the blocked.
+	 */
+	protected synchronized boolean isBlocked() {
+		return blocked;
+	}
+
+	/**
+	 * @param blocked
+	 *            The blocked to set.
+	 */
+	protected synchronized void setBlocked(boolean blocked) {
+		this.blocked = blocked;
 	}
 }

@@ -1,4 +1,5 @@
 import rsspubsubframework.*;
+import java.awt.*;
 
 /**
  * For registering a new broker in network.
@@ -24,9 +25,9 @@ public class RegisterBrokerMessage extends Message {
 		this.params = params;
 		setSubParams(subparams);
 		if ( params.showSizeBrokerMsg == true )
-			setColor(new java.awt.Color(1, 1, (float) 1));
+			setColor(Color.white);
 		else
-			setColor(new java.awt.Color(0, 0, (float) 0.5));
+			setColor(MessageColors.registerColor);
 
 	}
 

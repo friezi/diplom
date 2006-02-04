@@ -58,13 +58,23 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 						deleteconnectionbutton.setText(selectSecondNodeTxt);
 
-					} else if ( choice == UNREG_SUB_CMD ) {
+					} else if ( choice == BLOCK_NODE_CMD ) {
 
-						if ( firstnode instanceof PubSubType ) {
-							unregistersubscriberbutton.setText(selectBrokerTxt);
-						} else
-							return;
+						firstnode.block();
+						choice_status = NO_CHOICE;
+						firstnode.setColor(new Color((float) 0.5, 0, 0));
+						enableGroup(buttongroup1);
+						return;
+
+					} else if ( choice == UNBLOCK_NODE_CMD ) {
+
+						firstnode.unblock();
+						choice_status = NO_CHOICE;
+						firstnode.setDefaultColor();
+						enableGroup(buttongroup1);
+						return;
 					}
+
 					choice_status = SECOND_CHOICE;
 					firstnode.setColor(Color.red);
 				} else {
@@ -88,13 +98,6 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 						deleteconnectionbutton.setText(deleteCmd);
 						deleteconnectionbutton.setEnabled(true);
 
-					} else if ( choice == UNREG_SUB_CMD ) {
-
-						if ( secondnode instanceof BrokerType ) {
-							unregistersubscriberbutton.setText(unregisterCmd);
-							unregistersubscriberbutton.setEnabled(true);
-						} else
-							return;
 					}
 					choice_status = DO_IT;
 					secondnode.setColor(Color.red);
@@ -155,13 +158,15 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String selectSecondNodeTxt = "Select second node ...";
 
-	private static String unregisterSubscriberCmd = "Unregister subscriber";
+	private static String selectBlockNodeTxt = "Select Node to block ...";
 
-	private static String selectSubscriberTxt = "Select Subscriber ...";
+	private static String selectUnblockNodeTxt = "Select Node to unblock ...";
 
-	private static String selectBrokerTxt = "SelectBroker ...";
+	private static String selectBrokerTxt = "Select Broker ...";
 
-	private static String unregisterCmd = "Unregister!";
+	private static String blockCmd = "Block Node";
+
+	private static String unblockCmd = "Unblock Node";
 
 	private JButton controlbutton;
 
@@ -173,7 +178,9 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private JButton addconnectionbutton;
 
-	private JButton unregistersubscriberbutton;
+	private JButton blocknodebutton;
+
+	private JButton unblocknodebutton;
 
 	private JButton cancelbutton;
 
@@ -193,7 +200,9 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static int DEL_CONN_CMD = 1;
 
-	private static int UNREG_SUB_CMD = 2;
+	private static int BLOCK_NODE_CMD = 2;
+
+	private static int UNBLOCK_NODE_CMD = 3;
 
 	private int choice = ADD_CONN_CMD;
 
@@ -253,11 +262,17 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				addconnectionbutton.addActionListener(guip);
 				buttonpanel.add(addconnectionbutton);
 
-				unregistersubscriberbutton = new JButton(unregisterSubscriberCmd);
-				unregistersubscriberbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				unregistersubscriberbutton.setHorizontalTextPosition(AbstractButton.LEADING);
-				unregistersubscriberbutton.addActionListener(guip);
-				buttonpanel.add(unregistersubscriberbutton);
+				blocknodebutton = new JButton(blockCmd);
+				blocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
+				blocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				blocknodebutton.addActionListener(guip);
+				buttonpanel.add(blocknodebutton);
+
+				unblocknodebutton = new JButton(unblockCmd);
+				unblocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
+				unblocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				unblocknodebutton.addActionListener(guip);
+				buttonpanel.add(unblocknodebutton);
 
 				cancelbutton = new JButton(cancelCmd);
 				cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
@@ -268,7 +283,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				// put buttons in a logical group
 				buttongroup1.put(addconnectionbutton, addConnectionCmd);
 				buttongroup1.put(deleteconnectionbutton, deleteConnectionCmd);
-				buttongroup1.put(unregistersubscriberbutton, unregisterSubscriberCmd);
+				buttongroup1.put(blocknodebutton, blockCmd);
+				buttongroup1.put(unblocknodebutton, unblockCmd);
 
 				// displayframe.getContentPane().add(buttonpanel);
 				controlframe.getContentPane().add(buttonpanel);
@@ -392,9 +408,14 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			addconnectionbutton.setText(selectFirstNodeTxt);
 			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
-		} else if ( e.getActionCommand().equals(unregisterSubscriberCmd) ) {
-			choice = UNREG_SUB_CMD;
-			unregistersubscriberbutton.setText(selectSubscriberTxt);
+		} else if ( e.getActionCommand().equals(blockCmd) ) {
+			choice = BLOCK_NODE_CMD;
+			blocknodebutton.setText(selectBlockNodeTxt);
+			disableGroup(buttongroup1);
+			choice_status = FIRST_CHOICE;
+		} else if ( e.getActionCommand().equals(unblockCmd) ) {
+			choice = UNBLOCK_NODE_CMD;
+			unblocknodebutton.setText(selectUnblockNodeTxt);
 			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
 		} else if ( e.getActionCommand().equals(deleteCmd) ) {
@@ -409,8 +430,9 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			mouseclick.secondnode.setDefaultColor();
 			enableGroup(buttongroup1);
 			Engine.getSingleton().addEdge(mouseclick.firstnode, mouseclick.secondnode);
+			// processRegister(mouseclick.firstnode, mouseclick.secondnode);
 			// registering happens automatically by adding the edge
-		} else if ( e.getActionCommand().equals(unregisterCmd) ) {
+		} else if ( e.getActionCommand().equals(blockCmd) ) {
 			choice = NO_CHOICE;
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
@@ -431,4 +453,35 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			enableGroup(buttongroup1);
 		}
 	}
+	//
+	// protected void processRegister(Node node1, Node node2) {
+	//
+	// // A broker should only register at a broker
+	// if ( twoBrokers(node1, node2) == true ) {
+	//
+	// ((BrokerType) node1).register((BrokerType) node2);
+	// ((BrokerType) node2).register((BrokerType) node1);
+	//
+	// } else if ( subscriberToBroker(node1, node2) == true ) {
+	// // a subscriber should only register at a broker
+	// ((PubSubType) node1).register((BrokerType) node2);
+	// } else if ( subscriberToBroker(node2, node1) == true ) {
+	// // or vice-versa?
+	// ((PubSubType) node2).register((BrokerType) node1);
+	// }
+	// }
+	//
+	// protected boolean twoBrokers(Node node1, Node node2) {
+	// if ( node1 instanceof BrokerType )
+	// if ( node2 instanceof BrokerType )
+	// return true;
+	// return false;
+	// }
+	//
+	// protected boolean subscriberToBroker(Node node1, Node node2) {
+	// if ( node1 instanceof PubSubType )
+	// if ( node2 instanceof BrokerType )
+	// return true;
+	// return false;
+	// }
 }
