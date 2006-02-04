@@ -639,8 +639,8 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	/**
-	 * @param nmbOnlineSubscribers
-	 *            The nmbOnlineSubscribers to set.
+	 * @param nmbSubscribers
+	 *            The nmbSubscribers to set.
 	 */
 	protected synchronized void setNmbOnlineSubscribers(int nmbSubscribers) {
 		this.nmbOnlineSubscribers = nmbSubscribers;

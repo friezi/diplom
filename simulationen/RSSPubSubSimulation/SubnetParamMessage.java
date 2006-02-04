@@ -45,8 +45,8 @@ public class SubnetParamMessage extends Message {
 	}
 
 	/**
-	 * @param subParams
-	 *            The subParams to set.
+	 * @param subparams
+	 *            The subparams to set.
 	 */
 	public void setSubParams(SubnetParameters subparams) {
 		this.subParams = subparams;
