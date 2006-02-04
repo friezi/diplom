@@ -3,7 +3,7 @@ import java.util.*;
 
 import rsspubsubframework.*;
 
-public class PubSubNode extends Node implements Observer {
+public class PubSubNode extends Node implements PubSubType, Observer {
 
 	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
@@ -138,12 +138,30 @@ public class PubSubNode extends Node implements Observer {
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
 		if ( o instanceof Peers.AddNotifier ) {
 			if ( arg instanceof BrokerNode ) {
-				new RegisterSubscriberMessage(this, (BrokerNode) arg, params.subntSzMsgRT);
+				register((BrokerNode) arg);
 			}
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.PubSubType#register(rsspubsubframework.BrokerType)
+	 */
+	public void register(BrokerType broker) {
+		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.PubSubType#unregister(rsspubsubframework.BrokerType)
+	 */
+	public void unregister(BrokerType arg0) {
+		// TODO Auto-generated method stub
+		new UnregisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
 	}
 
 }

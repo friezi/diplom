@@ -1,14 +1,14 @@
 import rsspubsubframework.*;
 
 /**
- * Registers a new subscriber at broker.
+ * Ubregisters a new subscriber from broker.
  */
 
 /**
  * @author friezi
  * 
  */
-public class RegisterSubscriberMessage extends Message {
+public class UnregisterSubscriberMessage extends Message {
 
 	private static int SIZE = 8;
 
@@ -20,9 +20,9 @@ public class RegisterSubscriberMessage extends Message {
 	 * @param runtime
 	 *            runtime for message
 	 */
-	public RegisterSubscriberMessage(Node src, Node dst, int runtime) {
+	public UnregisterSubscriberMessage(Node src, Node dst, int runtime) {
 		super(src, dst, runtime);
-		setColor(new java.awt.Color(0, 0, (float) 0.5));
+		setColor(new java.awt.Color((float)0.5, 0, 0));
 	}
 
 	protected int size() {

@@ -2,7 +2,7 @@ import rsspubsubframework.*;
 import java.util.*;
 import java.awt.*;
 
-public class BrokerNode extends Node implements Observer {
+public class BrokerNode extends Node implements BrokerType, Observer {
 
 	protected SimParameters params;
 
@@ -60,35 +60,41 @@ public class BrokerNode extends Node implements Observer {
 		g.drawString(t, x - fm.stringWidth(t) / 2, y + fm.getHeight() / 2);
 
 	}
-	
-	synchronized protected void addToBrokers(BrokerNode broker){
+
+	synchronized protected void addToBrokers(BrokerNode broker) {
 		brokers.add(broker);
 	}
-	
-	synchronized protected void addToSubscribers(PubSubNode subscriber){
+
+	synchronized protected void addToSubscribers(PubSubNode subscriber) {
 		subscribers.add(subscriber);
 	}
-	
-	synchronized protected void removeFromBrokers(BrokerNode broker){
+
+	synchronized protected void removeFromBrokers(BrokerNode broker) {
 		brokers.remove(broker);
 	}
-	
-	synchronized protected void removeFromSubscribers(PubSubNode subscriber){
+
+	synchronized protected void removeFromSubscribers(PubSubNode subscriber) {
 		subscribers.remove(subscriber);
 	}
-	
-	synchronized protected int getSubscribersSize(){
+
+	synchronized protected int getSubscribersSize() {
 		return subscribers.size();
 	}
-	
-	synchronized protected int getBrokersSize(){
+
+	synchronized protected int getBrokersSize() {
 		return brokers.size();
 	}
-	
-	synchronized protected Set<BrokerNode> getBrokers(){
-		Set<BrokerNode> newbrokers=new HashSet<BrokerNode>();
+
+	synchronized protected Set<BrokerNode> getBrokers() {
+		Set<BrokerNode> newbrokers = new HashSet<BrokerNode>();
 		newbrokers.addAll(brokers);
 		return newbrokers;
+	}
+
+	synchronized protected Set<PubSubNode> getSubscribers() {
+		Set<PubSubNode> newsubscribers = new HashSet<PubSubNode>();
+		newsubscribers.addAll(subscribers);
+		return newsubscribers;
 	}
 
 	/*
@@ -115,10 +121,9 @@ public class BrokerNode extends Node implements Observer {
 		int x2 = this.xPos() + s / 2;
 		int y2 = this.yPos() + s / 2;
 
-		if ( x1 <= point.x && x2 >= point.x && y1 <= point.y && y2 >= point.y ){
+		if ( x1 <= point.x && x2 >= point.x && y1 <= point.y && y2 >= point.y ) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}

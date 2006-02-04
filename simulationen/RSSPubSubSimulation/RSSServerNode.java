@@ -7,7 +7,7 @@ import java.awt.*;
  * @author friezi
  * 
  */
-public class RSSServerNode extends Node {
+public class RSSServerNode extends Node implements RSSServerType {
 
 	// protected NodeFactory nf;
 

@@ -55,9 +55,21 @@ public class SimParameters {
 	int subntSzMsgRT = 8;
 
 	/**
+	 * SubnetParamMessage: if set, size of originating subnet will be shown in
+	 * message
+	 */
+	boolean showSizeBrokerMsg = false;
+
+	/**
 	 * AdjustingBroker: Timeout for the next ping
 	 */
-	int pingTimer = 8;
+	int pingTimeout = 8000;
+
+	/**
+	 * AdjustingBroker: Timeout for informing other brokers about change in
+	 * number of subscribers
+	 */
+	int subscrChgTimeout = 2000;
 
 	private String comment = "Parameters for a RPSSimulation";
 
@@ -86,7 +98,9 @@ public class SimParameters {
 		properties.setProperty("rssFdMsgRT", String.valueOf(rssFdMsgRT));
 		properties.setProperty("rssFdMsgRepr", String.valueOf(rssFdMsgRepr));
 		properties.setProperty("subntSzMsgRT", String.valueOf(subntSzMsgRT));
-		properties.setProperty("pingTimer", String.valueOf(pingTimer));
+		properties.setProperty("showSizeBrokerMsg", String.valueOf(showSizeBrokerMsg));
+		properties.setProperty("pingTimeout", String.valueOf(pingTimeout));
+		properties.setProperty("subscrChgTimeout", String.valueOf(subscrChgTimeout));
 
 		if ( args.length > 1 ) {
 
@@ -130,7 +144,12 @@ public class SimParameters {
 		rssFdReqMsgRT = Integer.valueOf((String) properties.getProperty("rssFdReqMsgRT"));
 		rssFdMsgRT = Integer.valueOf((String) properties.getProperty("rssFdMsgRT"));
 		subntSzMsgRT = Integer.valueOf((String) properties.getProperty("subntSzMsgRT"));
-		pingTimer = Integer.valueOf((String) properties.getProperty("pingTimer"));
+		if ( properties.getProperty("showSizeBrokerMsg").toLowerCase().equals("true") )
+			showSizeBrokerMsg = true;
+		else
+			showSizeBrokerMsg = false;
+		pingTimeout = Integer.valueOf((String) properties.getProperty("pingTimeout"));
+		subscrChgTimeout = Integer.valueOf((String) properties.getProperty("subscrChgTimeout"));
 		if ( properties.getProperty("rssFdMsgRepr").toLowerCase().equals("true") )
 			rssFdMsgRepr = true;
 		else

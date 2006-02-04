@@ -10,20 +10,30 @@ import rsspubsubframework.*;
  */
 public class RegisterBrokerMessage extends Message {
 
-	private static int SIZE = 8;
+	private static int NORMALSIZE = 8;
+
+	private static int BIGSIZE = 15;
 
 	private SubnetParameters subParams = null;
 
-	public RegisterBrokerMessage(Node src, Node dst, SubnetParameters subparams, int runtime) {
+	private SimParameters params;
 
-		super(src, dst, runtime);
+	public RegisterBrokerMessage(Node src, Node dst, SubnetParameters subparams, SimParameters params) {
+
+		super(src, dst, params.subntSzMsgRT);
+		this.params = params;
 		setSubParams(subparams);
-		setColor(new java.awt.Color(0, 0, (float) 0.5));
+		if ( params.showSizeBrokerMsg == true )
+			setColor(new java.awt.Color(1, 1, (float) 1));
+		else
+			setColor(new java.awt.Color(0, 0, (float) 0.5));
 
 	}
 
 	protected int size() {
-		return SIZE;
+		if ( params.showSizeBrokerMsg == true )
+			return BIGSIZE;
+		return NORMALSIZE;
 	}
 
 	/**
@@ -39,6 +49,14 @@ public class RegisterBrokerMessage extends Message {
 	 */
 	public void setSubParams(SubnetParameters subparams) {
 		this.subParams = subparams;
+	}
+
+	protected String text() {
+		// TODO Auto-generated method stub
+		if ( params.showSizeBrokerMsg == true )
+			if ( subParams != null )
+				return String.valueOf(subParams.getSize());
+		return "";
 	}
 
 }

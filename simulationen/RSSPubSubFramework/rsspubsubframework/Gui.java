@@ -23,6 +23,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
 /**
  * Gui object for the simulation.
@@ -51,22 +52,26 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				if ( (firstnode = Engine.getSingleton().findNode(point)) != null ) {
 					if ( choice == ADD_CONN_CMD ) {
 
-						addconnectionbutton.setText(chooseSecondNodeTxt);
+						addconnectionbutton.setText(selectSecondNodeTxt);
 
 					} else if ( choice == DEL_CONN_CMD ) {
 
-						deleteconnectionbutton.setText(chooseSecondNodeTxt);
+						deleteconnectionbutton.setText(selectSecondNodeTxt);
 
+					} else if ( choice == UNREG_SUB_CMD ) {
+
+						if ( firstnode instanceof PubSubType ) {
+							unregistersubscriberbutton.setText(selectBrokerTxt);
+						} else
+							return;
 					}
 					choice_status = SECOND_CHOICE;
 					firstnode.setColor(Color.red);
 				} else {
+					// no node hit
 
 					choice_status = NO_CHOICE;
-					deleteconnectionbutton.setText(deleteConnectionCmd);
-					deleteconnectionbutton.setEnabled(true);
-					addconnectionbutton.setText(addConnectionCmd);
-					addconnectionbutton.setEnabled(true);
+					enableGroup(buttongroup1);
 
 				}
 
@@ -77,26 +82,26 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 						addconnectionbutton.setText(addCmd);
 						addconnectionbutton.setEnabled(true);
-						deleteconnectionbutton.setText(cancelCmd);
-						deleteconnectionbutton.setEnabled(true);
 
 					} else if ( choice == DEL_CONN_CMD ) {
 
 						deleteconnectionbutton.setText(deleteCmd);
 						deleteconnectionbutton.setEnabled(true);
-						addconnectionbutton.setText(cancelCmd);
-						addconnectionbutton.setEnabled(true);
 
+					} else if ( choice == UNREG_SUB_CMD ) {
+
+						if ( secondnode instanceof BrokerType ) {
+							unregistersubscriberbutton.setText(unregisterCmd);
+							unregistersubscriberbutton.setEnabled(true);
+						} else
+							return;
 					}
 					choice_status = DO_IT;
 					secondnode.setColor(Color.red);
 				} else {
-
+					// no node hit
 					choice_status = NO_CHOICE;
-					deleteconnectionbutton.setText(deleteConnectionCmd);
-					deleteconnectionbutton.setEnabled(true);
-					addconnectionbutton.setText(addConnectionCmd);
-					addconnectionbutton.setEnabled(true);
+					enableGroup(buttongroup1);
 					firstnode.setDefaultColor();
 				}
 			}
@@ -118,7 +123,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private int df_height;
 
-	private int cf_xpos = 200;
+	private int cf_xpos = 150;
 
 	private int cf_ypos = 0;
 
@@ -146,9 +151,17 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String cancelCmd = "Cancel";
 
-	private static String chooseFirstNodeTxt = "choose first node ...";
+	private static String selectFirstNodeTxt = "Select first node ...";
 
-	private static String chooseSecondNodeTxt = "choose second node ...";
+	private static String selectSecondNodeTxt = "Select second node ...";
+
+	private static String unregisterSubscriberCmd = "Unregister subscriber";
+
+	private static String selectSubscriberTxt = "Select Subscriber ...";
+
+	private static String selectBrokerTxt = "SelectBroker ...";
+
+	private static String unregisterCmd = "Unregister!";
 
 	private JButton controlbutton;
 
@@ -159,6 +172,12 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	private JButton deleteconnectionbutton;
 
 	private JButton addconnectionbutton;
+
+	private JButton unregistersubscriberbutton;
+
+	private JButton cancelbutton;
+
+	private HashMap<JButton, String> buttongroup1 = new HashMap<JButton, String>();
 
 	private static int NO_CHOICE = 0;
 
@@ -174,6 +193,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static int DEL_CONN_CMD = 1;
 
+	private static int UNREG_SUB_CMD = 2;
+
 	private int choice = ADD_CONN_CMD;
 
 	private MouseClick mouseclick = new MouseClick();
@@ -185,6 +206,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		final Gui guip = this;
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+
 				JFrame.setDefaultLookAndFeelDecorated(true);
 
 				JFrame displayframe = new JFrame("Messaging Network");
@@ -230,6 +252,23 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				addconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				addconnectionbutton.addActionListener(guip);
 				buttonpanel.add(addconnectionbutton);
+
+				unregistersubscriberbutton = new JButton(unregisterSubscriberCmd);
+				unregistersubscriberbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				unregistersubscriberbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				unregistersubscriberbutton.addActionListener(guip);
+				buttonpanel.add(unregistersubscriberbutton);
+
+				cancelbutton = new JButton(cancelCmd);
+				cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				cancelbutton.addActionListener(guip);
+				buttonpanel.add(cancelbutton);
+
+				// put buttons in a logical group
+				buttongroup1.put(addconnectionbutton, addConnectionCmd);
+				buttongroup1.put(deleteconnectionbutton, deleteConnectionCmd);
+				buttongroup1.put(unregistersubscriberbutton, unregisterSubscriberCmd);
 
 				// displayframe.getContentPane().add(buttonpanel);
 				controlframe.getContentPane().add(buttonpanel);
@@ -282,6 +321,38 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		Engine.getSingleton().draw(g);
 	}
 
+	/**
+	 * Disables a set (group) of buttons
+	 * 
+	 * @param group
+	 *            the group of buttons to be disabled
+	 */
+	protected void disableGroup(HashMap<JButton, String> group) {
+
+		Set<Map.Entry<JButton, String>> entries = group.entrySet();
+
+		for ( Map.Entry<JButton, String> entry : entries )
+			entry.getKey().setEnabled(false); // disable
+	}
+
+	/**
+	 * Enables a set (group) of buttons and sets the default-command
+	 * 
+	 * @param group
+	 *            the group of buttons to be enabled
+	 */
+	protected void enableGroup(HashMap<JButton, String> group) {
+
+		Set<Map.Entry<JButton, String>> entries = group.entrySet();
+
+		for ( Map.Entry<JButton, String> entry : entries ) {
+			// set default-operation
+			entry.getKey().setText(entry.getValue());
+			// enable
+			entry.getKey().setEnabled(true);
+		}
+	}
+
 	public void actionPerformed(ActionEvent e) {
 
 		if ( e.getActionCommand().equals(startSimulationCmd) ) {
@@ -313,36 +384,51 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			edgeidbutton.setText(showEdgeIdCmd);
 		} else if ( e.getActionCommand().equals(deleteConnectionCmd) ) {
 			choice = DEL_CONN_CMD;
-			deleteconnectionbutton.setText(chooseFirstNodeTxt);
-			deleteconnectionbutton.setEnabled(false);
-			addconnectionbutton.setEnabled(false);
+			deleteconnectionbutton.setText(selectFirstNodeTxt);
+			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
 		} else if ( e.getActionCommand().equals(addConnectionCmd) ) {
 			choice = ADD_CONN_CMD;
-			addconnectionbutton.setText(chooseFirstNodeTxt);
-			addconnectionbutton.setEnabled(false);
-			deleteconnectionbutton.setEnabled(false);
+			addconnectionbutton.setText(selectFirstNodeTxt);
+			disableGroup(buttongroup1);
+			choice_status = FIRST_CHOICE;
+		} else if ( e.getActionCommand().equals(unregisterSubscriberCmd) ) {
+			choice = UNREG_SUB_CMD;
+			unregistersubscriberbutton.setText(selectSubscriberTxt);
+			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
 		} else if ( e.getActionCommand().equals(deleteCmd) ) {
 			choice = NO_CHOICE;
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
-			addconnectionbutton.setText(addConnectionCmd);
-			deleteconnectionbutton.setText(deleteConnectionCmd);
+			enableGroup(buttongroup1);
 			Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode, mouseclick.secondnode);
 		} else if ( e.getActionCommand().equals(addCmd) ) {
 			choice = NO_CHOICE;
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
-			addconnectionbutton.setText(addConnectionCmd);
-			deleteconnectionbutton.setText(deleteConnectionCmd);
-			Engine.getSingleton().addEdge(mouseclick.firstnode,mouseclick.secondnode);
-		} else if ( e.getActionCommand().equals(cancelCmd) ) {
+			enableGroup(buttongroup1);
+			Engine.getSingleton().addEdge(mouseclick.firstnode, mouseclick.secondnode);
+			// registering happens automatically by adding the edge
+		} else if ( e.getActionCommand().equals(unregisterCmd) ) {
 			choice = NO_CHOICE;
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
-			addconnectionbutton.setText(addConnectionCmd);
-			deleteconnectionbutton.setText(deleteConnectionCmd);
+			enableGroup(buttongroup1);
+			Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode, mouseclick.secondnode);
+			((PubSubType) mouseclick.firstnode).unregister((BrokerType) mouseclick.secondnode);
+			// PUT IN ACTION!!!!!!!!!!!!!
+		} else if ( e.getActionCommand().equals(cancelCmd) ) {
+			choice = NO_CHOICE;
+			if ( mouseclick.firstnode != null ) {
+				mouseclick.firstnode.setDefaultColor();
+				mouseclick.firstnode = null;
+			}
+			if ( mouseclick.secondnode != null ) {
+				mouseclick.secondnode.setDefaultColor();
+				mouseclick.firstnode = null;
+			}
+			enableGroup(buttongroup1);
 		}
 	}
 }

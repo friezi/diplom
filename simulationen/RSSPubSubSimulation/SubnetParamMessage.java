@@ -10,20 +10,30 @@ import rsspubsubframework.*;
  */
 public class SubnetParamMessage extends Message {
 
-	private static int SIZE = 8;
+	private static int NORMALSIZE = 8;
 
-	private SubnetParameters subParams=null;
+	private static int BIGSIZE = 15;
 
-	public SubnetParamMessage(Node src, Node dst, SubnetParameters subparams, int runtime) {
+	private SubnetParameters subParams = null;
 
-		super(src, dst, runtime);
+	private SimParameters params;
+
+	public SubnetParamMessage(Node src, Node dst, SubnetParameters subparams, SimParameters params) {
+
+		super(src, dst, params.subntSzMsgRT);
+		this.params = params;
 		setSubParams(subparams);
-		setColor(new java.awt.Color((float) 0.5, (float) 0.5, 0));
+		if ( params.showSizeBrokerMsg == true )
+			setColor(new java.awt.Color(1, 1, (float) 1));
+		else
+			setColor(new java.awt.Color((float) 0.5, (float) 0.5, 0));
 
 	}
 
 	protected int size() {
-		return SIZE;
+		if ( params.showSizeBrokerMsg == true )
+			return BIGSIZE;
+		return NORMALSIZE;
 	}
 
 	/**
@@ -34,10 +44,25 @@ public class SubnetParamMessage extends Message {
 	}
 
 	/**
-	 * @param subParams The subParams to set.
+	 * @param subParams
+	 *            The subParams to set.
 	 */
 	public void setSubParams(SubnetParameters subparams) {
 		this.subParams = subparams;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.DisplayableObject#text()
+	 */
+	@Override
+	protected String text() {
+		// TODO Auto-generated method stub
+		if ( params.showSizeBrokerMsg == true )
+			if ( subParams != null )
+				return String.valueOf(subParams.getSize());
+		return "";
 	}
 
 }
