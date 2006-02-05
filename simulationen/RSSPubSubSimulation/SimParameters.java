@@ -29,30 +29,31 @@ public class SimParameters {
 	int ttl = 10;
 
 	/**
-	 * PubSubNode: spread-factor for update-interval of the feeds from the
-	 * publishers
+	 * PubSubNode: spread-divisor for update-interval of the feeds from the
+	 * publishers: the time-range whithin feed-requests cann occur calculates
+	 * like this: ttl + networksize / spreadDivisor
 	 */
-	int spreadFactor = 20/* 3 */;
+	int spreadDivisor = 6;
 
 	/**
 	 * RSSFeedRequestMessage: runtime for message RSSFeedRequestMessage
 	 */
-	int rssFdReqMsgRT = 10;
+	int rssFeedRequestMsgRT = 10;
 
 	/**
 	 * RSSFeedMessage: runtime for message RSSFeedMessage
 	 */
-	int rssFdMsgRT = 4;
+	int rssFeedMsgRT = 4;
 
 	/**
 	 * RSSFeedMessage: if true, RSSFeedMessages will represent the feed
 	 */
-	boolean rssFdMsgRepr = true;
+	boolean rssFeedMsgRepresent = true;
 
 	/**
 	 * SubnetParamMessage: runtime
 	 */
-	int subntSzMsgRT = 8;
+	int subnetParamMsgRT = 8;
 
 	/**
 	 * SubnetParamMessage: if set, size of originating subnet will be shown in
@@ -74,7 +75,13 @@ public class SimParameters {
 	 * AdjustingBroker: Timeout for informing other brokers about change in
 	 * number of subscribers
 	 */
-	int subscrChgTimeout = 2000;
+	int informBrokersTimeout = 2000;
+
+	/**
+	 * AdjustingBroker: Timeout for informing subscribers about change of
+	 * network-size
+	 */
+	int informSubscribersTimeout = 3000;
 
 	private String comment = "Parameters for a RPSSimulation";
 
@@ -98,15 +105,16 @@ public class SimParameters {
 		properties.setProperty("minUpIntv", String.valueOf(minUpIntv));
 		properties.setProperty("maxUpIntv", String.valueOf(maxUpIntv));
 		properties.setProperty("ttl", String.valueOf(ttl));
-		properties.setProperty("spreadFactor", String.valueOf(spreadFactor));
-		properties.setProperty("rssFdReqMsgRT", String.valueOf(rssFdReqMsgRT));
-		properties.setProperty("rssFdMsgRT", String.valueOf(rssFdMsgRT));
-		properties.setProperty("rssFdMsgRepr", String.valueOf(rssFdMsgRepr));
-		properties.setProperty("subntSzMsgRT", String.valueOf(subntSzMsgRT));
+		properties.setProperty("spreadDivisor", String.valueOf(spreadDivisor));
+		properties.setProperty("rssFeedRequestMsgRT", String.valueOf(rssFeedRequestMsgRT));
+		properties.setProperty("rssFeedMsgRT", String.valueOf(rssFeedMsgRT));
+		properties.setProperty("rssFeedMsgRepresent", String.valueOf(rssFeedMsgRepresent));
+		properties.setProperty("subnetParamMsgRT", String.valueOf(subnetParamMsgRT));
 		properties.setProperty("showSizeBrokerMsg", String.valueOf(showSizeBrokerMsg));
 		properties.setProperty("pingTimer", String.valueOf(pingTimer));
 		properties.setProperty("pingTimeoutFactor", String.valueOf(pingTimeoutFactor));
-		properties.setProperty("subscrChgTimeout", String.valueOf(subscrChgTimeout));
+		properties.setProperty("informBrokersTimeout", String.valueOf(informBrokersTimeout));
+		properties.setProperty("informSubscribersTimeout", String.valueOf(informSubscribersTimeout));
 
 		if ( args.length > 1 ) {
 
@@ -146,21 +154,23 @@ public class SimParameters {
 		minUpIntv = Integer.valueOf((String) properties.getProperty("minUpIntv"));
 		maxUpIntv = Integer.valueOf((String) properties.getProperty("maxUpIntv"));
 		ttl = Integer.valueOf((String) properties.getProperty("ttl"));
-		spreadFactor = Integer.valueOf((String) properties.getProperty("spreadFactor"));
-		rssFdReqMsgRT = Integer.valueOf((String) properties.getProperty("rssFdReqMsgRT"));
-		rssFdMsgRT = Integer.valueOf((String) properties.getProperty("rssFdMsgRT"));
-		subntSzMsgRT = Integer.valueOf((String) properties.getProperty("subntSzMsgRT"));
+		spreadDivisor = Integer.valueOf((String) properties.getProperty("spreadDivisor"));
+		rssFeedRequestMsgRT = Integer.valueOf((String) properties.getProperty("rssFeedRequestMsgRT"));
+		rssFeedMsgRT = Integer.valueOf((String) properties.getProperty("rssFeedMsgRT"));
+		subnetParamMsgRT = Integer.valueOf((String) properties.getProperty("subnetParamMsgRT"));
 		if ( properties.getProperty("showSizeBrokerMsg").toLowerCase().equals("true") )
 			showSizeBrokerMsg = true;
 		else
 			showSizeBrokerMsg = false;
 		pingTimer = Integer.valueOf((String) properties.getProperty("pingTimer"));
 		pingTimeoutFactor = Integer.valueOf((String) properties.getProperty("pingTimeoutFactor"));
-		subscrChgTimeout = Integer.valueOf((String) properties.getProperty("subscrChgTimeout"));
-		if ( properties.getProperty("rssFdMsgRepr").toLowerCase().equals("true") )
-			rssFdMsgRepr = true;
+		informBrokersTimeout = Integer.valueOf((String) properties.getProperty("informBrokersTimeout"));
+		informSubscribersTimeout = Integer.valueOf((String) properties
+				.getProperty("informSubscribersTimeout"));
+		if ( properties.getProperty("rssFeedMsgRepresent").toLowerCase().equals("true") )
+			rssFeedMsgRepresent = true;
 		else
-			rssFdMsgRepr = false;
+			rssFeedMsgRepresent = false;
 
 	}
 

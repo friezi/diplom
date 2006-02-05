@@ -21,7 +21,7 @@ public class RegisterBrokerMessage extends Message {
 
 	public RegisterBrokerMessage(Node src, Node dst, SubnetParameters subparams, SimParameters params) {
 
-		super(src, dst, params.subntSzMsgRT);
+		super(src, dst, params.subnetParamMsgRT);
 		this.params = params;
 		setSubParams(subparams);
 		if ( params.showSizeBrokerMsg == true )

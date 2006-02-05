@@ -13,7 +13,7 @@ public class RSSFeedMessage extends Message {
 
 	public RSSFeedMessage(Node src, Node dst, RSSFeed feed, RSSFeedRepresentation rssFeedRepresentation,
 			SimParameters params) {
-		super(src, dst, params.rssFdMsgRT);
+		super(src, dst, params.rssFeedMsgRT);
 		this.feed = feed;
 		this.rssFeedRepresentation = rssFeedRepresentation;
 		this.params = params;
@@ -22,7 +22,7 @@ public class RSSFeedMessage extends Message {
 		getRssFeedRepresentation().setDObj(this);
 
 		// only represent feed on special demand
-		if ( params.rssFdMsgRepr == true )
+		if ( params.rssFeedMsgRepresent == true )
 			getRssFeedRepresentation().represent();
 	}
 

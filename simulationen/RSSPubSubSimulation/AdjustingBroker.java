@@ -58,6 +58,107 @@ public class AdjustingBroker extends BrokerNode {
 
 	}
 
+	/**
+	 * This message is sent by a timer and indicates that
+	 * the brokers have to be informed about number of online subscribers.
+	 *  It's not displayed on screen.
+	 */
+
+	/**
+	 * @author friezi
+	 * 
+	 */
+	public class InformBrokersMessage extends Message {
+
+		public InformBrokersMessage(Node src, Node dst) {
+			super(src, dst, 1);
+		}
+
+	}
+
+	/**
+	 * This message is sent by a timer and indicates that
+	 * the subscribers have to informed about change
+	 * of network-size.
+	 * It's not displayed on screen.
+	 */
+
+	/**
+	 * @author friezi
+	 * 
+	 */
+	public class InformSubscribersMessage extends Message {
+
+		public InformSubscribersMessage(Node src, Node dst) {
+			super(src, dst, 1);
+		}
+
+	}
+
+	/**
+	 * This message is sent by a timer and indicates that
+	 * its time to ping all neighbourbrokers
+	 * 
+	 */
+
+	/**
+	 * @author friezi
+	 * 
+	 */
+	public class TimeForPingMessage extends Message {
+
+		private AdjustingBroker.PingTask task;
+
+		public TimeForPingMessage(Node src, Node dst, AdjustingBroker.PingTask task) {
+			super(src, dst, 1);
+			this.task = task;
+		}
+
+		/**
+		 * @return Returns the task.
+		 */
+		protected AdjustingBroker.PingTask getTask() {
+			return task;
+		}
+
+	}
+
+	/**
+	 * This message will be receivec from a timer, if an expected ping timed out.
+	 */
+
+	/**
+	 * @author friezi
+	 * 
+	 */
+	public class PingTimeoutMessage extends Message {
+
+		private AdjustingBroker.PingTimeoutTask task;
+
+		private BrokerNode broker;
+
+		public PingTimeoutMessage(Node src, Node dst, BrokerNode broker, AdjustingBroker.PingTimeoutTask task) {
+			super(src, dst, 1);
+			this.broker = broker;
+			this.task = task;
+		}
+
+		/**
+		 * @return Returns the task.
+		 */
+		protected AdjustingBroker.PingTimeoutTask getTask() {
+			return task;
+		}
+
+		/**
+		 * @return Returns the broker.
+		 */
+		protected BrokerNode getBroker() {
+			return broker;
+		}
+
+	}
+
 	class PingTask extends TimerTask {
 
 		// the broker we belong to
@@ -98,18 +199,32 @@ public class AdjustingBroker extends BrokerNode {
 		}
 	}
 
-	protected class SubscribersChangedTask extends TimerTask {
+	protected class InformBrokersTask extends TimerTask {
 
 		// the broker we belong to
 		BrokerNode timerbroker = null;
 
-		public SubscribersChangedTask(BrokerNode timerbroker) {
+		public InformBrokersTask(BrokerNode timerbroker) {
 			this.timerbroker = timerbroker;
 		}
 
 		public void run() {
 			// processSubscribersChanged();
-			new SubscribersChangedMessage(timerbroker, timerbroker);
+			new InformBrokersMessage(timerbroker, timerbroker);
+		}
+	}
+
+	protected class InformSubscribersTask extends TimerTask {
+
+		// the broker we belong to
+		BrokerNode timerbroker = null;
+
+		public InformSubscribersTask(BrokerNode timerbroker) {
+			this.timerbroker = timerbroker;
+		}
+
+		public void run() {
+			new InformSubscribersMessage(timerbroker, timerbroker);
 		}
 	}
 
@@ -129,11 +244,15 @@ public class AdjustingBroker extends BrokerNode {
 
 	private long netsize = 0;
 
+	private long oldnetsize = 0;
+
 	private int nmbOnlineSubscribers = 0;
 
 	private HashSet<BrokerNode> connectedBrokers = new HashSet<BrokerNode>();
 
 	private boolean collectingSubscrInfo = false;
+
+	private boolean collectingNetworkInfo = false;
 
 	public AdjustingBroker(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
@@ -183,10 +302,10 @@ public class AdjustingBroker extends BrokerNode {
 				// /**
 				// ***********************************************************
 				// */
-				//
+				//				
 				// PingTimeoutTask oldtask =
 				// subnetsettings.getPingtimeouttask();
-				//
+				//				
 				// // set timer
 				// subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask,
 				// (BrokerNode) ssm.getSrc()));
@@ -201,8 +320,9 @@ public class AdjustingBroker extends BrokerNode {
 					// set new size
 					subnetsettings.getSubParams().setSize(ssm.getSubParams().getSize());
 					// send new size to all other neighbourbrokers
-					informOtherBrokers(ssm.getSrc());
+					informAllBut(ssm.getSrc());
 				}
+
 			}
 
 		} else if ( m instanceof RegisterBrokerMessage ) {
@@ -234,7 +354,7 @@ public class AdjustingBroker extends BrokerNode {
 			adjustNetsize(rbm.getSubParams().getSize() - oldsubnetsize);
 
 			// send acknowledgement ( a bit faster)
-			new RegisterAckMessage(this, rbm.getSrc(), params.subntSzMsgRT / 2);
+			new RegisterAckMessage(this, rbm.getSrc(), params.subnetParamMsgRT / 2);
 
 			// send subnetsize to broker
 			sendSubnetSize((BrokerNode) rbm.getSrc());
@@ -244,7 +364,7 @@ public class AdjustingBroker extends BrokerNode {
 
 			// only on change tell the others
 			if ( rbm.getSubParams().getSize() != oldsubnetsize )
-				informOtherBrokers(rbm.getSrc());
+				informAllBut(rbm.getSrc());
 
 		} else if ( m instanceof RegisterAckMessage ) {
 
@@ -282,13 +402,28 @@ public class AdjustingBroker extends BrokerNode {
 
 			handleUnregisteredSubscriber((PubSubNode) usm.getSrc());
 
-		} else if ( m instanceof SubscribersChangedMessage ) {
+		} else if ( m instanceof InformBrokersMessage ) {
 
-			processSubscribersChanged();
+			processInformBrokers();
+
+		} else if ( m instanceof InformSubscribersMessage ) {
+
+			processInformSubscribers();
 
 		} else if ( m instanceof TimeForPingMessage ) {
 
 			TimeForPingMessage tpm = (TimeForPingMessage) m;
+
+			// if for any reason the amount of the stored network-size
+			// is not corresponding to the sum of the subnet-size (...)
+			// we do a recalculation:
+
+			adjustNetsize();
+
+			// in case of a change to the former value, we have to inform
+			// the subscribers
+
+			doInformSubscriberTimer();
 
 			// imagine: just before the timeforping-message is put in the
 			// message-queue an update of network-size is sent to all
@@ -305,15 +440,31 @@ public class AdjustingBroker extends BrokerNode {
 
 		} else if ( m instanceof PingMessage ) {
 
-			if ( getSubnets().containsKey(m.getSrc()) ) {
+			PingMessage pm = (PingMessage) m;
+
+			if ( getSubnets().containsKey(pm.getSrc()) ) {
 				// just forsafety
 
-				SubnetSettings subnetsettings = getSubnets().get(m.getSrc());
+				SubnetSettings subnetsettings = getSubnets().get(pm.getSrc());
 
 				PingTimeoutTask oldtask = subnetsettings.getPingtimeouttask();
 
 				// set timer
-				subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) m.getSrc()));
+				subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) pm.getSrc()));
+
+				// same processing as for SubnetParamMessage:
+
+				// only on change do something more
+				if ( pm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
+
+					// add difference to netsize
+					adjustNetsize(pm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
+					// set new size
+					subnetsettings.getSubParams().setSize(pm.getSubParams().getSize());
+					// send new size to all other neighbourbrokers
+					informAllBut(pm.getSrc());
+
+				}
 
 			}
 
@@ -345,15 +496,28 @@ public class AdjustingBroker extends BrokerNode {
 	 * calculates the netsize by adding all subnetsizes and number of local
 	 * subscribers
 	 */
-	// synchronized protected void adjustNetsize() {
-	// setNetsize(calcNetSize());
-	// }
+	synchronized protected void adjustNetsize() {
+
+		// store old netsize
+		if ( isCollectingNetworkInfo() == false )
+			oldnetsize = getNetsize();
+
+		setNetsize(calcNetSize());
+
+	}
+
 	/**
 	 * @param delta
 	 *            the delta-value which should be added to netsize
 	 */
 	synchronized protected void adjustNetsize(long delta) {
+
+		// store old netsize
+		if ( isCollectingNetworkInfo() == false )
+			oldnetsize = getNetsize();
+
 		setNetsize(getNetsize() + delta);
+
 	}
 
 	protected long calcNetSize() {
@@ -368,10 +532,18 @@ public class AdjustingBroker extends BrokerNode {
 		for ( BrokerNode otherbroker : currbrokers )
 			if ( otherbroker != broker )
 				subnetsize += getSubnets().get(otherbroker).getSubParams().getSize();
+
+		// in case that (due to node-blocking) the number of online
+		// subscribers could not be set, we set it here. Interference
+		// with general functionality is only avoided if we do the following
+		// check. Only in that case both values must be same.
+		if ( isCollectingSubscrInfo() == false )
+			setNmbOnlineSubscribers(getSubscribersSize());
+
 		// IMPORTANT DETAIL!!!
 		// we only add the numbers of online-subscribers!
 		// this value is set only, when timeout for collecting the subscribers
-		// occurs!!!
+		// occurs (in the case or above)!!!
 		subnetsize += getNmbOnlineSubscribers();
 
 		return subnetsize;
@@ -441,7 +613,7 @@ public class AdjustingBroker extends BrokerNode {
 		processBrokerDisconnected(broker);
 
 		// send a UnegisterBrokerMessage
-		new UnregisterBrokerMessage(this, broker, params.subntSzMsgRT);
+		new UnregisterBrokerMessage(this, broker, params.subnetParamMsgRT);
 
 	}
 
@@ -449,11 +621,16 @@ public class AdjustingBroker extends BrokerNode {
 
 		if ( getSubscribers().contains(subscriber) == false ) {
 			addToSubscribers(subscriber);
+			
+			// send acknowledgement
+			new RegisterAckMessage(this,subscriber,params.subnetParamMsgRT);
+
 			adjustNetsize(1);
 
 			// wait an amount of time before informing the other brokers
 			if ( isCollectingSubscrInfo() == false ) {
-				changetimer.schedule(new SubscribersChangedTask(this), params.subscrChgTimeout);
+				changetimer.schedule(new InformBrokersTask(this), params.informBrokersTimeout);
+				setCollectingSubscrInfo(true);
 			}
 		}
 
@@ -463,17 +640,38 @@ public class AdjustingBroker extends BrokerNode {
 
 		if ( getSubscribers().contains(subscriber) == true ) {
 			removeFromSubscribers(subscriber);
+
 			adjustNetsize(-1);
 
 			// wait an amount of time before informing the other brokers
 			if ( isCollectingSubscrInfo() == false ) {
-				changetimer.schedule(new SubscribersChangedTask(this), params.subscrChgTimeout);
+				changetimer.schedule(new InformBrokersTask(this), params.informBrokersTimeout);
+				setCollectingSubscrInfo(true);
 			}
 		}
 
 	}
 
-	protected void informOtherBrokers(Node exclbroker) {
+	//	
+	// protected void informBrokers(){
+	//
+	// Set<BrokerNode> currbrokers = getBrokers();
+	// for ( BrokerNode broker : currbrokers ) {
+	// sendSubnetSize(broker);
+	// }
+	//		
+	// }
+
+	protected void informSubscribers() {
+
+		// inform also the subscribers
+		Set<PubSubNode> currsubscribers = getSubscribers();
+		for ( PubSubNode subscriber : currsubscribers )
+			new NetworkSizeUpdateMessage(this, subscriber, getNetsize(), params);
+
+	}
+
+	protected void informAllBut(Node exclbroker) {
 
 		Set<BrokerNode> currbrokers = getBrokers();
 		for ( BrokerNode otherbroker : currbrokers ) {
@@ -481,27 +679,51 @@ public class AdjustingBroker extends BrokerNode {
 				sendSubnetSize(otherbroker);
 		}
 
+		doInformSubscriberTimer();
+
 	}
 
-	protected void informBrokers() {
-		informOtherBrokers(null);
+	/**
+	 * a timertask for informing the subscribers will be set up if not already
+	 * running.
+	 */
+	protected void doInformSubscriberTimer() {
+
+		// wait an amount of time before informing the other brokers
+		if ( isCollectingNetworkInfo() == false ) {
+			changetimer.schedule(new InformSubscribersTask(this), params.informSubscribersTimeout);
+			setCollectingNetworkInfo(true);
+		}
+
+	}
+
+	protected void informAll() {
+		informAllBut(null);
 	}
 
 	/**
 	 * When timeout occurs, we update number of online subscribers and inform
 	 * all other brokers
 	 */
-	protected void processSubscribersChanged() {
+	protected void processInformBrokers() {
 
 		// neighbours should only be informed on change
 		// if number of online-subscribers stays same,
 		// no update is necessary
 
 		int oldnmbonlinesubscribers = getNmbOnlineSubscribers();
-		setNmbOnlineSubscribers(getSubscribers().size());
+		setNmbOnlineSubscribers(getSubscribersSize());
 		if ( oldnmbonlinesubscribers != getNmbOnlineSubscribers() )
-			informBrokers();
+			informAll();
 		setCollectingSubscrInfo(false);
+
+	}
+
+	protected void processInformSubscribers() {
+
+		if ( oldnetsize != getNetsize() )
+			informSubscribers();
+		setCollectingNetworkInfo(false);
 
 	}
 
@@ -528,7 +750,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		// inform others on change
 		if ( subnetsize != 0 )
-			informOtherBrokers(broker);
+			informAllBut(broker);
 
 	}
 
@@ -554,7 +776,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		// inform others on change
 		if ( subnetsize != 0 )
-			informOtherBrokers(broker);
+			informAllBut(broker);
 
 	}
 
@@ -564,7 +786,8 @@ public class AdjustingBroker extends BrokerNode {
 
 		Set<BrokerNode> currbrokers = getBrokers();
 		for ( BrokerNode broker : currbrokers ) {
-			new PingMessage(this, broker, params.subntSzMsgRT);
+			new PingMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
+					params);
 		}
 	}
 
@@ -632,6 +855,21 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	/**
+	 * @return Returns the collectingNetworkInfo.
+	 */
+	protected synchronized boolean isCollectingNetworkInfo() {
+		return collectingNetworkInfo;
+	}
+
+	/**
+	 * @param collectingNetworkInfo
+	 *            The collectingNetworkInfo to set.
+	 */
+	protected synchronized void setCollectingNetworkInfo(boolean collectingNetworkInfo) {
+		this.collectingNetworkInfo = collectingNetworkInfo;
+	}
+
+	/**
 	 * @return Returns the nmbOnlineSubscribers.
 	 */
 	protected synchronized int getNmbOnlineSubscribers() {
@@ -655,17 +893,6 @@ public class AdjustingBroker extends BrokerNode {
 	public void register(BrokerType broker) {
 		// TODO Auto-generated method stub
 		super.register(broker);
-		//
-		// addToBrokers((BrokerNode) arg0);
-		// // we must add an entry for this broker if it's not yet
-		// // contained:
-		// // on a one-side connection-built-up, we won't get a
-		// // RegisterBrokerMessage where an entry will be added as well.
-		// // in the other case we MUST NOT add an entry, because the old
-		// // value, which we need later, would be overridden!
-		// if ( getSubnets().containsKey((BrokerNode) arg0) == false )
-		// getSubnets().put((BrokerNode) arg0, new SubnetSettings());
-		// register broker at network
 		registerAtBroker((BrokerNode) broker);
 	}
 

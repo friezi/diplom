@@ -14,18 +14,61 @@ public class PubSub extends PubSubNode {
 
 	}
 
+	protected class AckTimerMessage extends Message {
+
+		private BrokerNode broker;
+
+		public AckTimerMessage(Node src, Node dst, BrokerNode broker) {
+			super(src, dst, 1);
+			this.broker = broker;
+		}
+
+		/**
+		 * @return Returns the broker.
+		 */
+		protected synchronized BrokerNode getBroker() {
+			return broker;
+		}
+
+	}
+
+	protected class AckTimerTask extends TimerTask {
+
+		// Ourself
+		PubSubNode timernode;
+
+		BrokerNode broker;
+
+		public AckTimerTask(PubSubNode timernode, BrokerNode broker) {
+			this.timernode = timernode;
+			this.broker = broker;
+		}
+
+		public void run() {
+			new AckTimerMessage(timernode, timernode, broker);
+		}
+	}
+
 	// dummy feed to prevent NullPointerException
 	protected RSSFeed feed = new RSSFeed(new RSSFeedGeneralContent());
 
 	protected Timer feedRequestTimer = new Timer();
 
+	protected Timer ackTimer = new Timer();
+
+	HashMap<BrokerNode, AckTimerTask> acktaskmap = new HashMap<BrokerNode, AckTimerTask>();
+
 	protected FeedRequestTask feedRequestTask = new FeedRequestTask();
 
-	protected int spreadFactor;
+	protected int spreadFactor = 1;
+
+	protected int spreadDivisor;
+
+	protected long networksize = 0;
 
 	public PubSub(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
-		this.spreadFactor = params.spreadFactor;
+		this.spreadDivisor = params.spreadDivisor;
 	}
 
 	public void init() {
@@ -66,6 +109,31 @@ public class PubSub extends PubSubNode {
 					updateRequestTimer();
 				}
 			}
+		} else if ( m instanceof NetworkSizeUpdateMessage ) {
+
+			NetworkSizeUpdateMessage nsum = (NetworkSizeUpdateMessage) m;
+
+			long size = nsum.getSize();
+
+			// to prevent malicious values
+			if ( size <= 0 )
+				size = 1;
+
+			spreadFactor = (int) (size / spreadDivisor);
+
+			updateRequestTimer();
+
+		} else if ( m instanceof AckTimerMessage ) {
+
+			new RegisterSubscriberMessage(this, ((AckTimerMessage) m).getBroker(), params.subnetParamMsgRT);
+
+		} else if ( m instanceof RegisterAckMessage ) {
+
+			if ( acktaskmap.containsKey((BrokerNode) m.getSrc()) ) {
+				acktaskmap.get((BrokerNode) m.getSrc()).cancel();
+				acktaskmap.remove((BrokerNode) m.getSrc());
+			}
+
 		}
 	}
 
@@ -77,7 +145,7 @@ public class PubSub extends PubSubNode {
 		int diff = (int) ((now.getTime() - feedDate.getTime()) / 1000);
 		if ( diff > ttl )
 			diff = ttl;
-		return (new Random().nextInt(spreadFactor * ttl + 1) + (ttl - diff)) * 1000;
+		return (new Random().nextInt((spreadFactor + 1) * ttl + 1) + (ttl - diff)) * 1000;
 
 	}
 
@@ -131,7 +199,13 @@ public class PubSub extends PubSubNode {
 	 * @see rsspubsubframework.PubSubType#register(rsspubsubframework.BrokerType)
 	 */
 	public void register(BrokerType broker) {
-		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
+
+		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
+		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
+		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor
+				* params.pingTimer);
+		acktaskmap.put((BrokerNode) broker, task);
+
 	}
 
 	/*
@@ -141,6 +215,6 @@ public class PubSub extends PubSubNode {
 	 */
 	public void unregister(BrokerType broker) {
 		// TODO Auto-generated method stub
-		new UnregisterSubscriberMessage(this, (BrokerNode) broker, params.subntSzMsgRT);
+		new UnregisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
 	}
 }

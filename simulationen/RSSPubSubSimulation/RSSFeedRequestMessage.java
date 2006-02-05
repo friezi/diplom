@@ -9,7 +9,7 @@ public class RSSFeedRequestMessage extends Message {
 	private static int SIZE = 5;
 
 	public RSSFeedRequestMessage(PubSubNode src, RSSServerNode dest,SimParameters params) {
-		super(src, dest, params.rssFdReqMsgRT);
+		super(src, dest, params.rssFeedRequestMsgRT);
 		this.params=params;
 		setColor(Color.red);
 	}
