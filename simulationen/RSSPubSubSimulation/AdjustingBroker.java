@@ -59,9 +59,9 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	/**
-	 * This message is sent by a timer and indicates that
-	 * the brokers have to be informed about number of online subscribers.
-	 *  It's not displayed on screen.
+	 * This message is sent by a timer and indicates that the brokers have to be
+	 * informed about number of online subscribers. It's not displayed on
+	 * screen.
 	 */
 
 	/**
@@ -77,10 +77,8 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	/**
-	 * This message is sent by a timer and indicates that
-	 * the subscribers have to informed about change
-	 * of network-size.
-	 * It's not displayed on screen.
+	 * This message is sent by a timer and indicates that the subscribers have
+	 * to informed about change of network-size. It's not displayed on screen.
 	 */
 
 	/**
@@ -96,8 +94,8 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	/**
-	 * This message is sent by a timer and indicates that
-	 * its time to ping all neighbourbrokers
+	 * This message is sent by a timer and indicates that its time to ping all
+	 * neighbourbrokers
 	 * 
 	 */
 
@@ -124,7 +122,8 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	/**
-	 * This message will be receivec from a timer, if an expected ping timed out.
+	 * This message will be receivec from a timer, if an expected ping timed
+	 * out.
 	 */
 
 	/**
@@ -237,6 +236,8 @@ public class AdjustingBroker extends BrokerNode {
 	private Timer pingtimer = new Timer();
 
 	private PingTask pingtask = null;
+
+	private InformBrokersTask informbrokerstask = null;
 
 	private Timer pingTimeoutTimer = new Timer();
 
@@ -621,15 +622,19 @@ public class AdjustingBroker extends BrokerNode {
 
 		if ( getSubscribers().contains(subscriber) == false ) {
 			addToSubscribers(subscriber);
-			
+
 			// send acknowledgement
-			new RegisterAckMessage(this,subscriber,params.subnetParamMsgRT);
+			new RegisterAckMessage(this, subscriber, params.subnetParamMsgRT);
 
 			adjustNetsize(1);
 
 			// wait an amount of time before informing the other brokers
+			// must be a repeated task: if the node gets blocked, this operation
+			// must be again triggered
 			if ( isCollectingSubscrInfo() == false ) {
-				changetimer.schedule(new InformBrokersTask(this), params.informBrokersTimeout);
+				informbrokerstask = new InformBrokersTask(this);
+				changetimer.schedule(informbrokerstask, params.informBrokersTimeout,
+						params.informBrokersTimeout);
 				setCollectingSubscrInfo(true);
 			}
 		}
@@ -644,8 +649,12 @@ public class AdjustingBroker extends BrokerNode {
 			adjustNetsize(-1);
 
 			// wait an amount of time before informing the other brokers
+			// must be a repeated task: if the node gets blocked, this operation
+			// must be again triggered
 			if ( isCollectingSubscrInfo() == false ) {
-				changetimer.schedule(new InformBrokersTask(this), params.informBrokersTimeout);
+				informbrokerstask = new InformBrokersTask(this);
+				changetimer.schedule(informbrokerstask, params.informBrokersTimeout,
+						params.informBrokersTimeout);
 				setCollectingSubscrInfo(true);
 			}
 		}
@@ -715,6 +724,10 @@ public class AdjustingBroker extends BrokerNode {
 		setNmbOnlineSubscribers(getSubscribersSize());
 		if ( oldnmbonlinesubscribers != getNmbOnlineSubscribers() )
 			informAll();
+
+		// stop the triggering task
+		// ALL THIS IS DUE TO A VERY SUBTLE BUG WHICH ANNOYED ME QUITE MUCH
+		informbrokerstask.cancel();
 		setCollectingSubscrInfo(false);
 
 	}

@@ -115,6 +115,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -6099692865286022422L;
+	
+	private static final String windowtitle="RSS-feed distribution";
 
 	// / Width of the drawing pane.
 	private int currentWidth;
@@ -218,7 +220,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				JFrame.setDefaultLookAndFeelDecorated(true);
 
-				JFrame displayframe = new JFrame("Messaging Network");
+				JFrame displayframe = new JFrame(windowtitle);
 				displayframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				displayframe.getContentPane().add(guip);
 

@@ -64,7 +64,7 @@ public class PubSub extends PubSubNode {
 
 	protected int spreadDivisor;
 
-	protected long networksize = 0;
+	protected long networksize = 1;
 
 	public PubSub(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
@@ -121,7 +121,15 @@ public class PubSub extends PubSubNode {
 
 			spreadFactor = (int) (size / spreadDivisor);
 
-			updateRequestTimer();
+			long interval = calculateInterval();
+
+			// if we have a very long scheduled timer for the timer-task and due
+			// to
+			// the new network-size the new interval would be much shorter
+			// we should set up a new task, otherwise we can live with a short
+			// task
+			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
+				updateRequestTimer(interval);
 
 		} else if ( m instanceof AckTimerMessage ) {
 
@@ -145,7 +153,7 @@ public class PubSub extends PubSubNode {
 		int diff = (int) ((now.getTime() - feedDate.getTime()) / 1000);
 		if ( diff > ttl )
 			diff = ttl;
-		return (new Random().nextInt((spreadFactor + 1) * ttl + 1) + (ttl - diff)) * 1000;
+		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
 
 	}
 
@@ -154,6 +162,14 @@ public class PubSub extends PubSubNode {
 		feedRequestTask.cancel();
 		feedRequestTask = new FeedRequestTask();
 		feedRequestTimer.schedule(feedRequestTask, calculateInterval());
+
+	}
+
+	synchronized protected void updateRequestTimer(long interval) {
+
+		feedRequestTask.cancel();
+		feedRequestTask = new FeedRequestTask();
+		feedRequestTimer.schedule(feedRequestTask, interval);
 
 	}
 
