@@ -44,68 +44,82 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		public void mouseClicked(MouseEvent event) {
 
-			Point point = new Point(event.getPoint().x - WINDOW_LEFT_BORDER_SIZE, event.getPoint().y
-					- WINDOW_TOP_BORDER_SIZE);
+			// Button3 makes the controlframe visible or invisible
+			if ( event.getButton() == MouseEvent.BUTTON3 ) {
 
-			if ( choice_status == FIRST_CHOICE ) {
-				// check if we hit a Node
-				if ( (firstnode = Engine.getSingleton().findNode(point)) != null ) {
-					if ( choice == ADD_CONN_CMD ) {
-
-						addconnectionbutton.setText(selectSecondNodeTxt);
-
-					} else if ( choice == DEL_CONN_CMD ) {
-
-						deleteconnectionbutton.setText(selectSecondNodeTxt);
-
-					} else if ( choice == BLOCK_NODE_CMD ) {
-
-						firstnode.block();
-						choice_status = NO_CHOICE;
-						firstnode.setColor(new Color((float) 0.5, 0, 0));
-						enableGroup(buttongroup1);
-						return;
-
-					} else if ( choice == UNBLOCK_NODE_CMD ) {
-
-						firstnode.unblock();
-						choice_status = NO_CHOICE;
-						firstnode.setDefaultColor();
-						enableGroup(buttongroup1);
-						return;
-					}
-
-					choice_status = SECOND_CHOICE;
-					firstnode.setColor(Color.red);
+				if ( toolbar == true ) {
+					toolbar = false;
+					controlframe.setVisible(false);
 				} else {
-					// no node hit
-
-					choice_status = NO_CHOICE;
-					enableGroup(buttongroup1);
-
+					toolbar = true;
+					controlframe.setVisible(true);
 				}
 
-			} else if ( choice_status == SECOND_CHOICE ) {
+			} else {
 
-				if ( (secondnode = Engine.getSingleton().findNode(point)) != null ) {
-					if ( choice == ADD_CONN_CMD ) {
+				Point point = new Point(event.getPoint().x - WINDOW_LEFT_BORDER_SIZE, event.getPoint().y
+						- WINDOW_TOP_BORDER_SIZE);
 
-						addconnectionbutton.setText(addCmd);
-						addconnectionbutton.setEnabled(true);
+				if ( choice_status == FIRST_CHOICE ) {
+					// check if we hit a Node
+					if ( (firstnode = Engine.getSingleton().findNode(point)) != null ) {
+						if ( choice == ADD_CONN_CMD ) {
 
-					} else if ( choice == DEL_CONN_CMD ) {
+							addconnectionbutton.setText(selectSecondNodeTxt);
 
-						deleteconnectionbutton.setText(deleteCmd);
-						deleteconnectionbutton.setEnabled(true);
+						} else if ( choice == DEL_CONN_CMD ) {
+
+							deleteconnectionbutton.setText(selectSecondNodeTxt);
+
+						} else if ( choice == BLOCK_NODE_CMD ) {
+
+							firstnode.block();
+							choice_status = NO_CHOICE;
+							firstnode.setColor(new Color((float) 0.5, 0, 0));
+							enableGroup(buttongroup1);
+							return;
+
+						} else if ( choice == UNBLOCK_NODE_CMD ) {
+
+							firstnode.unblock();
+							choice_status = NO_CHOICE;
+							firstnode.setDefaultColor();
+							enableGroup(buttongroup1);
+							return;
+						}
+
+						choice_status = SECOND_CHOICE;
+						firstnode.setColor(Color.red);
+					} else {
+						// no node hit
+
+						choice_status = NO_CHOICE;
+						enableGroup(buttongroup1);
 
 					}
-					choice_status = DO_IT;
-					secondnode.setColor(Color.red);
-				} else {
-					// no node hit
-					choice_status = NO_CHOICE;
-					enableGroup(buttongroup1);
-					firstnode.setDefaultColor();
+
+				} else if ( choice_status == SECOND_CHOICE ) {
+
+					if ( (secondnode = Engine.getSingleton().findNode(point)) != null ) {
+						if ( choice == ADD_CONN_CMD ) {
+
+							addconnectionbutton.setText(addCmd);
+							addconnectionbutton.setEnabled(true);
+
+						} else if ( choice == DEL_CONN_CMD ) {
+
+							deleteconnectionbutton.setText(deleteCmd);
+							deleteconnectionbutton.setEnabled(true);
+
+						}
+						choice_status = DO_IT;
+						secondnode.setColor(Color.red);
+					} else {
+						// no node hit
+						choice_status = NO_CHOICE;
+						enableGroup(buttongroup1);
+						firstnode.setDefaultColor();
+					}
 				}
 			}
 		}
@@ -208,6 +222,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private int choice = ADD_CONN_CMD;
 
+	private boolean toolbar = true;
+
+	JFrame controlframe = new JFrame("Controls");
+
 	private MouseClick mouseclick = new MouseClick();
 
 	/**
@@ -231,7 +249,6 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				displayframe.addMouseListener(mouseclick);
 
-				JFrame controlframe = new JFrame("Controls");
 				JPanel buttonpanel = new JPanel();
 
 				controlbutton = new JButton(startSimulationCmd);
@@ -425,7 +442,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
 			enableGroup(buttongroup1);
-//			Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode, mouseclick.secondnode);
+			// Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode,
+			// mouseclick.secondnode);
 			processUnregister(mouseclick.firstnode, mouseclick.secondnode);
 		} else if ( e.getActionCommand().equals(addCmd) ) {
 			choice = NO_CHOICE;
