@@ -132,6 +132,14 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 		setColor(Color.blue);
 	}
 
+	/**
+	 * deletes all the obserevrs which are observing gui-operations.
+	 */
+	public void deleteGuiObservers() {
+		peers.deleteAddObserver(this);
+		peers.deleteRemoveObserver(this);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

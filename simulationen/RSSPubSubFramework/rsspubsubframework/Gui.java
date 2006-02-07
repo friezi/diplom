@@ -115,8 +115,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -6099692865286022422L;
-	
-	private static final String windowtitle="RSS-feed distribution";
+
+	private static final String windowtitle = "RSS-feed distribution";
 
 	// / Width of the drawing pane.
 	private int currentWidth;
@@ -425,23 +425,26 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
 			enableGroup(buttongroup1);
-			Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode, mouseclick.secondnode);
+//			Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode, mouseclick.secondnode);
+			processUnregister(mouseclick.firstnode, mouseclick.secondnode);
 		} else if ( e.getActionCommand().equals(addCmd) ) {
 			choice = NO_CHOICE;
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
 			enableGroup(buttongroup1);
 			Engine.getSingleton().addEdge(mouseclick.firstnode, mouseclick.secondnode);
-			// processRegister(mouseclick.firstnode, mouseclick.secondnode);
-			// registering happens automatically by adding the edge
-		} else if ( e.getActionCommand().equals(blockCmd) ) {
-			choice = NO_CHOICE;
-			mouseclick.firstnode.setDefaultColor();
-			mouseclick.secondnode.setDefaultColor();
-			enableGroup(buttongroup1);
-			Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode, mouseclick.secondnode);
-			((PubSubType) mouseclick.firstnode).unregister((BrokerType) mouseclick.secondnode);
-			// PUT IN ACTION!!!!!!!!!!!!!
+			processRegister(mouseclick.firstnode, mouseclick.secondnode);
+
+			// } else if ( e.getActionCommand().equals(blockCmd) ) {
+			// choice = NO_CHOICE;
+			// mouseclick.firstnode.setDefaultColor();
+			// mouseclick.secondnode.setDefaultColor();
+			// enableGroup(buttongroup1);
+			// Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode,
+			// mouseclick.secondnode);
+			// ((PubSubType) mouseclick.firstnode).unregister((BrokerType)
+			// mouseclick.secondnode);
+			// // PUT IN ACTION!!!!!!!!!!!!!
 		} else if ( e.getActionCommand().equals(cancelCmd) ) {
 			choice = NO_CHOICE;
 			if ( mouseclick.firstnode != null ) {
@@ -455,35 +458,53 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			enableGroup(buttongroup1);
 		}
 	}
+
+	protected boolean twoBrokers(Node node1, Node node2) {
+		if ( node1 instanceof BrokerType )
+			if ( node2 instanceof BrokerType )
+				return true;
+		return false;
+	}
+
+	protected boolean subscriberToBroker(Node node1, Node node2) {
+		if ( node1 instanceof PubSubType )
+			if ( node2 instanceof BrokerType )
+				return true;
+		return false;
+	}
+
+	protected void processRegister(Node node1, Node node2) {
+
+		// A broker should only register at a broker
+		if ( twoBrokers(node1, node2) == true ) {
+
+			((BrokerType) node1).register((BrokerType) node2);
+			// ((BrokerType) node2).register((BrokerType) node1);
+
+		} else if ( subscriberToBroker(node1, node2) == true ) {
+			// a subscriber should only register at a broker
+			((PubSubType) node1).register((BrokerType) node2);
+		} else if ( subscriberToBroker(node2, node1) == true ) {
+			// or vice-versa?
+			((PubSubType) node2).register((BrokerType) node1);
+		}
+	}
+
+	protected void processUnregister(Node node1, Node node2) {
+
+		// A broker should only register at a broker
+		if ( twoBrokers(node1, node2) == true ) {
+
+			((BrokerType) node1).unregister((BrokerType) node2);
+			// ((BrokerType) node2).register((BrokerType) node1);
+
+		} else if ( subscriberToBroker(node1, node2) == true ) {
+			// a subscriber should only register at a broker
+			((PubSubType) node1).unregister((BrokerType) node2);
+		} else if ( subscriberToBroker(node2, node1) == true ) {
+			// or vice-versa?
+			((PubSubType) node2).unregister((BrokerType) node1);
+		}
+	}
 	//
-	// protected void processRegister(Node node1, Node node2) {
-	//
-	// // A broker should only register at a broker
-	// if ( twoBrokers(node1, node2) == true ) {
-	//
-	// ((BrokerType) node1).register((BrokerType) node2);
-	// ((BrokerType) node2).register((BrokerType) node1);
-	//
-	// } else if ( subscriberToBroker(node1, node2) == true ) {
-	// // a subscriber should only register at a broker
-	// ((PubSubType) node1).register((BrokerType) node2);
-	// } else if ( subscriberToBroker(node2, node1) == true ) {
-	// // or vice-versa?
-	// ((PubSubType) node2).register((BrokerType) node1);
-	// }
-	// }
-	//
-	// protected boolean twoBrokers(Node node1, Node node2) {
-	// if ( node1 instanceof BrokerType )
-	// if ( node2 instanceof BrokerType )
-	// return true;
-	// return false;
-	// }
-	//
-	// protected boolean subscriberToBroker(Node node1, Node node2) {
-	// if ( node1 instanceof PubSubType )
-	// if ( node2 instanceof BrokerType )
-	// return true;
-	// return false;
-	// }
 }

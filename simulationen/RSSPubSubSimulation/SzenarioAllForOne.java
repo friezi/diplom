@@ -105,11 +105,19 @@ public class SzenarioAllForOne {
 
 		rssServer.addToInitList();
 
-//		pubsublist.get(0).addToInitList();
+		// pubsublist.get(0).addToInitList();
 
-		 for ( PubSubNode pubsub : pubsublist ) {
-		 pubsub.addToInitList();
-		 }
+		for ( PubSubNode pubsub : pubsublist ) {
+			pubsub.addToInitList();
+		}
+
+		// all setup is done, gui-observers should be removed
+
+		for ( BrokerNode broker : brokerlist )
+			broker.deleteGuiObservers();
+
+		for ( PubSubNode currpubsub : pubsublist )
+			currpubsub.deleteGuiObservers();
 
 	}
 }

@@ -133,6 +133,14 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 		setColor(new java.awt.Color((float) 0.5, (float) 0.5, 0));
 	}
 
+	/**
+	 * deletes all the obserevrs which are observing gui-operations.
+	 */
+	public void deleteGuiObservers() {
+		peers.deleteAddObserver(this);
+		peers.deleteRemoveObserver(this);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -155,6 +163,10 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 	public void unregister(BrokerType arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	protected void removeConnection(BrokerNode node1, BrokerNode node2) {
+		Engine.getSingleton().removeEdgeFromNodes(node1, node2);
 	}
 
 }

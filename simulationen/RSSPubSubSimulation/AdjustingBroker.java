@@ -297,8 +297,17 @@ public class AdjustingBroker extends BrokerNode {
 
 			SubnetParamMessage ssm = (SubnetParamMessage) m;
 
+			// check if message came from an authorized node
 			if ( getSubnets().containsKey((BrokerNode) ssm.getSrc()) ) {
 				SubnetSettings subnetsettings = getSubnets().get(ssm.getSrc());
+
+				// if we are the initiator of the message we discovered a
+				// circle, so we brake down the connection to the
+				// "causeOfMessage"-node which created the circle
+				if ( ssm.getMI() == this )
+					if ( ssm.getCOM() instanceof BrokerType )
+						unregister((BrokerType) ssm.getCOM());
+
 				//
 				// /**
 				// ***********************************************************
@@ -321,7 +330,9 @@ public class AdjustingBroker extends BrokerNode {
 					// set new size
 					subnetsettings.getSubParams().setSize(ssm.getSubParams().getSize());
 					// send new size to all other neighbourbrokers
-					informAllBut(ssm.getSrc());
+					// keep the original messageInitiator and causeOfMessage to
+					// detect circles
+					informAllBut(ssm.getSrc(), ssm.getMI(), ssm.getCOM());
 				}
 
 			}
@@ -358,14 +369,14 @@ public class AdjustingBroker extends BrokerNode {
 			new RegisterAckMessage(this, rbm.getSrc(), params.subnetParamMsgRT / 2);
 
 			// send subnetsize to broker
-			sendSubnetSize((BrokerNode) rbm.getSrc());
+			sendSubnetSize((BrokerNode) rbm.getSrc(), this, rbm.getSrc());
 
 			// set timer
 			subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) rbm.getSrc()));
 
 			// only on change tell the others
 			if ( rbm.getSubParams().getSize() != oldsubnetsize )
-				informAllBut(rbm.getSrc());
+				informAllBut(rbm.getSrc(), this, rbm.getSrc());
 
 		} else if ( m instanceof RegisterAckMessage ) {
 
@@ -463,7 +474,10 @@ public class AdjustingBroker extends BrokerNode {
 					// set new size
 					subnetsettings.getSubParams().setSize(pm.getSubParams().getSize());
 					// send new size to all other neighbourbrokers
-					informAllBut(pm.getSrc());
+					// here we don't want to check for occurence of circles, so
+					// we set MI and
+					// COM always new
+					informAllBut(pm.getSrc(), this, pm.getSrc());
 
 				}
 
@@ -557,10 +571,10 @@ public class AdjustingBroker extends BrokerNode {
 	 * @param broker
 	 *            the broker
 	 */
-	protected void sendSubnetSize(BrokerNode broker) {
+	protected void sendSubnetSize(BrokerNode broker, Node messageInitiator, Node causeOfMessage) {
 
-		new SubnetParamMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
-				params);
+		new SubnetParamMessage(this, broker, messageInitiator, causeOfMessage, new SubnetParameters(
+				calcNetSizeWithout(broker), new Date()), params);
 
 	}
 
@@ -680,12 +694,12 @@ public class AdjustingBroker extends BrokerNode {
 
 	}
 
-	protected void informAllBut(Node exclbroker) {
+	protected void informAllBut(Node exclbroker, Node messageInitiator, Node causeOfMessage) {
 
 		Set<BrokerNode> currbrokers = getBrokers();
 		for ( BrokerNode otherbroker : currbrokers ) {
 			if ( otherbroker != exclbroker )
-				sendSubnetSize(otherbroker);
+				sendSubnetSize(otherbroker, messageInitiator, causeOfMessage);
 		}
 
 		doInformSubscriberTimer();
@@ -706,8 +720,8 @@ public class AdjustingBroker extends BrokerNode {
 
 	}
 
-	protected void informAll() {
-		informAllBut(null);
+	protected void informAll(Node messageInitiator, Node causeOfMessage) {
+		informAllBut(null, messageInitiator, causeOfMessage);
 	}
 
 	/**
@@ -723,7 +737,7 @@ public class AdjustingBroker extends BrokerNode {
 		int oldnmbonlinesubscribers = getNmbOnlineSubscribers();
 		setNmbOnlineSubscribers(getSubscribersSize());
 		if ( oldnmbonlinesubscribers != getNmbOnlineSubscribers() )
-			informAll();
+			informAll(this, this); // cause of message is not important
 
 		// stop the triggering task
 		// ALL THIS IS DUE TO A VERY SUBTLE BUG WHICH ANNOYED ME QUITE MUCH
@@ -763,7 +777,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		// inform others on change
 		if ( subnetsize != 0 )
-			informAllBut(broker);
+			informAllBut(broker, this, broker);
 
 	}
 
@@ -789,7 +803,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		// inform others on change
 		if ( subnetsize != 0 )
-			informAllBut(broker);
+			informAllBut(broker, this, broker);
 
 	}
 
@@ -919,6 +933,10 @@ public class AdjustingBroker extends BrokerNode {
 		// TODO Auto-generated method stub
 		super.unregister(broker);
 		unregisterFromBroker((BrokerNode) broker);
+		try {
+			removeConnection(this, (BrokerNode) broker);
+		} catch ( ConcurrentModificationException e ) {
+		}
 	}
 
 }

@@ -19,9 +19,23 @@ public class SubnetParamMessage extends Message {
 
 	private SimParameters params;
 
-	public SubnetParamMessage(Node src, Node dst, SubnetParameters subparams, SimParameters params) {
+	/**
+	 * the node at which a change of subnet-size occured and which initiated the
+	 * message
+	 */
+	protected Node messageInitiator;
+
+	/**
+	 * the node which caused a change of subnet-size
+	 */
+	protected Node causeOfMessage;
+
+	public SubnetParamMessage(Node src, Node dst, Node messageInitiator, Node causeOfMessage,
+			SubnetParameters subparams, SimParameters params) {
 
 		super(src, dst, params.subnetParamMsgRT);
+		this.messageInitiator = messageInitiator;
+		this.causeOfMessage = causeOfMessage;
 		this.params = params;
 		setSubParams(subparams);
 		if ( params.showSizeBrokerMsg == true )
@@ -64,6 +78,20 @@ public class SubnetParamMessage extends Message {
 			if ( subParams != null )
 				return String.valueOf(subParams.getSize());
 		return "";
+	}
+
+	/**
+	 * @return Returns the causeOfMessage.
+	 */
+	protected synchronized Node getCOM() {
+		return causeOfMessage;
+	}
+
+	/**
+	 * @return Returns the messageInitiator.
+	 */
+	protected synchronized Node getMI() {
+		return messageInitiator;
 	}
 
 }

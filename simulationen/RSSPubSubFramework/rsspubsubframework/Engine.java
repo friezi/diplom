@@ -132,7 +132,7 @@ final public class Engine extends java.util.TimerTask {
 	 * 
 	 * @return Main simulation object.
 	 */
-	static Engine getSingleton() {
+	public static Engine getSingleton() {
 		return singleton;
 	}
 
@@ -194,13 +194,27 @@ final public class Engine extends java.util.TimerTask {
 		edge.removeConnection();
 	}
 
-	final synchronized void removeEdgeFromNodes(Node node1, Node node2) {
+	// modified by friezi
+	public final synchronized void removeEdgeFromNodes(Node node1, Node node2) {
+
+		boolean foundfirst = false;
+		boolean foundsecond = false;
 
 		for ( Edge edge : edgeList ) {
-			if ( (edge.node1() == node1 && edge.node2() == node2)
-					|| (edge.node1() == node2 && edge.node2() == node1) ) {
-				removeEdge(edge);
+
+			if ( foundfirst == true && foundsecond == true )
 				break;
+
+			if ( (edge.node1() == node1 && edge.node2() == node2) ) {
+
+				removeEdge(edge);
+				foundfirst = true;
+
+			} else if ( (edge.node1() == node2 && edge.node2() == node1) ) {
+
+				removeEdge(edge);
+				foundsecond = true;
+
 			}
 		}
 

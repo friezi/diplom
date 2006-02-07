@@ -295,5 +295,13 @@ public class SzenarioOneSurrounded {
 			currpubsub.addToInitList();
 		}
 
+		// all setup is done, gui-observers should be removed
+
+		for ( BrokerNode broker : brokerlist )
+			broker.deleteGuiObservers();
+
+		for ( PubSubNode currpubsub : pubsublist )
+			currpubsub.deleteGuiObservers();
+
 	}
 }

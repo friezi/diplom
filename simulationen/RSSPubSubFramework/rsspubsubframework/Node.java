@@ -107,6 +107,26 @@ abstract public class Node extends DisplayableObject {
 			this.removeNotifier.addObserver(o);
 		}
 
+		/**
+		 * deletes an observer from addNotifier
+		 * 
+		 * @param o
+		 *            the Observer
+		 */
+		public void deleteAddObserver(Observer o) {
+			this.addNotifier.deleteObserver(o);
+		}
+
+		/**
+		 * deletes an observer from removeNotifier
+		 * 
+		 * @param o
+		 *            the Observer
+		 */
+		public void deleteRemoveObserver(Observer o) {
+			this.removeNotifier.deleteObserver(o);
+		}
+
 	}
 
 	// / Serial number counter.
