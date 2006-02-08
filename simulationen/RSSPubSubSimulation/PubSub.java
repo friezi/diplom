@@ -152,7 +152,8 @@ public class PubSub extends PubSubNode {
 		int ttl = getFeed().getGeneralContent().getTtl();
 		int diff = (int) ((now.getTime() - feedDate.getTime()) / 1000);
 		if ( diff > ttl )
-			diff = ttl;
+			// diff = ttl;
+			diff = 0;
 		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
 
 	}
