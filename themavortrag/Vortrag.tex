@@ -54,7 +54,7 @@
 
   \frametitle{RSS: Really Simple Syndication}
   \begin{itemize}
-    \item RSS-Feed dient zur Kurzbeschreibung von Web-News
+    \item RSS-Feed dient u.a. zur Kurzbeschreibung von Web-News
     \item XML-basiert
     \item Erreichbar durch Link auf Anbieterseite
   \end{itemize}
@@ -143,7 +143,7 @@
       \end{list}
     \item Filterdefinition nur beim Anwender:
       \begin{list}{$\longrightarrow$}{}
-        \item alle Feeds müssen gedownloaded werden
+        \item alle Feeds müssen heruntergeladen werden
       \end{list}
   \end{itemize}
   \nocite{Hicks:2004:RSSBandwith}
@@ -154,17 +154,91 @@
 
   \frametitle{Ziel}
   \begin{itemize}
-    \item Verteilung der RSS-Feeds mittels herkömmlichem Pub/Sub $\Longrightarrow$ Notifikation der Subscriber
-    \item Ermöglichung der subscriberseitigen Definition von Filtern
-    \item Reduzierung des Datenverkehrs durch RSS-Polling
     \item Entlastung der RSS-Server
+    \item Reduzierung des Datenverkehrs aufgrund von Polling
+    \item Erhöhung des Aktualitätsgrades der Feeds auf Nutzerseite
+    \item Ermöglichung der subscriber-seitigen Definition von Filtern
   \end{itemize}
 
 \end{frame}
 
-\section{Realisierung}
+\section{Umsetzung}
 \begin{frame}
-  \frametitle{Konstruktion eines Overlay-Broker-Netzwerkes}
+  \frametitle{Integration von RSS in verteiltes Pub/Sub-System}
+  \begin{itemize}
+    \item RSS-Server könnte als Publisher fungieren
+    \item Broker sorgen für eine Verteilung der Feeds an Nutzer (Subscriber)
+  \end{itemize}
+
+  \pause
+  Problem:\\
+  Neue Software muss sowohl auf Server-Seite als auch auf Anwenderseite installiert werden.
+%    \item Verteilung der RSS-Feeds mittels herkömmlichem Pub/Sub $\Longrightarrow$ Notifikation der Subscriber
+\end{frame}
+
+\begin{frame}
+  \frametitle{Lösung:}
+\begin{itemize}
+  \item Rolle der RSS-Server verändert sich nicht
+  \item Nutzer holen Feed in der Rolle des Publisher und speisen ihn in das Broker-Netz
+  \item Broker verteilen Feeds an Nutzer bzw. Subscriber
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[bb=-100 0 200 250,scale=0.6]{RSSPubSub}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ansatz: Ein Publisher}
+  \begin{itemize}
+    \item Ein Publisher würde ausreichen um Feed herunterzuladen
+    \item Alle weiteren Nutzer  bzw. Subscriber würden den Feed übers Netzwerk erhalten
+  \end{itemize}
+
+  \pause
+  Vorteil:\\
+  Wenige Anfragen an den RSS-Server
+\vspace{0.5cm}
+  
+  \pause
+  Problem:\\
+  Aktualität der Feeds!\\
+  $\longrightarrow$ lange Übertragungszeiten in Abhängigkeit von Netzstruktur
+\end{frame}
+
+\begin{frame}
+  \frametitle{Aktualität vs. Server-Belastung}
+  \includegraphics[bb=20 0 200 250,scale=0.5]{Verzoegerung}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ansatz: Mehrere Publisher}
+  \begin{itemize}
+    \item Mehrere Publisher laden Feed herunter
+    \item $\rightarrow$ Mindestens so viele, dass gewisse Aktualität d. F.'s erreicht wird
+    \item $\rightarrow$ Höchstens so viele, dass Server nicht überlastet wird
+  \end{itemize}
+\vspace{0.5cm}
+
+$\longrightarrow$ Optimum muss bestimmt werden
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Frage:}
+  Wie können sich die Publisher darüber abstimmen, wer als nächstes den aktuellen Feed abholt?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Herausforderungen}
+Entwicklung von Algorithmen zur \dots
+  \begin{itemize}
+    \item \dots Koordination der Publisher
+    \item \dots Ermittlung der RSS-Server-Auslastung
+    \item \dots Bestimmung des Update-Intervalls eines Feeds
+    \item \dots Bestimmung der Nachrichtenlaufzeiten (eventuell)
+  \end{itemize}
 \end{frame}
 
 \section{Literatur}
