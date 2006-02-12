@@ -13,16 +13,17 @@
 \section*{Integration von RSS mit verteiltem Publish/Subscribe}
 \centerline{Friedemann Zintel}
 \subsection*{Einleitung}
-In der herkömmlichen Beschreibung des Publish/Subscribe-Paradigmas (kurz: Pub/Sub-Paradigma bzw. Pub/\-Sub-System) finden sich drei
+Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub bzw. Pub/\-Sub-System) finden sich drei
 Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren
 sich für bestimmte Informationen und können diese abonnieren (subskribieren);
-\glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen/Informationen an die Subscriber.
+\glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen an die Subscriber.
 Aufgrund der indirekten Verbindung zwischen Subscribern und Publishern über die Broker brauchen sich Publisher nicht um eine Vielzahl von
 Interessenten zu kümmern.
 Zudem lässt die broker-seitige Ansammlung einer Reihe von Informationen die Definition von Filtern zu, durch die
 anbieterübergreifend Informationen seitens der Subscriber abgefragt werden können.
 \\\\
-RSS (Really Simple Syndication) zählt zwar zu den Pub/Sub-Systemen jedoch nicht im herkömmlichen Sinne, denn es folgt dem klassischen Client/Server-Ansatz.
+RSS (Really Simple Syndication) zählt zwar zu den Pub/Sub-Systemen jedoch nicht zu den verteilten push-basierten, wie sie oben beschrieben wurden,
+denn es folgt dem klassischen Client/Server-Ansatz.
 Es handelt sich um zentralisiertes Polling, Message-Broker sind hierbei nicht vorgesehen:
 auf einer Webpage wird ein RSS-Feed (aktueller Beitrag) vom RSS-Server als XML-Datei abgelegt.
 Ein Feed ist einem Thema (Channel) zugeordnet und beinhaltet
@@ -48,10 +49,12 @@ in \cite{SandlerEtAl:2005:FeedTree}.
 Um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität der Informationen und eine höhere Flexibilität in Bezug
 auf die Auswahl der Informationen seitens der Nutzer zu erreichen, bietet es
 sich an, ein Publish/Subscribe-System einzusetzen. RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
-übermitteln, welche die Feeds ihrerseits an Nutzer (Subscriber) weiterleiten, die bei jenen registriert sind. Dies würde jedoch bedeuten,
-dass sowohl auf Nutzer- als auch auf RSS-Server-Seite die schon bestehenden Anwendungen durch neue ersetzt werden müssten.
+übermitteln, welche die Feeds ihrerseits an Nutzer (Subscriber) weiterleiten. Dies würde jedoch bedeuten,
+dass sowohl auf Nutzer- als auch auf RSS-Server-Seite die schon bestehenden Anwendungen durch neue ersetzt werden müssten, oder entsprechende Software
+installiert werden müsste.
 Solch ein Ansatz würde sicherlich auf
-Akzeptanzschwierigkeiten stoßen. Um dies zu verhindern, bietet sich folgendes Konzept an: Die Rolle der RSS-Server bleibt bestehen und ändert sich nicht.
+Akzeptanzschwierigkeiten stoßen. Außerdem würde der Aktualitätsgrad hier wie auch bei dem Ansatz unten mit nur einem Poller von dem Overlay-Netz abhängen
+und könnte ungünstig ausfallen! Um dies zu verhindern, bietet sich folgendes Konzept an: Die Rolle der RSS-Server bleibt bestehen und ändert sich nicht.
 Nutzer entsprechen sowohl den Publishern als auch den Subscribern.
 In der Rolle des Publishers erfragt ein Nutzer den aktuellen Feed beim
 RSS-Server und speist ihn in das Netz ein bzw. übermittelt ihn an seinen lokalen Broker.
@@ -76,32 +79,28 @@ schon auf der Broker-Ebene gefiltert werden (Filter werden von Brokern an
 Nachbarbroker weitergeleitet). Die Filterung kann anbieterübergreifend wirken, da sich Feeds von unterschiedlichen
 RSS-Servern an einem Broker sammeln. Um eine genaue Analyse der Feeds bezüglich der angegebenen Filter zu ermöglichen, wird die inhaltsbasierte Filterung
 (content-based filtering, \cite{Muehl:2001:GenericConstraints}) favorisiert. Hierfür ist es notwendig, nicht nur die Feeds selbst, sondern
-auch die durch sie referenzierten Daten herunterzuladen, um sie in den Filtervorgang mit einzubeziehen. Die notwendigen Filter-Techniken wurden
-bereits in dem Publish/Subscribe-System REBECA \cite{MuFiBu:2001:ArchFrameECommApp} umgesetzt.
+auch die durch sie referenzierten Daten herunterzuladen, um sie in den Filtervorgang mit einzubeziehen.
 Die Filterung der Feeds auf Broker-Ebene ermöglicht den Subscribern eine
 inhaltsorientierte Sichtweise auf Subskriptionen im Gegensatz zur bisherigen anbieterorientierten Sichtweise.\\\\
 Vorteile des genannten Ansatzes gegenüber anderen Ansätzen (wie z.B. FeedTree\cite{SandlerEtAl:2005:FeedTree}) sind:
 \begin{itemize}
-  \item Das Overlay-Netzwerk kann sich problemlos in ein bestehendes RSS-System integrieren, d.h. es ist keine neue Anbieter-Software
+  \item Die Lösung kann sich problemlos in ein bestehendes RSS-System integrieren, d.h. es ist keine neue Anbieter-Software
         für RSS-Server nötig
   \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z.B. Abfangen der Anfragen durch eine Proxy)
   \item Eine komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig, auf schon bestehende Systeme kann zurückgegriffen und aufgebaut werden
         (z.B. REBECA\cite{MuFiBu:2001:ArchFrameECommApp})
 \end{itemize}
 
-Das Overlay-Netzwerk sollte dabei folgende Eigenschaften erfüllen:
+Der zu entwerfende Algorithmus sollte dabei folgende Eigenschaften erfüllen:
 \begin{itemize}
 \item Hotspots (gleichzeitige Anfrage aller Publisher an einen RSS-Server) sollen nach Möglichkeit vermieden werden
 \item Dem Netz spontan beigetretene Broker sollen erforderliche Parameter automatisch beziehen bzw. einstellen:
   $\longrightarrow$ Selbstkonfiguration\\
   Die Parameter der Broker sollen sich den veränderlichen Bedingungen des Netzes (z.B. Netzgröße) anpassen:
   $\longrightarrow$  Adaption\\
-  Unabhängig vom momentanen Zustand soll das Netz fähig sein, nach gewisser Zeit in einem gültigen Zustand zu landen
-  (z.B. korrekte Information jedes Brokers über verbundene Subscriber oder Subnetzgrößen):
-  $\longrightarrow$ Selbststabilisierung\\
-  Das Netz soll vorübergehende Fehler in der Netzkonfiguration überstehen und selbständig beseitigen (z.B eventuelle Zyklen im
+  Das Netz soll auftretende Fehler in der Netzkonfiguration überstehen und selbständig beseitigen (z.B eventuelle Zyklen im
   Netz):
-  $\longrightarrow$ Selbstheilung\\
+  $\longrightarrow$ Selbststabilisierung bzw. -heilung\\
   Siehe dazu auch \cite{HeMueGei:2005:SelfMa}
 \end{itemize}
 
