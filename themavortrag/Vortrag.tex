@@ -12,6 +12,7 @@
 
 \title{Integration von RSS mit verteiltem Publish/Subscribe}
 \author{Friedemann Zintel}
+\date{16. Februar 2006}
 
 \begin{document}
 \bibliographystyle{ieeetr}
@@ -34,10 +35,10 @@
 \begin{frame}
 
   \begin{itemize}
-    \item Verteilung von Informationen über das Internet gewinnt immer mehr an Bedeutung.
-    \item Verteilungskonzept: Publish/Subscribe (Pub/Sub)
-    \item RSS: Pub/Sub-System, jedoch nicht im herkömmlichen Sinne
-    \item RSS: von viele Anbietern unterstützt (beliebt: BLogs)
+    \item Das am meisten verbreitete Publish/Subscribe-System im Internet: RSS
+    \item RSS: nicht Push sondern Polling
+    \item RSS: von viele Anbietern unterstützt
+    \item Beispiele: BLogs, Podcasting (anbieten von Medien-Dateien, z.B. mp3)
   \end{itemize}
 
 \end{frame}
@@ -116,8 +117,8 @@
     \item Aktualität der Feeds
     \item Definition von Filtern auf höherer Ebene: zur \dots
       \begin{list}{}{}
-        \item \dots individuellen Vorselektion der News
-	\item \dots anbieterübergreifenden Zusammenstellung neuer Feeds
+        \item \dots individuellen Vorselektion der Feeds
+	\item \dots anbieterübergreifenden Auswahl von Feeds
       \end{list}
   \end{itemize}
 
@@ -127,9 +128,9 @@
 
   \frametitle{Stand der Dinge}
   \begin{itemize}
-    \item RSS: Kein Pub/Sub im herkömmlichen Sinne $\rightarrow$ Client/Server
-    \item Feeds müssen von Anwendersoftware erfragt werden (Polling)
-    \item Vordefinierte Channel $\rightarrow$ thematische Zuordnung auf Publisherseite
+    \item RSS: Kein push-basiertes Pub/Sub $\rightarrow$ Client/Server
+    \item Feeds müssen von Anwendersoftware heruntergeladen werden (Polling)
+    \item Vordefinierte Channel $\rightarrow$ thematische Zuordnung auf RSS-Server-Seite
     \item Definition von Filtern nur auf Anwenderseite möglich
   \end{itemize}
 
@@ -163,12 +164,22 @@
 \end{frame}
 
 \section{Umsetzung}
+\subsection{Integration von RSS in verteiltes Pub/Sub-System}
+
 \begin{frame}
   \frametitle{Integration von RSS in verteiltes Pub/Sub-System}
+  Innerhalb eines Overlay-Netzwerkes wird für die Verteilung der Feeds gesorgt.\\
+  \vspace{0.5cm}
+  Als Grundlage kann schon existierende Overlay-Netzwerk-Software dienen (z.B. REBECA\cite{MuFiBu:2001:ArchFrameECommApp}).
+\end{frame}
+
+\begin{frame}
+  \vspace{0.5cm}
   \begin{itemize}
     \item RSS-Server könnte als Publisher fungieren
     \item Broker sorgen für eine Verteilung der Feeds an Nutzer (Subscriber)
   \end{itemize}
+  \vspace{0.5cm}
 
   \pause
   Problem:\\
@@ -232,12 +243,34 @@ $\longrightarrow$ Optimum muss bestimmt werden
 
 \begin{frame}
   \frametitle{Herausforderungen}
-Entwicklung von Algorithmen zur \dots
+Entwicklung eines bzw. mehrerer Algorithmen zur \dots
   \begin{itemize}
     \item \dots Koordination der Publisher
     \item \dots Ermittlung der RSS-Server-Auslastung
     \item \dots Bestimmung des Update-Intervalls eines Feeds
     \item \dots Bestimmung der Nachrichtenlaufzeiten (eventuell)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Erwartungen an den Algorithmus}
+  Der Entwurf des Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
+  \begin{itemize}
+    \item Vermeidung von Hotspots
+    \item Broker sollen Parameter automatisch einstellen bzw. beziehen
+    \item Parameter sollen sich den dynamischen Gegebenheiten des Netzes Anpassen
+    \item Netz soll auftretende Fehler überstehen und selbständig beseitigen
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Vorteile des Ansatzes}
+  Vorteile gegenüber ähnlichen Ansätzen (wie z.B. FeedTree\cite{SandlerEtAl:2005:FeedTree}):
+  \begin{itemize}
+    \item Lösung kann sich problemlos in bestehende RSS-Architektur integrieren
+    \item Bestehende Client-Software kann weiter verwendet werden
+    \item Komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig\\
+      $\longrightarrow$ in REBECA\cite{MuFiBu:2001:ArchFrameECommApp} sind Filtertechniken bereits integriert
   \end{itemize}
 \end{frame}
 

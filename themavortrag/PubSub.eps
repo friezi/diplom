@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: PubSub.fig
 %%Creator: fig2dev Version 3.2 Patchlevel 5-alpha5
-%%CreationDate: Mon Jan  9 00:22:28 2006
+%%CreationDate: Mon Feb 13 11:04:57 2006
 %%For: friezi@cayuga.iroquois (Friedemann Zintel,,,)
 %%BoundingBox: 0 0 347 348
 %Magnification: 1.0000
@@ -170,11 +170,14 @@ n 3795 5130 m 3690 5130 3690 5430 105 arcto 4 {pop} repeat
 3960 5400 m
 gs 1 -1 sc (Subscriber) col0 sh gr
 % Polyline
-n 1440 2070 m 4140 2070 l 4140 3645 l 1440 3645 l
- cp gs col0 s gr 
-/Times-Roman-iso ff 190.50 scf sf
-2115 2970 m
-gs 1 -1 sc (Message-Broker) col0 sh gr
+gs  clippath
+2489 1972 m 2596 2100 l 2642 2062 l 2535 1933 l 2535 1933 l 2589 2045 l 2489 1972 l cp
+eoclip
+n 1260 450 m
+ 2610 2070 l gs col0 s gr gr
+
+% arrowhead
+n 2489 1972 m 2589 2045 l 2535 1933 l 2489 1972 l  cp gs 0.00 setgray ef gr  col0 s
 % Polyline
 gs  clippath
 4238 5039 m 4353 5161 l 4397 5120 l 4282 4997 l 4282 4997 l 4343 5106 l 4238 5039 l cp
@@ -224,12 +227,6 @@ n 1395 5130 m
 % arrowhead
 n 1470 4994 m 1416 5105 l 1516 5032 l 1470 4994 l  cp gs 0.00 setgray ef gr  col0 s
 % Polyline
-n 1350 4005 m 1575 4005 l 1575 4095 l 1350 4095 l
- cp gs col13 1.00 shd ef gr gs col0 s gr 
-% Polyline
-n 4005 3915 m 4230 3915 l 4230 4005 l 4005 4005 l
- cp gs col13 1.00 shd ef gr gs col0 s gr 
-% Polyline
 n 2115 4410 m 2340 4410 l 2340 4500 l 2115 4500 l
  cp gs col20 1.00 shd ef gr gs col0 s gr 
 % Polyline
@@ -238,6 +235,9 @@ n 3375 4410 m 3600 4410 l 3600 4500 l 3375 4500 l
 % Polyline
 n 1845 900 m 2070 900 l 2070 990 l 1845 990 l
  cp gs col20 1.00 shd ef gr gs col0 s gr 
+% Polyline
+n 1440 2070 m 4140 2070 l 4140 3645 l 1440 3645 l
+ cp gs col0 s gr 
 /Times-Roman-iso ff 190.50 scf sf
 45 4050 m
 gs 1 -1 sc (Subskribieren) col0 sh gr
@@ -250,15 +250,9 @@ gs 1 -1 sc (Notifizieren) col0 sh gr
 /Times-Roman-iso ff 190.50 scf sf
 2340 1350 m
 gs 1 -1 sc (Publizieren) col0 sh gr
-% Polyline
-gs  clippath
-2489 1972 m 2596 2100 l 2642 2062 l 2535 1933 l 2535 1933 l 2589 2045 l 2489 1972 l cp
-eoclip
-n 1260 450 m
- 2610 2070 l gs col0 s gr gr
-
-% arrowhead
-n 2489 1972 m 2589 2045 l 2535 1933 l 2489 1972 l  cp gs 0.00 setgray ef gr  col0 s
+/Times-Roman-iso ff 190.50 scf sf
+2115 2970 m
+gs 1 -1 sc (Message-Broker) col0 sh gr
 % here ends figure;
 $F2psEnd
 rs
