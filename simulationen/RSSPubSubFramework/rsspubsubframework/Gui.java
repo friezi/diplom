@@ -142,7 +142,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private int df_height;
 
-	private int cf_xpos = 150;
+	private int cf_xpos = 100;
 
 	private int cf_ypos = 0;
 
@@ -184,6 +184,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String unblockCmd = "Unblock Node";
 
+	private static String exitCmd = "Exit";
+
+	private JButton exitbutton;
+
 	private JButton controlbutton;
 
 	private JButton statisticbutton;
@@ -224,7 +228,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private boolean toolbar = true;
 
-	JFrame controlframe = new JFrame("Controls");
+	private JFrame controlframe;
 
 	private MouseClick mouseclick = new MouseClick();
 
@@ -242,6 +246,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				displayframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				displayframe.getContentPane().add(guip);
 
+				controlframe = new JFrame("Controls");
+
 				// open window maximized
 				df_width = displayframe.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth();
 				df_height = displayframe.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight();
@@ -250,6 +256,12 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				displayframe.addMouseListener(mouseclick);
 
 				JPanel buttonpanel = new JPanel();
+
+				exitbutton = new JButton(exitCmd);
+				exitbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				exitbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				exitbutton.addActionListener(guip);
+				buttonpanel.add(exitbutton);
 
 				controlbutton = new JButton(startSimulationCmd);
 				controlbutton.setVerticalTextPosition(AbstractButton.CENTER);
@@ -396,6 +408,16 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			controlbutton.setText(runningTxt);
 			controlbutton.setEnabled(false);
 			Engine.getSingleton().setStarted(true);
+
+		} else if ( e.getActionCommand().equals(exitCmd) ) {
+
+			controlframe.setAlwaysOnTop(false);
+
+			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+				System.exit(0);
+
+			controlframe.setAlwaysOnTop(true);
 
 		} else if ( e.getActionCommand().equals(stopSimulationCmd) ) {
 			// NEVER REACHED SO FAR
