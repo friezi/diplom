@@ -154,7 +154,8 @@ public class PubSub extends PubSubNode {
 		if ( diff > ttl )
 			// diff = ttl;
 			diff = 0;
-		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
+//		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
+		return (long)((new Random().nextFloat()*(spreadFactor * ttl + 1) + (ttl - diff)) * 1000);
 
 	}
 
