@@ -34,11 +34,13 @@
 
 \begin{frame}
 
+  RSS: RDF-Site-Summary, Rich-Site-Summary oder Really-Simple-Syndication?
+  \vspace{0.5cm}
   \begin{itemize}
-    \item Das am meisten verbreitete Publish/Subscribe-System im Internet: RSS
-    \item RSS: nicht Push sondern Polling
-    \item RSS: von viele Anbietern unterstützt
-    \item Beispiele: BLogs, Podcasting (anbieten von Medien-Dateien, z.B. mp3)
+    \item Das am meisten verbreitete Publish/Subscribe-System im Internet
+    \item Nicht Push sondern Polling
+    \item Von viele Anbietern unterstützt
+    \item Beispiele: Blogs, Podcasting (anbieten von Medien-Dateien, z.B. mp3)
   \end{itemize}
 
 \end{frame}
@@ -53,11 +55,11 @@
 \subsection{RSS}
 \begin{frame}
 
-  \frametitle{RSS: Really Simple Syndication}
+  \frametitle{RSS}
   \begin{itemize}
     \item RSS-Feed dient u.a. zur Kurzbeschreibung von Web-News
     \item XML-basiert
-    \item Erreichbar durch Link auf Anbieterseite
+    \item Erreichbar durch Link auf Anbieterseite oder Angabe in HTML-Head
   \end{itemize}
   \nocite{LiuVenSirer:2005:MeasureRSSPubSub}
 
@@ -140,11 +142,11 @@
     \item Polling:
       \begin{list}{$\longrightarrow$}{}
         \item Großer Datenverkehr im Netz
-	\item Hohe serverseitige Last
+	\item Hohe server-seitige Last
       \end{list}
     \item Filterdefinition nur beim Anwender:
       \begin{list}{$\longrightarrow$}{}
-        \item alle Feeds müssen heruntergeladen werden
+        \item Alle Feeds müssen heruntergeladen werden
       \end{list}
   \end{itemize}
   \nocite{Hicks:2004:RSSBandwith}
@@ -155,7 +157,7 @@
 
   \frametitle{Ziel}
   \begin{itemize}
-    \item Entlastung der RSS-Server
+    \item \glqq Entlastung\grqq der RSS-Server
     \item Reduzierung des Datenverkehrs aufgrund von Polling
     \item Erhöhung des Aktualitätsgrades der Feeds auf Nutzerseite
     \item Ermöglichung der subscriber-seitigen Definition von Filtern
@@ -170,7 +172,7 @@
   \frametitle{Integration von RSS in verteiltes Pub/Sub-System}
   Innerhalb eines Overlay-Netzwerkes wird für die Verteilung der Feeds gesorgt.\\
   \vspace{0.5cm}
-  Als Grundlage kann schon existierende Overlay-Netzwerk-Software dienen (z.B. REBECA\cite{MuFiBu:2001:ArchFrameECommApp}).
+  Als Grundlage kann eine schon existierende Pub/Sub-Middleware dienen (z.B. REBECA\cite{MuFiBu:2001:ArchFrameECommApp}).
 \end{frame}
 
 \begin{frame}
@@ -203,7 +205,7 @@
 \begin{frame}
   \frametitle{Ansatz: Ein Publisher}
   \begin{itemize}
-    \item Ein Publisher würde ausreichen um Feed herunterzuladen
+    \item Ein Publisher würde ausreichen, um Feed herunterzuladen
     \item Alle weiteren Nutzer  bzw. Subscriber würden den Feed übers Netzwerk erhalten
   \end{itemize}
 
@@ -215,24 +217,26 @@
   \pause
   Problem:\\
   Aktualität der Feeds!\\
-  $\longrightarrow$ lange Übertragungszeiten in Abhängigkeit von Netzstruktur
+  $\longrightarrow$ lange Übertragungszeiten in Abhängigkeit von Netzstruktur\\
+  u. U. aufwändiger Auswahlprozess\\
+  Single Point of Failure
 \end{frame}
 
 \begin{frame}
   \frametitle{Aktualität vs. Server-Belastung}
-  \includegraphics[bb=20 0 200 250,scale=0.5]{Verzoegerung}
+  \includegraphics[bb=40 0 200 250,scale=0.5]{Verzoegerung}
 \end{frame}
 
 \begin{frame}
   \frametitle{Ansatz: Mehrere Publisher}
   \begin{itemize}
     \item Mehrere Publisher laden Feed herunter
-    \item $\rightarrow$ Mindestens so viele, dass gewisse Aktualität d. F.'s erreicht wird
+    \item $\rightarrow$ Mindestens so viele, dass gewisse Aktualität der Feeds erreicht wird
     \item $\rightarrow$ Höchstens so viele, dass Server nicht überlastet wird
   \end{itemize}
 \vspace{0.5cm}
 
-$\longrightarrow$ Optimum muss bestimmt werden
+$\longrightarrow$ Ein optimaler Kompromiss soll erreicht werden
 
 \end{frame}
 
@@ -256,9 +260,9 @@ Entwicklung eines bzw. mehrerer Algorithmen zur \dots
   \frametitle{Erwartungen an den Algorithmus}
   Der Entwurf des Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
   \begin{itemize}
-    \item Vermeidung von Hotspots
+    \item Vermeidung von \glqq Hotspots\grqq
     \item Broker sollen Parameter automatisch einstellen bzw. beziehen
-    \item Parameter sollen sich den dynamischen Gegebenheiten des Netzes Anpassen
+    \item Parameter sollen sich den dynamischen Gegebenheiten des Netzes anpassen
     \item Netz soll auftretende Fehler überstehen und selbständig beseitigen
   \end{itemize}
 \end{frame}
