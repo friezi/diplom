@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage{isolatin1}
+\usepackage{latexsym}
+\usepackage[german]{babel}
+\usepackage[a4paper]{geometry}
+\geometry{textwidth=18cm, textheight=24cm} 
+\parindent0em
+\pagenumbering{arabic}
+
+
+\begin{document}
+\section*{Outline}
+Überblick:\\
+- Überblick über zentrale Begriffe\\
+
+
+Motivation:\\
+- Erwartungen des Anwenders an das System\\
+- Stand der Dinge\\
+- Probleme, die er mit sich bringt\\
+
+Umsetzung:\\
+- welche Ansätze kann man verfolgen, um bestehendes System mit Ansprüchen des Anwenders in Einklang zu bringen\\
+\section*{Einleitung}
+- Übersetzungen\\
+- das am meisten verbreitete Pub/Sub-System im Netz\\
+- RSS: nicht verteiltes Push sondern zentralisiertes Polling\\
+
+{\bf Folie}
+\section*{Überblick}
+- Pub/Sub:\\
+
+- RSS:\\
+- im wesentlichen XML-basierte Dateien\\
+- entahltene Informationen: z.B. Nachrichten-Schlagzeilen\\
+
+
+\section*{Motivation}
+
+- automatische Benachrichtigung über Feed-Updates\\
+- Aktualität der Feeds\\
+- Definition von Filtern auf höherer Ebene zur:\\
+-- individuellen Vorselektion der Feeds\\
+-- anbieterübergreifenden Auswahl von Feeds\\
+
+\subsection*{Stand der Dinge: Folie}
+\dots\\
+
+Probleme:\\
+Polling: großer Datenverkehr im Netz (3.5 GB New York Times)\\
+-------- hohe server-seitige Last (Bsp. Server mit geringer Kapazität)\\
+Filterdef. nur auf Anwenderseite
+
+\subsection*{Ziel: Folie}
+
+\section*{Umsetzung}
+\subsection*{Ein Publisher}
+\dots\\
+Problem: Aktualität der Feeds, aufwändiger Auswahlprozess, Single Point of Failure
+
+\subsection*{Aktualität vs. Server-Belastung}
+\subsection*{mehrere Publisher}
+- mindestens so viele, dass gewisse Aktualität erreicht wird\\
+- höchstens so viele, dass Server nicht überlastet wird\\
+- $\rightarrow$ optimaler Kompromiss soll erreicht werden\\
+
+\subsection*{Frage: Folie}
+
+\subsection*{Herausforderung}
+- Koordination der Publisher\\
+- Ermittlung Server-Auslastung\\
+- Bestimmung des Update-Intervalls der Feeds\\
+- (ev.) Bestimmung der Nachrichtenlaufzeiten\\
+
+\subsection*{Erwartungen an Algorithmus}
+
+- Hotspots vermeiden\\
+- Broker automatisch Parameter einstellen\\
+- dynamische Anpassung von Parametern\\
+- selbständige Beseitigung von Fehlern\\
+
+
+\subsection*{Vorteile des Ansatzes}
+- keine neue Server-Software  $\rightarrow$ Lösung integriert sich vollständig\\
+- ebenfalls Client-Software\\
+- keine Neukonstruktion notwendig $\rightarrow$ REBECA, Filtertechniken
+\end{document}
