@@ -273,146 +273,32 @@ public class AdjustingBroker extends BrokerNode {
 			return;
 
 		if ( m instanceof RSSFeedMessage ) {
-
-			RSSFeedMessage fm = (RSSFeedMessage) m;
-
-			// if message-feed is newer than our one, set it and send it to all
-			// other peers
-			if ( fm.getFeed().isNewerThan(getFeed()) ) {
-
-				setFeed(fm.getFeed());
-
-				// send a new RSSFeedMessage to all other Brokers and
-				// Subscribers
-				Set<Node> peers = getPeers();
-				for ( Node peer : peers ) {
-					if ( peer != fm.getSrc() )
-						new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(
-								null, getFeed()), params);
-				}
-
-			}
+			
+			handleRSSFeedMessage((RSSFeedMessage)m);
 
 		} else if ( m instanceof SubnetParamMessage ) {
 
-			SubnetParamMessage ssm = (SubnetParamMessage) m;
-
-			// check if message came from an authorized node
-			if ( getSubnets().containsKey((BrokerNode) ssm.getSrc()) ) {
-				SubnetSettings subnetsettings = getSubnets().get(ssm.getSrc());
-
-				// if we are the initiator of the message we discovered a
-				// circle, so we brake down the connection to the
-				// "causeOfMessage"-node which created the circle
-				if ( ssm.getMI() == this )
-					if ( ssm.getCOM() instanceof BrokerType )
-						unregister((BrokerType) ssm.getCOM());
-
-				//
-				// /**
-				// ***********************************************************
-				// */
-				//				
-				// PingTimeoutTask oldtask =
-				// subnetsettings.getPingtimeouttask();
-				//				
-				// // set timer
-				// subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask,
-				// (BrokerNode) ssm.getSrc()));
-				// /**
-				// ***********************************************************
-				// */
-
-				// only on change do something more
-				if ( ssm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
-					// add difference to netsize
-					adjustNetsize(ssm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
-					// set new size
-					subnetsettings.getSubParams().setSize(ssm.getSubParams().getSize());
-					// send new size to all other neighbourbrokers
-					// keep the original messageInitiator and causeOfMessage to
-					// detect circles
-					informAllBut(ssm.getSrc(), ssm.getMI(), ssm.getCOM());
-				}
-
-			}
+			handleSubnetParamMessage((SubnetParamMessage)m);
 
 		} else if ( m instanceof RegisterBrokerMessage ) {
 
-			RegisterBrokerMessage rbm = (RegisterBrokerMessage) m;
-
-			addToBrokers((BrokerNode) rbm.getSrc());
-
-			// check if Broker is already/still registered (due to an undetected
-			// disconnection). If broker is registered we have still the old
-			// information about
-			// the networksize, thus we must only add the difference of new and
-			// old subnetsize to
-			// networksize. if broker is not yet registered we add him and set
-			// its size to
-			// zero for later adapting it.
-			if ( getSubnets().containsKey(rbm.getSrc()) == false )
-				getSubnets().put((BrokerNode) rbm.getSrc(), new SubnetSettings());
-
-			SubnetSettings subnetsettings = getSubnets().get(rbm.getSrc());
-
-			long oldsubnetsize = subnetsettings.getSubParams().getSize();
-			PingTimeoutTask oldtask = subnetsettings.getPingtimeouttask();
-
-			// set size of subnet
-			subnetsettings.getSubParams().setSize(rbm.getSubParams().getSize());
-
-			// adjust the total network-size
-			adjustNetsize(rbm.getSubParams().getSize() - oldsubnetsize);
-
-			// send acknowledgement ( a bit faster)
-			new RegisterAckMessage(this, rbm.getSrc(), params.subnetParamMsgRT / 2);
-
-			// send subnetsize to broker
-			sendSubnetSize((BrokerNode) rbm.getSrc(), this, rbm.getSrc());
-
-			// set timer
-			subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) rbm.getSrc()));
-
-			// only on change tell the others
-			if ( rbm.getSubParams().getSize() != oldsubnetsize )
-				informAllBut(rbm.getSrc(), this, rbm.getSrc());
+			handleRegisterBrokerMessage((RegisterBrokerMessage)m);
 
 		} else if ( m instanceof RegisterAckMessage ) {
 
-			BrokerNode broker = (BrokerNode) m.getSrc();
-
-			addToBrokers(broker);
-			// we must add an entry for this broker if it's not yet
-			// contained:
-			// on a one-side connection-built-up, we won't get a
-			// RegisterBrokerMessage where an entry will be added as well.
-			// in the other case we MUST NOT add an entry, because the old
-			// value, which we need later, would be overridden!
-			if ( getSubnets().containsKey(broker) == false )
-				getSubnets().put(broker, new SubnetSettings());
-
-			// set a timer
-			PingTimeoutTask oldtask = getSubnets().get(broker).getPingtimeouttask();
-			getSubnets().get(broker).setPingtimeouttask(updatePingTimeoutTimer(oldtask, broker));
+			handleRegisterAckMessage((RegisterAckMessage)m);
 
 		} else if ( m instanceof UnregisterBrokerMessage ) {
 
-			// only if we haven't disconnected as well
-			if ( getBrokers().contains((BrokerNode) m.getSrc()) )
-				processBrokerDisconnected((BrokerNode) m.getSrc());
+			handleUnregisterBrokerMessage((UnregisterBrokerMessage)m);
 
 		} else if ( m instanceof RegisterSubscriberMessage ) {
 
-			RegisterSubscriberMessage rsm = (RegisterSubscriberMessage) m;
-
-			handleNewSubscriber((PubSubNode) rsm.getSrc());
+			handleRegisterSubscriberMessage((RegisterSubscriberMessage)m);
 
 		} else if ( m instanceof UnregisterSubscriberMessage ) {
 
-			UnregisterSubscriberMessage usm = (UnregisterSubscriberMessage) m;
-
-			handleUnregisteredSubscriber((PubSubNode) usm.getSrc());
+			handleUnregisterSubscriberMessage((UnregisterSubscriberMessage)m);
 
 		} else if ( m instanceof InformBrokersMessage ) {
 
@@ -423,89 +309,19 @@ public class AdjustingBroker extends BrokerNode {
 			processInformSubscribers();
 
 		} else if ( m instanceof TimeForPingMessage ) {
-
-			TimeForPingMessage tpm = (TimeForPingMessage) m;
-
-			// if for any reason the amount of the stored network-size
-			// is not corresponding to the sum of the subnet-size (...)
-			// we do a recalculation:
-
-			adjustNetsize();
-
-			// in case of a change to the former value, we have to inform
-			// the subscribers
-
-			doInformSubscriberTimer();
-
-			// imagine: just before the timeforping-message is put in the
-			// message-queue an update of network-size is sent to all
-			// neighbour-brokers. In this case a new pingtimer is already
-			// set up and we can forget the message of the old timer
-			// THIS WON'T HAPPEN IN THE CURRENT SCENARIO
-			if ( tpm.getTask() == pingtask ) {
-
-				ping();
-
-				// newPingTimer();
-
-			}
+			
+			handleTimeForPingMessage((TimeForPingMessage)m);
 
 		} else if ( m instanceof PingMessage ) {
 
-			PingMessage pm = (PingMessage) m;
-
-			if ( getSubnets().containsKey(pm.getSrc()) ) {
-				// just forsafety
-
-				SubnetSettings subnetsettings = getSubnets().get(pm.getSrc());
-
-				PingTimeoutTask oldtask = subnetsettings.getPingtimeouttask();
-
-				// set timer
-				subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) pm.getSrc()));
-
-				// same processing as for SubnetParamMessage:
-
-				// only on change do something more
-				if ( pm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
-
-					// add difference to netsize
-					adjustNetsize(pm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
-					// set new size
-					subnetsettings.getSubParams().setSize(pm.getSubParams().getSize());
-					// send new size to all other neighbourbrokers
-					// here we don't want to check for occurence of circles, so
-					// we set MI and
-					// COM always new
-					informAllBut(pm.getSrc(), this, pm.getSrc());
-
-				}
-
-			}
+			handlePingMessage((PingMessage)m);
 
 		} else if ( m instanceof PingTimeoutMessage ) {
 
-			PingTimeoutMessage ptm = (PingTimeoutMessage) m;
+			handlePingTimeoutMessage((PingTimeoutMessage)m);
 
-			// imagine: just before the pingtimeout-message is put in the
-			// message-queue the expected ping arrives.
-			// The broker will be removed although
-			// we got his ping. To prevent this, we check if the task which sent
-			// the pingtimeout-message is the "uptodate"-task.
-
-			// if we have an entry for the broker and the included task is not
-			// the task
-			// which send the message stop processing
-			if ( getSubnets().containsKey((BrokerNode) ptm.getSrc()) ) {
-				if ( getSubnets().get(ptm.getSrc()).pingtimeouttask == ptm.getTask() )
-					return;
-			}
-
-			// everything normal -> do the processing
-			// processBrokerDisconnected(ptm.getBroker());
-			processBrokerVanished(ptm.getBroker());
 		}
-	}
+	}	
 
 	/**
 	 * calculates the netsize by adding all subnetsizes and number of local
@@ -631,7 +447,236 @@ public class AdjustingBroker extends BrokerNode {
 		new UnregisterBrokerMessage(this, broker, params.subnetParamMsgRT);
 
 	}
+	
+	protected void handleRSSFeedMessage(RSSFeedMessage fm){
 
+		// if message-feed is newer than our one, set it and send it to all
+		// other peers
+		if ( fm.getFeed().isNewerThan(getFeed()) ) {
+
+			setFeed(fm.getFeed());
+
+			// send a new RSSFeedMessage to all other Brokers and
+			// Subscribers
+			Set<Node> peers = getPeers();
+			for ( Node peer : peers ) {
+				if ( peer != fm.getSrc() )
+					new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(
+							null, getFeed()), params);
+			}
+
+		}
+		
+	}
+
+	protected void handleSubnetParamMessage(SubnetParamMessage spm){
+
+		// check if message came from an authorized node
+		if ( getSubnets().containsKey((BrokerNode) spm.getSrc()) ) {
+			SubnetSettings subnetsettings = getSubnets().get(spm.getSrc());
+
+			// if we are the initiator of the message we discovered a
+			// circle, so we brake down the connection to the
+			// "causeOfMessage"-node which created the circle
+			if ( spm.getMI() == this )
+				if ( spm.getCOM() instanceof BrokerType )
+					unregister((BrokerType) spm.getCOM());
+
+			//
+			// /**
+			// ***********************************************************
+			// */
+			//				
+			// PingTimeoutTask oldtask =
+			// subnetsettings.getPingtimeouttask();
+			//				
+			// // set timer
+			// subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask,
+			// (BrokerNode) ssm.getSrc()));
+			// /**
+			// ***********************************************************
+			// */
+
+			// only on change do something more
+			if ( spm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
+				// add difference to netsize
+				adjustNetsize(spm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
+				// set new size
+				subnetsettings.getSubParams().setSize(spm.getSubParams().getSize());
+				// send new size to all other neighbourbrokers
+				// keep the original messageInitiator and causeOfMessage to
+				// detect circles
+				informAllBut(spm.getSrc(), spm.getMI(), spm.getCOM());
+			}
+
+		}
+
+	}
+
+	protected void handleRegisterBrokerMessage(RegisterBrokerMessage rbm){
+
+		addToBrokers((BrokerNode) rbm.getSrc());
+
+		// check if Broker is already/still registered (due to an undetected
+		// disconnection). If broker is registered we have still the old
+		// information about
+		// the networksize, thus we must only add the difference of new and
+		// old subnetsize to
+		// networksize. if broker is not yet registered we add him and set
+		// its size to
+		// zero for later adapting it.
+		if ( getSubnets().containsKey(rbm.getSrc()) == false )
+			getSubnets().put((BrokerNode) rbm.getSrc(), new SubnetSettings());
+
+		SubnetSettings subnetsettings = getSubnets().get(rbm.getSrc());
+
+		long oldsubnetsize = subnetsettings.getSubParams().getSize();
+		PingTimeoutTask oldtask = subnetsettings.getPingtimeouttask();
+
+		// set size of subnet
+		subnetsettings.getSubParams().setSize(rbm.getSubParams().getSize());
+
+		// adjust the total network-size
+		adjustNetsize(rbm.getSubParams().getSize() - oldsubnetsize);
+
+		// send acknowledgement ( a bit faster)
+		new RegisterAckMessage(this, rbm.getSrc(), params.subnetParamMsgRT / 2);
+
+		// send subnetsize to broker
+		sendSubnetSize((BrokerNode) rbm.getSrc(), this, rbm.getSrc());
+
+		// set timer
+		subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) rbm.getSrc()));
+
+		// only on change tell the others
+		if ( rbm.getSubParams().getSize() != oldsubnetsize )
+			informAllBut(rbm.getSrc(), this, rbm.getSrc());
+		
+	}
+
+	protected void handleRegisterAckMessage(RegisterAckMessage ram){
+		
+		BrokerNode broker = (BrokerNode) ram.getSrc();
+
+		addToBrokers(broker);
+		// we must add an entry for this broker if it's not yet
+		// contained:
+		// on a one-side connection-built-up, we won't get a
+		// RegisterBrokerMessage where an entry will be added as well.
+		// in the other case we MUST NOT add an entry, because the old
+		// value, which we need later, would be overridden!
+		if ( getSubnets().containsKey(broker) == false )
+			getSubnets().put(broker, new SubnetSettings());
+
+		// set a timer
+		PingTimeoutTask oldtask = getSubnets().get(broker).getPingtimeouttask();
+		getSubnets().get(broker).setPingtimeouttask(updatePingTimeoutTimer(oldtask, broker));
+		
+	}
+	
+	protected void handleUnregisterBrokerMessage(UnregisterBrokerMessage ubm){
+		
+		// only if we haven't disconnected as well
+		if ( getBrokers().contains((BrokerNode) ubm.getSrc()) )
+			processBrokerDisconnected((BrokerNode) ubm.getSrc());
+		
+	}
+	
+	protected void handleRegisterSubscriberMessage(RegisterSubscriberMessage rsm){
+		
+		handleNewSubscriber((PubSubNode) rsm.getSrc());
+		
+	}
+	
+	protected void handleUnregisterSubscriberMessage(UnregisterSubscriberMessage usm){
+		
+		handleUnregisteredSubscriber((PubSubNode) usm.getSrc());
+		
+	}
+	
+	protected void handleTimeForPingMessage(TimeForPingMessage tpm){
+
+		// if for any reason the amount of the stored network-size
+		// is not corresponding to the sum of the subnet-size (...)
+		// we do a recalculation:
+
+		adjustNetsize();
+
+		// in case of a change to the former value, we have to inform
+		// the subscribers
+
+		doInformSubscriberTimer();
+
+		// imagine: just before the timeforping-message is put in the
+		// message-queue an update of network-size is sent to all
+		// neighbour-brokers. In this case a new pingtimer is already
+		// set up and we can forget the message of the old timer
+		// THIS WON'T HAPPEN IN THE CURRENT SCENARIO
+		if ( tpm.getTask() == pingtask ) {
+
+			ping();
+
+			// newPingTimer();
+
+		}
+		
+	}
+
+	protected void handlePingMessage(PingMessage pm){
+		
+		if ( getSubnets().containsKey(pm.getSrc()) ) {
+			// just forsafety
+
+			SubnetSettings subnetsettings = getSubnets().get(pm.getSrc());
+
+			PingTimeoutTask oldtask = subnetsettings.getPingtimeouttask();
+
+			// set timer
+			subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) pm.getSrc()));
+
+			// same processing as for SubnetParamMessage:
+
+			// only on change do something more
+			if ( pm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
+
+				// add difference to netsize
+				adjustNetsize(pm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
+				// set new size
+				subnetsettings.getSubParams().setSize(pm.getSubParams().getSize());
+				// send new size to all other neighbourbrokers
+				// here we don't want to check for occurence of circles, so
+				// we set MI and
+				// COM always new
+				informAllBut(pm.getSrc(), this, pm.getSrc());
+
+			}
+
+		}
+		
+	}
+
+	protected void handlePingTimeoutMessage(PingTimeoutMessage ptm){
+		
+		// imagine: just before the pingtimeout-message is put in the
+		// message-queue the expected ping arrives.
+		// The broker will be removed although
+		// we got his ping. To prevent this, we check if the task which sent
+		// the pingtimeout-message is the "uptodate"-task.
+
+		// if we have an entry for the broker and the included task is not
+		// the task
+		// which send the message stop processing
+		if ( getSubnets().containsKey((BrokerNode) ptm.getSrc()) ) {
+			if ( getSubnets().get(ptm.getSrc()).pingtimeouttask == ptm.getTask() )
+				return;
+		}
+
+		// everything normal -> do the processing
+		// processBrokerDisconnected(ptm.getBroker());
+		processBrokerVanished(ptm.getBroker());
+		
+	}
+	
 	protected void handleNewSubscriber(PubSubNode subscriber) {
 
 		if ( getSubscribers().contains(subscriber) == false ) {
@@ -654,7 +699,7 @@ public class AdjustingBroker extends BrokerNode {
 		}
 
 	}
-
+	
 	protected void handleUnregisteredSubscriber(PubSubNode subscriber) {
 
 		if ( getSubscribers().contains(subscriber) == true ) {

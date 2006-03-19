@@ -83,6 +83,11 @@ public class SimParameters {
 	 */
 	int informSubscribersTimeout = 3000;
 
+	/**
+	 * ColorEntryFeed: the maximum number of entries in the feed
+	 */
+	int maxEntries = 5;
+
 	private String comment = "Parameters for a RPSSimulation";
 
 	/**
@@ -115,6 +120,7 @@ public class SimParameters {
 		properties.setProperty("pingTimeoutFactor", String.valueOf(pingTimeoutFactor));
 		properties.setProperty("informBrokersTimeout", String.valueOf(informBrokersTimeout));
 		properties.setProperty("informSubscribersTimeout", String.valueOf(informSubscribersTimeout));
+		properties.setProperty("maxEntries", String.valueOf(maxEntries));
 
 		if ( args.length > 1 ) {
 
@@ -135,8 +141,7 @@ public class SimParameters {
 
 			} catch ( FileNotFoundException ifne ) {
 
-				System.out.println("Warning: file " + filename
-						+ " not found. Will create it with default parameters");
+				System.out.println("Warning: file " + filename + " not found. Will create it with default parameters");
 
 				try {
 
@@ -165,8 +170,8 @@ public class SimParameters {
 		pingTimer = Integer.valueOf((String) properties.getProperty("pingTimer"));
 		pingTimeoutFactor = Integer.valueOf((String) properties.getProperty("pingTimeoutFactor"));
 		informBrokersTimeout = Integer.valueOf((String) properties.getProperty("informBrokersTimeout"));
-		informSubscribersTimeout = Integer.valueOf((String) properties
-				.getProperty("informSubscribersTimeout"));
+		informSubscribersTimeout = Integer.valueOf((String) properties.getProperty("informSubscribersTimeout"));
+		maxEntries = Integer.valueOf((String) properties.getProperty("maxEntries"));
 		if ( properties.getProperty("rssFeedMsgRepresent").toLowerCase().equals("true") )
 			rssFeedMsgRepresent = true;
 		else
