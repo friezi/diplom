@@ -14,9 +14,9 @@ public class AdjustingBroker extends BrokerNode {
 
 	protected class SubnetSettings {
 
-		private SubnetParameters subParams = new SubnetParameters();
+		protected SubnetParameters subParams = new SubnetParameters();
 
-		private PingTimeoutTask pingtimeouttask = null;
+		protected PingTimeoutTask pingtimeouttask = null;
 
 		public SubnetSettings() {
 		}
@@ -228,32 +228,32 @@ public class AdjustingBroker extends BrokerNode {
 	}
 
 	// a dummy-feed to start with and prevent NullPointerException
-	private RSSFeed feed = new RSSFeed(new RSSFeedGeneralContent());
+	protected RSSFeed feed = new RSSFeed(new RSSFeedGeneralContent());
 
 	// subnets and its settings
-	private HashMap<BrokerNode, SubnetSettings> subnets = new HashMap<BrokerNode, SubnetSettings>();
+	protected HashMap<BrokerNode, SubnetSettings> subnets = new HashMap<BrokerNode, SubnetSettings>();
 
-	private Timer pingtimer = new Timer();
+	protected Timer pingtimer = new Timer();
 
-	private PingTask pingtask = null;
+	protected PingTask pingtask = null;
 
-	private InformBrokersTask informbrokerstask = null;
+	protected InformBrokersTask informbrokerstask = null;
 
-	private Timer pingTimeoutTimer = new Timer();
+	protected Timer pingTimeoutTimer = new Timer();
 
-	private Timer changetimer = new Timer();
+	protected Timer changetimer = new Timer();
 
-	private long netsize = 0;
+	protected long netsize = 0;
 
-	private long oldnetsize = 0;
+	protected long oldnetsize = 0;
 
-	private int nmbOnlineSubscribers = 0;
+	protected int nmbOnlineSubscribers = 0;
 
-	private HashSet<BrokerNode> connectedBrokers = new HashSet<BrokerNode>();
+	protected HashSet<BrokerNode> connectedBrokers = new HashSet<BrokerNode>();
 
-	private boolean collectingSubscrInfo = false;
+	protected boolean collectingSubscrInfo = false;
 
-	private boolean collectingNetworkInfo = false;
+	protected boolean collectingNetworkInfo = false;
 
 	public AdjustingBroker(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);

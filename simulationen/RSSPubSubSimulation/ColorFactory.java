@@ -7,16 +7,21 @@ import java.awt.Color;
 /**
  * @author Friedemann Zintel
  * 
- * Just to produce colors.
+ * Just to produce colors (color-cycling).
  *
  */
 public class ColorFactory {
 
-	static private Color color = Color.magenta;
+	static private Color color = Color.orange;
 
 	//  not for use
 	private ColorFactory(){}
 	
+	/**
+	 * produces a new Color out of a circle.
+	 * 
+	 * @return the next Color
+	 */
 	static Color nextColor() {
 
 		if ( color == Color.black )

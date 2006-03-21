@@ -13,12 +13,12 @@ import java.util.*;
  */
 public class ColorEventFeed extends ColorFeed {
 
-	LinkedList<SimpleColorEvent> events;
+	LinkedList<ColorEvent> events;
 
-	ColorEventFeed(LinkedList<SimpleColorEvent> events, RSSFeedGeneralContent generalContent) {
+	ColorEventFeed(LinkedList<ColorEvent> events, RSSFeedGeneralContent generalContent) {
 
 		super(Color.black, generalContent);
-		this.events = (LinkedList<SimpleColorEvent>) events.clone();
+		this.events = (LinkedList<ColorEvent>) events.clone();
 		this.color = calcColor();
 	}
 
@@ -34,8 +34,8 @@ public class ColorEventFeed extends ColorFeed {
 
 		r_f = g_f = b_f = 0;
 
-		Iterator<SimpleColorEvent> it = events.iterator();
-		SimpleColorEvent event;
+		Iterator<ColorEvent> it = events.iterator();
+		ColorEvent event;
 
 		while ( it.hasNext() ) {
 
@@ -52,7 +52,7 @@ public class ColorEventFeed extends ColorFeed {
 	/**
 	 * @return Returns the events.
 	 */
-	public LinkedList<SimpleColorEvent> getEvents() {
+	public LinkedList<ColorEvent> getEvents() {
 		return events;
 	}
 
@@ -60,7 +60,7 @@ public class ColorEventFeed extends ColorFeed {
 	 * @param events
 	 *            The events to set.
 	 */
-	public void setEvents(LinkedList<SimpleColorEvent> events) {
+	public void setEvents(LinkedList<ColorEvent> events) {
 		this.events = events;
 	}
 

@@ -29,7 +29,7 @@ public class RSSServer extends RSSServerNode {
 	 * @param yp
 	 *            y-position
 	 * @param params
-	 *            relevat parameters
+	 *            relevant parameters
 	 */
 	public RSSServer(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
