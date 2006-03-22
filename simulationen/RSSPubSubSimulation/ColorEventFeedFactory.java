@@ -10,7 +10,7 @@ import java.util.*;
  * For producing ColorEventFeeds
  * 
  */
-public class ColorEventFeedFactory implements RSSFeedFactory {
+public class ColorEventFeedFactory implements RSSEventFeedFactory {
 
 	SimParameters params;
 
@@ -27,19 +27,37 @@ public class ColorEventFeedFactory implements RSSFeedFactory {
 	 */
 	public RSSFeed newRSSFeed(RSSFeedGeneralContent generalContent) {
 
-		int id;
+		Integer id;
 
 		if ( events.size() == 0 )
 			id = 1;
-		else
-			id = events.getLast().id + 1;
+		else {
+
+			if ( events.getLast().id == Integer.MAX_VALUE )
+				id = 1;
+			else
+				id = events.getLast().id + 1;
+
+		}
 
 		events.addLast(new ColorEvent(id, ColorFactory.nextColor()));
 
-		if ( events.size() > params.maxEventEntries )
+		if ( events.size() > params.maxFeedEvents )
 			events.removeFirst();
 
 		return new ColorEventFeed(events, generalContent);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see RSSEventFeedFactory#newRSSEventFeed(java.util.LinkedList,
+	 *      RSSFeedGeneralContent)
+	 */
+	public RSSFeed newRSSEventFeed(Object events, RSSFeedGeneralContent generalContent) {
+		// TODO Auto-generated method stub
+
+		return new ColorEventFeed((LinkedList<ColorEvent>) events, generalContent);
 	}
 
 }

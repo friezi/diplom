@@ -113,14 +113,14 @@ public class RSSServerNode extends Node implements RSSServerType {
 	}
 
 	/**
-	 * @param rssFeedFactory
+	 * @param rssEventFeedFactory
 	 */
 	public void setRssFeedFactory(RSSFeedFactory rssFeedFactory) {
 		this.rssFeedFactory = rssFeedFactory;
 	}
 
 	/**
-	 * @return the rssFeedFactory
+	 * @return the rssEventFeedFactory
 	 */
 	public RSSFeedFactory getRssFeedFactory() {
 		return rssFeedFactory;

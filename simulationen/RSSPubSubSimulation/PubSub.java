@@ -56,7 +56,7 @@ public class PubSub extends PubSubNode {
 
 	protected Timer ackTimer = new Timer();
 
-	HashMap<BrokerNode, AckTimerTask> acktaskmap = new HashMap<BrokerNode, AckTimerTask>();
+	protected HashMap<BrokerNode, AckTimerTask> acktaskmap = new HashMap<BrokerNode, AckTimerTask>();
 
 	protected FeedRequestTask feedRequestTask = new FeedRequestTask();
 
@@ -83,64 +83,19 @@ public class PubSub extends PubSubNode {
 
 		if ( m instanceof RSSFeedMessage ) {
 
-			RSSFeedMessage fm = (RSSFeedMessage) m;
+			handleRSSFeedMessage((RSSFeedMessage)m);
 
-			// do only with new feeds
-			if ( fm.getFeed().isNewerThan(getFeed()) ) {
-
-				// show the feed
-				setFeed(fm.getFeed());
-				setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this,
-						getFeed()));
-				getRssFeedRepresentation().represent();
-
-				updateRequestTimer();
-
-				// send the feed to Broker, if we didn't get the message from
-				// him
-				if ( fm.getSrc() != getBroker() )
-					new RSSFeedMessage(this, getBroker(), getFeed(), fm.getRssFeedRepresentation().copyWith(
-							null, getFeed()), params);
-
-			} else {
-
-				// got an old feed; update timer only if sender is RSSServer
-				if ( fm.getSrc() == getRssServer() ) {
-					updateRequestTimer();
-				}
-			}
 		} else if ( m instanceof NetworkSizeUpdateMessage ) {
 
-			NetworkSizeUpdateMessage nsum = (NetworkSizeUpdateMessage) m;
-
-			long size = nsum.getSize();
-
-			// to prevent malicious values
-			if ( size <= 0 )
-				size = 1;
-
-			spreadFactor = (int) (size / spreadDivisor);
-
-			long interval = calculateInterval();
-
-			// if we have a very long scheduled timer for the timer-task and due
-			// to
-			// the new network-size the new interval would be much shorter
-			// we should set up a new task, otherwise we can live with a short
-			// task
-			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
-				updateRequestTimer(interval);
+			handleNetworkSizeUpdateMessage((NetworkSizeUpdateMessage)m);
 
 		} else if ( m instanceof AckTimerMessage ) {
-
-			new RegisterSubscriberMessage(this, ((AckTimerMessage) m).getBroker(), params.subnetParamMsgRT);
+			
+			handleAckTimerMessage((AckTimerMessage)m);
 
 		} else if ( m instanceof RegisterAckMessage ) {
 
-			if ( acktaskmap.containsKey((BrokerNode) m.getSrc()) ) {
-				acktaskmap.get((BrokerNode) m.getSrc()).cancel();
-				acktaskmap.remove((BrokerNode) m.getSrc());
-			}
+			handleRegisterAckMessage((RegisterAckMessage)m);
 
 		}
 	}
@@ -178,7 +133,73 @@ public class PubSub extends PubSubNode {
 	synchronized protected void requestFeed() {
 		new RSSFeedRequestMessage(this, getRssServer(), params);
 	}
+	
+	protected void handleRSSFeedMessage(RSSFeedMessage fm){
 
+		// do only with new feeds
+		if ( fm.getFeed().isNewerThan(getFeed()) ) {
+
+			// show the feed
+			setFeed(fm.getFeed());
+			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this,
+					getFeed()));
+			getRssFeedRepresentation().represent();
+
+			updateRequestTimer();
+
+			// send the feed to Broker, if we didn't get the message from
+			// him
+			if ( fm.getSrc() != getBroker() )
+				new RSSFeedMessage(this, getBroker(), getFeed(), fm.getRssFeedRepresentation().copyWith(
+						null, getFeed()), params);
+
+		} else {
+
+			// got an old feed; update timer only if sender is RSSServer
+			if ( fm.getSrc() == getRssServer() ) {
+				updateRequestTimer();
+			}
+		}
+		
+	}
+
+	protected void handleNetworkSizeUpdateMessage(NetworkSizeUpdateMessage nsum){
+
+		long size = nsum.getSize();
+
+		// to prevent malicious values
+		if ( size <= 0 )
+			size = 1;
+
+		spreadFactor = (int) (size / spreadDivisor);
+
+		long interval = calculateInterval();
+
+		// if we have a very long scheduled timer for the timer-task and due
+		// to
+		// the new network-size the new interval would be much shorter
+		// we should set up a new task, otherwise we can live with a short
+		// task
+		if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
+			updateRequestTimer(interval);
+		
+	}
+	
+	protected void handleAckTimerMessage(AckTimerMessage atm){
+
+		new RegisterSubscriberMessage(this, atm.getBroker(), params.subnetParamMsgRT);
+		
+	}
+
+	protected void handleRegisterAckMessage(RegisterAckMessage ram){
+		
+		if ( acktaskmap.containsKey((BrokerNode) ram.getSrc()) ) {
+			acktaskmap.get((BrokerNode) ram.getSrc()).cancel();
+			acktaskmap.remove((BrokerNode) ram.getSrc());
+		}
+		
+	}
+	
 	public RSSFeed getFeed() {
 		return feed;
 	}

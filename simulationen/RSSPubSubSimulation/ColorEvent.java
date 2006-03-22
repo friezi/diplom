@@ -10,7 +10,7 @@ import java.awt.Color;
  * An Event-dervied class, which just stores an identifier and a color
  * 
  */
-public class ColorEvent extends Event implements Cloneable{
+public class ColorEvent implements Event {
 
 	int id;
 
@@ -22,6 +22,20 @@ public class ColorEvent extends Event implements Cloneable{
 		this.id = id;
 		this.color = color;
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see Event#equals(Event)
+	 */
+	public boolean equals(Event event) {
+		// TODO Auto-generated method stub
+		return this.id == ((ColorEvent) event).id;
+	}
+	
+	public boolean equals(Object event){
+		return equals((Event)event);
 	}
 
 	@Override

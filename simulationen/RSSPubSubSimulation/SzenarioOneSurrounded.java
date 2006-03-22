@@ -42,7 +42,7 @@ public class SzenarioOneSurrounded {
 	/**
 	 * @param rpsFactory
 	 *            the factory to construct RSS-Server,Publishers and Brokers
-	 * @param rssFeedFactory
+	 * @param rssEventFeedFactory
 	 *            to construct feeds
 	 * @param rssFeedRepresentationFactory
 	 *            to construct feed-representations

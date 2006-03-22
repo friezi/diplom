@@ -8,6 +8,9 @@
  * Just a base-class for events.
  *
  */
-public class Event implements Cloneable{
+public interface Event extends Cloneable{
+	
+	public boolean equals(Event event);
+		
 
 }

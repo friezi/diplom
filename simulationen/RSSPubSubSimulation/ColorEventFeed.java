@@ -11,14 +11,14 @@ import java.util.*;
  * @author Friedemann Zintel
  * 
  */
-public class ColorEventFeed extends ColorFeed {
+public class ColorEventFeed extends ColorFeed implements EventFeed {
 
-	LinkedList<ColorEvent> events;
+	LinkedList<Event> events;
 
 	ColorEventFeed(LinkedList<ColorEvent> events, RSSFeedGeneralContent generalContent) {
 
 		super(Color.black, generalContent);
-		this.events = (LinkedList<ColorEvent>) events.clone();
+		this.events = (LinkedList<Event>) events.clone();
 		this.color = calcColor();
 	}
 
@@ -34,12 +34,12 @@ public class ColorEventFeed extends ColorFeed {
 
 		r_f = g_f = b_f = 0;
 
-		Iterator<ColorEvent> it = events.iterator();
+		Iterator<Event> it = events.iterator();
 		ColorEvent event;
 
 		while ( it.hasNext() ) {
 
-			event = it.next();
+			event = (ColorEvent) it.next();
 			r_f += event.color.getRed() / size;
 			g_f += event.color.getGreen() / size;
 			b_f += event.color.getBlue() / size;
@@ -49,10 +49,20 @@ public class ColorEventFeed extends ColorFeed {
 		return new Color((int) r_f, (int) g_f, (int) b_f);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see EventFeed#eventIterator()
+	 */
+	public Iterator<Event> eventIterator() {
+		// TODO Auto-generated method stub
+		return events.iterator();
+	}
+
 	/**
 	 * @return Returns the events.
 	 */
-	public LinkedList<ColorEvent> getEvents() {
+	public LinkedList<Event> getEvents() {
 		return events;
 	}
 
@@ -60,7 +70,7 @@ public class ColorEventFeed extends ColorFeed {
 	 * @param events
 	 *            The events to set.
 	 */
-	public void setEvents(LinkedList<ColorEvent> events) {
+	public void setEvents(LinkedList<Event> events) {
 		this.events = events;
 	}
 

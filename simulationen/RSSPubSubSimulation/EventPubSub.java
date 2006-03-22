@@ -1,27 +1,23 @@
-import java.util.*;
-
-import rsspubsubframework.Node;
-
 /**
- * A Broker which receives Feeds consisting of events. Only the new events will be sent whithin a new feed to
- * all neighbours. The new events will be stored at the broker upto a maximum size of SimParams.maxSubscriberEvents.
+ * 
  */
+import java.util.*;
 
 /**
  * @author Friedemann Zintel
- * 
+ *
  */
-public class AdjustingEventBroker extends AdjustingBroker {
+public class EventPubSub extends PubSub {
 
 	protected RSSEventFeedFactory rssEventFeedFactory;
 
 	LinkedList<Event> events = new LinkedList<Event>();
 
-	public AdjustingEventBroker(int xp, int yp, RSSEventFeedFactory rssEventFeedFactory, SimParameters params) {
+	public EventPubSub(int xp, int yp, RSSEventFeedFactory rssEventFeedFactory, SimParameters params) {
 
 		super(xp, yp, params);
 		setRssEventFeedFactory(rssEventFeedFactory);
-		// TODO Auto-generated constructor stub
+
 	}
 
 	protected void handleRSSFeedMessage(RSSFeedMessage fm) {
@@ -54,18 +50,28 @@ public class AdjustingEventBroker extends AdjustingBroker {
 
 		if ( newEvents.size() > 0 ) {
 
+			// show the feed
 			setFeed(getRssEventFeedFactory().newRSSEventFeed(events, fm.getFeed().getGeneralContent()));
+			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, getFeed()));
+			getRssFeedRepresentation().represent();
 
-			// send a new RSSFeedMessage to all other Brokers and
-			// Subscribers
-			Set<Node> peers = getPeers();
-			RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
+			updateRequestTimer();
 
-			for ( Node peer : peers ) {
-				if ( peer != fm.getSrc() )
-					new RSSFeedMessage(this, peer, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+			// send a new feed (only with new events) to Broker, if we didn't get the message from
+			// him
+			if ( fm.getSrc() != getBroker() ) {
+
+				RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
+				new RSSFeedMessage(this, getBroker(), newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+
 			}
 
+		} else {
+
+			// got an old feed; update timer only if sender is RSSServer
+			if ( fm.getSrc() == getRssServer() ) {
+				updateRequestTimer();
+			}
 		}
 
 	}
@@ -78,8 +84,7 @@ public class AdjustingEventBroker extends AdjustingBroker {
 	}
 
 	/**
-	 * @param rssEventFeedFactory
-	 *            The rssEventFeedFactory to set.
+	 * @param rssEventFeedFactory The rssEventFeedFactory to set.
 	 */
 	public void setRssEventFeedFactory(RSSEventFeedFactory rssEventFeedFactory) {
 		this.rssEventFeedFactory = rssEventFeedFactory;

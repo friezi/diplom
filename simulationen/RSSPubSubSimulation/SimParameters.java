@@ -86,7 +86,13 @@ public class SimParameters {
 	/**
 	 * ColorEventFeed: the maximum number of event-entries in the feed
 	 */
-	int maxEventEntries = 5;
+	int maxFeedEvents = 5;
+
+	/**
+	 * AdjustingEventBroker, EventPubSub: maximum number of events thatb will be
+	 * stored at the node
+	 */
+	int maxSubscriberEvents = 10;
 
 	private String comment = "Parameters for a RPSSimulation";
 
@@ -120,7 +126,8 @@ public class SimParameters {
 		properties.setProperty("pingTimeoutFactor", String.valueOf(pingTimeoutFactor));
 		properties.setProperty("informBrokersTimeout", String.valueOf(informBrokersTimeout));
 		properties.setProperty("informSubscribersTimeout", String.valueOf(informSubscribersTimeout));
-		properties.setProperty("maxEventEntries", String.valueOf(maxEventEntries));
+		properties.setProperty("maxFeedEvents", String.valueOf(maxFeedEvents));
+		properties.setProperty("maxSubscriberEvents", String.valueOf(maxSubscriberEvents));
 
 		if ( args.length > 1 ) {
 
@@ -171,7 +178,8 @@ public class SimParameters {
 		pingTimeoutFactor = Integer.valueOf((String) properties.getProperty("pingTimeoutFactor"));
 		informBrokersTimeout = Integer.valueOf((String) properties.getProperty("informBrokersTimeout"));
 		informSubscribersTimeout = Integer.valueOf((String) properties.getProperty("informSubscribersTimeout"));
-		maxEventEntries = Integer.valueOf((String) properties.getProperty("maxEventEntries"));
+		maxFeedEvents = Integer.valueOf((String) properties.getProperty("maxFeedEvents"));
+		maxSubscriberEvents = Integer.valueOf((String) properties.getProperty("maxSubscriberEvents"));
 		if ( properties.getProperty("rssFeedMsgRepresent").toLowerCase().equals("true") )
 			rssFeedMsgRepresent = true;
 		else

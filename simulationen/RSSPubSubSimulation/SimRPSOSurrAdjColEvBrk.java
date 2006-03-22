@@ -10,7 +10,7 @@ import rsspubsubframework.DisplayableObject;
 
 /**
  * @author Friedemann Zintel
- *
+ * 
  */
 public class SimRPSOSurrAdjColEvBrk {
 
@@ -25,11 +25,11 @@ public class SimRPSOSurrAdjColEvBrk {
 
 		SzenarioOneSurrounded szenario = new SzenarioOneSurrounded(new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) {
-				return new AdjustingEventBroker(xp, yp, new ColorEventFeedFactory(params),params);
+				return new AdjustingEventBroker(xp, yp, new ColorEventFeedFactory(params), params);
 			}
 
 			public PubSubNode newPubSubNode(int xp, int yp, SimParameters params) {
-				return new PubSub(xp, yp, params);
+				return new EventPubSub(xp, yp, new ColorEventFeedFactory(params), params);
 			}
 
 			public RSSServerNode newRSSServerNode(int xp, int yp, SimParameters params) {
@@ -41,6 +41,5 @@ public class SimRPSOSurrAdjColEvBrk {
 			}
 		}, params);
 	}
-
 
 }
