@@ -36,7 +36,7 @@ public class SzenarioAllForOne {
 	/**
 	 * @param rpsFactory
 	 *            the factory to construct RSS-Server,Publishers and Brokers
-	 * @param rssEventFeedFactory
+	 * @param rssFeedFactory
 	 *            to construct feeds
 	 * @param rssFeedRepresentationFactory
 	 *            to construct feed-representations
