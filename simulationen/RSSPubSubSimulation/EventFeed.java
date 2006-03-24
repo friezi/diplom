@@ -5,6 +5,8 @@
 import java.util.*;
 
 /**
+ * An interface for all types of event-feeds
+ * 
  * @author Friedemann Zintel
  *
  */

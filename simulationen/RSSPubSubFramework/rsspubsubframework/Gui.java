@@ -21,6 +21,9 @@ package rsspubsubframework;
 
 import javax.swing.*;
 import javax.swing.event.*;
+
+import rsspubsubframework.Engine.RPSStatistics.OmittedRSSFeedRequestObserver;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -57,8 +60,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 			} else {
 
-				Point point = new Point(event.getPoint().x - WINDOW_LEFT_BORDER_SIZE, event.getPoint().y
-						- WINDOW_TOP_BORDER_SIZE);
+				Point point = new Point(event.getPoint().x - WINDOW_LEFT_BORDER_SIZE, event.getPoint().y - WINDOW_TOP_BORDER_SIZE);
 
 				if ( choice_status == FIRST_CHOICE ) {
 					// check if we hit a Node
@@ -123,6 +125,124 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				}
 			}
 		}
+	}
+
+	protected class StatisticFrame extends JFrame {
+
+		int width = 200;
+
+		int height = 100;
+
+		int receivedRSSRequests = 0;
+
+		int omittedRSSRequests = 0;
+
+		float ratio = 0;
+
+		JLabel receivedLabel = new JLabel();
+
+		JLabel omittedLabel = new JLabel();
+
+		JLabel ratioLabel = new JLabel();
+
+		protected class LPanel extends JPanel {
+			public LPanel() {
+				super(new GridLayout(3, 3));
+			}
+		}
+
+		LPanel panel = new LPanel();
+
+		protected class ReceivedRSSRequestsObserver implements Observer {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.util.Observer#update(java.util.Observable,
+			 *      java.lang.Object)
+			 */
+			public void update(Observable arg0, Object arg1) {
+				// TODO Auto-generated method stub
+
+				receivedRSSRequests = (Integer) arg1;
+				updateRatio();
+				// System.out.println("receivedRequests: " +
+				// receivedRSSRequests);
+				// System.out.println("ratio: " + ratio);
+				receivedLabel.setText("received requests: " + receivedRSSRequests);
+				showRatio();
+
+			}
+
+		}
+
+		protected class OmittedRSSRequestsObserver implements Observer {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.util.Observer#update(java.util.Observable,
+			 *      java.lang.Object)
+			 */
+			public void update(Observable arg0, Object arg1) {
+				// TODO Auto-generated method stub
+
+				omittedRSSRequests = (Integer) arg1;
+				updateRatio();
+				// System.out.println("omittedRequests: " + omittedRSSRequests);
+				// System.out.println("ratio: " + ratio);
+				omittedLabel.setText("omitted requests: " + omittedRSSRequests);
+				showRatio();
+
+			}
+
+		}
+
+		private ReceivedRSSRequestsObserver receivedRSSRequestsObserver = new ReceivedRSSRequestsObserver();
+
+		private OmittedRSSRequestsObserver omittedRSSRequestsObserver = new OmittedRSSRequestsObserver();
+
+		public StatisticFrame(String title) {
+			super(title);
+
+			this.setBounds(new Rectangle(width, height));
+
+			panel.add(receivedLabel);
+			panel.add(omittedLabel);
+			panel.add(ratioLabel);
+
+			panel.setOpaque(true);
+			this.setContentPane(panel);
+
+			this.pack();
+		}
+
+		void updateRatio() {
+			long divisor = (receivedRSSRequests + omittedRSSRequests);
+			if ( divisor != 0 )
+				ratio = (100 * omittedRSSRequests) / divisor;
+			else
+				ratio = 0;
+		}
+
+		void showRatio() {
+			ratioLabel.setText("ratio: " + ratio + "% saved requests");
+		}
+
+		/**
+		 * @return Returns the omittedRSSRequestsObserver.
+		 */
+		public OmittedRSSRequestsObserver getOmittedRSSRequestsObserver() {
+			return omittedRSSRequestsObserver;
+		}
+
+		/**
+		 * @return Returns the receivedRSSRequestsObserver.
+		 */
+		public ReceivedRSSRequestsObserver getReceivedRSSRequestsObserver() {
+			return receivedRSSRequestsObserver;
+		}
+
 	}
 
 	/**
@@ -229,6 +349,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	private boolean toolbar = true;
 
 	private JFrame controlframe;
+
+	private StatisticFrame statisticframe;
 
 	private MouseClick mouseclick = new MouseClick();
 
@@ -413,8 +535,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 			controlframe.setAlwaysOnTop(false);
 
-			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm",
-					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
 				System.exit(0);
 
 			controlframe.setAlwaysOnTop(true);
@@ -433,6 +554,12 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		} else if ( e.getActionCommand().equals(statisticCmd) ) {
 			System.out.println("Statistics");
+			statisticframe = new StatisticFrame("Statistics");
+			statisticframe.setVisible(true);
+
+			Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver().addObserver(statisticframe.getReceivedRSSRequestsObserver());
+			Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver().addObserver(statisticframe.getOmittedRSSRequestsObserver());
+
 		} else if ( e.getActionCommand().equals(showEdgeIdCmd) ) {
 			Edge.setIdOn(true);
 			edgeidbutton.setText(hideEdgeIdCmd);
@@ -518,15 +645,15 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		// A broker should only register at a broker
 		if ( twoBrokers(node1, node2) == true ) {
 
-			((BrokerType) node1).register((BrokerType) node2);
+			((BrokerType) node1).callbackRegisterAtBroker((BrokerType) node2);
 			// ((BrokerType) node2).register((BrokerType) node1);
 
 		} else if ( subscriberToBroker(node1, node2) == true ) {
 			// a subscriber should only register at a broker
-			((PubSubType) node1).register((BrokerType) node2);
+			((PubSubType) node1).callbackRegisterAtBroker((BrokerType) node2);
 		} else if ( subscriberToBroker(node2, node1) == true ) {
 			// or vice-versa?
-			((PubSubType) node2).register((BrokerType) node1);
+			((PubSubType) node2).callbackRegisterAtBroker((BrokerType) node1);
 		}
 	}
 
@@ -535,15 +662,15 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		// A broker should only register at a broker
 		if ( twoBrokers(node1, node2) == true ) {
 
-			((BrokerType) node1).unregister((BrokerType) node2);
+			((BrokerType) node1).callbackUnregisterFromBroker((BrokerType) node2);
 			// ((BrokerType) node2).register((BrokerType) node1);
 
 		} else if ( subscriberToBroker(node1, node2) == true ) {
 			// a subscriber should only register at a broker
-			((PubSubType) node1).unregister((BrokerType) node2);
+			((PubSubType) node1).callbackUnregisterFromBroker((BrokerType) node2);
 		} else if ( subscriberToBroker(node2, node1) == true ) {
 			// or vice-versa?
-			((PubSubType) node2).unregister((BrokerType) node1);
+			((PubSubType) node2).callbackUnregisterFromBroker((BrokerType) node1);
 		}
 	}
 	//

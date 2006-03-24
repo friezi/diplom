@@ -1,11 +1,12 @@
 import java.awt.*;
 
 /**
- * Color-defaults
  */
 
 /**
- * @author friezi
+ * Color-defaults
+ * 
+ * @author Friedemann Zintel
  * 
  */
 public class MessageColors {

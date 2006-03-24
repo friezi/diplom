@@ -6,7 +6,7 @@ import java.awt.*;
  */
 
 /**
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class RegisterBrokerMessage extends Message {

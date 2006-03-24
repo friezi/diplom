@@ -7,7 +7,7 @@ import rsspubsubframework.Engine;
  * A Szenario consisting of one RSS-Server and several Brokers, each o them has
  * two Publishers/Subscribers connected to.
  * 
- * @author friezi
+ * @author Friedemann Zintel
  * 
  * 
  */

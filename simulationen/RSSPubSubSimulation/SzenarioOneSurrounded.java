@@ -8,7 +8,7 @@ import rsspubsubframework.Engine;
  */
 
 /**
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class SzenarioOneSurrounded {
@@ -57,6 +57,8 @@ public class SzenarioOneSurrounded {
 		// RSS-Server:
 
 		RSSServerNode rssServer = rpsFactory.newRSSServerNode(RSS_XPOS, RSS_YPOS, params);
+		
+		rssServer.getReceivedRSSFeedRequestNotifier().addObserver(Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver());		
 
 		// set the factories for creating and displaying the feeds
 		rssServer.setRssFeedFactory(rssFeedFactory);
@@ -292,6 +294,8 @@ public class SzenarioOneSurrounded {
 		// pubsublist.get(0).addToInitList();
 
 		for ( PubSubNode currpubsub : pubsublist ) {
+			// Engine should be notified about omitted RSS-requests
+			currpubsub.getOmittedRSSFeedRequestNotifier().addObserver(Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver());
 			currpubsub.addToInitList();
 		}
 

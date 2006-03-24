@@ -34,7 +34,7 @@ abstract public class Node extends DisplayableObject {
 	/**
 	 * Stores peers, adding and removing can bo observed by Observers.
 	 * 
-	 * @author friezi
+	 * @author Friedemann Zintel
 	 * 
 	 */
 	protected class Peers extends HashSet<Node> {

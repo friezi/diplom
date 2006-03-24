@@ -5,7 +5,7 @@ package rsspubsubframework;
  */
 
 /**
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public interface BrokerType {
@@ -16,7 +16,7 @@ public interface BrokerType {
 	 * @param broker
 	 *            the broker
 	 */
-	public void register(BrokerType broker);
+	public void callbackRegisterAtBroker(BrokerType broker);
 
 	/**
 	 * Unregister from a broker
@@ -24,6 +24,6 @@ public interface BrokerType {
 	 * @param broker
 	 *            the broker
 	 */
-	public void unregister(BrokerType broker);
+	public void callbackUnregisterFromBroker(BrokerType broker);
 
 }

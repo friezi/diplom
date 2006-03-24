@@ -1,5 +1,11 @@
 import java.awt.Color;
 
+/**
+ * A Feed which stores a color
+ * 
+ * @author Friedemann Zintel
+ *
+ */
 public class ColorFeed extends RSSFeed {
 
 	protected Color color;

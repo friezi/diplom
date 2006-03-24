@@ -4,6 +4,8 @@
 import java.util.*;
 
 /**
+ * An PubSub-Node which can handle event-feeds
+ * 
  * @author Friedemann Zintel
  *
  */
@@ -64,6 +66,10 @@ public class EventPubSub extends PubSub {
 				RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
 				new RSSFeedMessage(this, getBroker(), newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
 
+			} else {
+				// if we got the message from a broker, a request for RSSServer will be omitted
+				// -> statistics
+				this.omittedRSSFeedRequestNotifier.notifyObservers(this);
 			}
 
 		} else {

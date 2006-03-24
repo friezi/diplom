@@ -5,9 +5,9 @@ import java.awt.Color;
 import java.util.*;
 
 /**
- * @author Friedemann Zintel
- * 
  * For producing ColorEventFeeds
+ * 
+ * @author Friedemann Zintel
  * 
  */
 public class ColorEventFeedFactory implements RSSEventFeedFactory {

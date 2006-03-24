@@ -148,7 +148,7 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 	 * 
 	 * does nothing so far!
 	 */
-	public void register(BrokerType arg0) {
+	public void callbackRegisterAtBroker(BrokerType arg0) {
 		// TODO Auto-generated method stub
 
 	}
@@ -160,7 +160,7 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 	 * 
 	 * does nothing so far!
 	 */
-	public void unregister(BrokerType arg0) {
+	public void callbackUnregisterFromBroker(BrokerType arg0) {
 		// TODO Auto-generated method stub
 
 	}

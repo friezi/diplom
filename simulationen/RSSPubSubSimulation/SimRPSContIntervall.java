@@ -6,7 +6,7 @@ import rsspubsubframework.*;
  * A Simulation ofn a RSS-Distribution-System integrated in distributed
  * Publish/Subscribe
  * 
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class SimRPSContIntervall {

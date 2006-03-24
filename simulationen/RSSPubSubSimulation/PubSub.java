@@ -223,11 +223,11 @@ public class PubSub extends PubSubNode {
 
 		if ( o instanceof Peers.AddNotifier ) {
 			if ( arg instanceof BrokerNode ) {
-				register((BrokerNode) arg);
+				callbackRegisterAtBroker((BrokerNode) arg);
 			}
 		} else if ( o instanceof Peers.RemoveNotifier ) {
 			if ( arg instanceof BrokerNode ) {
-				unregister((BrokerNode) arg);
+				callbackUnregisterFromBroker((BrokerNode) arg);
 			}
 		}
 	}
@@ -237,7 +237,7 @@ public class PubSub extends PubSubNode {
 	 * 
 	 * @see rsspubsubframework.PubSubType#register(rsspubsubframework.BrokerType)
 	 */
-	public void register(BrokerType broker) {
+	public void callbackRegisterAtBroker(BrokerType broker) {
 
 		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
 		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
@@ -252,7 +252,7 @@ public class PubSub extends PubSubNode {
 	 * 
 	 * @see rsspubsubframework.PubSubType#unregister(rsspubsubframework.BrokerType)
 	 */
-	public void unregister(BrokerType broker) {
+	public void callbackUnregisterFromBroker(BrokerType broker) {
 		// TODO Auto-generated method stub
 		new UnregisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
 	}

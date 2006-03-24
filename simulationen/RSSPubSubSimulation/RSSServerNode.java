@@ -1,15 +1,25 @@
 import rsspubsubframework.*;
 import java.awt.*;
+import java.util.*;
 
 /**
  * A class representing a RSS-Server
  * 
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class RSSServerNode extends Node implements RSSServerType {
 
 	// protected NodeFactory nf;
+	
+	protected class ReceivedRSSFeedRequestNotifier extends Observable{
+		public void notifyObservers(Node node){
+			setChanged();
+			super.notifyObservers(node);
+		}
+	}
+	
+	protected ReceivedRSSFeedRequestNotifier receivedRSSFeedRequestNotifier = new ReceivedRSSFeedRequestNotifier();
 
 	// just to avoid NullPointerException
 	protected RSSFeedFactory rssFeedFactory = new RSSFeedFactory() {
@@ -76,6 +86,14 @@ public class RSSServerNode extends Node implements RSSServerType {
 	 */
 	protected int size() {
 		return 20;
+	}
+
+	/* (non-Javadoc)
+	 * @see rsspubsubframework.RSSServerType#addReceivedRSSFeedRequestObserver(java.util.Observer)
+	 */
+	public void addReceivedRSSFeedRequestObserver(Observer observer) {
+		// TODO Auto-generated method stub
+		this.receivedRSSFeedRequestNotifier.addObserver(observer);
 	}
 
 	/*
@@ -208,6 +226,13 @@ public class RSSServerNode extends Node implements RSSServerType {
 
 	public void setDefaultColor() {
 		setColor(Color.orange);
+	}
+
+	/**
+	 * @return Returns the omittedRSSFeedRequestNotifier.
+	 */
+	public ReceivedRSSFeedRequestNotifier getReceivedRSSFeedRequestNotifier() {
+		return receivedRSSFeedRequestNotifier;
 	}
 
 }

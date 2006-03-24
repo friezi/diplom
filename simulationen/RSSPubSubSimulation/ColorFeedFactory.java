@@ -2,9 +2,10 @@ import java.awt.Color;
 import java.util.Date;
 
 /**
- * @author Friedemann Zintel
  * 
- * For generatinf Feeds which just contain a color.
+ * For generating Feeds which just contain a color.
+ * 
+ * @author Friedemann Zintel
  *
  */
 public class ColorFeedFactory implements RSSFeedFactory {

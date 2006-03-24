@@ -6,7 +6,7 @@ import java.util.*;
  */
 
 /**
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class SubnetParameters {

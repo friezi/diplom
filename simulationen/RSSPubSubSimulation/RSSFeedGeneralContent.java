@@ -5,7 +5,7 @@ import java.util.Date;
  * The general content all RSSFeed must contain. You can add additional
  * information by building derived classes from this.
  * 
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class RSSFeedGeneralContent {

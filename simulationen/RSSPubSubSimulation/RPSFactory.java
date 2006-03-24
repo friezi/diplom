@@ -1,7 +1,7 @@
 /**
  * For construction RSS-Servers, Publishers/Subscribers and Brokers.
  * 
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public interface RPSFactory {

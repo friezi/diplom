@@ -5,10 +5,10 @@ import java.awt.Color;
  */
 
 /**
- * @author Friedemann Zintel
- * 
  * Just to produce colors (color-cycling).
  *
+ * @author Friedemann Zintel
+ * 
  */
 public class ColorFactory {
 

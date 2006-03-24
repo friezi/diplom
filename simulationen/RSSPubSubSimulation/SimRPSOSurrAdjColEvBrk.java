@@ -3,12 +3,13 @@ import java.io.IOException;
 import rsspubsubframework.DisplayableObject;
 
 /**
- * Simulation of RSS with Publish/Subscribe on top of Szenario
- * "One Server surrounded" in combination with Adjusting ColorEvent-Broker
  * 
  */
 
 /**
+ * Simulation of RSS with Publish/Subscribe on top of Szenario
+ * "One Server surrounded" in combination with Adjusting ColorEvent-Broker
+ * 
  * @author Friedemann Zintel
  * 
  */

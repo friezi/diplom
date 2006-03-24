@@ -5,9 +5,9 @@
 import java.awt.Color;
 
 /**
- * @author Friedemann Zintel
- * 
  * An Event-dervied class, which just stores an identifier and a color
+ * 
+ * @author Friedemann Zintel
  * 
  */
 public class ColorEvent implements Event {

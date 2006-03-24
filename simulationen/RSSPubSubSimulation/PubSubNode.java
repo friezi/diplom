@@ -3,7 +3,22 @@ import java.util.*;
 
 import rsspubsubframework.*;
 
+/**
+ * A base-class for Publish/Subscribe-nodes
+ * 
+ * @author Friedemann Zintel
+ *
+ */
 public class PubSubNode extends Node implements PubSubType, Observer {
+	
+	protected class OmittedRSSFeedRequestNotifier extends Observable{
+		public void notifyObservers(Node node){
+			setChanged();
+			super.notifyObservers(node);
+		}
+	}
+	
+	protected OmittedRSSFeedRequestNotifier omittedRSSFeedRequestNotifier = new OmittedRSSFeedRequestNotifier();
 
 	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
@@ -133,7 +148,7 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 	}
 
 	/**
-	 * deletes all the obserevrs which are observing gui-operations.
+	 * deletes all the observers which are observing gui-operations.
 	 */
 	public void deleteGuiObservers() {
 		peers.deleteAddObserver(this);
@@ -148,7 +163,7 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 	 * does nothing so far!
 	 * 
 	 */
-	public void register(BrokerType arg0) {
+	public void callbackRegisterAtBroker(BrokerType arg0) {
 		// TODO Auto-generated method stub
 
 	}
@@ -160,7 +175,7 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 	 * 
 	 * does nothing so far!
 	 */
-	public void unregister(BrokerType arg0) {
+	public void callbackUnregisterFromBroker(BrokerType arg0) {
 		// TODO Auto-generated method stub
 
 	}
@@ -173,6 +188,13 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * @return Returns the omittedRSSFeedRequestNotifier.
+	 */
+	public OmittedRSSFeedRequestNotifier getOmittedRSSFeedRequestNotifier() {
+		return omittedRSSFeedRequestNotifier;
 	}
 
 }

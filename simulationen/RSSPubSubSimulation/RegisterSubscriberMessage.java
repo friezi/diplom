@@ -5,7 +5,7 @@ import rsspubsubframework.*;
  */
 
 /**
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class RegisterSubscriberMessage extends Message {

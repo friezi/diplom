@@ -6,7 +6,7 @@ import java.io.*;
  */
 
 /**
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class SimParameters {

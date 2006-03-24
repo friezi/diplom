@@ -7,7 +7,7 @@ import java.util.*;
  */
 
 /**
- * @author friezi
+ * @author Friedemann Zintel
  * 
  */
 public class AdjustingBroker extends BrokerNode {
@@ -65,7 +65,7 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 
 	/**
-	 * @author friezi
+	 * @author Friedemann Zintel
 	 * 
 	 */
 	public class InformBrokersMessage extends Message {
@@ -82,7 +82,7 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 
 	/**
-	 * @author friezi
+	 * @author Friedemann Zintel
 	 * 
 	 */
 	public class InformSubscribersMessage extends Message {
@@ -100,7 +100,7 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 
 	/**
-	 * @author friezi
+	 * @author Friedemann Zintel
 	 * 
 	 */
 	public class TimeForPingMessage extends Message {
@@ -127,7 +127,7 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 
 	/**
-	 * @author friezi
+	 * @author Friedemann Zintel
 	 * 
 	 */
 	public class PingTimeoutMessage extends Message {
@@ -418,14 +418,14 @@ public class AdjustingBroker extends BrokerNode {
 
 			if ( arg instanceof BrokerNode ) {
 
-				register((BrokerNode) arg);
+				callbackRegisterAtBroker((BrokerNode) arg);
 
 			}
 
 		} else if ( o instanceof Peers.RemoveNotifier ) {
 
 			if ( arg instanceof BrokerNode )
-				unregister((BrokerNode) arg);
+				callbackUnregisterFromBroker((BrokerNode) arg);
 			// removeFromBrokers((BrokerNode) arg);
 		}
 
@@ -480,7 +480,7 @@ public class AdjustingBroker extends BrokerNode {
 			// "causeOfMessage"-node which created the circle
 			if ( spm.getMI() == this )
 				if ( spm.getCOM() instanceof BrokerType )
-					unregister((BrokerType) spm.getCOM());
+					callbackUnregisterFromBroker((BrokerType) spm.getCOM());
 
 			//
 			// /**
@@ -962,9 +962,9 @@ public class AdjustingBroker extends BrokerNode {
 	 * @see BrokerNode#register(rsspubsubframework.BrokerType)
 	 */
 	@Override
-	public void register(BrokerType broker) {
+	public void callbackRegisterAtBroker(BrokerType broker) {
 		// TODO Auto-generated method stub
-		super.register(broker);
+		super.callbackRegisterAtBroker(broker);
 		registerAtBroker((BrokerNode) broker);
 	}
 
@@ -974,9 +974,9 @@ public class AdjustingBroker extends BrokerNode {
 	 * @see BrokerNode#unregister(rsspubsubframework.BrokerType)
 	 */
 	@Override
-	public void unregister(BrokerType broker) {
+	public void callbackUnregisterFromBroker(BrokerType broker) {
 		// TODO Auto-generated method stub
-		super.unregister(broker);
+		super.callbackUnregisterFromBroker(broker);
 		unregisterFromBroker((BrokerNode) broker);
 		try {
 			removeConnection(this, (BrokerNode) broker);

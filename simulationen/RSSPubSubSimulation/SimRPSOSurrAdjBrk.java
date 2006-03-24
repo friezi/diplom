@@ -3,12 +3,13 @@ import java.io.IOException;
 import rsspubsubframework.*;
 
 /**
- * Simulation of RSS with Publish/Subscribe on top of Szenario
- * "One Server surrounded" in combination with Adjusting Broker
  */
 
 /**
- * @author friezi
+ * Simulation of RSS with Publish/Subscribe on top of Szenario
+ * "One Server surrounded" in combination with Adjusting Broker
+ *
+ * @author Friedemann Zintel
  * 
  */
 public class SimRPSOSurrAdjBrk {

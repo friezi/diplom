@@ -29,6 +29,101 @@ import java.awt.*;
  * such an object.
  */
 final public class Engine extends java.util.TimerTask {
+
+	/**
+	 * RSS-PubSub-Statistics
+	 * 
+	 * (non java-doc)
+	 * @added Friedemann Zintel
+	 */
+	public class RPSStatistics {
+
+		public class ReceivedRSSFeedRequestObserver extends Observable implements Observer {
+
+			int count = 0;
+
+			/* (non-Javadoc)
+			 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+			 */
+			synchronized public void update(Observable observable, Object object) {
+				// TODO Auto-generated method stub
+				count++;
+//				System.out.println("received count ist: " + count);
+				notifyObservers(count);
+			}
+
+			public void notifyObservers(Integer count) {
+				setChanged();
+				super.notifyObservers(count);
+			}
+
+			/* (non-Javadoc)
+			 * @see java.util.Observable#addObserver(java.util.Observer)
+			 */
+			@Override
+			public synchronized void addObserver(Observer arg0) {
+				// TODO Auto-generated method stub
+				super.addObserver(arg0);
+				// should receive the current values immediately
+				notifyObservers(count);
+			}
+
+		}
+
+		private ReceivedRSSFeedRequestObserver receivedRSSFeedRequestObserver = new ReceivedRSSFeedRequestObserver();
+
+		public class OmittedRSSFeedRequestObserver extends Observable implements Observer {
+
+			int count = 0;
+
+			/* (non-Javadoc)
+			 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+			 */
+			synchronized public void update(Observable observable, Object object) {
+				// TODO Auto-generated method stub
+				count++;
+//				System.out.println("omitted count ist: " + count);
+				notifyObservers(count);
+			}
+
+			public void notifyObservers(Integer count) {
+				setChanged();
+				// should receive the current values immediately
+				super.notifyObservers(count);
+			}
+
+			/* (non-Javadoc)
+			 * @see java.util.Observable#addObserver(java.util.Observer)
+			 */
+			@Override
+			public synchronized void addObserver(Observer arg0) {
+				// TODO Auto-generated method stub
+				super.addObserver(arg0);
+				notifyObservers(count);
+			}
+
+		}
+
+		private OmittedRSSFeedRequestObserver omittedRSSFeedRequestObserver = new OmittedRSSFeedRequestObserver();
+
+		/**
+		 * @return Returns the receivedRSSFeedRequestObserver.
+		 */
+		public ReceivedRSSFeedRequestObserver getReceivedRSSFeedRequestObserver() {
+			return receivedRSSFeedRequestObserver;
+		}
+
+		/**
+		 * @return Returns the omittedRSSFeedRequestObserver.
+		 */
+		public OmittedRSSFeedRequestObserver getOmittedRSSFeedRequestObserver() {
+			return omittedRSSFeedRequestObserver;
+		}
+
+	}
+
+	private RPSStatistics rpsStatistics = new RPSStatistics();
+
 	/**
 	 * Singleton object of the engine.
 	 * 
@@ -126,6 +221,13 @@ final public class Engine extends java.util.TimerTask {
 	private int maxMessages = 0;
 
 	/**
+	 * @return Returns the rpsStatistics.
+	 */
+	public RPSStatistics getRpsStatistics() {
+		return rpsStatistics;
+	}
+
+	/**
 	 * Get the main simulation engine object.
 	 * 
 	 * Returns the main simulation engine object.
@@ -194,7 +296,7 @@ final public class Engine extends java.util.TimerTask {
 		edge.removeConnection();
 	}
 
-	// modified by friezi
+	// modified by Friedemann Zintel
 	public final synchronized void removeEdgeFromNodes(Node node1, Node node2) {
 
 		boolean foundfirst = false;
@@ -411,8 +513,7 @@ final public class Engine extends java.util.TimerTask {
 				final java.util.Date d = new java.util.Date();
 
 				System.out.println("[" + d + "] ...simulation stopped");
-				System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "." + simSteps % 10
-						+ "s");
+				System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "." + simSteps % 10 + "s");
 				System.out.println("[" + d + "] # of messages    : " + Message.getMessages());
 				System.out.println("[" + d + "] max # of messages: " + maxMessages);
 				System.out.println("[" + d + "] avg # of messages: " + (double) cumMessages / simSteps);

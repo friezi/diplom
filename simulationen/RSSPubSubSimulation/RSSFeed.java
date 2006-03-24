@@ -1,9 +1,18 @@
 import java.util.Date;
 
+/**
+ * A base-class for all kinds of RSS-feeds
+ * 
+ * @author Friedemann Zintel
+ *
+ */
 public class RSSFeed {
 
 	protected RSSFeedGeneralContent generalContent;
 
+	/**
+	 * @param generalContent
+	 */
 	public RSSFeed(RSSFeedGeneralContent generalContent) {
 		this.generalContent = generalContent;
 	}

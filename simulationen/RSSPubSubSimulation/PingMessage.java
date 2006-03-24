@@ -3,11 +3,12 @@ import java.awt.Color;
 import rsspubsubframework.*;
 
 /**
- * A ping containing subnet-information
  */
 
 /**
- * @author friezi
+ * A ping containing subnet-information
+ * 
+ * @author Friedemann Zintel
  * 
  */
 public class PingMessage extends Message {
