@@ -10,15 +10,6 @@ import rsspubsubframework.*;
  *
  */
 public class PubSubNode extends Node implements PubSubType, Observer {
-	
-	protected class OmittedRSSFeedRequestNotifier extends Observable{
-		public void notifyObservers(Node node){
-			setChanged();
-			super.notifyObservers(node);
-		}
-	}
-	
-	protected OmittedRSSFeedRequestNotifier omittedRSSFeedRequestNotifier = new OmittedRSSFeedRequestNotifier();
 
 	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
@@ -26,6 +17,8 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 			return new RSSFeedRepresentation(null, null);
 		}
 	};
+	
+	protected PubSubNodeStatistics statistics = new PubSubNodeStatistics();
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
 
@@ -191,10 +184,10 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 	}
 
 	/**
-	 * @return Returns the omittedRSSFeedRequestNotifier.
+	 * @return Returns the statistics.
 	 */
-	public OmittedRSSFeedRequestNotifier getOmittedRSSFeedRequestNotifier() {
-		return omittedRSSFeedRequestNotifier;
+	public PubSubNodeStatistics getStatistics() {
+		return statistics;
 	}
 
 }

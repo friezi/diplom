@@ -75,20 +75,19 @@ public class RSSServer extends RSSServerNode {
 
 		if ( m instanceof RSSFeedRequestMessage ) {
 
-			handleRSSFeedRequestMessage((RSSFeedRequestMessage)m);
+			handleRSSFeedRequestMessage((RSSFeedRequestMessage) m);
 
 		}
 
 	}
-	
-	protected void handleRSSFeedRequestMessage(RSSFeedRequestMessage rfrm){
+
+	protected void handleRSSFeedRequestMessage(RSSFeedRequestMessage rfrm) {
 
 		// observers (most probably the Engine) have to be informed about the request
-		this.receivedRSSFeedRequestNotifier.notifyObservers(this);
-		
-		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory()
-				.newRSSFeedRepresentation(null, getFeed()), params);
-		
+		this.getStatistics().addReceivedRSSFeedRequest(this);
+
+		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(null, getFeed()), params);
+
 	}
 
 	/**

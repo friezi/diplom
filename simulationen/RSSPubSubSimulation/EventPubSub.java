@@ -63,13 +63,20 @@ public class EventPubSub extends PubSub {
 			// him
 			if ( fm.getSrc() != getBroker() ) {
 
+				this.getStatistics().addServerFeed(this);
+
 				RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
 				new RSSFeedMessage(this, getBroker(), newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
 
 			} else {
+
+				// just statistics
+
+				this.getStatistics().addBrokerFeed(this);
 				// if we got the message from a broker, a request for RSSServer will be omitted
 				// -> statistics
-				this.omittedRSSFeedRequestNotifier.notifyObservers(this);
+				this.getStatistics().addOmittedRSSFeedRequest(this);
+
 			}
 
 		} else {

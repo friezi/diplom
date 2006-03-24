@@ -31,100 +31,6 @@ import java.awt.*;
 final public class Engine extends java.util.TimerTask {
 
 	/**
-	 * RSS-PubSub-Statistics
-	 * 
-	 * (non java-doc)
-	 * @added Friedemann Zintel
-	 */
-	public class RPSStatistics {
-
-		public class ReceivedRSSFeedRequestObserver extends Observable implements Observer {
-
-			int count = 0;
-
-			/* (non-Javadoc)
-			 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-			 */
-			synchronized public void update(Observable observable, Object object) {
-				// TODO Auto-generated method stub
-				count++;
-//				System.out.println("received count ist: " + count);
-				notifyObservers(count);
-			}
-
-			public void notifyObservers(Integer count) {
-				setChanged();
-				super.notifyObservers(count);
-			}
-
-			/* (non-Javadoc)
-			 * @see java.util.Observable#addObserver(java.util.Observer)
-			 */
-			@Override
-			public synchronized void addObserver(Observer arg0) {
-				// TODO Auto-generated method stub
-				super.addObserver(arg0);
-				// should receive the current values immediately
-				notifyObservers(count);
-			}
-
-		}
-
-		private ReceivedRSSFeedRequestObserver receivedRSSFeedRequestObserver = new ReceivedRSSFeedRequestObserver();
-
-		public class OmittedRSSFeedRequestObserver extends Observable implements Observer {
-
-			int count = 0;
-
-			/* (non-Javadoc)
-			 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-			 */
-			synchronized public void update(Observable observable, Object object) {
-				// TODO Auto-generated method stub
-				count++;
-//				System.out.println("omitted count ist: " + count);
-				notifyObservers(count);
-			}
-
-			public void notifyObservers(Integer count) {
-				setChanged();
-				// should receive the current values immediately
-				super.notifyObservers(count);
-			}
-
-			/* (non-Javadoc)
-			 * @see java.util.Observable#addObserver(java.util.Observer)
-			 */
-			@Override
-			public synchronized void addObserver(Observer arg0) {
-				// TODO Auto-generated method stub
-				super.addObserver(arg0);
-				notifyObservers(count);
-			}
-
-		}
-
-		private OmittedRSSFeedRequestObserver omittedRSSFeedRequestObserver = new OmittedRSSFeedRequestObserver();
-
-		/**
-		 * @return Returns the receivedRSSFeedRequestObserver.
-		 */
-		public ReceivedRSSFeedRequestObserver getReceivedRSSFeedRequestObserver() {
-			return receivedRSSFeedRequestObserver;
-		}
-
-		/**
-		 * @return Returns the omittedRSSFeedRequestObserver.
-		 */
-		public OmittedRSSFeedRequestObserver getOmittedRSSFeedRequestObserver() {
-			return omittedRSSFeedRequestObserver;
-		}
-
-	}
-
-	private RPSStatistics rpsStatistics = new RPSStatistics();
-
-	/**
 	 * Singleton object of the engine.
 	 * 
 	 * This is the main simulation engine object.
@@ -137,6 +43,8 @@ final public class Engine extends java.util.TimerTask {
 	 * This object handles automatic drawing of the user interface.
 	 */
 	private final Gui db = new Gui();
+
+	private RPSStatistics rpsStatistics = new RPSStatistics();
 
 	/**
 	 * List of all nodes in the engine.

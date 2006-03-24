@@ -49,16 +49,17 @@ public class SzenarioOneSurrounded {
 	 * @param params
 	 *            relevant parameters
 	 */
-	public SzenarioOneSurrounded(RPSFactory rpsFactory, RSSFeedFactory rssFeedFactory,
-			RSSFeedRepresentationFactory rssFeedRepresentationFactory, SimParameters params) {
+	public SzenarioOneSurrounded(RPSFactory rpsFactory, RSSFeedFactory rssFeedFactory, RSSFeedRepresentationFactory rssFeedRepresentationFactory,
+			SimParameters params) {
 
 		EdgeFactory edgefactory = new EdgeFactory();
 
 		// RSS-Server:
 
 		RSSServerNode rssServer = rpsFactory.newRSSServerNode(RSS_XPOS, RSS_YPOS, params);
-		
-		rssServer.getReceivedRSSFeedRequestNotifier().addObserver(Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver());		
+
+		// add the Engine as observer to RSSServer
+		rssServer.getStatistics().addReceivedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver());
 
 		// set the factories for creating and displaying the feeds
 		rssServer.setRssFeedFactory(rssFeedFactory);
@@ -71,8 +72,7 @@ public class SzenarioOneSurrounded {
 		for ( int i = 0; i < ((int) (MAXBROKER / 2)) + 1; i++ ) {
 			brokerlist.add(rpsFactory.newBrokerNode(BR_XPOS + BR_XINTV * i, BR_YPOS, params));
 			if ( i < ((int) (MAXBROKER / 2)) )
-				brokerlist.add(rpsFactory.newBrokerNode(BR_XPOS + BR_XINTV * i + BR_XINTV / 2, BR_YPOS
-						+ BR_YINTV, params));
+				brokerlist.add(rpsFactory.newBrokerNode(BR_XPOS + BR_XINTV * i + BR_XINTV / 2, BR_YPOS + BR_YINTV, params));
 		}
 
 		edgefactory.newEdge(brokerlist.get(0), brokerlist.get(1));
@@ -103,8 +103,7 @@ public class SzenarioOneSurrounded {
 		for ( int i = 0; i < ((int) (MAXBROKER / 2)) + 1; i++ ) {
 			brokerlist.add(rpsFactory.newBrokerNode(BR_XPOS + BR_XINTV * i, BR_YPOS2, params));
 			if ( i < ((int) (MAXBROKER / 2)) )
-				brokerlist.add(rpsFactory.newBrokerNode(BR_XPOS + BR_XINTV * i + BR_XINTV / 2, BR_YPOS2
-						- BR_YINTV, params));
+				brokerlist.add(rpsFactory.newBrokerNode(BR_XPOS + BR_XINTV * i + BR_XINTV / 2, BR_YPOS2 - BR_YINTV, params));
 		}
 
 		edgefactory.newEdge(brokerlist.get(0 + MAXBROKER), brokerlist.get(1 + MAXBROKER));
@@ -294,8 +293,11 @@ public class SzenarioOneSurrounded {
 		// pubsublist.get(0).addToInitList();
 
 		for ( PubSubNode currpubsub : pubsublist ) {
-			// Engine should be notified about omitted RSS-requests
-			currpubsub.getOmittedRSSFeedRequestNotifier().addObserver(Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver());
+			// Engine should be notified about omitted RSS-requests and other
+			// values
+			currpubsub.getStatistics().addOmittedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver());
+			currpubsub.getStatistics().addServerFeedObserver(Engine.getSingleton().getRpsStatistics().getServerFeedObserver());
+			currpubsub.getStatistics().addBrokerFeedObserver(Engine.getSingleton().getRpsStatistics().getBrokerFeedObserver());
 			currpubsub.addToInitList();
 		}
 

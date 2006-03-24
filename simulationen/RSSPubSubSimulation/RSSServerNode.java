@@ -11,15 +11,6 @@ import java.util.*;
 public class RSSServerNode extends Node implements RSSServerType {
 
 	// protected NodeFactory nf;
-	
-	protected class ReceivedRSSFeedRequestNotifier extends Observable{
-		public void notifyObservers(Node node){
-			setChanged();
-			super.notifyObservers(node);
-		}
-	}
-	
-	protected ReceivedRSSFeedRequestNotifier receivedRSSFeedRequestNotifier = new ReceivedRSSFeedRequestNotifier();
 
 	// just to avoid NullPointerException
 	protected RSSFeedFactory rssFeedFactory = new RSSFeedFactory() {
@@ -34,6 +25,8 @@ public class RSSServerNode extends Node implements RSSServerType {
 			return new RSSFeedRepresentation(null, null);
 		}
 	};
+
+	protected RSSServerNodeStatistics statistics = new RSSServerNodeStatistics();
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
 
@@ -86,14 +79,6 @@ public class RSSServerNode extends Node implements RSSServerType {
 	 */
 	protected int size() {
 		return 20;
-	}
-
-	/* (non-Javadoc)
-	 * @see rsspubsubframework.RSSServerType#addReceivedRSSFeedRequestObserver(java.util.Observer)
-	 */
-	public void addReceivedRSSFeedRequestObserver(Observer observer) {
-		// TODO Auto-generated method stub
-		this.receivedRSSFeedRequestNotifier.addObserver(observer);
 	}
 
 	/*
@@ -229,10 +214,10 @@ public class RSSServerNode extends Node implements RSSServerType {
 	}
 
 	/**
-	 * @return Returns the omittedRSSFeedRequestNotifier.
+	 * @return Returns the statistics.
 	 */
-	public ReceivedRSSFeedRequestNotifier getReceivedRSSFeedRequestNotifier() {
-		return receivedRSSFeedRequestNotifier;
+	public RSSServerNodeStatistics getStatistics() {
+		return statistics;
 	}
 
 }

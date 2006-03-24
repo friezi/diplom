@@ -22,8 +22,6 @@ package rsspubsubframework;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import rsspubsubframework.Engine.RPSStatistics.OmittedRSSFeedRequestObserver;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -129,25 +127,37 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	protected class StatisticFrame extends JFrame {
 
-		int width = 200;
+		int width = 230;
 
 		int height = 100;
 
-		int receivedRSSRequests = 0;
+		long receivedRSSRequests = 0;
 
-		int omittedRSSRequests = 0;
+		long omittedRSSRequests = 0;
 
-		float ratio = 0;
+		long serverFeeds = 0;
+
+		long brokerFeeds = 0;
+
+		int reOmRatio = 0;
+
+		int srvBrRatio = 0;
 
 		JLabel receivedLabel = new JLabel();
 
 		JLabel omittedLabel = new JLabel();
 
-		JLabel ratioLabel = new JLabel();
+		JLabel reOmRatioLabel = new JLabel();
+
+		JLabel serverFeedsLabel = new JLabel();
+
+		JLabel brokerFeedsLabel = new JLabel();
+
+		JLabel srvBrRatioLabel = new JLabel();
 
 		protected class LPanel extends JPanel {
 			public LPanel() {
-				super(new GridLayout(3, 3));
+				super(new GridLayout(3, 2));
 			}
 		}
 
@@ -161,16 +171,13 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			 * @see java.util.Observer#update(java.util.Observable,
 			 *      java.lang.Object)
 			 */
-			public void update(Observable arg0, Object arg1) {
+			public void update(Observable observable, Object object) {
 				// TODO Auto-generated method stub
 
-				receivedRSSRequests = (Integer) arg1;
-				updateRatio();
-				// System.out.println("receivedRequests: " +
-				// receivedRSSRequests);
-				// System.out.println("ratio: " + ratio);
+				receivedRSSRequests = (Long) object;
+				updateReOmRatio();
 				receivedLabel.setText("received requests: " + receivedRSSRequests);
-				showRatio();
+				showReOmRatio();
 
 			}
 
@@ -184,15 +191,53 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			 * @see java.util.Observer#update(java.util.Observable,
 			 *      java.lang.Object)
 			 */
-			public void update(Observable arg0, Object arg1) {
+			public void update(Observable observable, Object object) {
 				// TODO Auto-generated method stub
 
-				omittedRSSRequests = (Integer) arg1;
-				updateRatio();
-				// System.out.println("omittedRequests: " + omittedRSSRequests);
-				// System.out.println("ratio: " + ratio);
+				omittedRSSRequests = (Long) object;
+				updateReOmRatio();
 				omittedLabel.setText("omitted requests: " + omittedRSSRequests);
-				showRatio();
+				showReOmRatio();
+
+			}
+
+		}
+
+		protected class ServerFeedsObserver implements Observer {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.util.Observer#update(java.util.Observable,
+			 *      java.lang.Object)
+			 */
+			public void update(Observable observable, Object object) {
+				// TODO Auto-generated method stub
+
+				serverFeeds = (Long) object;
+				updateSrvBrRatio();
+				serverFeedsLabel.setText("feeds from server: " + serverFeeds);
+				showSrvBrRatio();
+
+			}
+
+		}
+
+		protected class BrokerFeedsObserver implements Observer {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.util.Observer#update(java.util.Observable,
+			 *      java.lang.Object)
+			 */
+			public void update(Observable observable, Object object) {
+				// TODO Auto-generated method stub
+
+				brokerFeeds = (Long) object;
+				updateSrvBrRatio();
+				brokerFeedsLabel.setText("feeds from broker: " + brokerFeeds);
+				showSrvBrRatio();
 
 			}
 
@@ -202,14 +247,46 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		private OmittedRSSRequestsObserver omittedRSSRequestsObserver = new OmittedRSSRequestsObserver();
 
+		private ServerFeedsObserver serverFeedsObserver = new ServerFeedsObserver();
+
+		private BrokerFeedsObserver brokerFeedsObserver = new BrokerFeedsObserver();
+
+		protected class CloseWindowListener extends WindowAdapter {
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
+			 */
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver().deleteObserver(getOmittedRSSRequestsObserver());
+				Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver().deleteObserver(getReceivedRSSRequestsObserver());
+				Engine.getSingleton().getRpsStatistics().getServerFeedObserver().deleteObserver(getServerFeedsObserver());
+				Engine.getSingleton().getRpsStatistics().getBrokerFeedObserver().deleteObserver(getBrokerFeedsObserver());
+				super.windowClosed(arg0);
+			}
+
+		}
+
 		public StatisticFrame(String title) {
+
 			super(title);
 
-			this.setBounds(new Rectangle(width, height));
+			Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver().addObserver(getReceivedRSSRequestsObserver());
+			Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver().addObserver(getOmittedRSSRequestsObserver());
+			Engine.getSingleton().getRpsStatistics().getServerFeedObserver().addObserver(getServerFeedsObserver());
+			Engine.getSingleton().getRpsStatistics().getBrokerFeedObserver().addObserver(getBrokerFeedsObserver());
+
+			this.addWindowListener(new CloseWindowListener());
+
+			this.setSize(new Dimension(width, height));
 
 			panel.add(receivedLabel);
+			panel.add(serverFeedsLabel);
 			panel.add(omittedLabel);
-			panel.add(ratioLabel);
+			panel.add(brokerFeedsLabel);
+			panel.add(reOmRatioLabel);
+			panel.add(srvBrRatioLabel);
 
 			panel.setOpaque(true);
 			this.setContentPane(panel);
@@ -217,16 +294,33 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			this.pack();
 		}
 
-		void updateRatio() {
+		void updateReOmRatio() {
+
 			long divisor = (receivedRSSRequests + omittedRSSRequests);
+
 			if ( divisor != 0 )
-				ratio = (100 * omittedRSSRequests) / divisor;
+				reOmRatio = (int) (((100 * omittedRSSRequests)) / divisor);
 			else
-				ratio = 0;
+				reOmRatio = 0;
 		}
 
-		void showRatio() {
-			ratioLabel.setText("ratio: " + ratio + "% saved requests");
+		void showReOmRatio() {
+			reOmRatioLabel.setText("ratio: " + reOmRatio + "% saved requests");
+		}
+
+		void updateSrvBrRatio() {
+
+			long divisor = (serverFeeds + brokerFeeds);
+
+			if ( divisor != 0 )
+				srvBrRatio = (int) (((100 * brokerFeeds)) / divisor);
+			else
+				srvBrRatio = 0;
+
+		}
+
+		void showSrvBrRatio() {
+			srvBrRatioLabel.setText("ratio: " + srvBrRatio + "% feeds from network");
 		}
 
 		/**
@@ -241,6 +335,20 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		 */
 		public ReceivedRSSRequestsObserver getReceivedRSSRequestsObserver() {
 			return receivedRSSRequestsObserver;
+		}
+
+		/**
+		 * @return Returns the brokerFeedsObserver.
+		 */
+		public BrokerFeedsObserver getBrokerFeedsObserver() {
+			return brokerFeedsObserver;
+		}
+
+		/**
+		 * @return Returns the serverFeedsObserver.
+		 */
+		public ServerFeedsObserver getServerFeedsObserver() {
+			return serverFeedsObserver;
 		}
 
 	}
@@ -373,7 +481,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				// open window maximized
 				df_width = displayframe.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth();
 				df_height = displayframe.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight();
-				displayframe.setBounds(new Rectangle(df_width, df_height));
+				// displayframe.setBounds(new Rectangle(df_width, df_height));
+				displayframe.setSize(new Dimension(df_width, df_height));
 
 				displayframe.addMouseListener(mouseclick);
 
@@ -553,40 +662,50 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			Engine.getSingleton().setContinued(true);
 
 		} else if ( e.getActionCommand().equals(statisticCmd) ) {
-			System.out.println("Statistics");
+
 			statisticframe = new StatisticFrame("Statistics");
 			statisticframe.setVisible(true);
 
-			Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver().addObserver(statisticframe.getReceivedRSSRequestsObserver());
-			Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver().addObserver(statisticframe.getOmittedRSSRequestsObserver());
-
 		} else if ( e.getActionCommand().equals(showEdgeIdCmd) ) {
+
 			Edge.setIdOn(true);
 			edgeidbutton.setText(hideEdgeIdCmd);
+
 		} else if ( e.getActionCommand().equals(hideEdgeIdCmd) ) {
+
 			Edge.setIdOn(false);
 			edgeidbutton.setText(showEdgeIdCmd);
+
 		} else if ( e.getActionCommand().equals(deleteConnectionCmd) ) {
+
 			choice = DEL_CONN_CMD;
 			deleteconnectionbutton.setText(selectFirstNodeTxt);
 			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
+
 		} else if ( e.getActionCommand().equals(addConnectionCmd) ) {
+
 			choice = ADD_CONN_CMD;
 			addconnectionbutton.setText(selectFirstNodeTxt);
 			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
+
 		} else if ( e.getActionCommand().equals(blockCmd) ) {
+
 			choice = BLOCK_NODE_CMD;
 			blocknodebutton.setText(selectBlockNodeTxt);
 			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
+
 		} else if ( e.getActionCommand().equals(unblockCmd) ) {
+
 			choice = UNBLOCK_NODE_CMD;
 			unblocknodebutton.setText(selectUnblockNodeTxt);
 			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
+
 		} else if ( e.getActionCommand().equals(deleteCmd) ) {
+
 			choice = NO_CHOICE;
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
@@ -594,7 +713,9 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			// Engine.getSingleton().removeEdgeFromNodes(mouseclick.firstnode,
 			// mouseclick.secondnode);
 			processUnregister(mouseclick.firstnode, mouseclick.secondnode);
+
 		} else if ( e.getActionCommand().equals(addCmd) ) {
+
 			choice = NO_CHOICE;
 			mouseclick.firstnode.setDefaultColor();
 			mouseclick.secondnode.setDefaultColor();
@@ -612,8 +733,11 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			// ((PubSubType) mouseclick.firstnode).unregister((BrokerType)
 			// mouseclick.secondnode);
 			// // PUT IN ACTION!!!!!!!!!!!!!
+
 		} else if ( e.getActionCommand().equals(cancelCmd) ) {
+
 			choice = NO_CHOICE;
+
 			if ( mouseclick.firstnode != null ) {
 				mouseclick.firstnode.setDefaultColor();
 				mouseclick.firstnode = null;
