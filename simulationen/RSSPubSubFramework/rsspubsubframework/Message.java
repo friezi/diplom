@@ -137,4 +137,11 @@ public class Message extends DisplayableObject {
     protected int size() {
         return 30;
     }
+
+	/**
+	 * @return Returns the runtime.
+	 */
+	public int getRuntime() {
+		return runtime;
+	}
 }

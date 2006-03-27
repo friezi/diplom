@@ -195,7 +195,7 @@ public class RSSServerNode extends Node implements RSSServerType {
 	 *            the point to be checked
 	 * @return true, if whithin borders, false otherwise
 	 */
-	public boolean whithinBorders(Point point) {
+	public boolean pointWhithin(Point point) {
 
 		int s = size();
 		int x1 = this.xPos() - (s + 5) / 2;

@@ -411,7 +411,20 @@ abstract public class Node extends DisplayableObject {
 	 *            the point to be checked
 	 * @return false as default
 	 */
-	public boolean whithinBorders(Point point) {
+	public boolean pointWhithin(Point point) {
+		return false;
+	}
+
+	/**
+	 * To override! This method checks if the node is whithin a rectangle
+	 * 
+	 * @param point1
+	 *            first point
+	 * @param point2
+	 *            second point
+	 * @return
+	 */
+	public boolean whithinRectangle(Point point1, Point point2) {
 		return false;
 	}
 

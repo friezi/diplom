@@ -7,7 +7,7 @@ import rsspubsubframework.*;
  * A base-class for Publish/Subscribe-nodes
  * 
  * @author Friedemann Zintel
- *
+ * 
  */
 public class PubSubNode extends Node implements PubSubType, Observer {
 
@@ -17,7 +17,7 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 			return new RSSFeedRepresentation(null, null);
 		}
 	};
-	
+
 	protected PubSubNodeStatistics statistics = new PubSubNodeStatistics();
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
@@ -122,7 +122,8 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 	 *            the point to be checked
 	 * @return true, if whithin borders, false otherwise
 	 */
-	public boolean whithinBorders(Point point) {
+	@Override
+	public boolean pointWhithin(Point point) {
 
 		int s = size();
 		int x1 = this.xPos() - (s + 5) / 2;
@@ -134,6 +135,29 @@ public class PubSubNode extends Node implements PubSubType, Observer {
 			return true;
 		else
 			return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.Node#whithinRectangle(java.awt.Point,
+	 *      java.awt.Point)
+	 */
+	@Override
+	public boolean whithinRectangle(Point point1, Point point2) {
+		// TODO Auto-generated method stub
+
+		int s = size();
+		int x1 = this.xPos() - (s + 5) / 2;
+		int y1 = this.yPos() - s / 2;
+		int x2 = this.xPos() + (s + 5) / 2;
+		int y2 = this.yPos() + s / 2;
+
+		if ( point1.getX() <= x1 && point2.getX() >= x2 && point1.getY() <= y1 && point2.getY() >= y2 )
+			return true;
+		else
+			return false;
+
 	}
 
 	public void setDefaultColor() {

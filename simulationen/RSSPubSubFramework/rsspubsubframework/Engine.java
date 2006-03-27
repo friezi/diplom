@@ -87,6 +87,14 @@ final public class Engine extends java.util.TimerTask {
 	private final java.util.Set<Message> newMessages = new java.util.HashSet<Message>();
 
 	/**
+	 * added by Friedemann Zintel
+	 * 
+	 * List of temporary graphical objects to be displayed on screen
+	 * 
+	 */
+	private final java.util.Set<GraphicalObject> graphicalObjects = new java.util.HashSet<GraphicalObject>();
+
+	/**
 	 * Timer object to drive the simulation.
 	 * 
 	 * This objects drives the simulation forward step by step.
@@ -105,6 +113,10 @@ final public class Engine extends java.util.TimerTask {
 	private boolean stopped = false;
 
 	private boolean continued = false;
+
+	private int timerDelay = 1000;
+
+	private int timerPeriod = 100;
 
 	/**
 	 * Number of simulation steps.
@@ -152,7 +164,7 @@ final public class Engine extends java.util.TimerTask {
 	 * Creates the gui and starts the simulation.
 	 */
 	private Engine() {
-		t.schedule(this, 1000, 100);
+		t.schedule(this, getTimerDelay(), getTimerPeriod());
 	}
 
 	/**
@@ -251,6 +263,14 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	final synchronized void addMessage(Message localMessage) {
 		newMessages.add(localMessage);
+	}
+
+	final synchronized void addGraphicalObject(GraphicalObject gob) {
+		graphicalObjects.add(gob);
+	}
+
+	final synchronized void removeGraphicalObject(GraphicalObject gob) {
+		graphicalObjects.remove(gob);
 	}
 
 	/**
@@ -361,6 +381,8 @@ final public class Engine extends java.util.TimerTask {
 			cn.drawobj(g);
 		for ( Message cm : messageList )
 			cm.drawobj(g);
+		for ( GraphicalObject go : graphicalObjects )
+			go.drawobj(g);
 	}
 
 	/**
@@ -391,6 +413,14 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	static public int scaleY(int y) {
 		return y * singleton.db.guiHeight() / 1000;
+	}
+
+	static public int deScaleX(int x) {
+		return x * 1000 / singleton.db.guiWidth();
+	}
+
+	static public int deScaleY(int y) {
+		return y * 1000 / singleton.db.guiHeight();
 	}
 
 	/**
@@ -521,9 +551,36 @@ final public class Engine extends java.util.TimerTask {
 	synchronized Node findNode(Point point) {
 
 		for ( Node node : nodeList ) {
-			if ( node.whithinBorders(point) == true )
+			if ( node.pointWhithin(point) == true )
 				return node;
 		}
 		return null;
+	}
+
+	synchronized LinkedList<Node> findNodes(Point point1, Point point2) {
+
+		LinkedList<Node> nodes = new LinkedList<Node>();
+
+		for ( Node node : nodeList ) {
+			if ( node.whithinRectangle(point1, point2) ) {
+				nodes.add(node);
+			}
+		}
+
+		return nodes;
+	}
+
+	/**
+	 * @return Returns the timerDelay.
+	 */
+	public int getTimerDelay() {
+		return timerDelay;
+	}
+
+	/**
+	 * @return Returns the timerPeriod.
+	 */
+	public int getTimerPeriod() {
+		return timerPeriod;
 	}
 }

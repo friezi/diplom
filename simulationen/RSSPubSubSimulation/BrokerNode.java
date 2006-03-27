@@ -1,4 +1,5 @@
 import rsspubsubframework.*;
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import java.util.*;
 import java.awt.*;
@@ -44,8 +45,48 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 
 	}
 
+	/**
+	 * It simualtions an uploading of a message: it just waits the amount of
+	 * time the message will take to arrive
+	 * 
+	 * @param m
+	 *            the message
+	 * @throws Exception
+	 */
+	protected void upload(Message m) {
+		try {
+			Thread.sleep(Engine.getSingleton().getTimerPeriod() * m.getRuntime());
+		} catch ( Exception e ) {
+			System.out.println("Exception: " + e);
+		}
+	}
+
 	protected int size() {
 		return 30;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.Node#block()
+	 */
+	@Override
+	public void block() {
+		// TODO Auto-generated method stub
+		super.block();
+		setColor(new Color((float) 0.5, 0, 0));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.Node#unblock()
+	 */
+	@Override
+	public void unblock() {
+		// TODO Auto-generated method stub
+		super.unblock();
+		setDefaultColor();
 	}
 
 	protected void draw(java.awt.Graphics g, int x, int y) {
@@ -114,7 +155,7 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 	 *            the point to be checked
 	 * @return true, if whithin borders, false otherwise
 	 */
-	public boolean whithinBorders(Point point) {
+	public boolean pointWhithin(Point point) {
 
 		int s = size();
 		int x1 = this.xPos() - s / 2;
@@ -123,6 +164,29 @@ public class BrokerNode extends Node implements BrokerType, Observer {
 		int y2 = this.yPos() + s / 2;
 
 		if ( x1 <= point.x && x2 >= point.x && y1 <= point.y && y2 >= point.y ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.Node#whithinRectangle(java.awt.Point,
+	 *      java.awt.Point)
+	 */
+	@Override
+	public boolean whithinRectangle(Point point1, Point point2) {
+		// TODO Auto-generated method stub
+
+		int s = size();
+		int x1 = this.xPos() - s / 2;
+		int y1 = this.yPos() - s / 2;
+		int x2 = this.xPos() + s / 2;
+		int y2 = this.yPos() + s / 2;
+
+		if ( point1.x <= x1 && point2.x >= x2 && point1.y <= y1 && point2.y >= y2 ) {
 			return true;
 		} else {
 			return false;

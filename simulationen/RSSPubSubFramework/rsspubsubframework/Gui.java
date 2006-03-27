@@ -33,15 +33,85 @@ import java.util.*;
  */
 class Gui extends javax.swing.JComponent implements ActionListener {
 
-	public static int WINDOW_TOP_BORDER_SIZE = 28;
-
-	public static int WINDOW_LEFT_BORDER_SIZE = 6;
-
 	protected class MouseClick extends MouseInputAdapter {
 
 		Node firstnode = null;
 
 		Node secondnode = null;
+
+		GORectangle rectangle = null;
+
+		public void mouseDragged(MouseEvent event) {
+
+			if ( choice_status == SELECTION ) {
+
+				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
+
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+
+					rectangle.resetX2Y2(ds_point);
+
+				}
+
+				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
+
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+
+					rectangle.resetX2Y2(ds_point);
+
+				}
+			}
+
+		}
+
+		public void mousePressed(MouseEvent event) {
+
+			if ( choice_status == SELECTION ) {
+
+				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
+
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+
+					Engine.getSingleton().removeGraphicalObject(rectangle);
+					rectangle = new GORectangle(ds_point);
+					Engine.getSingleton().addGraphicalObject(rectangle);
+					return;
+				}
+
+				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
+
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+
+					Engine.getSingleton().removeGraphicalObject(rectangle);
+					rectangle = new GORectangle(ds_point);
+					Engine.getSingleton().addGraphicalObject(rectangle);
+					return;
+				}
+
+			}
+
+		}
+
+		public void mouseReleased(MouseEvent event) {
+
+			if ( choice_status == SELECTION ) {
+
+				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
+
+					blocknodeselectionbutton.setText(blockAllCmd);
+					blocknodeselectionbutton.setEnabled(true);
+					return;
+				}
+
+				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
+
+					unblocknodeselectionbutton.setText(unblockAllCmd);
+					unblocknodeselectionbutton.setEnabled(true);
+					return;
+				}
+
+			}
+		}
 
 		public void mouseClicked(MouseEvent event) {
 
@@ -58,7 +128,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 			} else {
 
-				Point point = new Point(event.getPoint().x - WINDOW_LEFT_BORDER_SIZE, event.getPoint().y - WINDOW_TOP_BORDER_SIZE);
+				Point point = new Point(event.getPoint().x, event.getPoint().y);
 
 				if ( choice_status == FIRST_CHOICE ) {
 					// check if we hit a Node
@@ -75,7 +145,6 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 							firstnode.block();
 							choice_status = NO_CHOICE;
-							firstnode.setColor(new Color((float) 0.5, 0, 0));
 							enableGroup(buttongroup1);
 							return;
 
@@ -83,7 +152,6 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 							firstnode.unblock();
 							choice_status = NO_CHOICE;
-							firstnode.setDefaultColor();
 							enableGroup(buttongroup1);
 							return;
 						}
@@ -168,6 +236,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String addCmd = "Add!";
 
+	private static String blockAllCmd = "Block all!";
+
+	private static String unblockAllCmd = "Unblock all!";
+
 	private static String cancelCmd = "Cancel";
 
 	private static String selectFirstNodeTxt = "Select first node ...";
@@ -178,11 +250,19 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String selectUnblockNodeTxt = "Select Node to unblock ...";
 
+	private static String selectBlockNodeSelectionTxt = "Select range to block";
+
+	private static String selectUnblockNodeSelectionTxt = "Select range to unblock";
+
 	private static String selectBrokerTxt = "Select Broker ...";
 
 	private static String blockCmd = "Block Node";
 
 	private static String unblockCmd = "Unblock Node";
+
+	private static String blockSelectionCmd = "Block Node-selection";
+
+	private static String unblockSelectionCmd = "Unblock Node-selection";
 
 	private static String exitCmd = "Exit";
 
@@ -202,6 +282,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private JButton unblocknodebutton;
 
+	private JButton blocknodeselectionbutton;
+
+	private JButton unblocknodeselectionbutton;
+
 	private JButton cancelbutton;
 
 	private HashMap<JButton, String> buttongroup1 = new HashMap<JButton, String>();
@@ -214,6 +298,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static int DO_IT = 3;
 
+	private static int SELECTION = 4;
+
 	private int choice_status = NO_CHOICE;
 
 	private static int ADD_CONN_CMD = 0;
@@ -223,6 +309,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	private static int BLOCK_NODE_CMD = 2;
 
 	private static int UNBLOCK_NODE_CMD = 3;
+
+	private static int BLOCK_NODE_SELECTION_CMD = 4;
+
+	private static int UNBLOCK_NODE_SELECTION_CMD = 5;
 
 	private int choice = ADD_CONN_CMD;
 
@@ -256,7 +346,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				// displayframe.setBounds(new Rectangle(df_width, df_height));
 				displayframe.setSize(new Dimension(df_width, df_height));
 
-				displayframe.addMouseListener(mouseclick);
+				guip.addMouseListener(mouseclick);
+				guip.addMouseMotionListener(mouseclick);
 
 				JPanel buttonpanel = new JPanel();
 
@@ -308,6 +399,18 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				unblocknodebutton.addActionListener(guip);
 				buttonpanel.add(unblocknodebutton);
 
+				blocknodeselectionbutton = new JButton(blockSelectionCmd);
+				blocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				blocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				blocknodeselectionbutton.addActionListener(guip);
+				buttonpanel.add(blocknodeselectionbutton);
+
+				unblocknodeselectionbutton = new JButton(unblockSelectionCmd);
+				unblocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				unblocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				unblocknodeselectionbutton.addActionListener(guip);
+				buttonpanel.add(unblocknodeselectionbutton);
+
 				cancelbutton = new JButton(cancelCmd);
 				cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
@@ -319,6 +422,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				buttongroup1.put(deleteconnectionbutton, deleteConnectionCmd);
 				buttongroup1.put(blocknodebutton, blockCmd);
 				buttongroup1.put(unblocknodebutton, unblockCmd);
+				buttongroup1.put(blocknodeselectionbutton, blockSelectionCmd);
+				buttongroup1.put(unblocknodeselectionbutton, unblockSelectionCmd);
 
 				// displayframe.getContentPane().add(buttonpanel);
 				controlframe.getContentPane().add(buttonpanel);
@@ -475,6 +580,50 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			unblocknodebutton.setText(selectUnblockNodeTxt);
 			disableGroup(buttongroup1);
 			choice_status = FIRST_CHOICE;
+
+		} else if ( e.getActionCommand().equals(blockSelectionCmd) ) {
+
+			choice = BLOCK_NODE_SELECTION_CMD;
+			blocknodeselectionbutton.setText(selectBlockNodeSelectionTxt);
+			disableGroup(buttongroup1);
+			choice_status = SELECTION;
+
+		} else if ( e.getActionCommand().equals(blockAllCmd) ) {
+
+			// block all nodes
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
+			for ( Node node : nodes )
+				node.block();
+
+			Engine.getSingleton().removeGraphicalObject(mouseclick.rectangle);
+
+			blocknodeselectionbutton.setText(blockSelectionCmd);
+			enableGroup(buttongroup1);
+			choice_status = NO_CHOICE;
+
+		} else if ( e.getActionCommand().equals(unblockSelectionCmd) ) {
+
+			choice = UNBLOCK_NODE_SELECTION_CMD;
+			unblocknodeselectionbutton.setText(selectUnblockNodeSelectionTxt);
+			disableGroup(buttongroup1);
+			choice_status = SELECTION;
+
+		} else if ( e.getActionCommand().equals(unblockAllCmd) ) {
+
+			// block all nodes
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
+			for ( Node node : nodes )
+				node.unblock();
+
+			Engine.getSingleton().removeGraphicalObject(mouseclick.rectangle);
+
+			unblocknodeselectionbutton.setText(unblockSelectionCmd);
+			enableGroup(buttongroup1);
+			choice_status = NO_CHOICE;
 
 		} else if ( e.getActionCommand().equals(deleteCmd) ) {
 

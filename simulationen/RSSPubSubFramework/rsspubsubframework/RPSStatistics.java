@@ -16,7 +16,7 @@ public class RPSStatistics {
 
 	private static int messageFrameFragmentSize = 1;
 
-	private static int fragments = 500;
+	private static int fragments = 360;
 
 	private Long receivedRSSRequests = new Long(0);
 
