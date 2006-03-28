@@ -101,7 +101,7 @@ Teilnetzgröße an die Nachbarbroker übersand. Diese antworten mit einer Bestätigu
 (Bestätigungstimer) erhalten, gilt das Teilnetz als abgekoppelt. Ein Broker, der von einem Nachbarbroker ein Aktualisierung erhält, terminiert bestehende
 Aktualisierungs- und Bestätigungstimer für diesen Nachbarbroker.
 
-\subsection{27.03.06}
+\subsection*{27.03.06}
 Simulation: habe Simulation eines Uploads eingebaut: Broker warten, bis Feed beim Adressaten angekommen ist. Broker senden Feeds zuerst an Nachbarbroker, dann
 an Subscriber.\\\\
 Statistische Analyse: Rate der gesparten Anfragen und Rate der Netzfeeds:\\
@@ -111,7 +111,7 @@ Rate der Netzfeeds = ( 100 * Netzfeeds ) / ( Serverfeeds + Netzfeeds )\\
 
 Idee zur Adaption der Publisher:\\\\
 Ermittlung der Netzgröße könnte vermieden werden, wenn die Zufallsspanne durch die prozentuale Rate der Feeds, die über das Netzwerk kommen, und durch
-die Aktualität der Feeds bestimmt wird. Dazu muss ein Mass für Aktualität bestimt werden. Eine geringe prozentuale Rate der Netzwerkfeeds erhöht die Zufallsspanne,
+die Aktualität der Feeds bestimmt wird. Dazu muss ein Mass für den Aktualitätsgrad bestimt werden. Eine geringe prozentuale Rate der Netzwerkfeeds erhöht die Zufallsspanne,
 während eine geringe Aktualitätsrate die Zufallsspanne erniedrigt. Es gilt, eine Formel zu finden, welche beide Parameter vereinigt und das Optimum bestimmt.
 Mit solch einer Lösung wäre es nicht mehr notwendig, das Netz auf eine Baumstruktur zu beschränken, sondern Zyklen könnten erlaubt werden.
 \\\\
@@ -119,5 +119,23 @@ weitere Beobachtungen:\\
 Bei niedriger serverseitigen Feed-Update-Rate und hoher Übermittlungsgeschwindigkeit liegt die (rel.) Rate der gesparten Nachrichten bei 90\% und die (rel.)
 Rate der Netzfeeds bei 95\%.\\
 Bei höherer Update-Rate und nidrieger Übermittlungsgeschwindigkeit liegen beide Werte immer noch bei 85\%. 
+
+\subsection*{28..03.06}
+Bestimmung des Zufallsintervalls:\\
+Aktualitätsgrad hat Priorität gegenüber der Netzfeedrate. Solange sich der Aktualitätsgrad in akzeptablem Rahmen befindet, wird das
+Zufallsintervall vergrößert (z.B. bis zu einem Maximalwert). Wird der Aktualitätsgrad zu gering, so muss dieser in Relation zur Größe
+des Zufallsintervalls gesetzt werden, nun sollte ein Mittelwert der Aktualitätsrate angestrebt werden. 
+Idee zu Bestimmung von TTL (falls nicht übermittelt) und Altualität der Feeds:\\
+Bei Erhalt eines Feeds bestimmt sich der Aktualitätsgrad anhand des am zeitlich am weitesten zurückliegenden Eintrags. Liegt die Differenz des
+jetzigen Zeitpunktes zu diesem Eintrag innerhalb des bisher berechneten TTL, so ist der Feed innerhalb des gewünschten Aktualitätsspektrums.
+Ist es nicht der Fall, so ist der Aktualitätsgrad zu gering. Zunächst wird geprüft, ob der bisherige TTL noch aktuell ist.\\
+TTL:\\  
+Aktualisierungsrate auf Serverseite wird durch Mittelwert der Veröffentlichungszeitpunkte der einzelnen Einträge eines Feeds bestimmt. Stimmt
+dieser mit bisherigem TTL nicht überein, wird dieser angepasst; darauf hin erfolgt eine Anpassung des Zufallsintervalls.\\
+Zufallsintervall:\\
+- wird verringert bei zu niedrigem Aktualitätsgrad.
+
+
+
 
 \end{document}
