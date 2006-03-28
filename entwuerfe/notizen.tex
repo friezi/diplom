@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[latin1]{isolatin}
+\usepackage[latin1]{inputenc}
 \usepackage{latexsym}
 \usepackage[german]{babel}
 \usepackage[a4paper]{geometry}
@@ -84,12 +84,12 @@ Tritt ein neuer Knoten dem Netzwerk bei, so wird dieser den aktuellen Stand bei 
 
 Beobachtungen der Simulation:
 \begin{itemize}
-\item Anfrageverteilung und -intervall hängen von zwei Faktoren ab: Subscriber-TTL und Skalierungsfaktor
+\item Anfrageverteilung und -intervall hängen von zwei Faktoren ab: Subscriber-TTL und Zufallsspanne
 \item Um Skalierung des Netzes zu erreichen, müssen diese Parameter angepasst werden
 \end{itemize}
 Weitere Ideen:
 \begin{itemize}
-\item Skalierungsfaktor muss an Subscriberanzahl angepasst werden
+\item Zufallsspanne muss an Subscriberanzahl angepasst werden
 \item Subscriber-TTL muss an tatsächliches momentanes Aktualisierungsintervall des RSS-Servers angepasst werden
 \end{itemize}
 
@@ -100,4 +100,24 @@ Nachbarbroker) wird eine Aktualsisierung der
 Teilnetzgröße an die Nachbarbroker übersand. Diese antworten mit einer Bestätigung. Wird nach einer gewissen Zeitspanne keine Bestätigung
 (Bestätigungstimer) erhalten, gilt das Teilnetz als abgekoppelt. Ein Broker, der von einem Nachbarbroker ein Aktualisierung erhält, terminiert bestehende
 Aktualisierungs- und Bestätigungstimer für diesen Nachbarbroker.
+
+\subsection{27.03.06}
+Simulation: habe Simulation eines Uploads eingebaut: Broker warten, bis Feed beim Adressaten angekommen ist. Broker senden Feeds zuerst an Nachbarbroker, dann
+an Subscriber.\\\\
+Statistische Analyse: Rate der gesparten Anfragen und Rate der Netzfeeds:\\
+gesparte Anfragen = Nazahl der Feeds, die ein Subscriber über das Netz erhält.\\
+Rate der gesparten Anfragen = (100 * gesparte Anfragen) / ( erhaltene Anfragen + gesparte Anfragen )\\
+Rate der Netzfeeds = ( 100 * Netzfeeds ) / ( Serverfeeds + Netzfeeds )\\
+
+Idee zur Adaption der Publisher:\\\\
+Ermittlung der Netzgröße könnte vermieden werden, wenn die Zufallsspanne durch die prozentuale Rate der Feeds, die über das Netzwerk kommen, und durch
+die Aktualität der Feeds bestimmt wird. Dazu muss ein Mass für Aktualität bestimt werden. Eine geringe prozentuale Rate der Netzwerkfeeds erhöht die Zufallsspanne,
+während eine geringe Aktualitätsrate die Zufallsspanne erniedrigt. Es gilt, eine Formel zu finden, welche beide Parameter vereinigt und das Optimum bestimmt.
+Mit solch einer Lösung wäre es nicht mehr notwendig, das Netz auf eine Baumstruktur zu beschränken, sondern Zyklen könnten erlaubt werden.
+\\\\
+weitere Beobachtungen:\\
+Bei niedriger serverseitigen Feed-Update-Rate und hoher Übermittlungsgeschwindigkeit liegt die (rel.) Rate der gesparten Nachrichten bei 90\% und die (rel.)
+Rate der Netzfeeds bei 95\%.\\
+Bei höherer Update-Rate und nidrieger Übermittlungsgeschwindigkeit liegen beide Werte immer noch bei 85\%. 
+
 \end{document}

@@ -20,6 +20,7 @@
 package rsspubsubframework;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 
 import java.awt.*;
@@ -214,25 +215,25 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private int cf_ypos = 0;
 
-	private static String startSimulationCmd = "Start Simulation";
+	private static String startSimulationCmd = "Start";
 
-	private static String stopSimulationCmd = "Stop Simulation";
+	private static String stopSimulationCmd = "Stop";
 
-	private static String continueSimulationCmd = "Continue Simulation";
+	private static String continueSimulationCmd = "Continue";
 
 	private static String runningTxt = "running ...";
 
-	private static String statisticCmd = "Statistics";
+	private static String statisticCmd = "Stat.";
 
-	private static String showEdgeIdCmd = "Show edge-ids";
+	private static String showEdgeIdCmd = "SE";
 
-	private static String hideEdgeIdCmd = "Hide edge-ids";
+	private static String hideEdgeIdCmd = "HE";
 
-	private static String deleteConnectionCmd = "Delete connection";
+	private static String deleteConnectionCmd = "DC";
 
 	private static String deleteCmd = "Delete!";
 
-	private static String addConnectionCmd = "Add connection";
+	private static String addConnectionCmd = "AC";
 
 	private static String addCmd = "Add!";
 
@@ -256,13 +257,13 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String selectBrokerTxt = "Select Broker ...";
 
-	private static String blockCmd = "Block Node";
+	private static String blockCmd = "BN";
 
-	private static String unblockCmd = "Unblock Node";
+	private static String unblockCmd = "UN";
 
-	private static String blockSelectionCmd = "Block Node-selection";
+	private static String blockSelectionCmd = "BNS";
 
-	private static String unblockSelectionCmd = "Unblock Node-selection";
+	private static String unblockSelectionCmd = "UNS";
 
 	private static String exitCmd = "Exit";
 
@@ -349,71 +350,81 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				guip.addMouseListener(mouseclick);
 				guip.addMouseMotionListener(mouseclick);
 
-				JPanel buttonpanel = new JPanel();
+				JPanel buttonpanel = new JPanel(new GridLayout(11, 1));
+				buttonpanel.setBorder(new EmptyBorder(10, 30, 10, 30));
 
 				exitbutton = new JButton(exitCmd);
-				exitbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				exitbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// exitbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// exitbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				exitbutton.addActionListener(guip);
 				buttonpanel.add(exitbutton);
 
 				controlbutton = new JButton(startSimulationCmd);
-				controlbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				controlbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// controlbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// controlbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				controlbutton.setToolTipText("Start Simulation");
 				controlbutton.addActionListener(guip);
 				buttonpanel.add(controlbutton);
 
 				statisticbutton = new JButton(statisticCmd);
-				statisticbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				statisticbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// statisticbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// statisticbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				statisticbutton.setToolTipText("Statistics");
 				statisticbutton.addActionListener(guip);
 				buttonpanel.add(statisticbutton);
 
 				edgeidbutton = new JButton(showEdgeIdCmd);
-				edgeidbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				edgeidbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// edgeidbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// edgeidbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				edgeidbutton.setToolTipText("Show edge-ids");
 				edgeidbutton.addActionListener(guip);
 				buttonpanel.add(edgeidbutton);
 
 				deleteconnectionbutton = new JButton(deleteConnectionCmd);
-				deleteconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				deleteconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// deleteconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// deleteconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				deleteconnectionbutton.setToolTipText("Delete connection");
 				deleteconnectionbutton.addActionListener(guip);
 				buttonpanel.add(deleteconnectionbutton);
 
 				addconnectionbutton = new JButton(addConnectionCmd);
-				addconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				addconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// addconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// addconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				addconnectionbutton.setToolTipText("Add connection");
 				addconnectionbutton.addActionListener(guip);
 				buttonpanel.add(addconnectionbutton);
 
 				blocknodebutton = new JButton(blockCmd);
-				blocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
-				blocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// blocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// blocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				blocknodebutton.setToolTipText("Block node");
 				blocknodebutton.addActionListener(guip);
 				buttonpanel.add(blocknodebutton);
 
 				unblocknodebutton = new JButton(unblockCmd);
-				unblocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
-				unblocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// unblocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// unblocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				unblocknodebutton.setToolTipText("Unblock node");
 				unblocknodebutton.addActionListener(guip);
 				buttonpanel.add(unblocknodebutton);
 
 				blocknodeselectionbutton = new JButton(blockSelectionCmd);
-				blocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				blocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// blocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// blocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				blocknodeselectionbutton.setToolTipText("Block node-selection");
 				blocknodeselectionbutton.addActionListener(guip);
 				buttonpanel.add(blocknodeselectionbutton);
 
 				unblocknodeselectionbutton = new JButton(unblockSelectionCmd);
-				unblocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				unblocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// unblocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// unblocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				unblocknodeselectionbutton.setToolTipText("Unblock node-selection");
 				unblocknodeselectionbutton.addActionListener(guip);
 				buttonpanel.add(unblocknodeselectionbutton);
 
 				cancelbutton = new JButton(cancelCmd);
-				cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				// cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				cancelbutton.addActionListener(guip);
 				buttonpanel.add(cancelbutton);
 
@@ -547,11 +558,13 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 			Edge.setIdOn(true);
 			edgeidbutton.setText(hideEdgeIdCmd);
+			edgeidbutton.setToolTipText("Hide edge-ids");
 
 		} else if ( e.getActionCommand().equals(hideEdgeIdCmd) ) {
 
 			Edge.setIdOn(false);
 			edgeidbutton.setText(showEdgeIdCmd);
+			edgeidbutton.setToolTipText("Show edge-ids");
 
 		} else if ( e.getActionCommand().equals(deleteConnectionCmd) ) {
 
@@ -668,6 +681,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				mouseclick.firstnode = null;
 			}
 			enableGroup(buttongroup1);
+			Engine.getSingleton().removeGraphicalObject(mouseclick.rectangle);
 		}
 	}
 

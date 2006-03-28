@@ -32,7 +32,7 @@ notizen.dvi: notizen.tex
 
 
 ed:
-	emacs *.tex ../*.bib Makefile&
+	$(EDITOR) *.tex ../*.bib Makefile&
 
 clean:
 	\rm *.aux *.bbl *.blg *.log *.dvi *.pdf *.ps
