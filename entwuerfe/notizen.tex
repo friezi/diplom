@@ -149,5 +149,16 @@ alter Events berechnet. Ist der Aktualitätsgrad zu gering und ist der Mittelwert
 werden und dass Polling-Verhalten darauf abgestimmt werden. Stimmen beide jedoch überein, so muss das Zufallsintervall angepasst werden, da
 dieses zu groß ist.
 
+\subsection*{31.03.06}
+Habe Deadlock auslösenden Bug im file PubSub.java gefunden: FeedRequestTask
+hat eigenmächtig FeedRequest an Server geschickt(schlecht!) und dabei auf
+synchronized Methode feedRequest() von PubSubNode zugegriffen, hat also ein
+Lock auf PubSubNode erhalten. Run() der Klasse
+Engine ist ebenfalls synchronized und der FeedRequest muss auf das Lock warten. Ruft run() nun receiveMessage auf, komt es zum Deadlock bei der Methode
+isBlocked() in PubSubNode, da diese ebenfalls das Lock benötigt, welches
+FeedRequestTask bereits besitzt.\\
+Umgehung: FeedRequestTask sendet Benachrichtigung (RequestFeedMessage) an
+PubSubNode, fordert somit kein Lock auf PubSubNode an.
+
 
 \end{document}
