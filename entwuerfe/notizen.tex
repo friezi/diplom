@@ -120,11 +120,11 @@ Bei niedriger serverseitigen Feed-Update-Rate und hoher Übermittlungsgeschwindig
 Rate der Netzfeeds bei 95\%.\\
 Bei höherer Update-Rate und nidrieger Übermittlungsgeschwindigkeit liegen beide Werte immer noch bei 85\%. 
 
-\subsection*{28..03.06}
+\subsection*{28.03.06}
 Bestimmung des Zufallsintervalls:\\
 Aktualitätsgrad hat Priorität gegenüber der Netzfeedrate. Solange sich der Aktualitätsgrad in akzeptablem Rahmen befindet, wird das
-Zufallsintervall vergrößert (z.B. bis zu einem Maximalwert). Wird der Aktualitätsgrad zu gering, so muss dieser in Relation zur Größe
-des Zufallsintervalls gesetzt werden, nun sollte ein Mittelwert der Aktualitätsrate angestrebt werden. 
+Zufallsintervall vergrößert (z.B. bis zu einem Maximalwert). Wird der Aktualitätsgrad zu gering, so wird eine Aktualitätsskala in Relation
+zum Zufallsintervall berechnet; nun sollte ein Mittelwert auf der Aktualitätsskala angestrebt werden. 
 Idee zu Bestimmung von TTL (falls nicht übermittelt) und Altualität der Feeds:\\
 Bei Erhalt eines Feeds bestimmt sich der Aktualitätsgrad anhand des am zeitlich am weitesten zurückliegenden Eintrags. Liegt die Differenz des
 jetzigen Zeitpunktes zu diesem Eintrag innerhalb des bisher berechneten TTL, so ist der Feed innerhalb des gewünschten Aktualitätsspektrums.
@@ -135,7 +135,19 @@ dieser mit bisherigem TTL nicht überein, wird dieser angepasst; darauf hin erfol
 Zufallsintervall:\\
 - wird verringert bei zu niedrigem Aktualitätsgrad.
 
+\subsection*{29.03.06}
+Einstieg in Python: Script zum update von RSS-Feeds geschrieben
 
+\subsection*{30.03.06}
+Aus der Stochastik:\\\\
+Berechnung des TTLs über Bestimmung des Mittelwerts der zeitlichen Ereignisse der einzelnen Events eines bzw. der letzten Feeds. Dies entspricht
+dem Erwartungswert. ... (noch   --  Standardabweichung ansehen!)\\\\
+Illustration des Zusammenhanges zwischenTTL, Zufallsintervall und Aktualitätsgrad:\\
+Ein Maß für den Aktualitätsgrad könnte die Anzahl neuer Events innnerhalb eines Feeds sein. Je mehr neue Events vorhanden sind desto geringer
+ist der Aktualitätsgrad. Bei Erhalt eines Feeds wird der Mittelwert der zeitlichen Differenzen der einzelnen neuen Events und einer festen Anzahl
+alter Events berechnet. Ist der Aktualitätsgrad zu gering und ist der Mittelwert kleiner als der TTL, so muss dieser neu gesetzt
+werden und dass Polling-Verhalten darauf abgestimmt werden. Stimmen beide jedoch überein, so muss das Zufallsintervall angepasst werden, da
+dieses zu groß ist.
 
 
 \end{document}
