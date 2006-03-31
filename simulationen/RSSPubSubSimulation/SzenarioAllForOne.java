@@ -52,6 +52,9 @@ public class SzenarioAllForOne {
 
 		RSSServerNode rssServer = rpsFactory.newRSSServerNode(RSS_XPOS, RSS_YPOS, params);
 
+		// add the Engine as observer to RSSServer
+		rssServer.getStatistics().addReceivedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver());
+
 		// set the factories for creating and displaying the feeds
 		rssServer.setRssFeedFactory(rssFeedFactory);
 		rssServer.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
@@ -108,6 +111,9 @@ public class SzenarioAllForOne {
 		// pubsublist.get(0).addToInitList();
 
 		for ( PubSubNode pubsub : pubsublist ) {
+			pubsub.getStatistics().addOmittedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver());
+			pubsub.getStatistics().addServerFeedObserver(Engine.getSingleton().getRpsStatistics().getServerFeedObserver());
+			pubsub.getStatistics().addBrokerFeedObserver(Engine.getSingleton().getRpsStatistics().getBrokerFeedObserver());
 			pubsub.addToInitList();
 		}
 

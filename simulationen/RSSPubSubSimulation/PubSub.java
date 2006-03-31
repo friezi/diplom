@@ -173,8 +173,22 @@ public class PubSub extends PubSubNode {
 
 			// send the feed to Broker, if we didn't get the message from
 			// him
-			if (fm.getSrc() != getBroker())
+			if (fm.getSrc() != getBroker()) {
+
+				this.getStatistics().addServerFeed(this);
+
 				new RSSFeedMessage(this, getBroker(), getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+
+			} else {
+
+				// just statistics
+
+				this.getStatistics().addBrokerFeed(this);
+				// if we got the message from a broker, a request for RSSServer will be omitted
+				// -> statistics
+				this.getStatistics().addOmittedRSSFeedRequest(this);
+
+			}
 
 		} else {
 

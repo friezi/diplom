@@ -439,7 +439,7 @@ final public class Engine extends java.util.TimerTask {
 	 * It does make no sense to call this method manually. This method is public
 	 * for pure technical reasons.
 	 */
-	final /*synchronized*/ public void run() {
+	final synchronized public void run() {
 
 		if (active) {
 
