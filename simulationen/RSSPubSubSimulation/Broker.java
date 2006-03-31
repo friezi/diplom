@@ -1,6 +1,12 @@
 import rsspubsubframework.*;
 import java.util.*;
 
+/**
+ * A simple Broker which just sends all imcoming feeds to all neighbours
+ * 
+ * @author friezi
+ *
+ */
 public class Broker extends BrokerNode {
 
 	// a dummy-feed to start with and prevent NullPointerException

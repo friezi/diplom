@@ -9,7 +9,7 @@ import rsspubsubframework.*;
  * @author Friedemann Zintel
  * 
  */
-public class PubSubNode extends Node implements PubSubType, Observer {
+public abstract class PubSubNode extends Node implements PubSubType, Observer {
 
 	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {

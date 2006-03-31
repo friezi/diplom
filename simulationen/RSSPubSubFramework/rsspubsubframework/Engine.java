@@ -116,7 +116,7 @@ final public class Engine extends java.util.TimerTask {
 
 	private int timerDelay = 1000;
 
-	private int timerPeriod = 100;
+	private int timerPeriod = 20;
 
 	/**
 	 * Number of simulation steps.
@@ -439,11 +439,11 @@ final public class Engine extends java.util.TimerTask {
 	 * It does make no sense to call this method manually. This method is public
 	 * for pure technical reasons.
 	 */
-	final synchronized public void run() {
+	final /*synchronized*/ public void run() {
 
-		if ( active ) {
+		if (active) {
 
-			if ( isStopped() ) {
+			if (isStopped()) {
 
 				setStopped(false);
 				active = false;
@@ -460,17 +460,18 @@ final public class Engine extends java.util.TimerTask {
 
 				fixupMessageList();
 				java.util.Iterator<Message> ml = messageList.iterator();
-				while ( ml.hasNext() ) {
+				while (ml.hasNext()) {
 					Message cm = ml.next();
-					if ( cm.tick() )
+					if (cm.tick()) {
 						ml.remove();
+					}
 				}
 				fixupMessageList();
 				final int numMessages = messageList.size();
 
 				++simSteps;
 				cumMessages += numMessages;
-				if ( numMessages > maxMessages )
+				if (numMessages > maxMessages)
 					maxMessages = numMessages;
 
 				db.repaint(0, 0, 0, db.getWidth(), db.getHeight());

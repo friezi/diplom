@@ -8,7 +8,7 @@ import java.util.*;
  * @author Friedemann Zintel
  * 
  */
-public class RSSServerNode extends Node implements RSSServerType {
+public abstract class RSSServerNode extends Node implements RSSServerType {
 
 	// protected NodeFactory nf;
 

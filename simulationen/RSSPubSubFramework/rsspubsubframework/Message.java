@@ -118,10 +118,13 @@ public class Message extends DisplayableObject {
      * This is an internal wrapper method that calls the draw() method with
      * actual position parameters.
      * 
+     * Must be public to allow overriding for special messages
+     *   --> added Friedemann Zintel
+     * 
      * @param g
      *            The Graphics object the object should be drawn on.
      */
-    final void drawobj(java.awt.Graphics g) {
+    public void drawobj(java.awt.Graphics g) {
         draw(g, src.xPos() + (dst.xPos() - src.xPos()) * pos / runtime, src
                 .yPos()
                 + (dst.yPos() - src.yPos()) * pos / runtime);

@@ -68,12 +68,12 @@ public class AdjustingBroker extends BrokerNode {
 	 * @author Friedemann Zintel
 	 * 
 	 */
-	public class InformBrokersMessage extends Message {
+	public class InformBrokersMessage extends InternalMessage {
 
 		public InformBrokersMessage(Node src, Node dst) {
-			super(src, dst, 1);
+			super(src, dst);
 		}
-
+		
 	}
 
 	/**
@@ -85,10 +85,10 @@ public class AdjustingBroker extends BrokerNode {
 	 * @author Friedemann Zintel
 	 * 
 	 */
-	public class InformSubscribersMessage extends Message {
+	public class InformSubscribersMessage extends InternalMessage {
 
 		public InformSubscribersMessage(Node src, Node dst) {
-			super(src, dst, 1);
+			super(src, dst);
 		}
 
 	}
@@ -103,12 +103,12 @@ public class AdjustingBroker extends BrokerNode {
 	 * @author Friedemann Zintel
 	 * 
 	 */
-	public class TimeForPingMessage extends Message {
+	public class TimeForPingMessage extends InternalMessage {
 
 		private AdjustingBroker.PingTask task;
 
 		public TimeForPingMessage(Node src, Node dst, AdjustingBroker.PingTask task) {
-			super(src, dst, 1);
+			super(src, dst);
 			this.task = task;
 		}
 
@@ -130,14 +130,14 @@ public class AdjustingBroker extends BrokerNode {
 	 * @author Friedemann Zintel
 	 * 
 	 */
-	public class PingTimeoutMessage extends Message {
+	public class PingTimeoutMessage extends InternalMessage {
 
 		private AdjustingBroker.PingTimeoutTask task;
 
 		private BrokerNode broker;
 
 		public PingTimeoutMessage(Node src, Node dst, BrokerNode broker, AdjustingBroker.PingTimeoutTask task) {
-			super(src, dst, 1);
+			super(src, dst);
 			this.broker = broker;
 			this.task = task;
 		}

@@ -38,12 +38,12 @@ public class SimParameters {
 	/**
 	 * RSSFeedRequestMessage: runtime for message RSSFeedRequestMessage
 	 */
-	int rssFeedRequestMsgRT = 10;
+	int rssFeedRequestMsgRT = 15;
 
 	/**
 	 * RSSFeedMessage: runtime for message RSSFeedMessage
 	 */
-	int rssFeedMsgRT = 4;
+	int rssFeedMsgRT = 20;
 
 	/**
 	 * RSSFeedMessage: if true, RSSFeedMessages will represent the feed
@@ -53,7 +53,7 @@ public class SimParameters {
 	/**
 	 * SubnetParamMessage: runtime
 	 */
-	int subnetParamMsgRT = 8;
+	int subnetParamMsgRT = 40;
 
 	/**
 	 * SubnetParamMessage: if set, size of originating subnet will be shown in

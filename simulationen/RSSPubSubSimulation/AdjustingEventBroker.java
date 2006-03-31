@@ -64,7 +64,6 @@ public class AdjustingEventBroker extends AdjustingBroker {
 
 				// send a new RSSFeedMessage to all other Brokers and
 				// Subscribers
-				Set<Node> peers = getPeers();
 				RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
 
 				Set<BrokerNode> brokers = getBrokers();

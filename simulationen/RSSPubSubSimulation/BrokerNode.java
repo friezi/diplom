@@ -4,7 +4,7 @@ import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 import java.util.*;
 import java.awt.*;
 
-public class BrokerNode extends Node implements BrokerType, Observer {
+public abstract class BrokerNode extends Node implements BrokerType, Observer {
 
 	protected SimParameters params;
 
