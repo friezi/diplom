@@ -87,6 +87,11 @@ public class SimParameters {
 	 * ColorEventFeed: the maximum number of event-entries in the feed
 	 */
 	int maxFeedEvents = 5;
+	
+	/**
+	 * PubSub: the time after which a new feed should be received by the subscriber at most
+	 */
+	int maxRefreshRate = 5;
 
 	/**
 	 * AdjustingEventBroker, EventPubSub: maximum number of events thatb will be
@@ -128,6 +133,7 @@ public class SimParameters {
 		properties.setProperty("informSubscribersTimeout", String.valueOf(informSubscribersTimeout));
 		properties.setProperty("maxFeedEvents", String.valueOf(maxFeedEvents));
 		properties.setProperty("maxSubscriberEvents", String.valueOf(maxSubscriberEvents));
+		properties.setProperty("maxRefreshRate",String.valueOf(maxRefreshRate));
 
 		if ( args.length > 1 ) {
 
@@ -180,6 +186,7 @@ public class SimParameters {
 		informSubscribersTimeout = Integer.valueOf((String) properties.getProperty("informSubscribersTimeout"));
 		maxFeedEvents = Integer.valueOf((String) properties.getProperty("maxFeedEvents"));
 		maxSubscriberEvents = Integer.valueOf((String) properties.getProperty("maxSubscriberEvents"));
+		maxRefreshRate = Integer.valueOf((String) properties.getProperty("maxRefreshRate"));
 		if ( properties.getProperty("rssFeedMsgRepresent").toLowerCase().equals("true") )
 			rssFeedMsgRepresent = true;
 		else

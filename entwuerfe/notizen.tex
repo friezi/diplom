@@ -160,5 +160,15 @@ FeedRequestTask bereits besitzt.\\
 Umgehung: FeedRequestTask sendet Benachrichtigung (RequestFeedMessage) an
 PubSubNode, fordert somit kein Lock auf PubSubNode an.
 
+\subsection*{2.2.06}
+Neuer Ansatz zur Bestimmung des Aktualitätsgrades bzw. Verzögerungsgrades von Feeds:\\
+Jeder User kann einen Aktualitätsrahmen festlegen: dieser sagt aus, nach
+welcher Zeit er spätestens über ein neues Event informiert werden soll.\\
+\\
+
+Aktualitätsgrad = Refreshrate*100/Laufzeit\\
+Verzögerungsgrad = Zeitdifferenz*100 / Refreshrate\\
+\\
+Zeitdifferenz ist: aktuelle Zeit - PubDate des am längesten zurückliegenden Events
 
 \end{document}

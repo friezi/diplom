@@ -164,7 +164,7 @@ public class RPSStatistics {
 				long divisor = (getReceivedRSSRequests() + getOmittedRSSRequests());
 
 				if ( divisor != 0 )
-					setReOmRatio((int) (((100 * getOmittedRSSRequests())) / divisor));
+					setReOmRatio((int)(((100 * getOmittedRSSRequests())) / divisor));
 				else
 					setReOmRatio(0);
 			}
@@ -285,7 +285,7 @@ public class RPSStatistics {
 			synchronized ( statistics ) {
 
 				if ( divisor != 0 )
-					setRelReOmRatio((int) ((100 * omMessages) / divisor));
+					setRelReOmRatio((int)((100 * omMessages) / divisor));
 				else
 					setRelReOmRatio(0);
 

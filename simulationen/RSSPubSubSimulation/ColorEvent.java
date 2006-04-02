@@ -15,12 +15,15 @@ public class ColorEvent implements Event {
 	int id;
 
 	Color color;
+	
+	EventGeneralContent generalContent;
 
-	public ColorEvent(int id, Color color) {
+	public ColorEvent(int id, Color color, EventGeneralContent generalContent) {
 
 		super();
 		this.id = id;
 		this.color = color;
+		this.generalContent=generalContent;
 
 	}
 
@@ -42,6 +45,13 @@ public class ColorEvent implements Event {
 	public Object clone() throws CloneNotSupportedException {
 
 		return super.clone();
+	}
+
+	/* (non-Javadoc)
+	 * @see Event#getGeneralContend()
+	 */
+	public EventGeneralContent getGeneralContend() {
+		return generalContent;
 	}
 
 }

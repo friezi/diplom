@@ -40,7 +40,7 @@ public class ColorEventFeedFactory implements RSSEventFeedFactory {
 
 		}
 
-		events.addLast(new ColorEvent(id, ColorFactory.nextColor()));
+		events.addLast(new ColorEvent(id, ColorFactory.nextColor(), new EventGeneralContent()));
 
 		if ( events.size() > params.maxFeedEvents )
 			events.removeFirst();
