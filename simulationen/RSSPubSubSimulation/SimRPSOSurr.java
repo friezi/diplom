@@ -20,6 +20,10 @@ public class SimRPSOSurr {
 		// TODO Auto-generated method stub
 
 		SimParameters params = new SimParameters(args);
+		
+		Engine.getSingleton().setTimerPeriod(params.engineTimerPeriod);
+		
+		Engine.getSingleton().init();
 
 		SzenarioOneSurrounded szenario = new SzenarioOneSurrounded(new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) {

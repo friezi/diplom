@@ -66,26 +66,9 @@ public class EventPubSub extends PubSub {
 
 		}
 
-		if (!sortedEvents.isEmpty()) {
-
-			// calculate ratio of delayed event:
-			long eventtime = sortedEvents.first().getGeneralContend().getPubDate().getTime();
-			long now = new Date().getTime();
-			long diff = (now - eventtime) / 1000;
-			long overhead = diff - params.maxRefreshRate;
-			if (overhead > 0) {
-
-				int delayRatio = (int) ((overhead * 100) / params.maxRefreshRate);
-				int uptodateRatio = (int) ((params.maxRefreshRate * 100) / diff);
-
-				System.out.print("Delayed message: " + delayRatio + "%");
-				if (uptodateRatio < 100)
-					System.out.print("    uptodateRatio: " + uptodateRatio + "%");
-				System.out.println();
-
-			}
-
-		}
+		// calculate ratio of delayed event:
+		if (!sortedEvents.isEmpty()) 
+			calculateUpdateAndDelay(sortedEvents.first().getGeneralContend().getPubDate().getTime());
 
 		// deletion of event-overhead
 		while (events.size() > params.maxSubscriberEvents)
@@ -100,7 +83,7 @@ public class EventPubSub extends PubSub {
 			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, getFeed()));
 			getRssFeedRepresentation().represent();
 
-			updateRequestTimer();
+			updateRequestTimerByNewFeed();
 
 			// send a new feed (only with new events) to Broker, if we didn't
 			// get the message from
@@ -128,10 +111,34 @@ public class EventPubSub extends PubSub {
 
 			// got an old feed; update timer only if sender is RSSServer
 			if (fm.getSrc() == getRssServer()) {
-				updateRequestTimer();
+				updateRequestTimerByOldFeed();
 			}
 		}
 
+	}
+	
+	protected void calculateUpdateAndDelay(long eventtime){
+
+		long now = new Date().getTime();
+		long diff = (now - eventtime) / 1000;
+		long overhead = diff - params.maxRefreshRate;
+		int messageDelayRatio = 0;
+		int uptodateRatio = 100;
+		if (overhead > 0) {
+
+			messageDelayRatio = (int) ((overhead * 100) / params.maxRefreshRate);
+			uptodateRatio = (int) ((params.maxRefreshRate * 100) / diff);
+/*
+			System.out.print("message-delay: " + messageDelayRatio + "%");
+			if (uptodateRatio < 100)
+				System.out.print("    uptodateRatio: " + uptodateRatio + "%");
+			System.out.println();
+*/
+		}
+		
+		getStatistics().setUptodateRatio(uptodateRatio);
+		getStatistics().setMessageDelayRatio(messageDelayRatio);
+		
 	}
 
 	/**

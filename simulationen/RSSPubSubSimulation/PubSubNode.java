@@ -18,7 +18,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 		}
 	};
 
-	protected PubSubNodeStatistics statistics = new PubSubNodeStatistics();
+	protected PubSubNodeStatistics statistics;
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
 
@@ -39,6 +39,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	public PubSubNode(int xp, int yp, SimParameters params) {
 		super(xp, yp);
 		this.params = params;
+		this.statistics = new PubSubNodeStatistics(params);
 		setColor(Color.blue);
 
 		// add observers

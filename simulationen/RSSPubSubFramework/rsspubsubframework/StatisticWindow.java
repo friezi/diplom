@@ -41,13 +41,19 @@ public class StatisticWindow extends JFrame {
 
 	JLabel relSrvBrkRatioLabel = new JLabel();
 
+	JLabel averageUpdateRatioLabel = new JLabel();
+
+	JLabel delayedMessagesRatioLabel = new JLabel();
+
+	JLabel averageMessageDelayRatioLabel = new JLabel();
+
 	JLabel rssServerLabel = new JLabel("RSSServer:");
 
 	JLabel subscribersLabel = new JLabel("Subscribers:");
 
-	JPanel rssPanel = new JPanel(new GridLayout(6, 1));
+	JPanel rssPanel = new JPanel(new GridLayout(9, 1));
 
-	JPanel subscribersPanel = new JPanel(new GridLayout(6, 1));
+	JPanel subscribersPanel = new JPanel(new GridLayout(9, 1));
 
 	JPanel contentPanel = new JPanel(new GridLayout(1, 2));
 
@@ -188,6 +194,54 @@ public class StatisticWindow extends JFrame {
 
 	}
 
+	protected class AverageUptodateRatioObserver implements Observer {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public void update(Observable arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			Integer averageUptodateratio = (Integer) arg1;
+			averageUpdateRatioLabel.setText("avg. uptodate-ratio: " + averageUptodateratio + "%");
+		}
+
+	}
+
+	protected class DelayedMessagesRatioObserver implements Observer {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public void update(Observable arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			Integer delayedMessagesRatio = (Integer) arg1;
+			delayedMessagesRatioLabel.setText("delayed-messages-ratio: " + delayedMessagesRatio + "%");
+		}
+
+	}
+
+	protected class AverageMessageDelayRatioObserver implements Observer {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public void update(Observable arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			Integer averageMessageDelayRatio = (Integer) arg1;
+			averageMessageDelayRatioLabel.setText("avg. message-delay-ratio: " + averageMessageDelayRatio + "%");
+		}
+
+	}
+
 	private ReceivedRSSRequestsObserver receivedRSSRequestsObserver = new ReceivedRSSRequestsObserver();
 
 	private OmittedRSSRequestsObserver omittedRSSRequestsObserver = new OmittedRSSRequestsObserver();
@@ -203,6 +257,12 @@ public class StatisticWindow extends JFrame {
 	private RelReOmRatioObserver relReOmRatioObserver = new RelReOmRatioObserver();
 
 	private RelSrvBrkRatioObserver relSrvBrkRatioObserver = new RelSrvBrkRatioObserver();
+
+	private AverageUptodateRatioObserver averageUptodateRatioObserver = new AverageUptodateRatioObserver();
+
+	private DelayedMessagesRatioObserver delayedMessagesRatioObserver = new DelayedMessagesRatioObserver();
+
+	private AverageMessageDelayRatioObserver averageMessageDelayRatioObserver = new AverageMessageDelayRatioObserver();
 
 	protected class CloseWindowAdapter extends WindowAdapter {
 
@@ -224,6 +284,9 @@ public class StatisticWindow extends JFrame {
 			stat.getSrvBrkRatioUpdater().deleteObserver(getSrvBrkRatioObserver());
 			stat.getRelReOmRatioUpdater().deleteObserver(getRelReOmRatioObserver());
 			stat.getRelSrvBrkRatioUpdater().deleteObserver(getRelSrvBrkRatioObserver());
+			stat.getAverageUptodateRatioUpdater().deleteObserver(getAverageUptodateRatioObserver());
+			stat.getDelayedMessagesRatioNotifier().deleteObserver(getDelayedMessagesRatioObserver());
+			stat.getAverageMessageDelayRatioUpdater().deleteObserver(getAverageMessageDelayRatioObserver());
 
 			super.windowClosed(arg0);
 		}
@@ -245,6 +308,9 @@ public class StatisticWindow extends JFrame {
 		stat.getSrvBrkRatioUpdater().addObserver(getSrvBrkRatioObserver());
 		stat.getRelReOmRatioUpdater().addObserver(getRelReOmRatioObserver());
 		stat.getRelSrvBrkRatioUpdater().addObserver(getRelSrvBrkRatioObserver());
+		stat.getAverageUptodateRatioUpdater().addObserver(getAverageUptodateRatioObserver());
+		stat.getDelayedMessagesRatioNotifier().addObserver(getDelayedMessagesRatioObserver());
+		stat.getAverageMessageDelayRatioUpdater().addObserver(getAverageMessageDelayRatioObserver());
 
 		// get values manually
 		getReceivedRSSRequestsObserver().update(stat.getReceivedRSSFeedRequestObserver(), stat.getReceivedRSSRequests());
@@ -255,6 +321,9 @@ public class StatisticWindow extends JFrame {
 		getSrvBrkRatioObserver().update(stat.getSrvBrkRatioUpdater(), stat.getSrvBrkRatio());
 		getRelReOmRatioObserver().update(stat.getRelReOmRatioUpdater(), stat.getRelReOmRatio());
 		getRelSrvBrkRatioObserver().update(stat.getRelSrvBrkRatioUpdater(), stat.getRelSrvBrkRatio());
+		getAverageUptodateRatioObserver().update(stat.getAverageUptodateRatioUpdater(), stat.getAverageUptodateRatio());
+		getDelayedMessagesRatioObserver().update(stat.getDelayedMessagesRatioNotifier(), stat.getDelayedMessagesRatio());
+		getAverageMessageDelayRatioObserver().update(stat.getAverageMessageDelayRatioUpdater(), stat.getAverageMessageDelayRatio());
 
 		this.addWindowListener(new CloseWindowAdapter());
 
@@ -276,6 +345,9 @@ public class StatisticWindow extends JFrame {
 		subscribersPanel.add(brokerFeedsLabel);
 		subscribersPanel.add(srvBrRatioLabel);
 		subscribersPanel.add(relSrvBrkRatioLabel);
+		subscribersPanel.add(averageUpdateRatioLabel);
+		subscribersPanel.add(delayedMessagesRatioLabel);
+		subscribersPanel.add(averageMessageDelayRatioLabel);
 
 		subscribersPanel.setOpaque(true);
 
@@ -289,7 +361,7 @@ public class StatisticWindow extends JFrame {
 		this.setResizable(false);
 
 		this.setLocation(xpos, ypos);
-		
+
 		this.setAlwaysOnTop(true);
 
 		this.pack();
@@ -349,6 +421,27 @@ public class StatisticWindow extends JFrame {
 	 */
 	public RelSrvBrkRatioObserver getRelSrvBrkRatioObserver() {
 		return relSrvBrkRatioObserver;
+	}
+
+	/**
+	 * @return Returns the averageUptodateRatioObserver.
+	 */
+	public AverageUptodateRatioObserver getAverageUptodateRatioObserver() {
+		return averageUptodateRatioObserver;
+	}
+
+	/**
+	 * @return Returns the delayedMessagesRatioObserver.
+	 */
+	public DelayedMessagesRatioObserver getDelayedMessagesRatioObserver() {
+		return delayedMessagesRatioObserver;
+	}
+
+	/**
+	 * @return Returns the averageMessageDelayRatioObserver.
+	 */
+	public AverageMessageDelayRatioObserver getAverageMessageDelayRatioObserver() {
+		return averageMessageDelayRatioObserver;
 	}
 
 }

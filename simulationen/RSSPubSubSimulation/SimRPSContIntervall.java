@@ -19,6 +19,10 @@ public class SimRPSContIntervall {
 		// TODO Auto-generated method stub
 
 		SimParameters params = new SimParameters(args);
+		
+		Engine.getSingleton().setTimerPeriod(params.engineTimerPeriod);
+		
+		Engine.getSingleton().init();
 
 		SzenarioAllForOne szenario = new SzenarioAllForOne(new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) {

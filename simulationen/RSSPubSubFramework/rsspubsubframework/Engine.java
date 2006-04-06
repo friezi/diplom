@@ -159,11 +159,19 @@ final public class Engine extends java.util.TimerTask {
 	}
 
 	/**
+	 * -- modified by Friedemann Zintel --
+	 *
+	 */
+	private Engine() {
+	}
+
+	/**
 	 * Initialize the engine.
 	 * 
 	 * Creates the gui and starts the simulation.
+	 * -- modified by Friedemann Zintel --
 	 */
-	private Engine() {
+	public void init() {
 		t.schedule(this, getTimerDelay(), getTimerPeriod());
 	}
 
@@ -441,9 +449,9 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	final synchronized public void run() {
 
-		if (active) {
+		if ( active ) {
 
-			if (isStopped()) {
+			if ( isStopped() ) {
 
 				setStopped(false);
 				active = false;
@@ -460,9 +468,9 @@ final public class Engine extends java.util.TimerTask {
 
 				fixupMessageList();
 				java.util.Iterator<Message> ml = messageList.iterator();
-				while (ml.hasNext()) {
+				while ( ml.hasNext() ) {
 					Message cm = ml.next();
-					if (cm.tick()) {
+					if ( cm.tick() ) {
 						ml.remove();
 					}
 				}
@@ -471,7 +479,7 @@ final public class Engine extends java.util.TimerTask {
 
 				++simSteps;
 				cumMessages += numMessages;
-				if (numMessages > maxMessages)
+				if ( numMessages > maxMessages )
 					maxMessages = numMessages;
 
 				db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
@@ -583,5 +591,13 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	public int getTimerPeriod() {
 		return timerPeriod;
+	}
+
+	/**
+	 * @param timerPeriod
+	 *            The timerPeriod to set.
+	 */
+	public void setTimerPeriod(int timerPeriod) {
+		this.timerPeriod = timerPeriod;
 	}
 }

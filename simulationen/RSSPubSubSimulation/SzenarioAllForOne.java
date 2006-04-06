@@ -11,7 +11,7 @@ import rsspubsubframework.Engine;
  * 
  * 
  */
-public class SzenarioAllForOne {
+public class SzenarioAllForOne extends Szenario{
 
 	private static int MAXBROKER = 15;
 
@@ -45,15 +45,14 @@ public class SzenarioAllForOne {
 	 */
 	public SzenarioAllForOne(RPSFactory rpsFactory, RSSFeedFactory rssFeedFactory,
 			RSSFeedRepresentationFactory rssFeedRepresentationFactory, SimParameters params) {
+		
+		super();
 
 		EdgeFactory edgefactory = new EdgeFactory();
 
 		// RSS-Server:
 
 		RSSServerNode rssServer = rpsFactory.newRSSServerNode(RSS_XPOS, RSS_YPOS, params);
-
-		// add the Engine as observer to RSSServer
-		rssServer.getStatistics().addReceivedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver());
 
 		// set the factories for creating and displaying the feeds
 		rssServer.setRssFeedFactory(rssFeedFactory);
@@ -111,9 +110,6 @@ public class SzenarioAllForOne {
 		// pubsublist.get(0).addToInitList();
 
 		for ( PubSubNode pubsub : pubsublist ) {
-			pubsub.getStatistics().addOmittedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver());
-			pubsub.getStatistics().addServerFeedObserver(Engine.getSingleton().getRpsStatistics().getServerFeedObserver());
-			pubsub.getStatistics().addBrokerFeedObserver(Engine.getSingleton().getRpsStatistics().getBrokerFeedObserver());
 			pubsub.addToInitList();
 		}
 

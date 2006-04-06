@@ -34,6 +34,12 @@ public class RPSStatistics {
 
 	private Integer relSrvBrkRatio = new Integer(0);
 
+	private Integer averageUptodateRatio = new Integer(0);
+
+	private Integer averageMessageDelayRatio = new Integer(0);
+
+	private Integer delayedMessagesRatio = new Integer(0);
+
 	public class ReceivedRSSFeedRequestObserver extends Observable implements Observer {
 
 		/*
@@ -164,7 +170,7 @@ public class RPSStatistics {
 				long divisor = (getReceivedRSSRequests() + getOmittedRSSRequests());
 
 				if ( divisor != 0 )
-					setReOmRatio((int)(((100 * getOmittedRSSRequests())) / divisor));
+					setReOmRatio((int) (((100 * getOmittedRSSRequests())) / divisor));
 				else
 					setReOmRatio(0);
 			}
@@ -217,13 +223,13 @@ public class RPSStatistics {
 
 	public class RelReOmRatioUpdater extends Observable implements Observer {
 
-		int messageCount = 0;
+		int messageCount = messageFrameFragmentSize;
 
 		long[] messageReFrame = new long[fragments];
 
 		long[] messageOmFrame = new long[fragments];
 
-		int fragment = 0;
+		int fragment = fragments - 1;
 
 		public RelReOmRatioUpdater() {
 			for ( int i = 0; i < fragments; i++ ) {
@@ -285,7 +291,7 @@ public class RPSStatistics {
 			synchronized ( statistics ) {
 
 				if ( divisor != 0 )
-					setRelReOmRatio((int)((100 * omMessages) / divisor));
+					setRelReOmRatio((int) ((100 * omMessages) / divisor));
 				else
 					setRelReOmRatio(0);
 
@@ -306,13 +312,13 @@ public class RPSStatistics {
 
 	public class RelSrvBrkRatioUpdater extends Observable implements Observer {
 
-		int messageCount = 0;
+		int messageCount = messageFrameFragmentSize;
 
 		long[] messageSrvFrame = new long[fragments];
 
 		long[] messageBrkFrame = new long[fragments];
 
-		int fragment = 0;
+		int fragment = fragments - 1;
 
 		public RelSrvBrkRatioUpdater() {
 			for ( int i = 0; i < fragments; i++ ) {
@@ -393,6 +399,164 @@ public class RPSStatistics {
 
 	RelSrvBrkRatioUpdater relSrvBrkRatioUpdater = new RelSrvBrkRatioUpdater();
 
+	protected class DelayedMessagesRatioNotifier extends Observable {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observable#notifyObservers(java.lang.Object)
+		 */
+		public void notifyObservers(Integer delayedMessagesRatio) {
+			// TODO Auto-generated method stub
+			setChanged();
+			super.notifyObservers(delayedMessagesRatio);
+		}
+
+	}
+
+	protected DelayedMessagesRatioNotifier delayedMessagesRatioNotifier = new DelayedMessagesRatioNotifier();
+
+	protected class AverageUptodateRatioUpdater extends Observable implements Observer {
+
+		int messages = messageFrameFragmentSize * fragments; // each ratio
+																// must be
+																// placed at a
+																// seperate
+																// index
+
+		int messageCount = messages - 1;
+
+		long[] messageUptodateFrame = new long[messages];
+
+		public AverageUptodateRatioUpdater() {
+			for ( int i = 0; i < messages; i++ ) {
+				messageUptodateFrame[i] = 0;
+			}
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public synchronized void update(Observable observable, Object uptodateRatio) {
+			// TODO Auto-generated method stub
+
+			messageCount++;
+
+			// upto limit of message-counter
+			if ( messageCount == messages )
+				messageCount = 0;
+
+			// add current to appropriate array
+
+			messageUptodateFrame[messageCount] = (Integer) uptodateRatio;
+
+			int ratioSum = 0;
+			int delayedMessages = 0;
+
+			// calculate average uptodateRatio
+			for ( int i = 0; i < messages; i++ ) {
+				ratioSum += messageUptodateFrame[i];
+				if ( messageUptodateFrame[i] < 100 )
+					delayedMessages++;
+			}
+
+			synchronized ( statistics ) {
+
+				setDelayedMessagesRatio(delayedMessages * 100 / messages);
+
+				if ( messages != 0 )
+					setAverageUptodateRatio(ratioSum / messages);
+				else
+					setAverageUptodateRatio(0);
+
+				notifyObservers(getAverageUptodateRatio());
+
+			}
+
+		}
+
+		public void notifyObservers(Integer count) {
+			setChanged();
+			super.notifyObservers(count);
+		}
+
+	}
+
+	private AverageUptodateRatioUpdater averageUptodateRatioUpdater = new AverageUptodateRatioUpdater();
+
+	protected class AverageMessageDelayRatioUpdater extends Observable implements Observer {
+
+		int messages = messageFrameFragmentSize * fragments; // each ratio
+																// must be
+																// placed at a
+																// seperate
+																// index
+
+		int messageCount = messages - 1;
+
+		int[] messageDelayFrame = new int[messages];
+
+		public AverageMessageDelayRatioUpdater() {
+			for ( int i = 0; i < messages; i++ ) {
+				messageDelayFrame[i] = 0;
+			}
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public synchronized void update(Observable observable, Object messageDelayRatio) {
+			// TODO Auto-generated method stub
+
+			messageCount++;
+
+			// upto limit of message-counter
+			if ( messageCount == messages )
+				messageCount = 0;
+
+			// add current to appropriate array
+
+			messageDelayFrame[messageCount] = (Integer) messageDelayRatio;
+
+			int ratioSum = 0;
+			int delayedMessages = 0;
+
+			// calculate average uptodateRatio
+			for ( int i = 0; i < messages; i++ ) {
+				if ( messageDelayFrame[i] > 0 ) {
+					ratioSum += messageDelayFrame[i];
+					delayedMessages++;
+				}
+			}
+
+			synchronized ( statistics ) {
+
+				if ( delayedMessages != 0 )
+					setAverageMessageDelayRatio(ratioSum / delayedMessages);
+				else
+					setAverageMessageDelayRatio(0);
+
+				notifyObservers(getAverageMessageDelayRatio());
+
+			}
+
+		}
+
+		public void notifyObservers(Integer count) {
+			setChanged();
+			super.notifyObservers(count);
+		}
+
+	}
+
+	private AverageMessageDelayRatioUpdater averageMessageDelayRatioUpdater = new AverageMessageDelayRatioUpdater();
+
 	public RPSStatistics() {
 		getReOmRatioUpdater().addToObservables();
 		getSrvBrkRatioUpdater().addToObservables();
@@ -454,6 +618,20 @@ public class RPSStatistics {
 	 */
 	public RelSrvBrkRatioUpdater getRelSrvBrkRatioUpdater() {
 		return relSrvBrkRatioUpdater;
+	}
+
+	/**
+	 * @return Returns the delayedMessagesRatioNotifier.
+	 */
+	public DelayedMessagesRatioNotifier getDelayedMessagesRatioNotifier() {
+		return delayedMessagesRatioNotifier;
+	}
+
+	/**
+	 * @return Returns the averageMessageDelayRatioUpdater.
+	 */
+	public AverageMessageDelayRatioUpdater getAverageMessageDelayRatioUpdater() {
+		return averageMessageDelayRatioUpdater;
 	}
 
 	protected synchronized void incBrokerFeeds() {
@@ -558,6 +736,59 @@ public class RPSStatistics {
 	 */
 	public synchronized void setRelSrvBrkRatio(int relSrvBrkRatio) {
 		this.relSrvBrkRatio = relSrvBrkRatio;
+	}
+
+	/**
+	 * @return Returns the averageMessageDelayRatio.
+	 */
+	public synchronized Integer getAverageMessageDelayRatio() {
+		return averageMessageDelayRatio;
+	}
+
+	/**
+	 * @param averageMessageDelayRatio
+	 *            The averageMessageDelayRatio to set.
+	 */
+	public synchronized void setAverageMessageDelayRatio(Integer averageMessageDelayRatio) {
+		this.averageMessageDelayRatio = averageMessageDelayRatio;
+	}
+
+	/**
+	 * @return Returns the averageUptodateRatio.
+	 */
+	public synchronized Integer getAverageUptodateRatio() {
+		return averageUptodateRatio;
+	}
+
+	/**
+	 * @param averageUptodateRatio
+	 *            The averageUptodateRatio to set.
+	 */
+	public synchronized void setAverageUptodateRatio(Integer averageUptodateRatio) {
+		this.averageUptodateRatio = averageUptodateRatio;
+	}
+
+	/**
+	 * @return Returns the averageUptodateRatioUpdater.
+	 */
+	public synchronized AverageUptodateRatioUpdater getAverageUptodateRatioUpdater() {
+		return averageUptodateRatioUpdater;
+	}
+
+	/**
+	 * @return Returns the delayedMessagesRatio.
+	 */
+	public synchronized Integer getDelayedMessagesRatio() {
+		return delayedMessagesRatio;
+	}
+
+	/**
+	 * @param delayedMessagesRatio
+	 *            The delayedMessagesRatio to set.
+	 */
+	public synchronized void setDelayedMessagesRatio(Integer delayedMessagesRatio) {
+		this.delayedMessagesRatio = delayedMessagesRatio;
+		getDelayedMessagesRatioNotifier().notifyObservers(delayedMessagesRatio);
 	}
 
 }

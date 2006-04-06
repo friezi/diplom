@@ -139,12 +139,14 @@ public class PubSub extends PubSubNode {
 
 	}
 
-	synchronized protected void updateRequestTimer() {
-
-		feedRequestTask.cancel();
-		feedRequestTask = new FeedRequestTask(this);
-		feedRequestTimer.schedule(feedRequestTask, calculateInterval());
-
+	// for extensibility
+	synchronized protected void updateRequestTimerByNewFeed() {
+		updateRequestTimer(calculateInterval());
+	}
+	
+	// for extensibility
+	synchronized protected void updateRequestTimerByOldFeed(){
+		updateRequestTimerByNewFeed();
 	}
 
 	synchronized protected void updateRequestTimer(long interval) {
@@ -169,7 +171,7 @@ public class PubSub extends PubSubNode {
 			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, getFeed()));
 			getRssFeedRepresentation().represent();
 
-			updateRequestTimer();
+			updateRequestTimerByNewFeed();
 
 			// send the feed to Broker, if we didn't get the message from
 			// him
@@ -194,7 +196,7 @@ public class PubSub extends PubSubNode {
 
 			// got an old feed; update timer only if sender is RSSServer
 			if (fm.getSrc() == getRssServer()) {
-				updateRequestTimer();
+				updateRequestTimerByOldFeed();
 			}
 		}
 

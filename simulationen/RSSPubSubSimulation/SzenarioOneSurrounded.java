@@ -11,7 +11,7 @@ import rsspubsubframework.Engine;
  * @author Friedemann Zintel
  * 
  */
-public class SzenarioOneSurrounded {
+public class SzenarioOneSurrounded extends Szenario{
 
 	private static int MAXBROKER = 25;
 
@@ -51,6 +51,8 @@ public class SzenarioOneSurrounded {
 	 */
 	public SzenarioOneSurrounded(RPSFactory rpsFactory, RSSFeedFactory rssFeedFactory, RSSFeedRepresentationFactory rssFeedRepresentationFactory,
 			SimParameters params) {
+		
+		super();
 
 		EdgeFactory edgefactory = new EdgeFactory();
 
@@ -58,8 +60,6 @@ public class SzenarioOneSurrounded {
 
 		RSSServerNode rssServer = rpsFactory.newRSSServerNode(RSS_XPOS, RSS_YPOS, params);
 
-		// add the Engine as observer to RSSServer
-		rssServer.getStatistics().addReceivedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getReceivedRSSFeedRequestObserver());
 
 		// set the factories for creating and displaying the feeds
 		rssServer.setRssFeedFactory(rssFeedFactory);
@@ -293,11 +293,6 @@ public class SzenarioOneSurrounded {
 		// pubsublist.get(0).addToInitList();
 
 		for ( PubSubNode currpubsub : pubsublist ) {
-			// Engine should be notified about omitted RSS-requests and other
-			// values
-			currpubsub.getStatistics().addOmittedRSSFeedRequestObserver(Engine.getSingleton().getRpsStatistics().getOmittedRSSFeedRequestObserver());
-			currpubsub.getStatistics().addServerFeedObserver(Engine.getSingleton().getRpsStatistics().getServerFeedObserver());
-			currpubsub.getStatistics().addBrokerFeedObserver(Engine.getSingleton().getRpsStatistics().getBrokerFeedObserver());
 			currpubsub.addToInitList();
 		}
 
@@ -308,6 +303,9 @@ public class SzenarioOneSurrounded {
 
 		for ( PubSubNode currpubsub : pubsublist )
 			currpubsub.deleteGuiObservers();
+		
+		// set observers for statistics
+		setStatisticObservers(rssServer,pubsublist);
 
 	}
 }

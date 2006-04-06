@@ -98,6 +98,11 @@ public class SimParameters {
 	 * stored at the node
 	 */
 	int maxSubscriberEvents = 10;
+	
+	/**
+	 * Engine: the refresh-rate in milliseconds
+	 */
+	int engineTimerPeriod = 50;
 
 	private String comment = "Parameters for a RPSSimulation";
 
@@ -134,6 +139,7 @@ public class SimParameters {
 		properties.setProperty("maxFeedEvents", String.valueOf(maxFeedEvents));
 		properties.setProperty("maxSubscriberEvents", String.valueOf(maxSubscriberEvents));
 		properties.setProperty("maxRefreshRate",String.valueOf(maxRefreshRate));
+		properties.setProperty("engineTimerPeriod",String.valueOf(engineTimerPeriod));
 
 		if ( args.length > 1 ) {
 
@@ -187,6 +193,7 @@ public class SimParameters {
 		maxFeedEvents = Integer.valueOf((String) properties.getProperty("maxFeedEvents"));
 		maxSubscriberEvents = Integer.valueOf((String) properties.getProperty("maxSubscriberEvents"));
 		maxRefreshRate = Integer.valueOf((String) properties.getProperty("maxRefreshRate"));
+		engineTimerPeriod = Integer.valueOf((String) properties.getProperty("engineTimerPeriod"));
 		if ( properties.getProperty("rssFeedMsgRepresent").toLowerCase().equals("true") )
 			rssFeedMsgRepresent = true;
 		else

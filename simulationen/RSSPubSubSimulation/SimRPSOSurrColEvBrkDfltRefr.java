@@ -1,19 +1,17 @@
 import java.io.IOException;
 
-import rsspubsubframework.*;
+import rsspubsubframework.DisplayableObject;
+import rsspubsubframework.Engine;
 
 /**
  * 
  */
 
 /**
- * Simulation of RSS with Publish/Subscribe on top of Szenario
- * "One Server surrounded" in combination with Adjusting ColorEvent-Broker
- * 
  * @author Friedemann Zintel
- * 
+ *
  */
-public class SimRPSOSurrAdjColEvBrk {
+public class SimRPSOSurrColEvBrkDfltRefr {
 
 	/**
 	 * @param args
@@ -34,7 +32,7 @@ public class SimRPSOSurrAdjColEvBrk {
 			}
 
 			public PubSubNode newPubSubNode(int xp, int yp, SimParameters params) {
-				return new EventPubSub(xp, yp, new ColorEventFeedFactory(params), params);
+				return new DfltRefreshRateEventPubSub(xp, yp, new ColorEventFeedFactory(params), params);
 			}
 
 			public RSSServerNode newRSSServerNode(int xp, int yp, SimParameters params) {
