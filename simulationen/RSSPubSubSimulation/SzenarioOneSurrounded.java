@@ -144,7 +144,7 @@ public class SzenarioOneSurrounded extends Szenario{
 			// connect broker and pubsub
 			BrokerNode broker = brokerlist.get((int) (i / 2));
 			edgefactory.newEdge(pubsub, broker);
-			pubsub.setBroker(broker);
+//			pubsub.setBroker(broker);
 
 		}
 
@@ -157,7 +157,7 @@ public class SzenarioOneSurrounded extends Szenario{
 			// connect broker and pubsub
 			BrokerNode broker = brokerlist.get((int) (i / 2) + MAXBROKER);
 			edgefactory.newEdge(pubsub, broker);
-			pubsub.setBroker(broker);
+//			pubsub.setBroker(broker);
 
 		}
 
@@ -172,12 +172,12 @@ public class SzenarioOneSurrounded extends Szenario{
 		pubsub = rpsFactory.newPubSubNode(xpos + BR_XINTV, ypos - 10, params);
 		pubsublist.add(pubsub);
 		pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-		pubsub.setBroker(bn1);
+//		pubsub.setBroker(bn1);
 		edgefactory.newEdge(pubsub, bn1);
 		pubsub = rpsFactory.newPubSubNode(xpos + BR_XINTV, ypos + 10, params);
 		pubsublist.add(pubsub);
 		pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-		pubsub.setBroker(bn1);
+//		pubsub.setBroker(bn1);
 		edgefactory.newEdge(pubsub, bn1);
 		{
 			BrokerNode bntmp1 = bn1;
@@ -191,12 +191,12 @@ public class SzenarioOneSurrounded extends Szenario{
 				pubsub = rpsFactory.newPubSubNode(xpos + BR_XINTV, ypos - 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b1);
+//				pubsub.setBroker(b1);
 				edgefactory.newEdge(pubsub, b1);
 				pubsub = rpsFactory.newPubSubNode(xpos + BR_XINTV, ypos + 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b1);
+//				pubsub.setBroker(b1);
 				edgefactory.newEdge(pubsub, b1);
 				bntmp1 = b1;
 
@@ -208,12 +208,12 @@ public class SzenarioOneSurrounded extends Szenario{
 				pubsub = rpsFactory.newPubSubNode(xpos + BR_XINTV, ypos - 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b2);
+//				pubsub.setBroker(b2);
 				edgefactory.newEdge(pubsub, b2);
 				pubsub = rpsFactory.newPubSubNode(xpos + BR_XINTV, ypos + 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b2);
+//				pubsub.setBroker(b2);
 				edgefactory.newEdge(pubsub, b2);
 				bntmp2 = b2;
 			}
@@ -226,12 +226,12 @@ public class SzenarioOneSurrounded extends Szenario{
 		pubsub = rpsFactory.newPubSubNode(xpos - BR_XINTV, ypos - 10, params);
 		pubsublist.add(pubsub);
 		pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-		pubsub.setBroker(bn2);
+//		pubsub.setBroker(bn2);
 		edgefactory.newEdge(pubsub, bn2);
 		pubsub = rpsFactory.newPubSubNode(xpos - BR_XINTV, ypos + 10, params);
 		pubsublist.add(pubsub);
 		pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-		pubsub.setBroker(bn2);
+//		pubsub.setBroker(bn2);
 		edgefactory.newEdge(pubsub, bn2);
 		{
 			BrokerNode bntmp1 = bn2;
@@ -246,12 +246,12 @@ public class SzenarioOneSurrounded extends Szenario{
 				pubsub = rpsFactory.newPubSubNode(xpos - BR_XINTV, ypos - 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b1);
+//				pubsub.setBroker(b1);
 				edgefactory.newEdge(pubsub, b1);
 				pubsub = rpsFactory.newPubSubNode(xpos - BR_XINTV, ypos + 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b1);
+//				pubsub.setBroker(b1);
 				edgefactory.newEdge(pubsub, b1);
 				bntmp1 = b1;
 
@@ -263,12 +263,12 @@ public class SzenarioOneSurrounded extends Szenario{
 				pubsub = rpsFactory.newPubSubNode(xpos - BR_XINTV, ypos - 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b2);
+//				pubsub.setBroker(b2);
 				edgefactory.newEdge(pubsub, b2);
 				pubsub = rpsFactory.newPubSubNode(xpos - BR_XINTV, ypos + 10, params);
 				pubsublist.add(pubsub);
 				pubsub.setRssFeedRepresentationFactory(rssFeedRepresentationFactory);
-				pubsub.setBroker(b2);
+//				pubsub.setBroker(b2);
 				edgefactory.newEdge(pubsub, b2);
 				bntmp2 = b2;
 

@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class SubnetParamMessage extends Message {
 
-	private static int NORMALSIZE = 8;
+	private static int NORMALSIZE = 5;
 
 	private static int BIGSIZE = 15;
 

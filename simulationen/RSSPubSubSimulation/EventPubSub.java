@@ -67,7 +67,7 @@ public class EventPubSub extends PubSub {
 		}
 
 		// calculate ratio of delayed event:
-		if (!sortedEvents.isEmpty()) 
+		if (!sortedEvents.isEmpty())
 			calculateUpdateAndDelay(sortedEvents.first().getGeneralContend().getPubDate().getTime());
 
 		// deletion of event-overhead
@@ -88,22 +88,28 @@ public class EventPubSub extends PubSub {
 			// send a new feed (only with new events) to Broker, if we didn't
 			// get the message from
 			// him
-			if (fm.getSrc() != getBroker()) {
+			// if (fm.getSrc() != getBroker()) {
+			if (brokerlist.contains(fm.getSrc()) == false) {
 
 				this.getStatistics().addServerFeed(this);
 
 				RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
-				new RSSFeedMessage(this, getBroker(), newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+				for (BrokerNode broker : brokerlist)
+					new RSSFeedMessage(this, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
 
 			} else {
 
 				// just statistics
-
 				this.getStatistics().addBrokerFeed(this);
 				// if we got the message from a broker, a request for RSSServer
 				// will be omitted
 				// -> statistics
 				this.getStatistics().addOmittedRSSFeedRequest(this);
+
+				// send it to all other brokers
+				for (BrokerNode broker : brokerlist)
+					if (broker != fm.getSrc())
+						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
 
 			}
 
@@ -116,8 +122,8 @@ public class EventPubSub extends PubSub {
 		}
 
 	}
-	
-	protected void calculateUpdateAndDelay(long eventtime){
+
+	protected void calculateUpdateAndDelay(long eventtime) {
 
 		long now = new Date().getTime();
 		long diff = (now - eventtime) / 1000;
@@ -128,17 +134,16 @@ public class EventPubSub extends PubSub {
 
 			messageDelayRatio = (int) ((overhead * 100) / params.maxRefreshRate);
 			uptodateRatio = (int) ((params.maxRefreshRate * 100) / diff);
-/*
-			System.out.print("message-delay: " + messageDelayRatio + "%");
-			if (uptodateRatio < 100)
-				System.out.print("    uptodateRatio: " + uptodateRatio + "%");
-			System.out.println();
-*/
+			/*
+			 * System.out.print("message-delay: " + messageDelayRatio + "%"); if
+			 * (uptodateRatio < 100) System.out.print(" uptodateRatio: " +
+			 * uptodateRatio + "%"); System.out.println();
+			 */
 		}
-		
+
 		getStatistics().setUptodateRatio(uptodateRatio);
 		getStatistics().setMessageDelayRatio(messageDelayRatio);
-		
+
 	}
 
 	/**

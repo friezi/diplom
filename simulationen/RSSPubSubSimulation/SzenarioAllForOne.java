@@ -101,7 +101,7 @@ public class SzenarioAllForOne extends Szenario{
 			// connect broker and pubsub
 			BrokerNode broker = brokerlist.get((int) (i / 2));
 			edgefactory.newEdge(pubsub, broker);
-			pubsub.setBroker(broker);
+//			pubsub.setBroker(broker);
 
 		}
 

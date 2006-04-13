@@ -10,7 +10,7 @@ import rsspubsubframework.*;
  */
 public class RegisterAckMessage extends Message {
 
-	private static int NORMALSIZE = 8;
+	private static int NORMALSIZE = 5;
 
 	RegisterAckMessage(Node src, Node dst, int runtime) {
 		super(src, dst, runtime);

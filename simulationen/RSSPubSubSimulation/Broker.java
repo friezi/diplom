@@ -20,31 +20,34 @@ public class Broker extends BrokerNode {
 	public void receiveMessage(Message m) {
 
 		// process only if not blocked
-		if ( isBlocked() == true )
+		if (isBlocked() == true)
 			return;
 
-		if ( m instanceof RSSFeedMessage ) {
+		if (m instanceof RSSFeedMessage) {
 
-			RSSFeedMessage fm = (RSSFeedMessage) m;
+			handleRSSFeedMessage((RSSFeedMessage) m);
 
-			// if message-feed is newer than our one, set it and send it to all
-			// other peers
-			if ( fm.getFeed().isNewerThan(getFeed()) ) {
+		}
+	}
 
-				setFeed(fm.getFeed());
+	protected void handleRSSFeedMessage(RSSFeedMessage rfm) {
 
-				// send a new RSSFeedMessage to all other Brokers and
-				// Subscribers
-				Set<Node> peers = getPeers();
-				for ( Node peer : peers ) {
-					if ( peer != fm.getSrc() )
-						new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(
-								null, getFeed()), params);
-				}
+		// if message-feed is newer than our one, set it and send it to all
+		// other peers
+		if (rfm.getFeed().isNewerThan(getFeed())) {
 
+			setFeed(rfm.getFeed());
+
+			// send a new RSSFeedMessage to all other Brokers and
+			// Subscribers
+			Set<Node> peers = getPeers();
+			for (Node peer : peers) {
+				if (peer != rfm.getSrc())
+					new RSSFeedMessage(this, peer, getFeed(), rfm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
 			}
 
 		}
+
 	}
 
 	/**

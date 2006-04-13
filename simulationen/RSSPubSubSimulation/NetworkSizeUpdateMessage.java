@@ -10,7 +10,7 @@ import rsspubsubframework.*;
  */
 public class NetworkSizeUpdateMessage extends Message {
 
-	private static int NORMALSIZE = 8;
+	private static int NORMALSIZE = 5;
 
 	long size;
 

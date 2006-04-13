@@ -1,4 +1,5 @@
 import rsspubsubframework.*;
+
 import java.awt.*;
 import java.util.*;
 
@@ -14,7 +15,7 @@ public class PubSub extends PubSubNode {
 
 		public void run() {
 			new RequestFeedMessage(timerpubsub, timerpubsub);
-			//			requestFeed();
+			// requestFeed();
 			// feedRequestTimer.schedule(new
 			// FeedRequestTask(),calculateInterval());
 		}
@@ -22,15 +23,35 @@ public class PubSub extends PubSubNode {
 	}
 
 	/**
-	 * This message will be sent by the timer to the PubSubNode when it' time to request the next feed.
+	 * This message will be sent by the timer to the PubSubNode when it' time to
+	 * request the next feed.
 	 * 
 	 * @author Friedemann Zintel
-	 *
+	 * 
 	 */
 	protected class RequestFeedMessage extends InternalMessage {
 
 		RequestFeedMessage(Node src, Node dst) {
 			super(src, dst);
+		}
+
+	}
+
+	protected class UnregisterFromBrokerTaskMessage extends InternalMessage {
+
+		BrokerNode broker;
+
+		UnregisterFromBrokerTaskMessage(Node src, Node dst, BrokerNode broker) {
+			super(src, dst);
+			this.broker = broker;
+			// TODO Auto-generated constructor stub
+		}
+
+		/**
+		 * @return Returns the broker.
+		 */
+		public BrokerNode getBroker() {
+			return broker;
 		}
 
 	}
@@ -75,7 +96,7 @@ public class PubSub extends PubSubNode {
 
 	protected Timer feedRequestTimer = new Timer();
 
-	protected Timer ackTimer = new Timer();
+	protected Timer ackTimer;
 
 	protected HashMap<BrokerNode, AckTimerTask> acktaskmap = new HashMap<BrokerNode, AckTimerTask>();
 
@@ -122,6 +143,10 @@ public class PubSub extends PubSubNode {
 
 			handleRegisterAckMessage((RegisterAckMessage) m);
 
+		} else if (m instanceof UnregisterFromBrokerTaskMessage) {
+
+			handleUnregisterFromBrokerTaskMessage((UnregisterFromBrokerTaskMessage) m);
+
 		}
 	}
 
@@ -134,7 +159,8 @@ public class PubSub extends PubSubNode {
 		if (diff > ttl)
 			// diff = ttl;
 			diff = 0;
-		//		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
+		// return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl -
+		// diff)) * 1000;
 		return (long) ((new Random().nextFloat() * (spreadFactor * ttl + 1) + (ttl - diff)) * 1000);
 
 	}
@@ -143,9 +169,9 @@ public class PubSub extends PubSubNode {
 	synchronized protected void updateRequestTimerByNewFeed() {
 		updateRequestTimer(calculateInterval());
 	}
-	
+
 	// for extensibility
-	synchronized protected void updateRequestTimerByOldFeed(){
+	synchronized protected void updateRequestTimerByOldFeed() {
 		updateRequestTimerByNewFeed();
 	}
 
@@ -175,20 +201,27 @@ public class PubSub extends PubSubNode {
 
 			// send the feed to Broker, if we didn't get the message from
 			// him
-			if (fm.getSrc() != getBroker()) {
+			// if (fm.getSrc() != getBroker()) {
+			if (brokerlist.contains(fm.getSrc()) == false) {
 
 				this.getStatistics().addServerFeed(this);
 
-				new RSSFeedMessage(this, getBroker(), getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+				for (BrokerNode broker : brokerlist)
+					new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
 
 			} else {
 
 				// just statistics
-
 				this.getStatistics().addBrokerFeed(this);
-				// if we got the message from a broker, a request for RSSServer will be omitted
+				// if we got the message from a broker, a request for RSSServer
+				// will be omitted
 				// -> statistics
 				this.getStatistics().addOmittedRSSFeedRequest(this);
+
+				// send it to all other brokers
+				for (BrokerNode broker : brokerlist)
+					if (broker != fm.getSrc())
+						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
 
 			}
 
@@ -236,10 +269,19 @@ public class PubSub extends PubSubNode {
 
 	protected void handleRegisterAckMessage(RegisterAckMessage ram) {
 
-		if (acktaskmap.containsKey((BrokerNode) ram.getSrc())) {
-			acktaskmap.get((BrokerNode) ram.getSrc()).cancel();
-			acktaskmap.remove((BrokerNode) ram.getSrc());
-		}
+		/*
+		 * if (acktaskmap.containsKey((BrokerNode) ram.getSrc())) {
+		 * acktaskmap.get((BrokerNode) ram.getSrc()).cancel();
+		 * acktaskmap.remove((BrokerNode) ram.getSrc()); }
+		 */
+		brokerlist.add((BrokerNode) ram.getSrc());
+	}
+
+	protected void handleUnregisterFromBrokerTaskMessage(UnregisterFromBrokerTaskMessage ubm) {
+
+		ackTimer.cancel();
+		new UnregisterSubscriberMessage(this, ubm.getBroker(), params.subnetParamMsgRT);
+		brokerlist.remove(ubm.getBroker());
 
 	}
 
@@ -275,6 +317,10 @@ public class PubSub extends PubSubNode {
 		}
 	}
 
+	protected void removeConnection(PubSubNode node1, BrokerNode node2) {
+		Engine.getSingleton().removeEdgeFromNodes(node1, node2);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -284,6 +330,7 @@ public class PubSub extends PubSubNode {
 
 		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
 		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
+		ackTimer = new Timer();
 		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor * params.pingTimer);
 		acktaskmap.put((BrokerNode) broker, task);
 
@@ -295,7 +342,10 @@ public class PubSub extends PubSubNode {
 	 * @see rsspubsubframework.PubSubType#unregister(rsspubsubframework.BrokerType)
 	 */
 	public void callbackUnregisterFromBroker(BrokerType broker) {
-		// TODO Auto-generated method stub
-		new UnregisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
+		new UnregisterFromBrokerTaskMessage(this, this, (BrokerNode) broker);
+		try {
+			removeConnection(this, (BrokerNode) broker);
+		} catch (ConcurrentModificationException e) {
+		}
 	}
 }

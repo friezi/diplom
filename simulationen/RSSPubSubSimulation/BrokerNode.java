@@ -5,6 +5,8 @@ import java.util.*;
 import java.awt.*;
 
 public abstract class BrokerNode extends Node implements BrokerType, Observer {
+	
+	static Color BLOCKEDCOLOR= new Color((float) 0.5, 0, 0);
 
 	protected SimParameters params;
 
@@ -65,41 +67,26 @@ public abstract class BrokerNode extends Node implements BrokerType, Observer {
 		return 30;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see rsspubsubframework.Node#block()
-	 */
-	@Override
-	public void block() {
-		// TODO Auto-generated method stub
-		super.block();
-		setColor(new Color((float) 0.5, 0, 0));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see rsspubsubframework.Node#unblock()
-	 */
-	@Override
-	public void unblock() {
-		// TODO Auto-generated method stub
-		super.unblock();
-		setDefaultColor();
-	}
-
 	protected void draw(java.awt.Graphics g, int x, int y) {
 
 		g.setColor(color());
 		int s = size();
-		g.fillRect(x - s / 2, y - s / 2, s, s);
+		int x1 = x - s / 2;
+		int y1 = y - s / 2;
+		int width = s;
+		int height = s;
+		g.fillRect(x1, y1, width, height);
 		g.setColor(java.awt.Color.black);
-		g.drawRect(x - s / 2, y - s / 2, s, s);
+		g.drawRect(x1, y1, width, height);
 		String t = text();
 		java.awt.FontMetrics fm = g.getFontMetrics();
 		g.setColor(textColor());
 		g.drawString(t, x - fm.stringWidth(t) / 2, y + fm.getHeight() / 2);
+
+		if (isBlocked() == true) {
+			g.setColor(BLOCKEDCOLOR);
+			crossit(g, x1, y1, width, height);
+		}
 
 	}
 

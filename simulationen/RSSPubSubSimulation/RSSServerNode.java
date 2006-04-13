@@ -1,4 +1,5 @@
 import rsspubsubframework.*;
+
 import java.awt.*;
 import java.util.*;
 
@@ -70,6 +71,22 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	protected void receiveMessage(Message m) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * It simualtions an uploading of a message: it just waits the amount of
+	 * time the message will take to arrive
+	 * 
+	 * @param m
+	 *            the message
+	 * @throws Exception
+	 */
+	protected void upload(Message m) {
+		try {
+			Thread.sleep(Engine.getSingleton().getTimerPeriod() * m.getRuntime());
+		} catch ( Exception e ) {
+			System.out.println("Exception: " + e);
+		}
 	}
 
 	/*

@@ -28,7 +28,7 @@ import java.awt.*;
  * This is the main engine for the simulation system. Every simulation needs
  * such an object.
  */
-final public class Engine extends java.util.TimerTask {
+final public class Engine{
 
 	/**
 	 * Singleton object of the engine.
@@ -99,7 +99,7 @@ final public class Engine extends java.util.TimerTask {
 	 * 
 	 * This objects drives the simulation forward step by step.
 	 */
-	private final java.util.Timer t = new java.util.Timer();
+	private java.util.Timer t = new java.util.Timer();
 
 	/**
 	 * Engine is active.
@@ -117,6 +117,8 @@ final public class Engine extends java.util.TimerTask {
 	private int timerDelay = 1000;
 
 	private int timerPeriod = 20;
+
+	private Date date = new Date();
 
 	/**
 	 * Number of simulation steps.
@@ -172,7 +174,7 @@ final public class Engine extends java.util.TimerTask {
 	 * -- modified by Friedemann Zintel --
 	 */
 	public void init() {
-		t.schedule(this, getTimerDelay(), getTimerPeriod());
+		t.schedule(new EngineTask(), getTimerDelay());
 	}
 
 	/**
@@ -230,17 +232,17 @@ final public class Engine extends java.util.TimerTask {
 		boolean foundfirst = false;
 		boolean foundsecond = false;
 
-		for ( Edge edge : edgeList ) {
+		for (Edge edge : edgeList) {
 
-			if ( foundfirst == true && foundsecond == true )
+			if (foundfirst == true && foundsecond == true)
 				break;
 
-			if ( (edge.node1() == node1 && edge.node2() == node2) ) {
+			if ((edge.node1() == node1 && edge.node2() == node2)) {
 
 				removeEdge(edge);
 				foundfirst = true;
 
-			} else if ( (edge.node1() == node2 && edge.node2() == node1) ) {
+			} else if ((edge.node1() == node2 && edge.node2() == node1)) {
 
 				removeEdge(edge);
 				foundsecond = true;
@@ -293,9 +295,9 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	private static int[] getRandomPermutation(int s) {
 		int a[] = new int[s];
-		for ( int i = 0; i < s; ++i )
+		for (int i = 0; i < s; ++i)
 			a[i] = i;
-		for ( int i = 0; i < s; ++i ) {
+		for (int i = 0; i < s; ++i) {
 			int p = (int) (Math.random() * s);
 			int v = a[i];
 			a[i] = a[p];
@@ -318,9 +320,9 @@ final public class Engine extends java.util.TimerTask {
 		int a[] = getRandomPermutation(s);
 		Node n[] = new Node[s];
 		n = singleton.nodeList.toArray(n);
-		if ( s > num )
+		if (s > num)
 			s = num;
-		while ( s > 0 )
+		while (s > 0)
 			n[a[--s]].init();
 	}
 
@@ -341,7 +343,7 @@ final public class Engine extends java.util.TimerTask {
 	final synchronized private void internalSetUniqueIds() {
 		int a[] = getRandomPermutation(nodeList.size());
 		java.util.Iterator<Node> nl = nodeList.iterator();
-		for ( int i = 0; i < nodeList.size(); ++i ) {
+		for (int i = 0; i < nodeList.size(); ++i) {
 			nl.next().setId(a[i] + 1);
 		}
 	}
@@ -369,7 +371,7 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	final synchronized private void internalSetRandomIds(int max) {
 		java.util.Iterator<Node> nl = nodeList.iterator();
-		while ( nl.hasNext() ) {
+		while (nl.hasNext()) {
 			nl.next().setId((int) (Math.random() * max) + 1);
 		}
 	}
@@ -383,13 +385,13 @@ final public class Engine extends java.util.TimerTask {
 	 *            The Graphics object to draw on.
 	 */
 	final synchronized void draw(java.awt.Graphics g) {
-		for ( Edge ce : edgeList )
+		for (Edge ce : edgeList)
 			ce.drawobj(g);
-		for ( Node cn : nodeList )
+		for (Node cn : nodeList)
 			cn.drawobj(g);
-		for ( Message cm : messageList )
+		for (Message cm : messageList)
 			cm.drawobj(g);
-		for ( GraphicalObject go : graphicalObjects )
+		for (GraphicalObject go : graphicalObjects)
 			go.drawobj(g);
 	}
 
@@ -441,6 +443,8 @@ final public class Engine extends java.util.TimerTask {
 		newMessages.clear();
 	}
 
+	private class EngineTask extends TimerTask{
+	
 	/**
 	 * Step simulation one step further.
 	 * 
@@ -449,9 +453,11 @@ final public class Engine extends java.util.TimerTask {
 	 */
 	final synchronized public void run() {
 
-		if ( active ) {
+		long starttime = date.getTime();
 
-			if ( isStopped() ) {
+		if (active) {
+
+			if (isStopped()) {
 
 				setStopped(false);
 				active = false;
@@ -468,9 +474,9 @@ final public class Engine extends java.util.TimerTask {
 
 				fixupMessageList();
 				java.util.Iterator<Message> ml = messageList.iterator();
-				while ( ml.hasNext() ) {
+				while (ml.hasNext()) {
 					Message cm = ml.next();
-					if ( cm.tick() ) {
+					if (cm.tick()) {
 						ml.remove();
 					}
 				}
@@ -479,7 +485,7 @@ final public class Engine extends java.util.TimerTask {
 
 				++simSteps;
 				cumMessages += numMessages;
-				if ( numMessages > maxMessages )
+				if (numMessages > maxMessages)
 					maxMessages = numMessages;
 
 				db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
@@ -488,24 +494,40 @@ final public class Engine extends java.util.TimerTask {
 
 		} else {
 
-			if ( isStarted() ) {
+			if (isStarted()) {
 
 				setStarted(false);
 				active = true;
 
 				// call init() for all nodes in initList
-				for ( Node node : initList )
+				for (Node node : initList)
 					node.init();
 
 			}
 
-			if ( isContinued() ) {
+			if (isContinued()) {
 
 				setContinued(false);
 				active = true;
 
 			}
 		}
+
+		long stoptime = date.getTime();
+
+		long diff = stoptime - starttime;
+
+		long delay;
+
+		if (diff >= getTimerPeriod())
+			delay = 0;
+		else
+			delay = getTimerPeriod() - diff;
+
+		t = new Timer();
+		t.schedule(new EngineTask(), delay);
+	}
+	
 	}
 
 	/**
@@ -559,8 +581,8 @@ final public class Engine extends java.util.TimerTask {
 
 	synchronized Node findNode(Point point) {
 
-		for ( Node node : nodeList ) {
-			if ( node.pointWhithin(point) == true )
+		for (Node node : nodeList) {
+			if (node.pointWhithin(point) == true)
 				return node;
 		}
 		return null;
@@ -570,8 +592,8 @@ final public class Engine extends java.util.TimerTask {
 
 		LinkedList<Node> nodes = new LinkedList<Node>();
 
-		for ( Node node : nodeList ) {
-			if ( node.whithinRectangle(point1, point2) ) {
+		for (Node node : nodeList) {
+			if (node.whithinRectangle(point1, point2)) {
 				nodes.add(node);
 			}
 		}

@@ -10,6 +10,8 @@ import rsspubsubframework.*;
  * 
  */
 public abstract class PubSubNode extends Node implements PubSubType, Observer {
+	
+	static Color BLOCKEDCOLOR= new Color((float) 0.5, 0, 0);
 
 	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
@@ -25,8 +27,10 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	protected SimParameters params;
 
 	protected RSSServerNode rssServer;
-
-	private BrokerNode broker;
+//
+//	private BrokerNode broker;
+	
+	protected HashSet<BrokerNode> brokerlist = new HashSet<BrokerNode>();
 
 	/**
 	 * @param xp
@@ -71,13 +75,22 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 
 		g.setColor(color());
 		int s = size();
-		g.fillRect(x - (s + 5) / 2, y - s / 2, s + 5, s);
+		int x1 = x - (s + 5) / 2;
+		int y1 = y - s / 2;
+		int width = s + 5;
+		int height = s;
+		g.fillRect(x1, y1, width, height);
 		g.setColor(java.awt.Color.black);
-		g.drawRect(x - (s + 5) / 2, y - s / 2, s + 5, s);
+		g.drawRect(x1, y1, width, height);
 		String t = text();
 		java.awt.FontMetrics fm = g.getFontMetrics();
 		g.setColor(textColor());
 		g.drawString(t, x - fm.stringWidth(t) / 2, y + fm.getHeight() / 2);
+
+		if (isBlocked() == true) {
+			g.setColor(BLOCKEDCOLOR);
+			crossit(g, x1, y1, width, height);
+		}
 
 	}
 
@@ -100,21 +113,21 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	public void setRssFeedRepresentation(RSSFeedRepresentation rssFeedRepresentation) {
 		this.rssFeedRepresentation = rssFeedRepresentation;
 	}
-
-	/**
-	 * @return Returns the broker.
-	 */
-	public BrokerNode getBroker() {
-		return broker;
-	}
-
-	/**
-	 * @param broker
-	 *            The broker to set.
-	 */
-	public void setBroker(BrokerNode broker) {
-		this.broker = broker;
-	}
+//
+//	/**
+//	 * @return Returns the broker.
+//	 */
+//	public BrokerNode getBroker() {
+//		return broker;
+//	}
+//
+//	/**
+//	 * @param broker
+//	 *            The broker to set.
+//	 */
+//	public void setBroker(BrokerNode broker) {
+//		this.broker = broker;
+//	}
 
 	/**
 	 * This method checks if a given point is whithin the borders of the node.

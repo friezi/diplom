@@ -1,27 +1,44 @@
 import rsspubsubframework.*;
+
 import java.util.*;
 
 public class RSSServer extends RSSServerNode {
 
-	protected class UpdateFeedTask extends TimerTask {
+	protected class GenerateFeedTask extends TimerTask {
 
 		private RSSServer rssServer;
 
-		public UpdateFeedTask(RSSServer rssServer) {
+		public GenerateFeedTask(RSSServer rssServer) {
 			this.rssServer = rssServer;
 		}
 
 		public void run() {
 
-			rssServer.newFeed();
-			rssServer.newTimer();
+			new GenerateFeedMessage(rssServer, rssServer);
+			rssServer.scheduleTimer();
 
 		}
+	}
+
+	/**
+	 * Message from a timertask to indicate that a new feed should be generated
+	 * 
+	 * @author Friedemann Zintel
+	 *
+	 */
+	protected class GenerateFeedMessage extends InternalMessage {
+
+		GenerateFeedMessage(Node src, Node dst) {
+			super(src, dst);
+		}
+
 	}
 
 	protected RSSFeed feed;
 
 	protected Random random;
+
+	Timer timer = new Timer();
 
 	/**
 	 * @param xp
@@ -34,6 +51,10 @@ public class RSSServer extends RSSServerNode {
 	public RSSServer(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
 		random = new Random();
+	}
+
+	public synchronized void finalize() {
+		timer.cancel();
 	}
 
 	/**
@@ -51,31 +72,34 @@ public class RSSServer extends RSSServerNode {
 	/**
 	 * gerenates a new feed-update-timer
 	 */
-	protected void newTimer() {
+	protected synchronized void scheduleTimer() {
 
-		UpdateFeedTask updatefeed = new UpdateFeedTask(this);
-		Timer timer = new Timer();
+		GenerateFeedTask generateFeedTask = new GenerateFeedTask(this);
 		// int r = random.nextInt((maxUpIntv - minUpIntv) + 1) + minUpIntv;
-		timer.schedule(updatefeed, 1000 * (random.nextInt((maxUpIntv - minUpIntv) + 1) + minUpIntv));
+		timer.schedule(generateFeedTask, 1000 * (random.nextInt((maxUpIntv - minUpIntv) + 1) + minUpIntv));
 
 	}
 
 	public void init() {
 
 		newFeed();
-		newTimer();
+		scheduleTimer();
 
 	}
 
 	protected void receiveMessage(Message m) {
 
 		// process only if not blocked
-		if ( isBlocked() == true )
+		if (isBlocked() == true)
 			return;
 
-		if ( m instanceof RSSFeedRequestMessage ) {
+		if (m instanceof RSSFeedRequestMessage) {
 
 			handleRSSFeedRequestMessage((RSSFeedRequestMessage) m);
+
+		} else if (m instanceof GenerateFeedMessage) {
+
+			handleUpdateFeedMessage((GenerateFeedMessage) m);
 
 		}
 
@@ -88,6 +112,10 @@ public class RSSServer extends RSSServerNode {
 
 		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(null, getFeed()), params);
 
+	}
+
+	protected void handleUpdateFeedMessage(GenerateFeedMessage gfm) {
+		newFeed();
 	}
 
 	/**

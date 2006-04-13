@@ -10,7 +10,7 @@ import rsspubsubframework.*;
  */
 public class UnregisterBrokerMessage extends Message {
 
-	private static int NORMALSIZE = 8;
+	private static int NORMALSIZE = 5;
 
 	public UnregisterBrokerMessage(Node src, Node dst, int runtime) {
 		super(src, dst, runtime);

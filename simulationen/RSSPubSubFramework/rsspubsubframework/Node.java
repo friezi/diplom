@@ -230,8 +230,8 @@ abstract public class Node extends DisplayableObject {
 	 *            Node the package should not be sent to.
 	 */
 	final protected void sendAllBut(Node notSend) {
-		for ( Node cn : peers )
-			if ( cn != notSend )
+		for (Node cn : peers)
+			if (cn != notSend)
 				send(cn);
 	}
 
@@ -247,7 +247,7 @@ abstract public class Node extends DisplayableObject {
 	 */
 	final protected void sendClock() {
 		Node cn = peers.iterator().next();
-		if ( cn.serial - serial == 1 || (serial - cn.serial != 1 && cn.serial < serial) )
+		if (cn.serial - serial == 1 || (serial - cn.serial != 1 && cn.serial < serial))
 			send(cn);
 		else
 			sendAllBut(cn);
@@ -265,7 +265,7 @@ abstract public class Node extends DisplayableObject {
 	 */
 	final protected void sendCounterClock() {
 		Node cn = peers.iterator().next();
-		if ( serial - cn.serial == 1 || (cn.serial - serial != 1 && cn.serial > serial) )
+		if (serial - cn.serial == 1 || (cn.serial - serial != 1 && cn.serial > serial))
 			send(cn);
 		else
 			sendAllBut(cn);
@@ -276,7 +276,7 @@ abstract public class Node extends DisplayableObject {
 	 * 
 	 * It just sets the blocked-flag.
 	 */
-	public void block() {
+	public synchronized void block() {
 		setBlocked(true);
 	}
 
@@ -285,7 +285,7 @@ abstract public class Node extends DisplayableObject {
 	 * 
 	 * It just unsets the blocked-flag.
 	 */
-	public void unblock() {
+	public synchronized void unblock() {
 		setBlocked(false);
 	}
 
@@ -350,6 +350,18 @@ abstract public class Node extends DisplayableObject {
 	 */
 	final void drawobj(java.awt.Graphics g) {
 		draw(g, Engine.scaleX(x), Engine.scaleY(y));
+	}
+
+	protected void crossit(java.awt.Graphics g, int x, int y, int width, int height) {
+
+		g.drawLine(x + 1, y, x + width, y + height - 1);
+		g.drawLine(x, y, x + width, y + height);
+		g.drawLine(x, y + 1, x + width - 1, y + height);
+
+		g.drawLine(x - 1 + width, y, x, y + height - 1);
+		g.drawLine(x + width, y, x, y + height);
+		g.drawLine(x + width, y + 1, x + 1, y + height);
+
 	}
 
 	/**

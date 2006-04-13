@@ -10,7 +10,7 @@ import rsspubsubframework.*;
  */
 public class RegisterSubscriberMessage extends Message {
 
-	private static int SIZE = 8;
+	private static int SIZE = 5;
 
 	/**
 	 * @param src

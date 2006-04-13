@@ -87,7 +87,7 @@ public class SimParameters {
 	 * ColorEventFeed: the maximum number of event-entries in the feed
 	 */
 	int maxFeedEvents = 5;
-	
+
 	/**
 	 * PubSub: the time after which a new feed should be received by the subscriber at most
 	 */
@@ -98,11 +98,16 @@ public class SimParameters {
 	 * stored at the node
 	 */
 	int maxSubscriberEvents = 10;
-	
+
 	/**
 	 * Engine: the refresh-rate in milliseconds
 	 */
 	int engineTimerPeriod = 50;
+
+	/**
+	 * QueueingRSSServer: the processingtime of a FeedRequest in miliseconds
+	 */
+	int serverDelay = 200;
 
 	private String comment = "Parameters for a RPSSimulation";
 
@@ -138,16 +143,17 @@ public class SimParameters {
 		properties.setProperty("informSubscribersTimeout", String.valueOf(informSubscribersTimeout));
 		properties.setProperty("maxFeedEvents", String.valueOf(maxFeedEvents));
 		properties.setProperty("maxSubscriberEvents", String.valueOf(maxSubscriberEvents));
-		properties.setProperty("maxRefreshRate",String.valueOf(maxRefreshRate));
-		properties.setProperty("engineTimerPeriod",String.valueOf(engineTimerPeriod));
+		properties.setProperty("maxRefreshRate", String.valueOf(maxRefreshRate));
+		properties.setProperty("engineTimerPeriod", String.valueOf(engineTimerPeriod));
+		properties.setProperty("serverDelay", String.valueOf(serverDelay));
 
-		if ( args.length > 1 ) {
+		if (args.length > 1) {
 
 			System.out.println("Invalid calling syntax!");
 			System.out.println("usage: <applname> [<filename>]");
 			System.exit(1);
 
-		} else if ( args.length < 1 ) {
+		} else if (args.length < 1) {
 			System.out.println("No input-file given! Using default-parameters");
 		} else {
 
@@ -158,7 +164,7 @@ public class SimParameters {
 				infile = new FileInputStream(filename);
 				properties.load(infile);
 
-			} catch ( FileNotFoundException ifne ) {
+			} catch (FileNotFoundException ifne) {
 
 				System.out.println("Warning: file " + filename + " not found. Will create it with default parameters");
 
@@ -167,7 +173,7 @@ public class SimParameters {
 					outfile = new FileOutputStream(filename);
 					properties.store(outfile, comment);
 
-				} catch ( FileNotFoundException ofne ) {
+				} catch (FileNotFoundException ofne) {
 					System.out.println("Warning: couldn't open file " + filename + " for writing.");
 				}
 			}
@@ -182,7 +188,7 @@ public class SimParameters {
 		rssFeedRequestMsgRT = Integer.valueOf((String) properties.getProperty("rssFeedRequestMsgRT"));
 		rssFeedMsgRT = Integer.valueOf((String) properties.getProperty("rssFeedMsgRT"));
 		subnetParamMsgRT = Integer.valueOf((String) properties.getProperty("subnetParamMsgRT"));
-		if ( properties.getProperty("showSizeBrokerMsg").toLowerCase().equals("true") )
+		if (properties.getProperty("showSizeBrokerMsg").toLowerCase().equals("true"))
 			showSizeBrokerMsg = true;
 		else
 			showSizeBrokerMsg = false;
@@ -194,7 +200,8 @@ public class SimParameters {
 		maxSubscriberEvents = Integer.valueOf((String) properties.getProperty("maxSubscriberEvents"));
 		maxRefreshRate = Integer.valueOf((String) properties.getProperty("maxRefreshRate"));
 		engineTimerPeriod = Integer.valueOf((String) properties.getProperty("engineTimerPeriod"));
-		if ( properties.getProperty("rssFeedMsgRepresent").toLowerCase().equals("true") )
+		serverDelay = Integer.valueOf((String) properties.getProperty("serverDelay"));
+		if (properties.getProperty("rssFeedMsgRepresent").toLowerCase().equals("true"))
 			rssFeedMsgRepresent = true;
 		else
 			rssFeedMsgRepresent = false;
