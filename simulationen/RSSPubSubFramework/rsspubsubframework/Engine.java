@@ -77,8 +77,6 @@ final public class Engine {
 	 */
 	private final java.util.Set<Message> messageList = new java.util.HashSet<Message>();
 
-	private Semaphore messageListSemaphor = new Semaphore(1, true);
-
 	/**
 	 * List of new messages in the engine.
 	 * 
@@ -183,13 +181,16 @@ final public class Engine {
 	/**
 	 * Adds a new node to the simulation engine.
 	 * 
-	 * This is an internal method. You cannot call this method directly
+	 * This is an internal method. You cannot call this method directly --
+	 * modified by Friedemann Zintel --
 	 * 
 	 * @param localNode
 	 *            The node to add.
 	 */
-	final synchronized void addNode(Node localNode) {
-		nodeList.add(localNode);
+	final void addNode(Node localNode) {
+		synchronized (nodeList) {
+			nodeList.add(localNode);
+		}
 	}
 
 	/**
@@ -200,8 +201,10 @@ final public class Engine {
 	 * @param localEdge
 	 *            The edge to add.
 	 */
-	final synchronized void addEdge(Edge localEdge) {
-		edgeList.add(localEdge);
+	final void addEdge(Edge localEdge) {
+		synchronized (edgeList) {
+			edgeList.add(localEdge);
+		}
 	}
 
 	/**
@@ -214,8 +217,10 @@ final public class Engine {
 	 * @param node2
 	 *            second node
 	 */
-	final synchronized void addEdge(Node node1, Node node2) {
-		edgeList.add(new Edge(node1, node2));
+	final void addEdge(Node node1, Node node2) {
+		synchronized (edgeList) {
+			edgeList.add(new Edge(node1, node2));
+		}
 	}
 
 	/**
@@ -224,33 +229,39 @@ final public class Engine {
 	 * @param edge
 	 *            the edge
 	 */
-	final synchronized void removeEdge(Edge edge) {
-		edgeList.remove(edge);
-		edge.removeConnection();
+	final void removeEdge(Edge edge) {
+		synchronized (edgeList) {
+			edgeList.remove(edge);
+			edge.removeConnection();
+		}
 	}
 
 	// modified by Friedemann Zintel
-	public final synchronized void removeEdgeFromNodes(Node node1, Node node2) {
+	public final void removeEdgeFromNodes(Node node1, Node node2) {
 
 		boolean foundfirst = false;
 		boolean foundsecond = false;
 
-		for ( Edge edge : edgeList ) {
+		synchronized (edgeList) {
 
-			if ( foundfirst == true && foundsecond == true )
-				break;
+			for (Edge edge : edgeList) {
 
-			if ( (edge.node1() == node1 && edge.node2() == node2) ) {
+				if ( foundfirst == true && foundsecond == true )
+					break;
 
-				removeEdge(edge);
-				foundfirst = true;
+				if ( (edge.node1() == node1 && edge.node2() == node2) ) {
 
-			} else if ( (edge.node1() == node2 && edge.node2() == node1) ) {
+					removeEdge(edge);
+					foundfirst = true;
 
-				removeEdge(edge);
-				foundsecond = true;
+				} else if ( (edge.node1() == node2 && edge.node2() == node1) ) {
 
+					removeEdge(edge);
+					foundsecond = true;
+
+				}
 			}
+
 		}
 
 	}
@@ -278,12 +289,16 @@ final public class Engine {
 		newMessages.add(localMessage);
 	}
 
-	final synchronized void addGraphicalObject(GraphicalObject gob) {
-		graphicalObjects.add(gob);
+	final void addGraphicalObject(GraphicalObject gob) {
+		synchronized (graphicalObjects) {
+			graphicalObjects.add(gob);
+		}
 	}
 
-	final synchronized void removeGraphicalObject(GraphicalObject gob) {
-		graphicalObjects.remove(gob);
+	final void removeGraphicalObject(GraphicalObject gob) {
+		synchronized (graphicalObjects) {
+			graphicalObjects.remove(gob);
+		}
 	}
 
 	/**
@@ -298,9 +313,9 @@ final public class Engine {
 	 */
 	private static int[] getRandomPermutation(int s) {
 		int a[] = new int[s];
-		for ( int i = 0; i < s; ++i )
+		for (int i = 0; i < s; ++i)
 			a[i] = i;
-		for ( int i = 0; i < s; ++i ) {
+		for (int i = 0; i < s; ++i) {
 			int p = (int) (Math.random() * s);
 			int v = a[i];
 			a[i] = a[p];
@@ -319,14 +334,16 @@ final public class Engine {
 	 *            Number of nodes to be initialized.
 	 */
 	public static void initRandomNodes(int num) {
-		int s = singleton.nodeList.size();
-		int a[] = getRandomPermutation(s);
-		Node n[] = new Node[s];
-		n = singleton.nodeList.toArray(n);
-		if ( s > num )
-			s = num;
-		while ( s > 0 )
-			n[a[--s]].init();
+		synchronized (singleton.nodeList) {
+			int s = singleton.nodeList.size();
+			int a[] = getRandomPermutation(s);
+			Node n[] = new Node[s];
+			n = singleton.nodeList.toArray(n);
+			if ( s > num )
+				s = num;
+			while (s > 0)
+				n[a[--s]].init();
+		}
 	}
 
 	/**
@@ -343,11 +360,13 @@ final public class Engine {
 	 * 
 	 * This is the internal method called by the wrapper method setUniqueIds().
 	 */
-	final synchronized private void internalSetUniqueIds() {
-		int a[] = getRandomPermutation(nodeList.size());
-		java.util.Iterator<Node> nl = nodeList.iterator();
-		for ( int i = 0; i < nodeList.size(); ++i ) {
-			nl.next().setId(a[i] + 1);
+	final private void internalSetUniqueIds() {
+		synchronized (nodeList) {
+			int a[] = getRandomPermutation(nodeList.size());
+			java.util.Iterator<Node> nl = nodeList.iterator();
+			for (int i = 0; i < nodeList.size(); ++i) {
+				nl.next().setId(a[i] + 1);
+			}
 		}
 	}
 
@@ -372,10 +391,12 @@ final public class Engine {
 	 * @param max
 	 *            Random ids should be in range from 1 to this value.
 	 */
-	final synchronized private void internalSetRandomIds(int max) {
-		java.util.Iterator<Node> nl = nodeList.iterator();
-		while ( nl.hasNext() ) {
-			nl.next().setId((int) (Math.random() * max) + 1);
+	final private void internalSetRandomIds(int max) {
+		synchronized (nodeList) {
+			java.util.Iterator<Node> nl = nodeList.iterator();
+			while (nl.hasNext()) {
+				nl.next().setId((int) (Math.random() * max) + 1);
+			}
 		}
 	}
 
@@ -387,31 +408,34 @@ final public class Engine {
 	 * @param g
 	 *            The Graphics object to draw on.
 	 */
-	final synchronized void draw(java.awt.Graphics g) {
+	final void draw(java.awt.Graphics g) {
 
-		synchronized (Engine.getSingleton()) {
+		try {
 
-			try {
-
-				for ( Edge ce : edgeList )
+			synchronized (edgeList) {
+				for (Edge ce : edgeList)
 					ce.drawobj(g);
-				for ( Node cn : nodeList )
-					cn.drawobj(g);
-
-				// see below
-				messageListSemaphor.acquire();
-				for ( Message cm : messageList )
-					cm.drawobj(g);
-				messageListSemaphor.release();
-				
-				for ( GraphicalObject go : graphicalObjects )
-					go.drawobj(g);
-
-			} catch ( Exception e ) {
-				System.out.println("Engine.draw(): " + e);
 			}
 
+			synchronized (nodeList) {
+				for (Node cn : nodeList)
+					cn.drawobj(g);
+			}
+
+			synchronized (messageList) {
+				for (Message cm : messageList)
+					cm.drawobj(g);
+			}
+
+			synchronized (graphicalObjects) {
+				for (GraphicalObject go : graphicalObjects)
+					go.drawobj(g);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Engine.draw(): " + e);
 		}
+
 	}
 
 	/**
@@ -457,9 +481,12 @@ final public class Engine {
 	 * 
 	 * This method migrated all new messages to the standard message list.
 	 */
-	final synchronized void fixupMessageList() {
-		messageList.addAll(newMessages);
-		newMessages.clear();
+	final void fixupMessageList() {
+
+		synchronized (messageList) {
+			messageList.addAll(newMessages);
+			newMessages.clear();
+		}
 	}
 
 	private class EngineTask extends TimerTask {
@@ -474,80 +501,72 @@ final public class Engine {
 
 			long starttime = date.getTime();
 
-			while ( true ) {
+			while (true) {
 
 				try {
 
-					synchronized (Engine.getSingleton()) {
+					if ( active ) {
 
-						if ( active ) {
+						if ( isStopped() ) {
 
-							if ( isStopped() ) {
+							setStopped(false);
+							active = false;
 
-								setStopped(false);
-								active = false;
+							final java.util.Date d = new java.util.Date();
 
-								final java.util.Date d = new java.util.Date();
+							System.out.println("[" + d + "] ...simulation stopped");
+							System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "." + simSteps % 10 + "s");
+							System.out.println("[" + d + "] # of messages    : " + Message.getMessages());
+							System.out.println("[" + d + "] max # of messages: " + maxMessages);
+							System.out.println("[" + d + "] avg # of messages: " + (double) cumMessages / simSteps);
 
-								System.out.println("[" + d + "] ...simulation stopped");
-								System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "."
-										+ simSteps % 10 + "s");
-								System.out.println("[" + d + "] # of messages    : " + Message.getMessages());
-								System.out.println("[" + d + "] max # of messages: " + maxMessages);
-								System.out.println("[" + d + "] avg # of messages: " + (double) cumMessages
-										/ simSteps);
+						} else {
 
-							} else {
+							final int numMessages;
 
-								// hopefully this solves the following problem:
-								// sometimes the messages in messageList are
-								// corrupted; presumably
-								// due to concurrent access of Engine and GUI
-								messageListSemaphor.acquire();
+							synchronized (messageList) {
 
 								fixupMessageList();
 								java.util.Iterator<Message> ml = messageList.iterator();
-								while ( ml.hasNext() ) {
+								while (ml.hasNext()) {
 									Message cm = ml.next();
 									if ( cm.tick() ) {
 										ml.remove();
 									}
 								}
 								fixupMessageList();
-								final int numMessages = messageList.size();
-
-								messageListSemaphor.release();
-
-								++simSteps;
-								cumMessages += numMessages;
-								if ( numMessages > maxMessages )
-									maxMessages = numMessages;
-
-								db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
+								numMessages = messageList.size();
 
 							}
 
-						} else {
+							++simSteps;
+							cumMessages += numMessages;
+							if ( numMessages > maxMessages )
+								maxMessages = numMessages;
 
-							if ( isStarted() ) {
+							db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
 
-								setStarted(false);
-								active = true;
-
-								// call init() for all nodes in initList
-								for ( Node node : initList )
-									node.init();
-
-							}
-
-							if ( isContinued() ) {
-
-								setContinued(false);
-								active = true;
-
-							}
 						}
 
+					} else {
+
+						if ( isStarted() ) {
+
+							setStarted(false);
+							active = true;
+
+							// call init() for all nodes in initList
+							for (Node node : initList)
+								node.init();
+
+						}
+
+						if ( isContinued() ) {
+
+							setContinued(false);
+							active = true;
+
+						}
 					}
 
 					long stoptime = date.getTime();
@@ -562,14 +581,13 @@ final public class Engine {
 						delay = getTimerPeriod() - diff;
 
 					Thread.sleep(delay);
-				} catch ( Exception e ) {
+				} catch (Exception e) {
 					System.err.println("Engine.run(): " + e);
 				}
 				// t.schedule(new EngineTask(), delay);
 
 			}
 		}
-
 	}
 
 	/**
@@ -621,26 +639,34 @@ final public class Engine {
 		this.continued = continued;
 	}
 
-	synchronized Node findNode(Point point) {
+	Node findNode(Point point) {
 
-		for ( Node node : nodeList ) {
-			if ( node.pointWhithin(point) == true )
-				return node;
+		synchronized (nodeList) {
+
+			for (Node node : nodeList) {
+				if ( node.pointWhithin(point) == true )
+					return node;
+			}
+			return null;
+
 		}
-		return null;
 	}
 
-	synchronized LinkedList<Node> findNodes(Point point1, Point point2) {
+	LinkedList<Node> findNodes(Point point1, Point point2) {
 
 		LinkedList<Node> nodes = new LinkedList<Node>();
 
-		for ( Node node : nodeList ) {
-			if ( node.whithinRectangle(point1, point2) ) {
-				nodes.add(node);
-			}
-		}
+		synchronized (nodeList) {
 
-		return nodes;
+			for (Node node : nodeList) {
+				if ( node.whithinRectangle(point1, point2) ) {
+					nodes.add(node);
+				}
+			}
+
+			return nodes;
+
+		}
 	}
 
 	/**

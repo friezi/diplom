@@ -36,14 +36,12 @@ public class QueueingRSSServer extends RSSServer {
 	 * 
 	 * args[0] = request;
 	 * 
-	 * try { Thread.sleep(1000); handleRoutine.invoke(server, args);
-	 *  } catch (Exception e) { System.err.println("HandleRequessTask: run():
-	 * caught Exception: " + e); System.exit(1); }
+	 * try { Thread.sleep(1000); handleRoutine.invoke(server, args); } catch
+	 * (Exception e) { System.err.println("HandleRequessTask: run(): caught
+	 * Exception: " + e); System.exit(1); }
 	 * 
 	 * synchronized (requests) { requests.removeFirst(); isEmpty =
-	 * requests.isEmpty(); } }
-	 *  }
-	 *  }
+	 * requests.isEmpty(); } } } }
 	 */
 	protected class HandleRequestsTask implements Runnable {
 
@@ -52,11 +50,20 @@ public class QueueingRSSServer extends RSSServer {
 
 			boolean isEmpty = false;
 
+			RSSFeedRequestMessage request;
+
 			while (isEmpty == false) {
 
-				RSSFeedRequestMessage request = requests.getFirst();
+				synchronized (requests) {
+
+					getStatistics().setRequestsInQueue(requests.size());
+
+					request = requests.getFirst();
+
+				}
 
 				try {
+
 					processRSSFeedRequestMessage(request);
 
 				} catch (Exception e) {
@@ -65,8 +72,12 @@ public class QueueingRSSServer extends RSSServer {
 				}
 
 				synchronized (requests) {
+
 					requests.removeFirst();
 					isEmpty = requests.isEmpty();
+
+					getStatistics().setRequestsInQueue(requests.size());
+
 				}
 			}
 
@@ -99,7 +110,7 @@ public class QueueingRSSServer extends RSSServer {
 		// enqueue the new feed
 		synchronized (requests) {
 
-			if (requests.isEmpty() == true)
+			if ( requests.isEmpty() == true )
 				isEmpty = true;
 			else
 				isEmpty = false;
@@ -122,7 +133,7 @@ public class QueueingRSSServer extends RSSServer {
 		// if necessary start a new task
 		try {
 
-			if (isEmpty == true)
+			if ( isEmpty == true )
 				new Thread(new HandleRequestsTask()).start();
 
 		} catch (Exception e) {

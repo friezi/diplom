@@ -40,6 +40,8 @@ public class RPSStatistics {
 
 	private Integer delayedMessagesRatio = new Integer(0);
 
+	private Long requestsInQueue = new Long(0);
+
 	public class ReceivedRSSFeedRequestObserver extends Observable implements Observer {
 
 		/*
@@ -49,8 +51,7 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			// TODO Auto-generated method stub
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 				incReceivedRSSRequests();
 			}
 			// System.out.println("received count ist: " + count);
@@ -75,8 +76,7 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			// TODO Auto-generated method stub
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 				incOmittedRSSRequests();
 			}
 			// System.out.println("omitted count ist: " + count);
@@ -101,8 +101,7 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			// TODO Auto-generated method stub
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 				incServerFeeds();
 			}
 			notifyObservers(getServerFeeds());
@@ -125,7 +124,7 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 				incBrokerFeeds();
 			}
 			notifyObservers(getBrokerFeeds());
@@ -164,9 +163,8 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 				long divisor = (getReceivedRSSRequests() + getOmittedRSSRequests());
 
 				if ( divisor != 0 )
@@ -197,9 +195,8 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 				long divisor = (getServerFeeds() + getBrokerFeeds());
 
 				if ( divisor != 0 )
@@ -232,7 +229,7 @@ public class RPSStatistics {
 		int fragment = fragments - 1;
 
 		public RelReOmRatioUpdater() {
-			for ( int i = 0; i < fragments; i++ ) {
+			for (int i = 0; i < fragments; i++) {
 				messageReFrame[i] = 0;
 				messageOmFrame[i] = 0;
 			}
@@ -250,7 +247,6 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public synchronized void update(Observable observable, Object arg1) {
-			// TODO Auto-generated method stub
 
 			// upto limit of message-counter
 			if ( messageCount == messageFrameFragmentSize ) {
@@ -281,14 +277,14 @@ public class RPSStatistics {
 			long reMessages = 0;
 			long omMessages = 0;
 
-			for ( int i = 0; i < fragments; i++ ) {
+			for (int i = 0; i < fragments; i++) {
 				reMessages += messageReFrame[i];
 				omMessages += messageOmFrame[i];
 			}
 
 			long divisor = (reMessages + omMessages);
 
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 
 				if ( divisor != 0 )
 					setRelReOmRatio((int) ((100 * omMessages) / divisor));
@@ -321,7 +317,7 @@ public class RPSStatistics {
 		int fragment = fragments - 1;
 
 		public RelSrvBrkRatioUpdater() {
-			for ( int i = 0; i < fragments; i++ ) {
+			for (int i = 0; i < fragments; i++) {
 				messageSrvFrame[i] = 0;
 				messageBrkFrame[i] = 0;
 			}
@@ -339,7 +335,6 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public synchronized void update(Observable observable, Object arg1) {
-			// TODO Auto-generated method stub
 
 			// upto limit of message-counter
 			if ( messageCount == messageFrameFragmentSize ) {
@@ -370,14 +365,14 @@ public class RPSStatistics {
 			long srvMessages = 0;
 			long brkMessages = 0;
 
-			for ( int i = 0; i < fragments; i++ ) {
+			for (int i = 0; i < fragments; i++) {
 				srvMessages += messageSrvFrame[i];
 				brkMessages += messageBrkFrame[i];
 			}
 
 			long divisor = (srvMessages + brkMessages);
 
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 
 				if ( divisor != 0 )
 					setRelSrvBrkRatio((int) ((100 * brkMessages) / divisor));
@@ -407,7 +402,6 @@ public class RPSStatistics {
 		 * @see java.util.Observable#notifyObservers(java.lang.Object)
 		 */
 		public void notifyObservers(Integer delayedMessagesRatio) {
-			// TODO Auto-generated method stub
 			setChanged();
 			super.notifyObservers(delayedMessagesRatio);
 		}
@@ -419,17 +413,18 @@ public class RPSStatistics {
 	protected class AverageUptodateRatioUpdater extends Observable implements Observer {
 
 		int messages = messageFrameFragmentSize * fragments; // each ratio
-																// must be
-																// placed at a
-																// seperate
-																// index
+
+		// must be
+		// placed at a
+		// seperate
+		// index
 
 		int messageCount = messages - 1;
 
 		long[] messageUptodateFrame = new long[messages];
 
 		public AverageUptodateRatioUpdater() {
-			for ( int i = 0; i < messages; i++ ) {
+			for (int i = 0; i < messages; i++) {
 				messageUptodateFrame[i] = 0;
 			}
 		}
@@ -441,7 +436,6 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public synchronized void update(Observable observable, Object uptodateRatio) {
-			// TODO Auto-generated method stub
 
 			messageCount++;
 
@@ -457,13 +451,13 @@ public class RPSStatistics {
 			int delayedMessages = 0;
 
 			// calculate average uptodateRatio
-			for ( int i = 0; i < messages; i++ ) {
+			for (int i = 0; i < messages; i++) {
 				ratioSum += messageUptodateFrame[i];
 				if ( messageUptodateFrame[i] < 100 )
 					delayedMessages++;
 			}
 
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 
 				setDelayedMessagesRatio(delayedMessages * 100 / messages);
 
@@ -490,17 +484,18 @@ public class RPSStatistics {
 	protected class AverageMessageDelayRatioUpdater extends Observable implements Observer {
 
 		int messages = messageFrameFragmentSize * fragments; // each ratio
-																// must be
-																// placed at a
-																// seperate
-																// index
+
+		// must be
+		// placed at a
+		// seperate
+		// index
 
 		int messageCount = messages - 1;
 
 		int[] messageDelayFrame = new int[messages];
 
 		public AverageMessageDelayRatioUpdater() {
-			for ( int i = 0; i < messages; i++ ) {
+			for (int i = 0; i < messages; i++) {
 				messageDelayFrame[i] = 0;
 			}
 		}
@@ -512,7 +507,6 @@ public class RPSStatistics {
 		 *      java.lang.Object)
 		 */
 		public synchronized void update(Observable observable, Object messageDelayRatio) {
-			// TODO Auto-generated method stub
 
 			messageCount++;
 
@@ -528,14 +522,14 @@ public class RPSStatistics {
 			int delayedMessages = 0;
 
 			// calculate average uptodateRatio
-			for ( int i = 0; i < messages; i++ ) {
+			for (int i = 0; i < messages; i++) {
 				if ( messageDelayFrame[i] > 0 ) {
 					ratioSum += messageDelayFrame[i];
 					delayedMessages++;
 				}
 			}
 
-			synchronized ( statistics ) {
+			synchronized (statistics) {
 
 				if ( delayedMessages != 0 )
 					setAverageMessageDelayRatio(ratioSum / delayedMessages);
@@ -556,6 +550,27 @@ public class RPSStatistics {
 	}
 
 	private AverageMessageDelayRatioUpdater averageMessageDelayRatioUpdater = new AverageMessageDelayRatioUpdater();
+
+	protected class RequestsInQueueObserver extends Observable implements Observer {
+
+		/* (non-Javadoc)
+		 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+		 */
+		public void update(Observable arg0, Object arg1) {
+
+			setRequestsInQueue((Long) arg1);
+			notifyObservers(getRequestsInQueue());
+
+		}
+
+		public void notifyObservers(Long value) {
+			setChanged();
+			super.notifyObservers(value);
+		}
+
+	}
+
+	private RequestsInQueueObserver requestsInQueueObserver = new RequestsInQueueObserver();
 
 	public RPSStatistics() {
 		getReOmRatioUpdater().addToObservables();
@@ -618,6 +633,13 @@ public class RPSStatistics {
 	 */
 	public RelSrvBrkRatioUpdater getRelSrvBrkRatioUpdater() {
 		return relSrvBrkRatioUpdater;
+	}
+
+	/**
+	 * @return Returns the requestsInQueueObserver.
+	 */
+	public RequestsInQueueObserver getRequestsInQueueObserver() {
+		return requestsInQueueObserver;
 	}
 
 	/**
@@ -789,6 +811,20 @@ public class RPSStatistics {
 	public synchronized void setDelayedMessagesRatio(Integer delayedMessagesRatio) {
 		this.delayedMessagesRatio = delayedMessagesRatio;
 		getDelayedMessagesRatioNotifier().notifyObservers(delayedMessagesRatio);
+	}
+
+	/**
+	 * @return Returns the requestsInQueue.
+	 */
+	public Long getRequestsInQueue() {
+		return requestsInQueue;
+	}
+
+	/**
+	 * @param requestsInQueue The requestsInQueue to set.
+	 */
+	public void setRequestsInQueue(Long requestsInQueue) {
+		this.requestsInQueue = requestsInQueue;
 	}
 
 }

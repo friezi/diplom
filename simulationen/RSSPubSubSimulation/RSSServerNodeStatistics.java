@@ -14,7 +14,9 @@ import rsspubsubframework.Node;
  */
 public class RSSServerNodeStatistics {
 
-	private long receivedRSSFeedRequests;
+	private long receivedRSSFeedRequests = 0;
+
+	private long requestsInQueue = 0;
 
 	protected class ReceivedRSSFeedRequestNotifier extends Observable {
 		public void notifyObservers(Node node) {
@@ -64,6 +66,41 @@ public class RSSServerNodeStatistics {
 	 */
 	public long getReceivedRSSFeedRequests() {
 		return receivedRSSFeedRequests;
+	}
+
+	protected class RequestsInQueueNotifier extends Observable {
+		public void notifyObservers(long riq) {
+			setChanged();
+			super.notifyObservers((Long) riq);
+		}
+	}
+
+	protected RequestsInQueueNotifier requestsInQueueNotifier = new RequestsInQueueNotifier();
+
+	public void addRequestsInQueueObserver(Observer observer) {
+		getRequestsInQueueNotifier().addObserver(observer);
+	}
+
+	/**
+	 * @param requestsInQueue The requestsInQueue to set.
+	 */
+	public void setRequestsInQueue(long requestsInQueue) {
+		this.requestsInQueue = requestsInQueue;
+		getRequestsInQueueNotifier().notifyObservers(requestsInQueue);
+	}
+
+	/**
+	 * @return Returns the requestsInQueue.
+	 */
+	public long getRequestsInQueue() {
+		return requestsInQueue;
+	}
+
+	/**
+	 * @return Returns the requestsInQueueNotifier.
+	 */
+	public RequestsInQueueNotifier getRequestsInQueueNotifier() {
+		return requestsInQueueNotifier;
 	}
 
 }

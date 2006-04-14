@@ -47,6 +47,8 @@ public class StatisticWindow extends JFrame {
 
 	JLabel averageMessageDelayRatioLabel = new JLabel();
 
+	JLabel requestsInQueueLabel = new JLabel();
+
 	JLabel rssServerLabel = new JLabel("RSSServer:");
 
 	JLabel subscribersLabel = new JLabel("Subscribers:");
@@ -66,7 +68,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			// TODO Auto-generated method stub
 
 			long receivedRSSRequests = (Long) object;
 			receivedLabel.setText("received requests: " + receivedRSSRequests);
@@ -84,7 +85,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			// TODO Auto-generated method stub
 
 			long omittedRSSRequests = (Long) object;
 			omittedLabel.setText("omitted requests: " + omittedRSSRequests);
@@ -102,7 +102,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			// TODO Auto-generated method stub
 
 			long serverFeeds = (Long) object;
 			serverFeedsLabel.setText("feeds from server: " + serverFeeds);
@@ -120,7 +119,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable observable, Object object) {
-			// TODO Auto-generated method stub
 
 			long brokerFeeds = (Long) object;
 			brokerFeedsLabel.setText("feeds from broker: " + brokerFeeds);
@@ -171,7 +169,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 			Integer relReOmRatio = (Integer) arg1;
 			relReOmRatioLabel.setText("rel. ratio: " + relReOmRatio + "% saved requests");
 		}
@@ -187,7 +184,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 			Integer relSrvBrkRatio = (Integer) arg1;
 			relSrvBrkRatioLabel.setText("rel. ratio: " + relSrvBrkRatio + "% feeds from network   ");
 		}
@@ -203,7 +199,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 			Integer averageUptodateratio = (Integer) arg1;
 			averageUpdateRatioLabel.setText("avg. uptodate-ratio: " + averageUptodateratio + "%");
 		}
@@ -219,7 +214,6 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 			Integer delayedMessagesRatio = (Integer) arg1;
 			delayedMessagesRatioLabel.setText("delayed-messages-ratio: " + delayedMessagesRatio + "%");
 		}
@@ -235,9 +229,23 @@ public class StatisticWindow extends JFrame {
 		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 			Integer averageMessageDelayRatio = (Integer) arg1;
 			averageMessageDelayRatioLabel.setText("avg. message-delay-ratio: " + averageMessageDelayRatio + "%");
+		}
+
+	}
+
+	protected class RequestsInQueueObserver implements Observer {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public void update(Observable arg0, Object arg1) {
+			Long requestsInQueue = (Long) arg1;
+			requestsInQueueLabel.setText("requests in Queue: " + requestsInQueue);
 		}
 
 	}
@@ -264,6 +272,8 @@ public class StatisticWindow extends JFrame {
 
 	private AverageMessageDelayRatioObserver averageMessageDelayRatioObserver = new AverageMessageDelayRatioObserver();
 
+	private RequestsInQueueObserver requestsInQueueObserver = new RequestsInQueueObserver();
+
 	protected class CloseWindowAdapter extends WindowAdapter {
 
 		/*
@@ -273,7 +283,6 @@ public class StatisticWindow extends JFrame {
 		 */
 		@Override
 		public void windowClosed(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 			// remove observers
 			RPSStatistics stat = Engine.getSingleton().getRpsStatistics();
 			stat.getReceivedRSSFeedRequestObserver().deleteObserver(getOmittedRSSRequestsObserver());
@@ -287,6 +296,7 @@ public class StatisticWindow extends JFrame {
 			stat.getAverageUptodateRatioUpdater().deleteObserver(getAverageUptodateRatioObserver());
 			stat.getDelayedMessagesRatioNotifier().deleteObserver(getDelayedMessagesRatioObserver());
 			stat.getAverageMessageDelayRatioUpdater().deleteObserver(getAverageMessageDelayRatioObserver());
+			stat.getRequestsInQueueObserver().deleteObserver(getRequestsInQueueObserver());
 
 			super.windowClosed(arg0);
 		}
@@ -311,6 +321,7 @@ public class StatisticWindow extends JFrame {
 		stat.getAverageUptodateRatioUpdater().addObserver(getAverageUptodateRatioObserver());
 		stat.getDelayedMessagesRatioNotifier().addObserver(getDelayedMessagesRatioObserver());
 		stat.getAverageMessageDelayRatioUpdater().addObserver(getAverageMessageDelayRatioObserver());
+		stat.getRequestsInQueueObserver().addObserver(getRequestsInQueueObserver());
 
 		// get values manually
 		getReceivedRSSRequestsObserver().update(stat.getReceivedRSSFeedRequestObserver(), stat.getReceivedRSSRequests());
@@ -324,6 +335,7 @@ public class StatisticWindow extends JFrame {
 		getAverageUptodateRatioObserver().update(stat.getAverageUptodateRatioUpdater(), stat.getAverageUptodateRatio());
 		getDelayedMessagesRatioObserver().update(stat.getDelayedMessagesRatioNotifier(), stat.getDelayedMessagesRatio());
 		getAverageMessageDelayRatioObserver().update(stat.getAverageMessageDelayRatioUpdater(), stat.getAverageMessageDelayRatio());
+		getRequestsInQueueObserver().update(stat.getRequestsInQueueObserver(), stat.getRequestsInQueue());
 
 		this.addWindowListener(new CloseWindowAdapter());
 
@@ -336,6 +348,7 @@ public class StatisticWindow extends JFrame {
 		rssPanel.add(omittedLabel);
 		rssPanel.add(reOmRatioLabel);
 		rssPanel.add(relReOmRatioLabel);
+		rssPanel.add(requestsInQueueLabel);
 
 		rssPanel.setOpaque(true);
 
@@ -442,6 +455,13 @@ public class StatisticWindow extends JFrame {
 	 */
 	public AverageMessageDelayRatioObserver getAverageMessageDelayRatioObserver() {
 		return averageMessageDelayRatioObserver;
+	}
+
+	/**
+	 * @return Returns the requestsInQueueObserver.
+	 */
+	public RequestsInQueueObserver getRequestsInQueueObserver() {
+		return requestsInQueueObserver;
 	}
 
 }
