@@ -96,7 +96,7 @@ public class PubSub extends PubSubNode {
 
 	protected Timer feedRequestTimer = new Timer();
 
-	protected Timer ackTimer;
+	protected Timer ackTimer = new Timer();
 
 	protected HashMap<BrokerNode, AckTimerTask> acktaskmap = new HashMap<BrokerNode, AckTimerTask>();
 
@@ -263,6 +263,8 @@ public class PubSub extends PubSubNode {
 
 	protected void handleAckTimerMessage(AckTimerMessage atm) {
 
+		if (atm.getBroker() == null)
+			System.err.println("PubSub.handleAckTimerMessage(): atm.getBroker() == null");
 		new RegisterSubscriberMessage(this, atm.getBroker(), params.subnetParamMsgRT);
 
 	}
@@ -279,9 +281,16 @@ public class PubSub extends PubSubNode {
 
 	protected void handleUnregisterFromBrokerTaskMessage(UnregisterFromBrokerTaskMessage ubm) {
 
-		ackTimer.cancel();
-		new UnregisterSubscriberMessage(this, ubm.getBroker(), params.subnetParamMsgRT);
-		brokerlist.remove(ubm.getBroker());
+		AckTimerTask ttask = acktaskmap.get(ubm.getBroker());
+		if ( ttask != null ) {
+			ttask.cancel();
+			ackTimer.purge();
+			acktaskmap.remove(ttask);
+		}
+		if ( brokerlist.contains(ubm.getBroker()) ) {
+			new UnregisterSubscriberMessage(this, ubm.getBroker(), params.subnetParamMsgRT);
+			brokerlist.remove(ubm.getBroker());
+		}
 
 	}
 
@@ -330,7 +339,6 @@ public class PubSub extends PubSubNode {
 
 		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
 		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
-		ackTimer = new Timer();
 		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor * params.pingTimer);
 		acktaskmap.put((BrokerNode) broker, task);
 

@@ -123,7 +123,7 @@ public class QueueingRSSServer extends RSSServer {
 		try {
 
 			if (isEmpty == true)
-				(new Thread(new HandleRequestsTask())).start();
+				new Thread(new HandleRequestsTask()).start();
 
 		} catch (Exception e) {
 			System.err.println("QueueingRSSServer: handleRSSFeedRequestMessage(): caught Exception: " + e);

@@ -20,6 +20,7 @@
 package rsspubsubframework;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.awt.*;
 
 /**
@@ -28,7 +29,7 @@ import java.awt.*;
  * This is the main engine for the simulation system. Every simulation needs
  * such an object.
  */
-final public class Engine{
+final public class Engine {
 
 	/**
 	 * Singleton object of the engine.
@@ -75,6 +76,8 @@ final public class Engine{
 	 * migrated automatically then the new messges list.
 	 */
 	private final java.util.Set<Message> messageList = new java.util.HashSet<Message>();
+
+	private Semaphore messageListSemaphor = new Semaphore(1, true);
 
 	/**
 	 * List of new messages in the engine.
@@ -162,7 +165,7 @@ final public class Engine{
 
 	/**
 	 * -- modified by Friedemann Zintel --
-	 *
+	 * 
 	 */
 	private Engine() {
 	}
@@ -170,8 +173,8 @@ final public class Engine{
 	/**
 	 * Initialize the engine.
 	 * 
-	 * Creates the gui and starts the simulation.
-	 * -- modified by Friedemann Zintel --
+	 * Creates the gui and starts the simulation. -- modified by Friedemann
+	 * Zintel --
 	 */
 	public void init() {
 		t.schedule(new EngineTask(), getTimerDelay());
@@ -232,17 +235,17 @@ final public class Engine{
 		boolean foundfirst = false;
 		boolean foundsecond = false;
 
-		for (Edge edge : edgeList) {
+		for ( Edge edge : edgeList ) {
 
-			if (foundfirst == true && foundsecond == true)
+			if ( foundfirst == true && foundsecond == true )
 				break;
 
-			if ((edge.node1() == node1 && edge.node2() == node2)) {
+			if ( (edge.node1() == node1 && edge.node2() == node2) ) {
 
 				removeEdge(edge);
 				foundfirst = true;
 
-			} else if ((edge.node1() == node2 && edge.node2() == node1)) {
+			} else if ( (edge.node1() == node2 && edge.node2() == node1) ) {
 
 				removeEdge(edge);
 				foundsecond = true;
@@ -295,9 +298,9 @@ final public class Engine{
 	 */
 	private static int[] getRandomPermutation(int s) {
 		int a[] = new int[s];
-		for (int i = 0; i < s; ++i)
+		for ( int i = 0; i < s; ++i )
 			a[i] = i;
-		for (int i = 0; i < s; ++i) {
+		for ( int i = 0; i < s; ++i ) {
 			int p = (int) (Math.random() * s);
 			int v = a[i];
 			a[i] = a[p];
@@ -320,9 +323,9 @@ final public class Engine{
 		int a[] = getRandomPermutation(s);
 		Node n[] = new Node[s];
 		n = singleton.nodeList.toArray(n);
-		if (s > num)
+		if ( s > num )
 			s = num;
-		while (s > 0)
+		while ( s > 0 )
 			n[a[--s]].init();
 	}
 
@@ -343,7 +346,7 @@ final public class Engine{
 	final synchronized private void internalSetUniqueIds() {
 		int a[] = getRandomPermutation(nodeList.size());
 		java.util.Iterator<Node> nl = nodeList.iterator();
-		for (int i = 0; i < nodeList.size(); ++i) {
+		for ( int i = 0; i < nodeList.size(); ++i ) {
 			nl.next().setId(a[i] + 1);
 		}
 	}
@@ -371,7 +374,7 @@ final public class Engine{
 	 */
 	final synchronized private void internalSetRandomIds(int max) {
 		java.util.Iterator<Node> nl = nodeList.iterator();
-		while (nl.hasNext()) {
+		while ( nl.hasNext() ) {
 			nl.next().setId((int) (Math.random() * max) + 1);
 		}
 	}
@@ -385,14 +388,30 @@ final public class Engine{
 	 *            The Graphics object to draw on.
 	 */
 	final synchronized void draw(java.awt.Graphics g) {
-		for (Edge ce : edgeList)
-			ce.drawobj(g);
-		for (Node cn : nodeList)
-			cn.drawobj(g);
-		for (Message cm : messageList)
-			cm.drawobj(g);
-		for (GraphicalObject go : graphicalObjects)
-			go.drawobj(g);
+
+		synchronized (Engine.getSingleton()) {
+
+			try {
+
+				for ( Edge ce : edgeList )
+					ce.drawobj(g);
+				for ( Node cn : nodeList )
+					cn.drawobj(g);
+
+				// see below
+				messageListSemaphor.acquire();
+				for ( Message cm : messageList )
+					cm.drawobj(g);
+				messageListSemaphor.release();
+				
+				for ( GraphicalObject go : graphicalObjects )
+					go.drawobj(g);
+
+			} catch ( Exception e ) {
+				System.out.println("Engine.draw(): " + e);
+			}
+
+		}
 	}
 
 	/**
@@ -443,91 +462,114 @@ final public class Engine{
 		newMessages.clear();
 	}
 
-	private class EngineTask extends TimerTask{
-	
-	/**
-	 * Step simulation one step further.
-	 * 
-	 * It does make no sense to call this method manually. This method is public
-	 * for pure technical reasons.
-	 */
-	final synchronized public void run() {
+	private class EngineTask extends TimerTask {
 
-		long starttime = date.getTime();
+		/**
+		 * Step simulation one step further.
+		 * 
+		 * It does make no sense to call this method manually. This method is
+		 * public for pure technical reasons.
+		 */
+		final public void run() {
 
-		if (active) {
+			long starttime = date.getTime();
 
-			if (isStopped()) {
+			while ( true ) {
 
-				setStopped(false);
-				active = false;
+				try {
 
-				final java.util.Date d = new java.util.Date();
+					synchronized (Engine.getSingleton()) {
 
-				System.out.println("[" + d + "] ...simulation stopped");
-				System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "." + simSteps % 10 + "s");
-				System.out.println("[" + d + "] # of messages    : " + Message.getMessages());
-				System.out.println("[" + d + "] max # of messages: " + maxMessages);
-				System.out.println("[" + d + "] avg # of messages: " + (double) cumMessages / simSteps);
+						if ( active ) {
 
-			} else {
+							if ( isStopped() ) {
 
-				fixupMessageList();
-				java.util.Iterator<Message> ml = messageList.iterator();
-				while (ml.hasNext()) {
-					Message cm = ml.next();
-					if (cm.tick()) {
-						ml.remove();
+								setStopped(false);
+								active = false;
+
+								final java.util.Date d = new java.util.Date();
+
+								System.out.println("[" + d + "] ...simulation stopped");
+								System.out.println("[" + d + "] simulation time  : " + simSteps / 10 + "."
+										+ simSteps % 10 + "s");
+								System.out.println("[" + d + "] # of messages    : " + Message.getMessages());
+								System.out.println("[" + d + "] max # of messages: " + maxMessages);
+								System.out.println("[" + d + "] avg # of messages: " + (double) cumMessages
+										/ simSteps);
+
+							} else {
+
+								// hopefully this solves the following problem:
+								// sometimes the messages in messageList are
+								// corrupted; presumably
+								// due to concurrent access of Engine and GUI
+								messageListSemaphor.acquire();
+
+								fixupMessageList();
+								java.util.Iterator<Message> ml = messageList.iterator();
+								while ( ml.hasNext() ) {
+									Message cm = ml.next();
+									if ( cm.tick() ) {
+										ml.remove();
+									}
+								}
+								fixupMessageList();
+								final int numMessages = messageList.size();
+
+								messageListSemaphor.release();
+
+								++simSteps;
+								cumMessages += numMessages;
+								if ( numMessages > maxMessages )
+									maxMessages = numMessages;
+
+								db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
+
+							}
+
+						} else {
+
+							if ( isStarted() ) {
+
+								setStarted(false);
+								active = true;
+
+								// call init() for all nodes in initList
+								for ( Node node : initList )
+									node.init();
+
+							}
+
+							if ( isContinued() ) {
+
+								setContinued(false);
+								active = true;
+
+							}
+						}
+
 					}
+
+					long stoptime = date.getTime();
+
+					long diff = stoptime - starttime;
+
+					long delay;
+
+					if ( diff >= getTimerPeriod() )
+						delay = 0;
+					else
+						delay = getTimerPeriod() - diff;
+
+					Thread.sleep(delay);
+				} catch ( Exception e ) {
+					System.err.println("Engine.run(): " + e);
 				}
-				fixupMessageList();
-				final int numMessages = messageList.size();
-
-				++simSteps;
-				cumMessages += numMessages;
-				if (numMessages > maxMessages)
-					maxMessages = numMessages;
-
-				db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
-
-			}
-
-		} else {
-
-			if (isStarted()) {
-
-				setStarted(false);
-				active = true;
-
-				// call init() for all nodes in initList
-				for (Node node : initList)
-					node.init();
-
-			}
-
-			if (isContinued()) {
-
-				setContinued(false);
-				active = true;
+				// t.schedule(new EngineTask(), delay);
 
 			}
 		}
 
-		long stoptime = date.getTime();
-
-		long diff = stoptime - starttime;
-
-		long delay;
-
-		if (diff >= getTimerPeriod())
-			delay = 0;
-		else
-			delay = getTimerPeriod() - diff;
-
-		t = new Timer();
-		t.schedule(new EngineTask(), delay);
-	}
-	
 	}
 
 	/**
@@ -581,8 +623,8 @@ final public class Engine{
 
 	synchronized Node findNode(Point point) {
 
-		for (Node node : nodeList) {
-			if (node.pointWhithin(point) == true)
+		for ( Node node : nodeList ) {
+			if ( node.pointWhithin(point) == true )
 				return node;
 		}
 		return null;
@@ -592,8 +634,8 @@ final public class Engine{
 
 		LinkedList<Node> nodes = new LinkedList<Node>();
 
-		for (Node node : nodeList) {
-			if (node.whithinRectangle(point1, point2)) {
+		for ( Node node : nodeList ) {
+			if ( node.whithinRectangle(point1, point2) ) {
 				nodes.add(node);
 			}
 		}
