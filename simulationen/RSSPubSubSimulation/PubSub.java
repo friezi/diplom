@@ -114,7 +114,12 @@ public class PubSub extends PubSubNode {
 	}
 
 	public void init() {
-		requestFeed();
+		// wait a random time until broker has acknoledged our registration
+		// requestFeed();
+		// between 1 and 2 secs
+		long starttime = (long) ((new Random().nextFloat() + 1) * 1000);
+		feedRequestTask = new FeedRequestTask(this);
+		feedRequestTimer.schedule(feedRequestTask, starttime, 1000);
 	}
 
 	public void receiveMessage(Message m) {
@@ -179,7 +184,8 @@ public class PubSub extends PubSubNode {
 
 		feedRequestTask.cancel();
 		feedRequestTask = new FeedRequestTask(this);
-		feedRequestTimer.schedule(feedRequestTask, interval);
+		// if there's no response from server, we need to re-request
+		feedRequestTimer.schedule(feedRequestTask, interval, getFeed().getGeneralContent().getTtl() * 1000);
 
 	}
 
@@ -194,7 +200,8 @@ public class PubSub extends PubSubNode {
 
 			// show the feed
 			setFeed(fm.getFeed());
-			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, getFeed()));
+			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this,
+					getFeed()));
 			getRssFeedRepresentation().represent();
 
 			updateRequestTimerByNewFeed();
@@ -206,8 +213,9 @@ public class PubSub extends PubSubNode {
 
 				this.getStatistics().addServerFeed(this);
 
-				for (BrokerNode broker : brokerlist)
-					new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+				for ( BrokerNode broker : brokerlist )
+					new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null,
+							getFeed()), params);
 
 			} else {
 
@@ -219,9 +227,10 @@ public class PubSub extends PubSubNode {
 				this.getStatistics().addOmittedRSSFeedRequest(this);
 
 				// send it to all other brokers
-				for (BrokerNode broker : brokerlist)
+				for ( BrokerNode broker : brokerlist )
 					if ( broker != fm.getSrc() )
-						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(
+								null, getFeed()), params);
 
 			}
 
@@ -344,7 +353,8 @@ public class PubSub extends PubSubNode {
 
 		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT);
 		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
-		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor * params.pingTimer);
+		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor
+				* params.pingTimer);
 		acktaskmap.put((BrokerNode) broker, task);
 
 	}
@@ -358,7 +368,7 @@ public class PubSub extends PubSubNode {
 		new UnregisterFromBrokerTaskMessage(this, this, (BrokerNode) broker);
 		try {
 			removeConnection(this, (BrokerNode) broker);
-		} catch (ConcurrentModificationException e) {
+		} catch ( ConcurrentModificationException e ) {
 			System.err.println("PubSub.callbackUnregisterFromBroker(): " + e);
 		}
 	}

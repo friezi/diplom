@@ -18,6 +18,8 @@ public class RSSServerNodeStatistics {
 
 	private long requestsInQueue = 0;
 
+	private long unrepliedRequests = 0;
+
 	protected class ReceivedRSSFeedRequestNotifier extends Observable {
 		public void notifyObservers(Node node) {
 			setChanged();
@@ -50,7 +52,6 @@ public class RSSServerNodeStatistics {
 	 *            the obbserver to be added
 	 */
 	public void addReceivedRSSFeedRequestObserver(Observer observer) {
-		// TODO Auto-generated method stub
 		getReceivedRSSFeedRequestNotifier().addObserver(observer);
 	}
 
@@ -101,6 +102,42 @@ public class RSSServerNodeStatistics {
 	 */
 	public RequestsInQueueNotifier getRequestsInQueueNotifier() {
 		return requestsInQueueNotifier;
+	}
+
+	protected class UnrepliedRequestsNotifier extends Observable {
+		public void notifyObservers(long ur) {
+			setChanged();
+			super.notifyObservers((Long) ur);
+		}
+
+	}
+
+	protected UnrepliedRequestsNotifier unrepliedRequestsNotifier = new UnrepliedRequestsNotifier();
+
+	public void addUnrepliedRequestsObserver(Observer observer) {
+		getUnrepliedRequestsNotifier().addObserver(observer);
+	}
+
+	/**
+	 * @return Returns the unrepliedRequestsNotifier.
+	 */
+	protected UnrepliedRequestsNotifier getUnrepliedRequestsNotifier() {
+		return unrepliedRequestsNotifier;
+	}
+
+	/**
+	 * @return Returns the unrepliedRequests.
+	 */
+	protected long getUnrepliedRequests() {
+		return unrepliedRequests;
+	}
+
+	/**
+	 * @param unrepliedRequests The unrepliedRequests to set.
+	 */
+	protected void setUnrepliedRequests(long unrepliedRequests) {
+		this.unrepliedRequests = unrepliedRequests;
+		getUnrepliedRequestsNotifier().notifyObservers(unrepliedRequests);
 	}
 
 }

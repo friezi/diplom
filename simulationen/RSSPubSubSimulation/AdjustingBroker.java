@@ -241,6 +241,8 @@ public class AdjustingBroker extends BrokerNode {
 
 	protected InformBrokersTask informbrokerstask = null;
 
+	protected InformSubscribersTask informsubscriberstask = null;
+
 	protected Timer pingTimeoutTimer = new Timer();
 
 	protected Timer changetimer = new Timer();
@@ -259,7 +261,6 @@ public class AdjustingBroker extends BrokerNode {
 
 	public AdjustingBroker(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void init() {
@@ -271,54 +272,54 @@ public class AdjustingBroker extends BrokerNode {
 	public void receiveMessage(Message m) {
 
 		// process only if not blocked
-		if (isBlocked() == true)
+		if ( isBlocked() == true )
 			return;
 
-		if (m instanceof RSSFeedMessage) {
+		if ( m instanceof RSSFeedMessage ) {
 
 			handleRSSFeedMessage((RSSFeedMessage) m);
 
-		} else if (m instanceof SubnetParamMessage) {
+		} else if ( m instanceof SubnetParamMessage ) {
 
 			handleSubnetParamMessage((SubnetParamMessage) m);
 
-		} else if (m instanceof RegisterBrokerMessage) {
+		} else if ( m instanceof RegisterBrokerMessage ) {
 
 			handleRegisterBrokerMessage((RegisterBrokerMessage) m);
 
-		} else if (m instanceof RegisterAckMessage) {
+		} else if ( m instanceof RegisterAckMessage ) {
 
 			handleRegisterAckMessage((RegisterAckMessage) m);
 
-		} else if (m instanceof UnregisterBrokerMessage) {
+		} else if ( m instanceof UnregisterBrokerMessage ) {
 
 			handleUnregisterBrokerMessage((UnregisterBrokerMessage) m);
 
-		} else if (m instanceof RegisterSubscriberMessage) {
+		} else if ( m instanceof RegisterSubscriberMessage ) {
 
 			handleRegisterSubscriberMessage((RegisterSubscriberMessage) m);
 
-		} else if (m instanceof UnregisterSubscriberMessage) {
+		} else if ( m instanceof UnregisterSubscriberMessage ) {
 
 			handleUnregisterSubscriberMessage((UnregisterSubscriberMessage) m);
 
-		} else if (m instanceof InformBrokersMessage) {
+		} else if ( m instanceof InformBrokersMessage ) {
 
 			processInformBrokers();
 
-		} else if (m instanceof InformSubscribersMessage) {
+		} else if ( m instanceof InformSubscribersMessage ) {
 
 			processInformSubscribers();
 
-		} else if (m instanceof TimeForPingMessage) {
+		} else if ( m instanceof TimeForPingMessage ) {
 
 			handleTimeForPingMessage((TimeForPingMessage) m);
 
-		} else if (m instanceof PingMessage) {
+		} else if ( m instanceof PingMessage ) {
 
 			handlePingMessage((PingMessage) m);
 
-		} else if (m instanceof PingTimeoutMessage) {
+		} else if ( m instanceof PingTimeoutMessage ) {
 
 			handlePingTimeoutMessage((PingTimeoutMessage) m);
 
@@ -332,7 +333,7 @@ public class AdjustingBroker extends BrokerNode {
 	synchronized protected void adjustNetsize() {
 
 		// store old netsize
-		if (isCollectingNetworkInfo() == false)
+		if ( isCollectingNetworkInfo() == false )
 			oldnetsize = getNetsize();
 
 		setNetsize(calcNetSize());
@@ -346,7 +347,7 @@ public class AdjustingBroker extends BrokerNode {
 	synchronized protected void adjustNetsize(long delta) {
 
 		// store old netsize
-		if (isCollectingNetworkInfo() == false)
+		if ( isCollectingNetworkInfo() == false )
 			oldnetsize = getNetsize();
 
 		setNetsize(getNetsize() + delta);
@@ -362,15 +363,15 @@ public class AdjustingBroker extends BrokerNode {
 		long subnetsize = 0;
 
 		Set<BrokerNode> currbrokers = getBrokers();
-		for (BrokerNode otherbroker : currbrokers)
-			if (otherbroker != broker)
+		for ( BrokerNode otherbroker : currbrokers )
+			if ( otherbroker != broker )
 				subnetsize += getSubnets().get(otherbroker).getSubParams().getSize();
 
 		// in case that (due to node-blocking) the number of online
 		// subscribers could not be set, we set it here. Interference
 		// with general functionality is only avoided if we do the following
 		// check. Only in that case both values must be same.
-		if (isCollectingSubscrInfo() == false)
+		if ( isCollectingSubscrInfo() == false )
 			setNmbOnlineSubscribers(getSubscribersSize());
 
 		// IMPORTANT DETAIL!!!
@@ -391,16 +392,23 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 	protected void sendSubnetSize(BrokerNode broker, Node messageInitiator, Node causeOfMessage) {
 
-		new SubnetParamMessage(this, broker, messageInitiator, causeOfMessage, new SubnetParameters(calcNetSizeWithout(broker), new Date()), params);
+		new SubnetParamMessage(this, broker, messageInitiator, causeOfMessage, new SubnetParameters(
+				calcNetSizeWithout(broker), new Date()), params);
 
 	}
 
-	synchronized protected PingTimeoutTask updatePingTimeoutTimer(PingTimeoutTask pingtimeouttask, BrokerNode broker) {
+	synchronized protected PingTimeoutTask updatePingTimeoutTimer(PingTimeoutTask pingtimeouttask,
+			BrokerNode broker) {
 
-		if (pingtimeouttask != null)
+		if ( pingtimeouttask != null ) {
 			pingtimeouttask.cancel();
+			pingTimeoutTimer.purge();
+		}
 		pingtimeouttask = new PingTimeoutTask(this, broker);
-		pingTimeoutTimer.schedule(pingtimeouttask, params.pingTimeoutFactor * params.pingTimer);
+		// if the broker gets bloked the task must continue triggering until the
+		// broker does processing again
+		pingTimeoutTimer.schedule(pingtimeouttask, params.pingTimeoutFactor * params.pingTimer,
+				params.pingTimeoutFactor * params.pingTimer);
 		return pingtimeouttask;
 	}
 
@@ -414,17 +422,17 @@ public class AdjustingBroker extends BrokerNode {
 
 		super.update(o, arg);
 
-		if (o instanceof Peers.AddNotifier) {
+		if ( o instanceof Peers.AddNotifier ) {
 
-			if (arg instanceof BrokerNode) {
+			if ( arg instanceof BrokerNode ) {
 
 				callbackRegisterAtBroker((BrokerNode) arg);
 
 			}
 
-		} else if (o instanceof Peers.RemoveNotifier) {
+		} else if ( o instanceof Peers.RemoveNotifier ) {
 
-			if (arg instanceof BrokerNode)
+			if ( arg instanceof BrokerNode )
 				callbackUnregisterFromBroker((BrokerNode) arg);
 			// removeFromBrokers((BrokerNode) arg);
 		}
@@ -434,7 +442,8 @@ public class AdjustingBroker extends BrokerNode {
 	protected void registerAtBroker(BrokerNode broker) {
 
 		// send a RegisterBrokerMessage
-		new RegisterBrokerMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()), params);
+		new RegisterBrokerMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
+				params);
 
 	}
 
@@ -451,16 +460,17 @@ public class AdjustingBroker extends BrokerNode {
 
 		// if message-feed is newer than our one, set it and send it to all
 		// other peers
-		if (fm.getFeed().isNewerThan(getFeed())) {
+		if ( fm.getFeed().isNewerThan(getFeed()) ) {
 
 			setFeed(fm.getFeed());
 
 			// send a new RSSFeedMessage to all other Brokers and
 			// Subscribers
 			Set<Node> peers = getPeers();
-			for (Node peer : peers) {
-				if (peer != fm.getSrc())
-					new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+			for ( Node peer : peers ) {
+				if ( peer != fm.getSrc() )
+					new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(null,
+							getFeed()), params);
 			}
 
 		}
@@ -470,14 +480,14 @@ public class AdjustingBroker extends BrokerNode {
 	protected void handleSubnetParamMessage(SubnetParamMessage spm) {
 
 		// check if message came from an authorized node
-		if (getSubnets().containsKey((BrokerNode) spm.getSrc())) {
+		if ( getSubnets().containsKey((BrokerNode) spm.getSrc()) ) {
 			SubnetSettings subnetsettings = getSubnets().get(spm.getSrc());
 
 			// if we are the initiator of the message we discovered a
 			// circle, so we brake down the connection to the
 			// "causeOfMessage"-node which created the circle
-			if (spm.getMI() == this)
-				if (spm.getCOM() instanceof BrokerType)
+			if ( spm.getMI() == this )
+				if ( spm.getCOM() instanceof BrokerType )
 					callbackUnregisterFromBroker((BrokerType) spm.getCOM());
 
 			//
@@ -496,7 +506,7 @@ public class AdjustingBroker extends BrokerNode {
 			// */
 
 			// only on change do something more
-			if (spm.getSubParams().getSize() != subnetsettings.getSubParams().getSize()) {
+			if ( spm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
 				// add difference to netsize
 				adjustNetsize(spm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
 				// set new size
@@ -523,7 +533,7 @@ public class AdjustingBroker extends BrokerNode {
 		// networksize. if node is not yet registered we add him and set
 		// its size to
 		// zero for later adapting it.
-		if (getSubnets().containsKey(rbm.getSrc()) == false)
+		if ( getSubnets().containsKey(rbm.getSrc()) == false )
 			getSubnets().put((BrokerNode) rbm.getSrc(), new SubnetSettings());
 
 		SubnetSettings subnetsettings = getSubnets().get(rbm.getSrc());
@@ -547,7 +557,7 @@ public class AdjustingBroker extends BrokerNode {
 		subnetsettings.setPingtimeouttask(updatePingTimeoutTimer(oldtask, (BrokerNode) rbm.getSrc()));
 
 		// only on change tell the others
-		if (rbm.getSubParams().getSize() != oldsubnetsize)
+		if ( rbm.getSubParams().getSize() != oldsubnetsize )
 			informAllBut(rbm.getSrc(), this, rbm.getSrc());
 
 	}
@@ -563,7 +573,7 @@ public class AdjustingBroker extends BrokerNode {
 		// RegisterBrokerMessage where an entry will be added as well.
 		// in the other case we MUST NOT add an entry, because the old
 		// value, which we need later, would be overridden!
-		if (getSubnets().containsKey(broker) == false)
+		if ( getSubnets().containsKey(broker) == false )
 			getSubnets().put(broker, new SubnetSettings());
 
 		// set a timer
@@ -575,7 +585,7 @@ public class AdjustingBroker extends BrokerNode {
 	protected void handleUnregisterBrokerMessage(UnregisterBrokerMessage ubm) {
 
 		// only if we haven't disconnected as well
-		if (getBrokers().contains((BrokerNode) ubm.getSrc()))
+		if ( getBrokers().contains((BrokerNode) ubm.getSrc()) )
 			processBrokerDisconnected((BrokerNode) ubm.getSrc());
 
 	}
@@ -610,7 +620,7 @@ public class AdjustingBroker extends BrokerNode {
 		// neighbour-brokers. In this case a new pingtimer is already
 		// set up and we can forget the message of the old timer
 		// THIS WON'T HAPPEN IN THE CURRENT SCENARIO
-		if (tpm.getTask() == pingtask) {
+		if ( tpm.getTask() == pingtask ) {
 
 			ping();
 
@@ -622,7 +632,7 @@ public class AdjustingBroker extends BrokerNode {
 
 	protected void handlePingMessage(PingMessage pm) {
 
-		if (getSubnets().containsKey(pm.getSrc())) {
+		if ( getSubnets().containsKey(pm.getSrc()) ) {
 			// just forsafety
 
 			SubnetSettings subnetsettings = getSubnets().get(pm.getSrc());
@@ -635,7 +645,7 @@ public class AdjustingBroker extends BrokerNode {
 			// same processing as for SubnetParamMessage:
 
 			// only on change do something more
-			if (pm.getSubParams().getSize() != subnetsettings.getSubParams().getSize()) {
+			if ( pm.getSubParams().getSize() != subnetsettings.getSubParams().getSize() ) {
 
 				// add difference to netsize
 				adjustNetsize(pm.getSubParams().getSize() - subnetsettings.getSubParams().getSize());
@@ -664,8 +674,8 @@ public class AdjustingBroker extends BrokerNode {
 		// if we have an entry for the node and the included task is not
 		// the task
 		// which send the message stop processing
-		if (getSubnets().containsKey((BrokerNode) ptm.getSrc())) {
-			if (getSubnets().get(ptm.getSrc()).pingtimeouttask == ptm.getTask())
+		if ( getSubnets().containsKey((BrokerNode) ptm.getSrc()) ) {
+			if ( getSubnets().get(ptm.getSrc()).pingtimeouttask != ptm.getTask() )
 				return;
 		}
 
@@ -677,7 +687,7 @@ public class AdjustingBroker extends BrokerNode {
 
 	protected void handleNewSubscriber(PubSubNode subscriber) {
 
-		if (getSubscribers().contains(subscriber) == false) {
+		if ( getSubscribers().contains(subscriber) == false ) {
 
 			addToSubscribers(subscriber);
 
@@ -689,27 +699,29 @@ public class AdjustingBroker extends BrokerNode {
 			// wait an amount of time before informing the other brokers
 			// must be a repeated task: if the node gets blocked, this operation
 			// must be again triggered
-			if (isCollectingSubscrInfo() == false) {
+			if ( isCollectingSubscrInfo() == false ) {
 				informbrokerstask = new InformBrokersTask(this);
-				changetimer.schedule(informbrokerstask, params.informBrokersTimeout, params.informBrokersTimeout);
+				changetimer.schedule(informbrokerstask, params.informBrokersTimeout,
+						params.informBrokersTimeout);
 				setCollectingSubscrInfo(true);
 			}
-		} else if (subscriberTimer.containsKey(subscriber)) {
-			
+		} else if ( subscriberTimer.containsKey(subscriber) ) {
+
 			subscriberTimer.get(subscriber).cancel();
-			
+
 		}
 
 		Timer timer = new Timer();
-		timer.schedule(new PingTimeoutTask(this, subscriber), 2 * params.pingTimeoutFactor * params.pingTimer, 2 * params.pingTimeoutFactor
-				* params.pingTimer);
+		timer.schedule(new PingTimeoutTask(this, subscriber),
+				2 * params.pingTimeoutFactor * params.pingTimer, 2 * params.pingTimeoutFactor
+						* params.pingTimer);
 		subscriberTimer.put(subscriber, timer);
 
 	}
 
 	protected void handleUnregisteredSubscriber(PubSubNode subscriber) {
 
-		if (getSubscribers().contains(subscriber) == true) {
+		if ( getSubscribers().contains(subscriber) == true ) {
 
 			subscriberTimer.get(subscriber).cancel();
 			subscriberTimer.remove(subscriber);
@@ -720,9 +732,10 @@ public class AdjustingBroker extends BrokerNode {
 			// wait an amount of time before informing the other brokers
 			// must be a repeated task: if the node gets blocked, this operation
 			// must be again triggered
-			if (isCollectingSubscrInfo() == false) {
+			if ( isCollectingSubscrInfo() == false ) {
 				informbrokerstask = new InformBrokersTask(this);
-				changetimer.schedule(informbrokerstask, params.informBrokersTimeout, params.informBrokersTimeout);
+				changetimer.schedule(informbrokerstask, params.informBrokersTimeout,
+						params.informBrokersTimeout);
 				setCollectingSubscrInfo(true);
 			}
 		}
@@ -743,7 +756,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		// inform also the subscribers
 		Set<PubSubNode> currsubscribers = getSubscribers();
-		for (PubSubNode subscriber : currsubscribers)
+		for ( PubSubNode subscriber : currsubscribers )
 			new NetworkSizeUpdateMessage(this, subscriber, getNetsize(), params);
 
 	}
@@ -751,8 +764,8 @@ public class AdjustingBroker extends BrokerNode {
 	protected void informAllBut(Node exclbroker, Node messageInitiator, Node causeOfMessage) {
 
 		Set<BrokerNode> currbrokers = getBrokers();
-		for (BrokerNode otherbroker : currbrokers) {
-			if (otherbroker != exclbroker)
+		for ( BrokerNode otherbroker : currbrokers ) {
+			if ( otherbroker != exclbroker )
 				sendSubnetSize(otherbroker, messageInitiator, causeOfMessage);
 		}
 
@@ -767,8 +780,10 @@ public class AdjustingBroker extends BrokerNode {
 	protected void doInformSubscriberTimer() {
 
 		// wait an amount of time before informing the other brokers
-		if (isCollectingNetworkInfo() == false) {
-			changetimer.schedule(new InformSubscribersTask(this), params.informSubscribersTimeout);
+		if ( isCollectingNetworkInfo() == false ) {
+			informsubscriberstask = new InformSubscribersTask(this);
+			changetimer.schedule(informsubscriberstask, params.informSubscribersTimeout,
+					params.informSubscribersTimeout);
 			setCollectingNetworkInfo(true);
 		}
 
@@ -790,7 +805,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		int oldnmbonlinesubscribers = getNmbOnlineSubscribers();
 		setNmbOnlineSubscribers(getSubscribersSize());
-		if (oldnmbonlinesubscribers != getNmbOnlineSubscribers())
+		if ( oldnmbonlinesubscribers != getNmbOnlineSubscribers() )
 			informAll(this, this); // cause of message is not important
 
 		// stop the triggering task
@@ -802,8 +817,9 @@ public class AdjustingBroker extends BrokerNode {
 
 	protected void processInformSubscribers() {
 
-		if (oldnetsize != getNetsize())
+		if ( oldnetsize != getNetsize() )
 			informSubscribers();
+		informsubscriberstask.cancel();
 		setCollectingNetworkInfo(false);
 
 	}
@@ -819,7 +835,7 @@ public class AdjustingBroker extends BrokerNode {
 		long subnetsize = 0;
 
 		// adjust network.size
-		if (getSubnets().containsKey(broker))
+		if ( getSubnets().containsKey(broker) )
 			subnetsize = getSubnets().get(broker).getSubParams().getSize();
 		adjustNetsize((-1) * subnetsize);
 
@@ -830,7 +846,7 @@ public class AdjustingBroker extends BrokerNode {
 		removeFromBrokers(broker);
 
 		// inform others on change
-		if (subnetsize != 0)
+		if ( subnetsize != 0 )
 			informAllBut(broker, this, broker);
 
 	}
@@ -843,11 +859,11 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 	protected void processNodeVanished(Node node) {
 
-		if (node instanceof BrokerNode) {
+		if ( node instanceof BrokerNode ) {
 
 			processBrokerVanished((BrokerNode) node);
 
-		} else if (node instanceof PubSubNode) {
+		} else if ( node instanceof PubSubNode ) {
 
 			processSubscriberVanished((PubSubNode) node);
 
@@ -863,14 +879,14 @@ public class AdjustingBroker extends BrokerNode {
 		// so keep on maintaining him, but set subnetsize to zero
 
 		// adjust network.size
-		if (getSubnets().containsKey(broker)) {
+		if ( getSubnets().containsKey(broker) ) {
 			subnetsize = getSubnets().get(broker).getSubParams().getSize();
 			getSubnets().get(broker).getSubParams().setSize(0);
 		}
 		adjustNetsize((-1) * subnetsize);
 
 		// inform others on change
-		if (subnetsize != 0)
+		if ( subnetsize != 0 )
 			informAllBut(broker, this, broker);
 
 	}
@@ -884,8 +900,9 @@ public class AdjustingBroker extends BrokerNode {
 		// informBrokers();
 
 		Set<BrokerNode> currbrokers = getBrokers();
-		for (BrokerNode broker : currbrokers) {
-			new PingMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()), params);
+		for ( BrokerNode broker : currbrokers ) {
+			new PingMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
+					params);
 		}
 	}
 
@@ -989,7 +1006,6 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 	@Override
 	public void callbackRegisterAtBroker(BrokerType broker) {
-		// TODO Auto-generated method stub
 		super.callbackRegisterAtBroker(broker);
 		registerAtBroker((BrokerNode) broker);
 	}
@@ -1001,13 +1017,26 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 	@Override
 	public void callbackUnregisterFromBroker(BrokerType broker) {
-		// TODO Auto-generated method stub
 		super.callbackUnregisterFromBroker(broker);
 		unregisterFromBroker((BrokerNode) broker);
 		try {
 			removeConnection(this, (BrokerNode) broker);
-		} catch (ConcurrentModificationException e) {
+		} catch ( ConcurrentModificationException e ) {
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see BrokerNode#callbackUnregisterFromAllBrokers()
+	 */
+	@Override
+	public void callbackUnregisterFromAllBrokers() {
+		// TODO Auto-generated method stub
+		super.callbackUnregisterFromAllBrokers();
+		Set<BrokerNode> brokers = getBrokers();
+		for ( BrokerType broker : brokers )
+			callbackUnregisterFromBroker(broker);
 	}
 
 }

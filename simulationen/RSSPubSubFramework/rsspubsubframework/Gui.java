@@ -48,7 +48,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -56,7 +57,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -71,7 +73,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					Engine.getSingleton().removeGraphicalObject(rectangle);
 					rectangle = new GORectangle(ds_point);
@@ -81,7 +84,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					Engine.getSingleton().removeGraphicalObject(rectangle);
 					rectangle = new GORectangle(ds_point);
@@ -237,6 +241,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String addCmd = "Add!";
 
+	private static String brokersFallApartCmd = "BF";
+
 	private static String blockAllCmd = "Block all!";
 
 	private static String unblockAllCmd = "Unblock all!";
@@ -286,6 +292,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	private JButton blocknodeselectionbutton;
 
 	private JButton unblocknodeselectionbutton;
+
+	private JButton brokersfallapartbutton;
 
 	private JButton cancelbutton;
 
@@ -350,7 +358,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				guip.addMouseListener(mouseclick);
 				guip.addMouseMotionListener(mouseclick);
 
-				JPanel buttonpanel = new JPanel(new GridLayout(11, 1));
+				JPanel buttonpanel = new JPanel(new GridLayout(12, 1));
 				buttonpanel.setBorder(new EmptyBorder(10, 30, 10, 30));
 
 				exitbutton = new JButton(exitCmd);
@@ -422,6 +430,11 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				unblocknodeselectionbutton.addActionListener(guip);
 				buttonpanel.add(unblocknodeselectionbutton);
 
+				brokersfallapartbutton = new JButton(brokersFallApartCmd);
+				brokersfallapartbutton.setToolTipText("Brokers fall apart");
+				brokersfallapartbutton.addActionListener(guip);
+				buttonpanel.add(brokersfallapartbutton);
+
 				cancelbutton = new JButton(cancelCmd);
 				// cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
@@ -435,6 +448,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				buttongroup1.put(unblocknodebutton, unblockCmd);
 				buttongroup1.put(blocknodeselectionbutton, blockSelectionCmd);
 				buttongroup1.put(unblocknodeselectionbutton, unblockSelectionCmd);
+				buttongroup1.put(brokersfallapartbutton, brokersFallApartCmd);
 
 				// displayframe.getContentPane().add(buttonpanel);
 				controlframe.getContentPane().add(buttonpanel);
@@ -532,7 +546,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 			controlframe.setAlwaysOnTop(false);
 
-			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
 				System.exit(0);
 
 			controlframe.setAlwaysOnTop(true);
@@ -604,8 +619,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(blockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
+					.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
+					.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.block();
@@ -626,8 +643,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(unblockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
+					.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
+					.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.unblock();
@@ -637,6 +656,14 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			unblocknodeselectionbutton.setText(unblockSelectionCmd);
 			enableGroup(buttongroup1);
 			choice_status = NO_CHOICE;
+
+		} else if ( e.getActionCommand().equals(brokersFallApartCmd) ) {
+
+			synchronized (Engine.getSingleton().nodeList) {
+				for ( Node node : Engine.getSingleton().nodeList )
+					if ( node instanceof BrokerType )
+						((BrokerType) node).callbackUnregisterFromAllBrokers();
+			}
 
 		} else if ( e.getActionCommand().equals(deleteCmd) ) {
 

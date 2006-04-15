@@ -42,6 +42,8 @@ public class RPSStatistics {
 
 	private Long requestsInQueue = new Long(0);
 
+	private long unrepliedRequests = new Long(0);
+
 	public class ReceivedRSSFeedRequestObserver extends Observable implements Observer {
 
 		/*
@@ -229,7 +231,7 @@ public class RPSStatistics {
 		int fragment = fragments - 1;
 
 		public RelReOmRatioUpdater() {
-			for (int i = 0; i < fragments; i++) {
+			for ( int i = 0; i < fragments; i++ ) {
 				messageReFrame[i] = 0;
 				messageOmFrame[i] = 0;
 			}
@@ -277,7 +279,7 @@ public class RPSStatistics {
 			long reMessages = 0;
 			long omMessages = 0;
 
-			for (int i = 0; i < fragments; i++) {
+			for ( int i = 0; i < fragments; i++ ) {
 				reMessages += messageReFrame[i];
 				omMessages += messageOmFrame[i];
 			}
@@ -317,7 +319,7 @@ public class RPSStatistics {
 		int fragment = fragments - 1;
 
 		public RelSrvBrkRatioUpdater() {
-			for (int i = 0; i < fragments; i++) {
+			for ( int i = 0; i < fragments; i++ ) {
 				messageSrvFrame[i] = 0;
 				messageBrkFrame[i] = 0;
 			}
@@ -365,7 +367,7 @@ public class RPSStatistics {
 			long srvMessages = 0;
 			long brkMessages = 0;
 
-			for (int i = 0; i < fragments; i++) {
+			for ( int i = 0; i < fragments; i++ ) {
 				srvMessages += messageSrvFrame[i];
 				brkMessages += messageBrkFrame[i];
 			}
@@ -424,7 +426,7 @@ public class RPSStatistics {
 		long[] messageUptodateFrame = new long[messages];
 
 		public AverageUptodateRatioUpdater() {
-			for (int i = 0; i < messages; i++) {
+			for ( int i = 0; i < messages; i++ ) {
 				messageUptodateFrame[i] = 0;
 			}
 		}
@@ -451,7 +453,7 @@ public class RPSStatistics {
 			int delayedMessages = 0;
 
 			// calculate average uptodateRatio
-			for (int i = 0; i < messages; i++) {
+			for ( int i = 0; i < messages; i++ ) {
 				ratioSum += messageUptodateFrame[i];
 				if ( messageUptodateFrame[i] < 100 )
 					delayedMessages++;
@@ -495,7 +497,7 @@ public class RPSStatistics {
 		int[] messageDelayFrame = new int[messages];
 
 		public AverageMessageDelayRatioUpdater() {
-			for (int i = 0; i < messages; i++) {
+			for ( int i = 0; i < messages; i++ ) {
 				messageDelayFrame[i] = 0;
 			}
 		}
@@ -522,7 +524,7 @@ public class RPSStatistics {
 			int delayedMessages = 0;
 
 			// calculate average uptodateRatio
-			for (int i = 0; i < messages; i++) {
+			for ( int i = 0; i < messages; i++ ) {
 				if ( messageDelayFrame[i] > 0 ) {
 					ratioSum += messageDelayFrame[i];
 					delayedMessages++;
@@ -553,8 +555,11 @@ public class RPSStatistics {
 
 	protected class RequestsInQueueObserver extends Observable implements Observer {
 
-		/* (non-Javadoc)
-		 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
 		 */
 		public void update(Observable arg0, Object arg1) {
 
@@ -571,6 +576,30 @@ public class RPSStatistics {
 	}
 
 	private RequestsInQueueObserver requestsInQueueObserver = new RequestsInQueueObserver();
+
+	protected class UnrepliedRequestsObserver extends Observable implements Observer {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public void update(Observable arg0, Object arg1) {
+
+			setUnrepliedRequests((Long) arg1);
+			notifyObservers(getUnrepliedRequests());
+
+		}
+
+		public void notifyObservers(Long value) {
+			setChanged();
+			super.notifyObservers(value);
+		}
+
+	}
+
+	private UnrepliedRequestsObserver unrepliedRequestsObserver = new UnrepliedRequestsObserver();
 
 	public RPSStatistics() {
 		getReOmRatioUpdater().addToObservables();
@@ -640,6 +669,13 @@ public class RPSStatistics {
 	 */
 	public RequestsInQueueObserver getRequestsInQueueObserver() {
 		return requestsInQueueObserver;
+	}
+
+	/**
+	 * @return Returns the unrepliedRequestsObserver.
+	 */
+	public UnrepliedRequestsObserver getUnrepliedRequestsObserver() {
+		return unrepliedRequestsObserver;
 	}
 
 	/**
@@ -821,10 +857,26 @@ public class RPSStatistics {
 	}
 
 	/**
-	 * @param requestsInQueue The requestsInQueue to set.
+	 * @param requestsInQueue
+	 *            The requestsInQueue to set.
 	 */
 	public void setRequestsInQueue(Long requestsInQueue) {
 		this.requestsInQueue = requestsInQueue;
+	}
+
+	/**
+	 * @return Returns the unrepliedRequests.
+	 */
+	protected long getUnrepliedRequests() {
+		return unrepliedRequests;
+	}
+
+	/**
+	 * @param unrepliedRequests
+	 *            The unrepliedRequests to set.
+	 */
+	protected void setUnrepliedRequests(long unrepliedRequests) {
+		this.unrepliedRequests = unrepliedRequests;
 	}
 
 }

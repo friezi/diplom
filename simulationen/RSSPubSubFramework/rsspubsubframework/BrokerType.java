@@ -26,4 +26,8 @@ public interface BrokerType {
 	 */
 	public void callbackUnregisterFromBroker(BrokerType broker);
 
+	/**
+	 * Unregister from all brokers
+	 */
+	public void callbackUnregisterFromAllBrokers();
 }

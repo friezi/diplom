@@ -52,7 +52,7 @@ final public class Engine {
 	 * 
 	 * This list holds all nodes that are registered within the engine.
 	 */
-	private final java.util.Set<Node> nodeList = new java.util.HashSet<Node>();
+	final java.util.Set<Node> nodeList = new java.util.HashSet<Node>();
 
 	/**
 	 * List of all nodes which should be initialized by the engine when

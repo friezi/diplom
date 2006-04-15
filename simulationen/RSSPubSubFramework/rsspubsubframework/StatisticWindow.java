@@ -49,6 +49,8 @@ public class StatisticWindow extends JFrame {
 
 	JLabel requestsInQueueLabel = new JLabel();
 
+	JLabel unrepliedRequestsLabel = new JLabel();
+
 	JLabel rssServerLabel = new JLabel("RSSServer:");
 
 	JLabel subscribersLabel = new JLabel("Subscribers:");
@@ -230,7 +232,8 @@ public class StatisticWindow extends JFrame {
 		 */
 		public void update(Observable arg0, Object arg1) {
 			Integer averageMessageDelayRatio = (Integer) arg1;
-			averageMessageDelayRatioLabel.setText("avg. message-delay-ratio: " + averageMessageDelayRatio + "%");
+			averageMessageDelayRatioLabel.setText("avg. message-delay-ratio: " + averageMessageDelayRatio
+					+ "%");
 		}
 
 	}
@@ -246,6 +249,21 @@ public class StatisticWindow extends JFrame {
 		public void update(Observable arg0, Object arg1) {
 			Long requestsInQueue = (Long) arg1;
 			requestsInQueueLabel.setText("requests in Queue: " + requestsInQueue);
+		}
+
+	}
+
+	protected class UnrepliedRequestsObserver implements Observer {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
+		 */
+		public void update(Observable arg0, Object arg1) {
+			Long unrepliedRequests = (Long) arg1;
+			unrepliedRequestsLabel.setText("unreplied requests: " + unrepliedRequests);
 		}
 
 	}
@@ -274,6 +292,8 @@ public class StatisticWindow extends JFrame {
 
 	private RequestsInQueueObserver requestsInQueueObserver = new RequestsInQueueObserver();
 
+	private UnrepliedRequestsObserver unrepliedRequestsObserver = new UnrepliedRequestsObserver();
+
 	protected class CloseWindowAdapter extends WindowAdapter {
 
 		/*
@@ -297,6 +317,7 @@ public class StatisticWindow extends JFrame {
 			stat.getDelayedMessagesRatioNotifier().deleteObserver(getDelayedMessagesRatioObserver());
 			stat.getAverageMessageDelayRatioUpdater().deleteObserver(getAverageMessageDelayRatioObserver());
 			stat.getRequestsInQueueObserver().deleteObserver(getRequestsInQueueObserver());
+			stat.getUnrepliedRequestsObserver().deleteObserver(getUnrepliedRequestsObserver());
 
 			super.windowClosed(arg0);
 		}
@@ -322,20 +343,28 @@ public class StatisticWindow extends JFrame {
 		stat.getDelayedMessagesRatioNotifier().addObserver(getDelayedMessagesRatioObserver());
 		stat.getAverageMessageDelayRatioUpdater().addObserver(getAverageMessageDelayRatioObserver());
 		stat.getRequestsInQueueObserver().addObserver(getRequestsInQueueObserver());
+		stat.getUnrepliedRequestsObserver().addObserver(getUnrepliedRequestsObserver());
 
 		// get values manually
-		getReceivedRSSRequestsObserver().update(stat.getReceivedRSSFeedRequestObserver(), stat.getReceivedRSSRequests());
-		getOmittedRSSRequestsObserver().update(stat.getOmittedRSSFeedRequestObserver(), stat.getOmittedRSSRequests());
+		getReceivedRSSRequestsObserver().update(stat.getReceivedRSSFeedRequestObserver(),
+				stat.getReceivedRSSRequests());
+		getOmittedRSSRequestsObserver().update(stat.getOmittedRSSFeedRequestObserver(),
+				stat.getOmittedRSSRequests());
 		getServerFeedsObserver().update(stat.getServerFeedObserver(), stat.getServerFeeds());
 		getBrokerFeedsObserver().update(stat.getBrokerFeedObserver(), stat.getBrokerFeeds());
 		getReOmRatioObserver().update(stat.getReOmRatioUpdater(), stat.getReOmRatio());
 		getSrvBrkRatioObserver().update(stat.getSrvBrkRatioUpdater(), stat.getSrvBrkRatio());
 		getRelReOmRatioObserver().update(stat.getRelReOmRatioUpdater(), stat.getRelReOmRatio());
 		getRelSrvBrkRatioObserver().update(stat.getRelSrvBrkRatioUpdater(), stat.getRelSrvBrkRatio());
-		getAverageUptodateRatioObserver().update(stat.getAverageUptodateRatioUpdater(), stat.getAverageUptodateRatio());
-		getDelayedMessagesRatioObserver().update(stat.getDelayedMessagesRatioNotifier(), stat.getDelayedMessagesRatio());
-		getAverageMessageDelayRatioObserver().update(stat.getAverageMessageDelayRatioUpdater(), stat.getAverageMessageDelayRatio());
+		getAverageUptodateRatioObserver().update(stat.getAverageUptodateRatioUpdater(),
+				stat.getAverageUptodateRatio());
+		getDelayedMessagesRatioObserver().update(stat.getDelayedMessagesRatioNotifier(),
+				stat.getDelayedMessagesRatio());
+		getAverageMessageDelayRatioObserver().update(stat.getAverageMessageDelayRatioUpdater(),
+				stat.getAverageMessageDelayRatio());
 		getRequestsInQueueObserver().update(stat.getRequestsInQueueObserver(), stat.getRequestsInQueue());
+		getUnrepliedRequestsObserver().update(stat.getUnrepliedRequestsObserver(),
+				stat.getUnrepliedRequests());
 
 		this.addWindowListener(new CloseWindowAdapter());
 
@@ -349,6 +378,7 @@ public class StatisticWindow extends JFrame {
 		rssPanel.add(reOmRatioLabel);
 		rssPanel.add(relReOmRatioLabel);
 		rssPanel.add(requestsInQueueLabel);
+		rssPanel.add(unrepliedRequestsLabel);
 
 		rssPanel.setOpaque(true);
 
@@ -462,6 +492,13 @@ public class StatisticWindow extends JFrame {
 	 */
 	public RequestsInQueueObserver getRequestsInQueueObserver() {
 		return requestsInQueueObserver;
+	}
+
+	/**
+	 * @return Returns the unrepliedRequestsObserver.
+	 */
+	public UnrepliedRequestsObserver getUnrepliedRequestsObserver() {
+		return unrepliedRequestsObserver;
 	}
 
 }

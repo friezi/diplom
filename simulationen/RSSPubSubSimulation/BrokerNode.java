@@ -165,7 +165,6 @@ public abstract class BrokerNode extends Node implements BrokerType, Observer {
 	 */
 	@Override
 	public boolean whithinRectangle(Point point1, Point point2) {
-		// TODO Auto-generated method stub
 
 		int s = size();
 		int x1 = this.xPos() - s / 2;
@@ -200,7 +199,6 @@ public abstract class BrokerNode extends Node implements BrokerType, Observer {
 	 * does nothing so far!
 	 */
 	public void callbackRegisterAtBroker(BrokerType arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -212,8 +210,14 @@ public abstract class BrokerNode extends Node implements BrokerType, Observer {
 	 * does nothing so far!
 	 */
 	public void callbackUnregisterFromBroker(BrokerType arg0) {
-		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see rsspubsubframework.BrokerType#callbackUnregisterFromAllBrokers()
+	 */
+	public void callbackUnregisterFromAllBrokers() {
+		
 	}
 
 	protected void removeConnection(BrokerNode node1, BrokerNode node2) {
