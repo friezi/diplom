@@ -174,7 +174,7 @@ public class AdjustingBroker extends BrokerNode {
 		 */
 		@Override
 		public void run() {
-			new TimeForPingMessage(timerbroker, timerbroker, this);
+			new TimeForPingMessage(timerbroker, timerbroker, this).send();
 		}
 
 	}
@@ -194,7 +194,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		public void run() {
 			// processBrokerVanished(node);
-			new PingTimeoutMessage(timerbroker, timerbroker, node, this);
+			new PingTimeoutMessage(timerbroker, timerbroker, node, this).send();
 		}
 	}
 
@@ -209,7 +209,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		public void run() {
 			// processSubscribersChanged();
-			new InformBrokersMessage(timerbroker, timerbroker);
+			new InformBrokersMessage(timerbroker, timerbroker).send();
 		}
 	}
 
@@ -223,7 +223,7 @@ public class AdjustingBroker extends BrokerNode {
 		}
 
 		public void run() {
-			new InformSubscribersMessage(timerbroker, timerbroker);
+			new InformSubscribersMessage(timerbroker, timerbroker).send();
 		}
 	}
 
@@ -393,7 +393,7 @@ public class AdjustingBroker extends BrokerNode {
 	protected void sendSubnetSize(BrokerNode broker, Node messageInitiator, Node causeOfMessage) {
 
 		new SubnetParamMessage(this, broker, messageInitiator, causeOfMessage, new SubnetParameters(
-				calcNetSizeWithout(broker), new Date()), params);
+				calcNetSizeWithout(broker), new Date()), params).send();
 
 	}
 
@@ -443,7 +443,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		// send a RegisterBrokerMessage
 		new RegisterBrokerMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
-				params);
+				params).send();
 
 	}
 
@@ -452,7 +452,7 @@ public class AdjustingBroker extends BrokerNode {
 		processBrokerDisconnected(broker);
 
 		// send a UnegisterBrokerMessage
-		new UnregisterBrokerMessage(this, broker, params.subnetParamMsgRT);
+		new UnregisterBrokerMessage(this, broker, params.subnetParamMsgRT).send();
 
 	}
 
@@ -470,7 +470,7 @@ public class AdjustingBroker extends BrokerNode {
 			for ( Node peer : peers ) {
 				if ( peer != fm.getSrc() )
 					new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(null,
-							getFeed()), params);
+							getFeed()), params).send();
 			}
 
 		}
@@ -548,7 +548,7 @@ public class AdjustingBroker extends BrokerNode {
 		adjustNetsize(rbm.getSubParams().getSize() - oldsubnetsize);
 
 		// send acknowledgement ( a bit faster)
-		new RegisterAckMessage(this, rbm.getSrc(), params.subnetParamMsgRT / 2);
+		new RegisterAckMessage(this, rbm.getSrc(), params.subnetParamMsgRT / 2).send();
 
 		// send subnetsize to node
 		sendSubnetSize((BrokerNode) rbm.getSrc(), this, rbm.getSrc());
@@ -692,7 +692,7 @@ public class AdjustingBroker extends BrokerNode {
 			addToSubscribers(subscriber);
 
 			// send acknowledgement
-			new RegisterAckMessage(this, subscriber, params.subnetParamMsgRT);
+			new RegisterAckMessage(this, subscriber, params.subnetParamMsgRT).send();
 
 			adjustNetsize(1);
 
@@ -757,7 +757,7 @@ public class AdjustingBroker extends BrokerNode {
 		// inform also the subscribers
 		Set<PubSubNode> currsubscribers = getSubscribers();
 		for ( PubSubNode subscriber : currsubscribers )
-			new NetworkSizeUpdateMessage(this, subscriber, getNetsize(), params);
+			new NetworkSizeUpdateMessage(this, subscriber, getNetsize(), params).send();
 
 	}
 
@@ -902,7 +902,7 @@ public class AdjustingBroker extends BrokerNode {
 		Set<BrokerNode> currbrokers = getBrokers();
 		for ( BrokerNode broker : currbrokers ) {
 			new PingMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
-					params);
+					params).send();
 		}
 	}
 

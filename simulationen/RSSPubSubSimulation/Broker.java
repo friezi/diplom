@@ -42,7 +42,7 @@ public class Broker extends BrokerNode {
 			Set<Node> peers = getPeers();
 			for (Node peer : peers) {
 				if (peer != rfm.getSrc())
-					new RSSFeedMessage(this, peer, getFeed(), rfm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+					new RSSFeedMessage(this, peer, getFeed(), rfm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
 			}
 
 		}

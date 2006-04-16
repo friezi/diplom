@@ -77,27 +77,31 @@ public class EventPubSub extends PubSub {
 		LinkedList<Event> newEvents = new LinkedList<Event>(sortedEvents);
 
 		if (newEvents.size() > 0) {
+			// it's a new feed
 
 			// show the feed
 			setFeed(getRssEventFeedFactory().newRSSEventFeed(events, fm.getFeed().getGeneralContent()));
 			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, getFeed()));
 			getRssFeedRepresentation().represent();
 
-			updateRequestTimerByNewFeed();
-
 			// send a new feed (only with new events) to Broker, if we didn't
 			// get the message from
 			// him
-			// if (fm.getSrc() != getBroker()) {
 			if (brokerlist.contains(fm.getSrc()) == false) {
+				// sender is server
+
+				updateRequestTimerByNewFeedFromServer();
 
 				this.getStatistics().addServerFeed(this);
 
 				RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
 				for (BrokerNode broker : brokerlist)
-					new RSSFeedMessage(this, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+					new RSSFeedMessage(this, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params).send();
 
 			} else {
+				// sender is a broker
+
+				updateRequestTimerByNewFeedFromBroker();
 
 				// just statistics
 				this.getStatistics().addBrokerFeed(this);
@@ -109,15 +113,18 @@ public class EventPubSub extends PubSub {
 				// send it to all other brokers
 				for (BrokerNode broker : brokerlist)
 					if (broker != fm.getSrc())
-						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
 
 			}
 
 		} else {
+			// it's an old feed
 
 			// got an old feed; update timer only if sender is RSSServer
 			if (fm.getSrc() == getRssServer()) {
-				updateRequestTimerByOldFeed();
+				updateRequestTimerByOldFeedFromServer();
+			} else{
+				updateRequestTimerByOldFeedFromBroker();
 			}
 		}
 

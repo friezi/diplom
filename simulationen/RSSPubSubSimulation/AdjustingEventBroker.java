@@ -73,14 +73,14 @@ public class AdjustingEventBroker extends AdjustingBroker {
 				// inform first all brokers, then subscribers, simulate upload
 				for ( BrokerNode broker : brokers ) {
 					if ( broker != fm.getSrc() ) {
-						m = new RSSFeedMessage(ourself, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+						(m = new RSSFeedMessage(ourself, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params)).send();
 						upload(m);
 					}
 				}
 
 				for ( PubSubNode subscriber : subscribers ) {
 					if ( subscriber != fm.getSrc() ) {
-						m = new RSSFeedMessage(ourself, subscriber, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+						(m = new RSSFeedMessage(ourself, subscriber, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params)).send();
 						upload(m);
 					}
 				}

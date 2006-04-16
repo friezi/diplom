@@ -203,7 +203,7 @@ abstract public class Node extends DisplayableObject {
 	 *            Node the package should be sent to.
 	 */
 	protected void send(Node dst) {
-		new Message(this, dst);
+		new Message(this, dst).send();
 	}
 
 	/**

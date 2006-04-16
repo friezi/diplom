@@ -14,7 +14,7 @@ public class RSSServer extends RSSServerNode {
 
 		public void run() {
 
-			new GenerateFeedMessage(rssServer, rssServer);
+			new GenerateFeedMessage(rssServer, rssServer).send();
 			rssServer.scheduleTimer();
 
 		}
@@ -110,7 +110,7 @@ public class RSSServer extends RSSServerNode {
 		// observers (most probably the Engine) have to be informed about the request
 		this.getStatistics().addReceivedRSSFeedRequest(this);
 
-		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(null, getFeed()), params);
+		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(null, getFeed()), params).send();
 
 	}
 

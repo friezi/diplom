@@ -152,8 +152,9 @@ public class QueueingRSSServer extends RSSServer {
 		// request
 		this.getStatistics().addReceivedRSSFeedRequest(this);
 
-		Message m = new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory()
-				.newRSSFeedRepresentation(null, getFeed()), params);
+		Message m;
+		(m = new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory()
+				.newRSSFeedRepresentation(null, getFeed()), params)).send();
 
 		upload(m);
 

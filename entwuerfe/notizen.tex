@@ -175,6 +175,56 @@ Zeitdifferenz ist: aktuelle Zeit - PubDate des am längesten zurückliegenden Even
 Anzeige von average uptodate-ratio, delayed-messages und average message-delay im Statistikfenster
 
 \subsection*{6.4.06}
-Implementierung von Subscribern, die nach einem Refresh-Intervall den Feed beim Server erfragen.
+Implementierung von Subscribern, die nach einem Refresh-Intervall den Feed
+beim Server erfragen.
 
+\subsection*{13.04.06}
+Simulator: Subscriber registrieren sich bei ihren Brokern in regelmässigen
+Intervallen.  Unterbleibt Registrierung aufgrund von Blockierung, so
+betrachtet der Broker den entsprechenden Subscriber nach einem Timeout als
+abgemeldet.\\
+Bug: zeitweise kommt es zu NullPointerExceptions in Message.drawObj(), da src==null
+gilt. Es hat sich gezeigt, dass bereits in
+PubSub.AckTimerMessage.getBroker()==null gilt. Dieser Fehler ist mir
+unerklärlich und eigentlich unmöglich, da jeder AckTimerTask mit broker!=null
+initialisiert wird (wurde durch Wertecheck überprüft). Fehler wurde gekapselt
+und stört nun nicht mehr den Simulationsprozess.
+
+\subsection*{14.04.06}
+Neue Klasse: QueueingRSSServer\\
+Dieser Server unterhält eine Queue fester Größe, in der neue FeedRequests
+eingereiht werden. Überzählige Feeds werden abgewiesen
+bzw. verworfen. Simulation der Belastung des Servers durch Bearbeitung eines
+Feeds erfolgt durch abwarten einer Wartezeit, die der Übermittlungszeit eines
+Feeds entspricht. Zusätzlich erfordern verworfene Requests eine gewisse
+Bearbeitungszeit, so dass ein Ansturm von Requests den Server überlasten
+können. Es zeigt sich, dass zu Beginn einer Session der Server zunächst
+aufgrund der Fülle an Requests stark überlastet ist und nur eine sehr geringe
+Antwortzeit erreicht wird.
+
+\subsection*{16.04.06}
+Habe vermutlich den Fehler der falschen Brokerreferenz gefunden:\\
+Problem liegt im Konstruktoraufruf Message(): bereits im Konstruktor wird die
+Message in die Messageliste eingetragen. Von Message abgeleitete Klassen
+müssen zunächst den Superkonstruktor aufrufen und können erst anschliessend
+spezielle Attribute setzen. Wird eine Message von einem separaten Task
+erzeugt, so kann es vorkommen, dass nach Superkonstruktoraufruf und vor dem
+initialisieren
+der speziellen Attribute die Message verarbeitet wird. Dann wären die
+speziellen Parameter noch nicht gesetzt.\\
+Abhilfe: zusätzliche Methode send() in der Klasse Message: erst der Aufruf von
+send() trägt die Message in die zu verarbeitende Nachrichtenliste ein. Dafür
+muss dann also für jede neu erzeugt Nachricht die Operation send() aufgerufen
+werden (am besten direkt nach Konstruktoraufruf).\\\\
+
+Klientseitiges messen der Serverauslastung:\\
+Idee: Staukontrolle in Anlehnung an Congestion-Control bei TCP. Problem:
+Es kann nicht festgestellt werden, auf welche Anfrage sich eine Antwort vom
+Server bezieht.\\\\
+
+Literatur:
+\begin{itemize}
+  \item van Jacobson, Congestion avoidance and control
+  \item Zhang, L. Why TCP timers don't work well
+\end{itemize}
 \end{document}

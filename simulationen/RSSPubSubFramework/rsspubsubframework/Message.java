@@ -42,7 +42,9 @@ public class Message extends DisplayableObject {
 	 * Create a message with specific runtime.
 	 * 
 	 * This constructor creates a new message with a specific runtime from srcp
-	 * to dstp.
+	 * to dstp. Message ist not yet send to destination: for this purpose use send()
+	 * 
+	 * -- modified by Friedemann Zintel --
 	 * 
 	 * @param srcp
 	 *            The node sending the message.
@@ -55,8 +57,19 @@ public class Message extends DisplayableObject {
 		src = srcp;
 		dst = dstp;
 		runtime = rt;
+	}
+	
+	/**
+	 * sends the message to destination (practically: adds the message to the list newMessages of Engine so that it will be processed
+	 * 
+	 * -- added by Friedemann Zintel --
+	 * 
+	 */
+	public void send(){
+
 		Engine.getSingleton().addMessage(this);
 		++msgcount;
+		
 	}
 
 	/**
