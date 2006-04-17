@@ -1,6 +1,7 @@
 import java.util.Date;
 import java.util.Random;
 
+
 /**
  * 
  */
@@ -10,6 +11,9 @@ import java.util.Random;
  *
  */
 public class CongestionControlEventPubSub extends EventPubSub {
+	
+	private long requestFeedTimerCounter;
+	private long requestFeedTimeoutValue;
 
 	/**
 	 * @param xp
@@ -19,7 +23,6 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 */
 	public CongestionControlEventPubSub(int xp, int yp, RSSEventFeedFactory rssEventFeedFactory, SimParameters params) {
 		super(xp, yp, rssEventFeedFactory, params);
-		// TODO Auto-generated constructor stub
 	}
 	
 
@@ -28,7 +31,6 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 */
 	@Override
 	protected void handleNetworkSizeUpdateMessage(NetworkSizeUpdateMessage nsum) {
-		// TODO Auto-generated method stub
 		// don't handle this anymore 
 	}
 
@@ -46,8 +48,84 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			diff = ttl;
 //			diff = 0;
 		//		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
-		return (long) ((new Random().nextFloat() * (params.maxRefreshRate) + (ttl - diff)) * 1000);
+		long timeout;
+		if (requestFeedTimeoutValue<params.maxRefreshRate)
+			timeout=params.maxRefreshRate;
+		else
+			timeout=requestFeedTimeoutValue;
+		return (long) ((new Random().nextFloat() * (timeout) + (ttl - diff)) * 1000);
 	}
 
+
+	/* (non-Javadoc)
+	 * @see PubSub#handleRequestFeedMessage(PubSub.RequestFeedMessage)
+	 */
+	@Override
+	protected void handleRequestFeedMessage(RequestFeedMessage rfm) {
+		// TODO Auto-generated method stub
+		updateRequestTimer();
+		incRequestFeedTimeoutValue();
+		incRequestFeedTimerCounter();
+		updateRequestTimer();
+		super.handleRequestFeedMessage(rfm);
+	}
+	
+	protected void updateRequestTimer(){
+		feedRequestTask.cancel();
+		feedRequestTimer.purge();
+		feedRequestTask=new FeedRequestTask(this);
+		feedRequestTimer.schedule(feedRequestTask,requestFeedTimeoutValue,requestFeedTimeoutValue);
+	}
+	
+	/* (non-Javadoc)
+	 * @see PubSub#updateRequestTimerByOldFeedFromBroker()
+	 */
+	@Override
+	protected synchronized void updateRequestTimerByOldFeedFromBroker() {
+		updateRequestTimer();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see PubSub#updateRequestTimerByNewFeedFromBroker()
+	 */
+	@Override
+	protected synchronized void updateRequestTimerByNewFeedFromBroker() {
+		updateRequestTimerByOldFeedFromBroker();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see PubSub#updateRequestTimerByNewFeedFromServer()
+	 */
+	@Override
+	protected synchronized void updateRequestTimerByNewFeedFromServer() {
+		// TODO Auto-generated method stub
+	}
+
+
+	/* (non-Javadoc)
+	 * @see PubSub#updateRequestTimerByOldFeedFromServer()
+	 */
+	@Override
+	protected synchronized void updateRequestTimerByOldFeedFromServer() {
+	}
+
+
+	protected void incRequestFeedTimeoutValue(){
+		requestFeedTimeoutValue+=params.maxRefreshRate;
+	}
+	
+	protected void resetRequestFeedTimeoutValue(){
+		requestFeedTimeoutValue=params.maxRefreshRate;
+	}
+	
+	protected void incRequestFeedTimerCounter(){
+		requestFeedTimerCounter++;
+	}
+	
+	protected void resetRequestFeedTimerCounter(){
+		requestFeedTimerCounter=1;
+	}
 
 }

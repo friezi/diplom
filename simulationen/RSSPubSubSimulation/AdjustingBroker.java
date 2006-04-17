@@ -387,8 +387,12 @@ public class AdjustingBroker extends BrokerNode {
 	/**
 	 * sends the size of a subnetwork to a node
 	 * 
-	 * @param node
-	 *            the node
+	 * @param broker
+	 *            the destination broker
+	 * @param messageInitiator
+	 *            the broker which sent this message originally
+	 * @param causeOfMessage
+	 *            the node which caused this message
 	 */
 	protected void sendSubnetSize(BrokerNode broker, Node messageInitiator, Node causeOfMessage) {
 
@@ -827,8 +831,8 @@ public class AdjustingBroker extends BrokerNode {
 	/**
 	 * It's executed if the node unregistered
 	 * 
-	 * @param node
-	 *            the node
+	 * @param broker
+	 *            the broker which disconnected from us
 	 */
 	protected void processBrokerDisconnected(BrokerNode broker) {
 

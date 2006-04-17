@@ -63,8 +63,8 @@ public class PubSub extends PubSubNode {
 			super(src, dst);
 
 			//debugging
-			if ( broker == null )
-				System.err.println("PubSub.AckTimerMessage(): broker==null");
+//			if ( broker == null )
+//				System.err.println("PubSub.AckTimerMessage(): broker==null");
 
 			this.broker = broker;
 		}
@@ -88,8 +88,8 @@ public class PubSub extends PubSubNode {
 		public AckTimerTask(PubSubNode timernode, BrokerNode broker) {
 
 			//debugging
-			if ( broker == null )
-				System.err.println("PubSub.AckTimerTask(): broker==null");
+//			if ( broker == null )
+//				System.err.println("PubSub.AckTimerTask(): broker==null");
 
 			this.timernode = timernode;
 			this.broker = broker;
@@ -98,8 +98,8 @@ public class PubSub extends PubSubNode {
 		public void run() {
 
 			//debugging
-			if ( broker == null )
-				System.err.println("PubSub.AckTimerTask.run(): broker==null");
+//			if ( broker == null )
+//				System.err.println("PubSub.AckTimerTask.run(): broker==null");
 
 			new AckTimerMessage(timernode, timernode, broker).send();
 		}
@@ -217,6 +217,7 @@ public class PubSub extends PubSubNode {
 	synchronized protected void updateRequestTimer(long interval) {
 
 		feedRequestTask.cancel();
+		feedRequestTimer.purge();
 		feedRequestTask = new FeedRequestTask(this);
 		// if there's no response from server, we need to re-request
 		feedRequestTimer.schedule(feedRequestTask, interval, getFeed().getGeneralContent().getTtl() * 1000);
@@ -308,8 +309,8 @@ public class PubSub extends PubSubNode {
 	protected void handleAckTimerMessage(AckTimerMessage atm) {
 
 		// debugging: ERROR: this happens mysteriously
-		if ( atm.getBroker() == null )
-			System.err.println("PubSub.handleAckTimerMessage(): atm.getBroker() == null");
+//		if ( atm.getBroker() == null )
+//			System.err.println("PubSub.handleAckTimerMessage(): atm.getBroker() == null");
 
 		new RegisterSubscriberMessage(this, atm.getBroker(), params.subnetParamMsgRT).send();
 
@@ -384,8 +385,8 @@ public class PubSub extends PubSubNode {
 	public void callbackRegisterAtBroker(BrokerType broker) {
 
 		// debugging
-		if ( broker == null )
-			System.err.println("PubSub.callbackRegisterAtBroker(): broker == null");
+//		if ( broker == null )
+//			System.err.println("PubSub.callbackRegisterAtBroker(): broker == null");
 
 		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT).send();
 		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
