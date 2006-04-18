@@ -62,9 +62,9 @@ public class PubSub extends PubSubNode {
 		public AckTimerMessage(Node src, Node dst, BrokerNode broker) {
 			super(src, dst);
 
-			//debugging
-//			if ( broker == null )
-//				System.err.println("PubSub.AckTimerMessage(): broker==null");
+			// debugging
+			// if ( broker == null )
+			// System.err.println("PubSub.AckTimerMessage(): broker==null");
 
 			this.broker = broker;
 		}
@@ -87,9 +87,9 @@ public class PubSub extends PubSubNode {
 
 		public AckTimerTask(PubSubNode timernode, BrokerNode broker) {
 
-			//debugging
-//			if ( broker == null )
-//				System.err.println("PubSub.AckTimerTask(): broker==null");
+			// debugging
+			// if ( broker == null )
+			// System.err.println("PubSub.AckTimerTask(): broker==null");
 
 			this.timernode = timernode;
 			this.broker = broker;
@@ -97,9 +97,9 @@ public class PubSub extends PubSubNode {
 
 		public void run() {
 
-			//debugging
-//			if ( broker == null )
-//				System.err.println("PubSub.AckTimerTask.run(): broker==null");
+			// debugging
+			// if ( broker == null )
+			// System.err.println("PubSub.AckTimerTask.run(): broker==null");
 
 			new AckTimerMessage(timernode, timernode, broker).send();
 		}
@@ -109,6 +109,16 @@ public class PubSub extends PubSubNode {
 	protected RSSFeed feed = new RSSFeed(new RSSFeedGeneralContent());
 
 	protected Timer feedRequestTimer = new Timer();
+
+	/**
+	 * purge-counter for the feedRequestTimer
+	 */
+	protected int frtPurgeCounter = 0;
+
+	/**
+	 * the maximum value for the frtPurgeCounter
+	 */
+	protected static int MAXFRTPURGECOUNTER = 20;
 
 	protected Timer ackTimer = new Timer();
 
@@ -169,24 +179,24 @@ public class PubSub extends PubSubNode {
 		}
 	}
 
-	protected long calculateRequestTimeout() {
+	protected long calculateNextRequestTimeout() {
 
 		Date now = new Date();
 		Date feedDate = getFeed().getGeneralContent().getLastBuiltDate();
 		int ttl = getFeed().getGeneralContent().getTtl();
-		int diff = (int) ((now.getTime() - feedDate.getTime()) / 1000);
-		if ( diff > ttl )
+		int diffsecs = (int) ((now.getTime() - feedDate.getTime()) / 1000);
+		if ( diffsecs > ttl )
 			// diff = ttl;
-			diff = 0;
+			diffsecs = 0;
 		// return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl -
 		// diff)) * 1000;
-		return (long) ((new Random().nextFloat() * (spreadFactor * ttl + 1) + (ttl - diff)) * 1000);
+		return (long) ((new Random().nextFloat() * (spreadFactor * ttl + 1) + (ttl - diffsecs)) * 1000);
 
 	}
 
 	// for extensibility
 	synchronized protected void updateRequestTimerByNewFeed() {
-		updateRequestTimer(calculateRequestTimeout());
+		updateRequestTimer(calculateNextRequestTimeout());
 	}
 
 	// for extensibility
@@ -217,7 +227,7 @@ public class PubSub extends PubSubNode {
 	synchronized protected void updateRequestTimer(long interval) {
 
 		feedRequestTask.cancel();
-		feedRequestTimer.purge();
+		purgeFeedRequestTimer();
 		feedRequestTask = new FeedRequestTask(this);
 		// if there's no response from server, we need to re-request
 		feedRequestTimer.schedule(feedRequestTask, interval, getFeed().getGeneralContent().getTtl() * 1000);
@@ -235,7 +245,8 @@ public class PubSub extends PubSubNode {
 
 			// show the feed
 			setFeed(fm.getFeed());
-			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, getFeed()));
+			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this,
+					getFeed()));
 			getRssFeedRepresentation().represent();
 
 			// send the feed to Broker, if we didn't get the message from
@@ -247,8 +258,9 @@ public class PubSub extends PubSubNode {
 
 				this.getStatistics().addServerFeed(this);
 
-				for (BrokerNode broker : brokerlist)
-					new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
+				for ( BrokerNode broker : brokerlist )
+					new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null,
+							getFeed()), params).send();
 
 			} else {
 
@@ -262,9 +274,10 @@ public class PubSub extends PubSubNode {
 				this.getStatistics().addOmittedRSSFeedRequest(this);
 
 				// send it to all other brokers
-				for (BrokerNode broker : brokerlist)
+				for ( BrokerNode broker : brokerlist )
 					if ( broker != fm.getSrc() )
-						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
+						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(
+								null, getFeed()), params).send();
 
 			}
 
@@ -294,7 +307,7 @@ public class PubSub extends PubSubNode {
 
 		spreadFactor = (int) (size / spreadDivisor);
 
-		long interval = calculateRequestTimeout();
+		long interval = calculateNextRequestTimeout();
 
 		// if we have a very long scheduled timer for the timer-task and due
 		// to
@@ -309,8 +322,9 @@ public class PubSub extends PubSubNode {
 	protected void handleAckTimerMessage(AckTimerMessage atm) {
 
 		// debugging: ERROR: this happens mysteriously
-//		if ( atm.getBroker() == null )
-//			System.err.println("PubSub.handleAckTimerMessage(): atm.getBroker() == null");
+		// if ( atm.getBroker() == null )
+		// System.err.println("PubSub.handleAckTimerMessage(): atm.getBroker()
+		// == null");
 
 		new RegisterSubscriberMessage(this, atm.getBroker(), params.subnetParamMsgRT).send();
 
@@ -385,12 +399,14 @@ public class PubSub extends PubSubNode {
 	public void callbackRegisterAtBroker(BrokerType broker) {
 
 		// debugging
-//		if ( broker == null )
-//			System.err.println("PubSub.callbackRegisterAtBroker(): broker == null");
+		// if ( broker == null )
+		// System.err.println("PubSub.callbackRegisterAtBroker(): broker ==
+		// null");
 
 		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT).send();
 		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
-		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor * params.pingTimer);
+		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor
+				* params.pingTimer);
 		acktaskmap.put((BrokerNode) broker, task);
 
 	}
@@ -404,8 +420,20 @@ public class PubSub extends PubSubNode {
 		new UnregisterFromBrokerTaskMessage(this, this, (BrokerNode) broker).send();
 		try {
 			removeConnection(this, (BrokerNode) broker);
-		} catch (ConcurrentModificationException e) {
+		} catch ( ConcurrentModificationException e ) {
 			System.err.println("PubSub.callbackUnregisterFromBroker(): " + e);
+		}
+	}
+
+	protected void purgeFeedRequestTimer() {
+
+		frtPurgeCounter++;
+
+		if ( frtPurgeCounter >= MAXFRTPURGECOUNTER ) {
+
+			feedRequestTimer.purge();
+			frtPurgeCounter = 0;
+
 		}
 	}
 }

@@ -133,14 +133,14 @@ public class EventPubSub extends PubSub {
 	protected void calculateUpdateAndDelay(long eventtime) {
 
 		long now = new Date().getTime();
-		long diff = (now - eventtime) / 1000;
-		long overhead = diff - params.maxRefreshRate;
+		long diffsecs = (now - eventtime) / 1000;
+		long overhead = diffsecs - params.maxRefreshRate;
 		int messageDelayRatio = 0;
 		int uptodateRatio = 100;
 		if (overhead > 0) {
 
 			messageDelayRatio = (int) ((overhead * 100) / params.maxRefreshRate);
-			uptodateRatio = (int) ((params.maxRefreshRate * 100) / diff);
+			uptodateRatio = (int) ((params.maxRefreshRate * 100) / diffsecs);
 			/*
 			 * System.out.print("message-delay: " + messageDelayRatio + "%"); if
 			 * (uptodateRatio < 100) System.out.print(" uptodateRatio: " +

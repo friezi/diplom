@@ -39,17 +39,17 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 	 * @see PubSub#calculateInterval()
 	 */
 	@Override
-	protected long calculateRequestTimeout() {
+	protected long calculateNextRequestTimeout() {
 
 		Date now = new Date();
 		Date feedDate = getFeed().getGeneralContent().getLastBuiltDate();
 		int ttl = getFeed().getGeneralContent().getTtl();
-		int diff = (int) ((now.getTime() - feedDate.getTime()) / 1000);
-		if (diff > ttl)
-			diff = ttl;
+		int diffsecs = (int) ((now.getTime() - feedDate.getTime()) / 1000);
+		if (diffsecs > ttl)
+			diffsecs = ttl;
 //			diff = 0;
 		//		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
-		return (long) ((new Random().nextFloat() * (params.maxRefreshRate) + (ttl - diff)) * 1000);
+		return (long) ((new Random().nextFloat() * (params.maxRefreshRate) + (ttl - diffsecs)) * 1000);
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +57,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 	 */
 	@Override
 	protected synchronized void updateRequestTimerByNewFeed() {
-		updateRequestTimer(calculateRequestTimeout());
+		updateRequestTimer(calculateNextRequestTimeout());
 	}
 
 	/* (non-Javadoc)
