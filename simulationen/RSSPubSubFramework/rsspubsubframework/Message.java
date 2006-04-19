@@ -107,16 +107,16 @@ public class Message extends DisplayableObject {
 	 * @return Message has ended lifetime.
 	 */
 	boolean tick() {
-		try {
+//		try {
 			if ( ++pos == runtime ) {
 				dst.receiveMessage(this);
 				return true;
 			}
-		} catch ( Exception e ) {
-			System.err.println(e);
-			System.err.println("tick(): Message-class: " + this.getClass());
-			return true;
-		}
+//		} catch ( Exception e ) {
+//			System.err.println(e);
+//			System.err.println("tick(): Message-class: " + this.getClass());
+//			return true;
+//		}
 		return false;
 	}
 

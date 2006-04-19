@@ -17,15 +17,26 @@ public class SimRPSOSurr {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
 
-		SimParameters params = new SimParameters(args);
+		String parameterfile = "";
+
+		if ( args.length > 1 ) {
+
+			System.out.println("Invalid calling syntax!");
+			System.out.println("usage: <applname> [<filename>]");
+			System.exit(1);
+
+		} else if ( args.length == 1 ) {
+			parameterfile = args[0];
+		}
+
+		SimParameters params = new SimParameters(parameterfile);
 		
 		Engine.getSingleton().setTimerPeriod(params.engineTimerPeriod);
 		
 		Engine.getSingleton().init();
 
-		SzenarioOneSurrounded szenario = new SzenarioOneSurrounded(new RPSFactory() {
+		Szenario szenario = new SzenarioOneSurrounded(new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) {
 				return new Broker(xp, yp, params);
 			}

@@ -16,15 +16,26 @@ public class SimRPSContIntervall {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
 
-		SimParameters params = new SimParameters(args);
+		String parameterfile = "";
+
+		if ( args.length > 1 ) {
+
+			System.out.println("Invalid calling syntax!");
+			System.out.println("usage: <applname> [<filename>]");
+			System.exit(1);
+
+		} else if ( args.length == 1 ) {
+			parameterfile = args[0];
+		}
+
+		SimParameters params = new SimParameters(parameterfile);
 		
 		Engine.getSingleton().setTimerPeriod(params.engineTimerPeriod);
 		
 		Engine.getSingleton().init();
 
-		SzenarioAllForOne szenario = new SzenarioAllForOne(new RPSFactory() {
+		Szenario szenario = new SzenarioAllForOne(new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) {
 				return new Broker(xp, yp, params);
 			}

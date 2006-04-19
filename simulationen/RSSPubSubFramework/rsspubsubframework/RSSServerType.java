@@ -11,6 +11,10 @@ import java.util.*;
  *
  */
 public interface RSSServerType {
-	
+
+	/**
+	 * Shows information about the rssserver
+	 */
+	public void showInfo();
 
 }

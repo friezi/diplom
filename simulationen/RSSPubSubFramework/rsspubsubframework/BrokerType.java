@@ -30,4 +30,9 @@ public interface BrokerType {
 	 * Unregister from all brokers
 	 */
 	public void callbackUnregisterFromAllBrokers();
+
+	/**
+	 * Shows Information about the broker
+	 */
+	public void showInfo();
 }

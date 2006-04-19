@@ -48,8 +48,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -57,8 +56,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -73,8 +71,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					Engine.getSingleton().removeGraphicalObject(rectangle);
 					rectangle = new GORectangle(ds_point);
@@ -84,8 +81,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					Engine.getSingleton().removeGraphicalObject(rectangle);
 					rectangle = new GORectangle(ds_point);
@@ -156,6 +152,12 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 						} else if ( choice == UNBLOCK_NODE_CMD ) {
 
 							firstnode.unblock();
+							choice_status = NO_CHOICE;
+							enableGroup(buttongroup1);
+							return;
+						} else if ( choice == SHOW_INFO_CMD ) {
+
+							showInfo(firstnode);
 							choice_status = NO_CHOICE;
 							enableGroup(buttongroup1);
 							return;
@@ -243,6 +245,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String brokersFallApartCmd = "BF";
 
+	private static String showInfoCmd = "SI";
+
+	private static String selectNodeToShowCmd = "Select node to show info";
+
 	private static String blockAllCmd = "Block all!";
 
 	private static String unblockAllCmd = "Unblock all!";
@@ -280,6 +286,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	private JButton statisticbutton;
 
 	private JButton edgeidbutton;
+
+	private JButton showinfobutton;
 
 	private JButton deleteconnectionbutton;
 
@@ -323,6 +331,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static int UNBLOCK_NODE_SELECTION_CMD = 5;
 
+	private static int SHOW_INFO_CMD = 6;
+
 	private int choice = ADD_CONN_CMD;
 
 	private boolean toolbar = true;
@@ -358,7 +368,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				guip.addMouseListener(mouseclick);
 				guip.addMouseMotionListener(mouseclick);
 
-				JPanel buttonpanel = new JPanel(new GridLayout(12, 1));
+				JPanel buttonpanel = new JPanel(new GridLayout(13, 1));
 				buttonpanel.setBorder(new EmptyBorder(10, 30, 10, 30));
 
 				exitbutton = new JButton(exitCmd);
@@ -387,6 +397,11 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				edgeidbutton.setToolTipText("Show edge-ids");
 				edgeidbutton.addActionListener(guip);
 				buttonpanel.add(edgeidbutton);
+
+				showinfobutton = new JButton(showInfoCmd);
+				showinfobutton.setToolTipText("Show node information");
+				showinfobutton.addActionListener(guip);
+				buttonpanel.add(showinfobutton);
 
 				deleteconnectionbutton = new JButton(deleteConnectionCmd);
 				// deleteconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
@@ -449,6 +464,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 				buttongroup1.put(blocknodeselectionbutton, blockSelectionCmd);
 				buttongroup1.put(unblocknodeselectionbutton, unblockSelectionCmd);
 				buttongroup1.put(brokersfallapartbutton, brokersFallApartCmd);
+				buttongroup1.put(showinfobutton, showInfoCmd);
 
 				// displayframe.getContentPane().add(buttonpanel);
 				controlframe.getContentPane().add(buttonpanel);
@@ -511,7 +527,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		Set<Map.Entry<JButton, String>> entries = group.entrySet();
 
-		for ( Map.Entry<JButton, String> entry : entries )
+		for (Map.Entry<JButton, String> entry : entries)
 			entry.getKey().setEnabled(false); // disable
 	}
 
@@ -525,7 +541,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		Set<Map.Entry<JButton, String>> entries = group.entrySet();
 
-		for ( Map.Entry<JButton, String> entry : entries ) {
+		for (Map.Entry<JButton, String> entry : entries) {
 			// set default-operation
 			entry.getKey().setText(entry.getValue());
 			// enable
@@ -546,8 +562,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 			controlframe.setAlwaysOnTop(false);
 
-			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm",
-					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
 				System.exit(0);
 
 			controlframe.setAlwaysOnTop(true);
@@ -580,6 +595,13 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			Edge.setIdOn(false);
 			edgeidbutton.setText(showEdgeIdCmd);
 			edgeidbutton.setToolTipText("Show edge-ids");
+
+		} else if ( e.getActionCommand().equals(showInfoCmd) ) {
+
+			choice = SHOW_INFO_CMD;
+			showinfobutton.setText(selectNodeToShowCmd);
+			disableGroup(buttongroup1);
+			choice_status = FIRST_CHOICE;
 
 		} else if ( e.getActionCommand().equals(deleteConnectionCmd) ) {
 
@@ -619,12 +641,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(blockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
-					.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
-					.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
-			for ( Node node : nodes )
+			for (Node node : nodes)
 				node.block();
 
 			Engine.getSingleton().removeGraphicalObject(mouseclick.rectangle);
@@ -643,12 +663,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(unblockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
-					.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
-					.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
-			for ( Node node : nodes )
+			for (Node node : nodes)
 				node.unblock();
 
 			Engine.getSingleton().removeGraphicalObject(mouseclick.rectangle);
@@ -660,7 +678,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(brokersFallApartCmd) ) {
 
 			synchronized (Engine.getSingleton().nodeList) {
-				for ( Node node : Engine.getSingleton().nodeList )
+				for (Node node : Engine.getSingleton().nodeList)
 					if ( node instanceof BrokerType )
 						((BrokerType) node).callbackUnregisterFromAllBrokers();
 			}
@@ -758,6 +776,18 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			// or vice-versa?
 			((PubSubType) node2).callbackUnregisterFromBroker((BrokerType) node1);
 		}
+	}
+
+	protected void showInfo(Node node) {
+
+		if ( node instanceof RSSServerType ) {
+			((RSSServerType) node).showInfo();
+		} else if ( node instanceof BrokerType ) {
+			((BrokerType) node).showInfo();
+		} else if ( node instanceof PubSubType ) {
+			((PubSubType) node).showInfo();
+		}
+
 	}
 	//
 }

@@ -118,20 +118,20 @@ public class SimParameters {
 	private String comment = "Parameters for a RPSSimulation";
 
 	/**
-	 * @param args
+	 * @param filename
 	 *            from the command-line. Should hold the filename to read
 	 *            parameters from.
 	 * 
 	 * Opens the file args[0] and reads the parameters.
 	 * @throws IOException
 	 */
-	SimParameters(String args[]) throws IOException {
+	SimParameters(String filename) throws IOException {
 
 		Properties properties = new Properties();
 
 		FileInputStream infile;
 		FileOutputStream outfile;
-		String filename;
+//		String filename;
 
 		// set default-parameters
 		properties.setProperty("minUpIntv", String.valueOf(minUpIntv));
@@ -153,19 +153,23 @@ public class SimParameters {
 		properties.setProperty("engineTimerPeriod", String.valueOf(engineTimerPeriod));
 		properties.setProperty("serverDelay", String.valueOf(serverDelay));
 		properties.setProperty("serverQueueSize", String.valueOf(serverQueueSize));
+//
+//		if ( parameterfile.length > 1 ) {
+//
+//			System.out.println("Invalid calling syntax!");
+//			System.out.println("usage: <applname> [<filename>]");
+//			System.exit(1);
+//
+//		} else if ( parameterfile.length < 1 ) {
+//			System.out.println("No input-file given! Using default-parameters");
+//		} else {
 
-		if ( args.length > 1 ) {
+//			filename = filename[0];
 
-			System.out.println("Invalid calling syntax!");
-			System.out.println("usage: <applname> [<filename>]");
-			System.exit(1);
-
-		} else if ( args.length < 1 ) {
+		if (filename.equals("")){
 			System.out.println("No input-file given! Using default-parameters");
-		} else {
-
-			filename = args[0];
-
+		}else{
+		
 			try {
 
 				infile = new FileInputStream(filename);
@@ -185,8 +189,10 @@ public class SimParameters {
 					System.out.println("Warning: couldn't open file " + filename + " for writing.");
 				}
 			}
-
+			
 		}
+
+//		}
 
 		// set params
 		minUpIntv = Integer.valueOf((String) properties.getProperty("minUpIntv"));

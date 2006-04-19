@@ -39,6 +39,8 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 
 	protected int ttl;
 
+	protected float uploadScalingFactor = 1.0F;
+
 	/**
 	 * @param xp
 	 *            x-position
@@ -58,7 +60,6 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -69,7 +70,6 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	 */
 	@Override
 	protected void receiveMessage(Message m) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -83,8 +83,8 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	 */
 	protected void upload(Message m) {
 		try {
-			Thread.sleep(Engine.getSingleton().getTimerPeriod() * m.getRuntime());
-		} catch ( Exception e ) {
+			Thread.sleep((int)(Engine.getSingleton().getTimerPeriod() * m.getRuntime() * getUploadScalingFactor()));
+		} catch (Exception e) {
 			System.out.println("Exception: " + e);
 		}
 	}
@@ -206,6 +206,21 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	}
 
 	/**
+	 * @return Returns the uploadScalingFactor.
+	 */
+	public synchronized float getUploadScalingFactor() {
+		return uploadScalingFactor;
+	}
+
+	/**
+	 * @param uploadScalingFactor
+	 *            The uploadScalingFactor to set.
+	 */
+	public synchronized void setUploadScalingFactor(float uploadScalingFactor) {
+		this.uploadScalingFactor = uploadScalingFactor;
+	}
+
+	/**
 	 * This method checks if a given point is whithin the borders of the node.
 	 * 
 	 * @param point
@@ -235,6 +250,14 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	 */
 	public RSSServerNodeStatistics getStatistics() {
 		return statistics;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rsspubsubframework.RSSServerType#showInfo()
+	 */
+	public void showInfo() {
 	}
 
 }

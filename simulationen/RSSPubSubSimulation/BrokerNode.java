@@ -224,4 +224,11 @@ public abstract class BrokerNode extends Node implements BrokerType, Observer {
 		Engine.getSingleton().removeEdgeFromNodes(node1, node2);
 	}
 
+	/* (non-Javadoc)
+	 * @see rsspubsubframework.BrokerType#showInfo()
+	 */
+	public void showInfo() {
+		
+	}
+
 }

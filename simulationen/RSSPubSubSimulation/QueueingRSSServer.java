@@ -6,6 +6,10 @@ import java.util.*;
 import java.lang.*;
 import java.lang.reflect.*;
 import rsspubsubframework.*;
+import javax.swing.*;
+import javax.swing.event.*;
+
+import java.awt.*;
 
 /**
  * @author Friedemann Zintel
@@ -22,7 +26,7 @@ public class QueueingRSSServer extends RSSServer {
 
 			RSSFeedRequestMessage request;
 
-			while ( isEmpty == false ) {
+			while (isEmpty == false) {
 
 				synchronized (requestqueue) {
 
@@ -48,7 +52,7 @@ public class QueueingRSSServer extends RSSServer {
 
 					processUnrepliedRequests(number);
 
-				} catch ( Exception e ) {
+				} catch (Exception e) {
 					System.err.println("HandleRequessTask: run(): caught Exception: " + e);
 					System.exit(1);
 				}
@@ -140,7 +144,7 @@ public class QueueingRSSServer extends RSSServer {
 			if ( isEmpty == true )
 				new Thread(new HandleRequestsTask()).start();
 
-		} catch ( Exception e ) {
+		} catch (Exception e) {
 			System.err.println("QueueingRSSServer: handleRSSFeedRequestMessage(): caught Exception: " + e);
 			System.exit(1);
 		}
@@ -153,8 +157,8 @@ public class QueueingRSSServer extends RSSServer {
 		this.getStatistics().addReceivedRSSFeedRequest(this);
 
 		Message m;
-		(m = new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory()
-				.newRSSFeedRepresentation(null, getFeed()), params)).send();
+		(m = new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(null, getFeed()), params))
+				.send();
 
 		upload(m);
 
@@ -164,10 +168,84 @@ public class QueueingRSSServer extends RSSServer {
 
 		try {
 			Thread.sleep((Engine.getSingleton().getTimerPeriod() * params.rssFeedMsgRT * number) / 8);
-		} catch ( Exception e ) {
+		} catch (Exception e) {
 			System.out.println("Exception: " + e);
 		}
 
+	}
+
+	protected class InfoWindow extends JFrame implements ChangeListener {
+
+		int xpos = 200;
+
+		int ypos = 200;
+
+		int maxValue = 50;
+
+		RSSServerNode rssserver;
+
+		JPanel panel = new JPanel();
+
+		JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
+
+		JSlider slider;
+
+		protected InfoWindow(String titel, RSSServerNode rssserver) {
+
+			super(titel);
+
+			this.rssserver = rssserver;
+
+			slider = new JSlider(0, maxValue, (int)(rssserver.getUploadScalingFactor()*10));
+			slider.addChangeListener(this);
+			slider.setMajorTickSpacing(10);
+			slider.setMinorTickSpacing(1);
+			slider.setPaintTicks(true);
+			slider.setPaintLabels(true);
+			//	        slider.setBorder(
+			//	                BorderFactory.createEmptyBorder(0,0,10,0));
+
+			sliderpanel.add(new JLabel("reply-delay scaling-factor * 10", JLabel.CENTER));
+			sliderpanel.add(slider);
+
+			panel.add(sliderpanel);
+
+			this.setContentPane(panel);
+
+			this.setResizable(false);
+
+			this.setLocation(xpos, ypos);
+
+			this.setAlwaysOnTop(true);
+
+			this.pack();
+
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+		 */
+		public void stateChanged(ChangeEvent e) {
+			// TODO Auto-generated method stub
+
+			JSlider slider = (JSlider) e.getSource();
+
+			if ( slider.getValueIsAdjusting() == false ) {
+				rssserver.setUploadScalingFactor(((float) slider.getValue()) / 10);
+				System.out.println("uploadScalingFactor: " + rssserver.getUploadScalingFactor());
+			}
+
+		}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see RSSServerNode#showInfo()
+	 */
+	@Override
+	public void showInfo() {
+		super.showInfo();
+		new InfoWindow("RSSServer-Info", this).setVisible(true);
 	}
 
 	/*

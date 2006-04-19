@@ -53,7 +53,6 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -63,7 +62,6 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 
 	@Override
 	protected void receiveMessage(Message m) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -159,7 +157,6 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	 */
 	@Override
 	public boolean whithinRectangle(Point point1, Point point2) {
-		// TODO Auto-generated method stub
 
 		int s = size();
 		int x1 = this.xPos() - (s + 5) / 2;
@@ -195,7 +192,6 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	 * 
 	 */
 	public void callbackRegisterAtBroker(BrokerType arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -207,7 +203,6 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	 * does nothing so far!
 	 */
 	public void callbackUnregisterFromBroker(BrokerType arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -217,7 +212,6 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -226,6 +220,13 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	 */
 	public PubSubNodeStatistics getStatistics() {
 		return statistics;
+	}
+
+	/* (non-Javadoc)
+	 * @see rsspubsubframework.PubSubType#showInfo()
+	 */
+	public void showInfo() {
+		
 	}
 
 }

@@ -26,4 +26,9 @@ public interface PubSubType {
 	 */
 	public void callbackUnregisterFromBroker(BrokerType broker);
 
+	/**
+	 * Shows Information about the pubsub
+	 */
+	public void showInfo();
+
 }
