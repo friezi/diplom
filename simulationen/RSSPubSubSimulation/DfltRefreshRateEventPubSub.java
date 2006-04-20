@@ -1,5 +1,14 @@
+import java.awt.GridLayout;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Random;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * 
@@ -14,8 +23,6 @@ import java.util.Random;
  *
  */
 public class DfltRefreshRateEventPubSub extends EventPubSub {
-	
-	
 
 	/**
 	 * @param xp
@@ -45,11 +52,11 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 		Date feedDate = getFeed().getGeneralContent().getLastBuiltDate();
 		int ttl = getFeed().getGeneralContent().getTtl();
 		int diffsecs = (int) ((now.getTime() - feedDate.getTime()) / 1000);
-		if (diffsecs > ttl)
+		if ( diffsecs > ttl )
 			diffsecs = ttl;
-//			diff = 0;
+		//			diff = 0;
 		//		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
-		return (long) ((new Random().nextFloat() * (params.maxRefreshRate) + (ttl - diffsecs)) * 1000);
+		return (long) ((new Random().nextFloat() * (getMaxRefreshRate()) + (ttl - diffsecs)) * 1000);
 	}
 
 	/* (non-Javadoc)
@@ -65,10 +72,88 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 	 */
 	@Override
 	protected synchronized void updateRequestTimerByOldFeed() {
-		updateRequestTimer(params.maxRefreshRate*1000);
+		updateRequestTimer(getMaxRefreshRate() * 1000);
 	}
 
-	
-	
+	/* (non-Javadoc)
+	 * @see PubSub#updateRequestTimer(long)
+	 */
+	@Override
+	synchronized protected void updateRequestTimer(long interval) {
+
+		feedRequestTask.cancel();
+		purgeFeedRequestTimer();
+		feedRequestTask = new FeedRequestTask(this);
+		// if there's no response from server, we need to re-request
+		feedRequestTimer.schedule(feedRequestTask, interval, getMaxRefreshRate() * 1000);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see RSSServerNode#showInfo()
+	 */
+	@Override
+	public void showInfo() {
+		super.showInfo();
+		new InfoWindowExtension(infoWindow);
+	}
+
+	protected class InfoWindowExtension implements ChangeListener {
+
+		int maxValue = 60;
+
+		InfoWindow baseWindow;
+
+		public InfoWindowExtension(InfoWindow baseWindow) {
+
+			this.baseWindow = baseWindow;
+
+			JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
+
+			JSlider slider;
+
+			Hashtable<Integer, JLabel> labeltable = new Hashtable<Integer, JLabel>();
+
+			labeltable.put(1, new JLabel("1"));
+
+			for ( int i = 10; i <= maxValue; i += 10 )
+				labeltable.put(i, new JLabel(new Integer(i).toString()));
+
+			slider = new JSlider(1, maxValue, (int) (baseWindow.getPubsub().getMaxRefreshRate()));
+			slider.setLabelTable(labeltable);
+			slider.addChangeListener(this);
+			slider.setMajorTickSpacing(10);
+			slider.setMinorTickSpacing(1);
+			slider.setPaintTicks(true);
+			slider.setPaintLabels(true);
+
+			sliderpanel.add(new JLabel("max. refresh-rate", JLabel.CENTER));
+			sliderpanel.add(slider);
+
+			baseWindow.getContentPane().add(new JSeparator());
+			baseWindow.getContentPane().add(sliderpanel);
+
+			baseWindow.pack();
+
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+		 */
+		public void stateChanged(ChangeEvent e) {
+
+			JSlider slider = (JSlider) e.getSource();
+
+			if ( slider.getValueIsAdjusting() == false ) {
+				baseWindow.getPubsub().setMaxRefreshRate(slider.getValue());
+			}
+
+		}
+
+	}
 
 }

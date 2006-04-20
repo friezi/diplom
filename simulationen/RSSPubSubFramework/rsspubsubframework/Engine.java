@@ -187,7 +187,7 @@ final public class Engine {
 	 *            The node to add.
 	 */
 	final void addNode(Node localNode) {
-		synchronized (nodeList) {
+		synchronized ( nodeList ) {
 			nodeList.add(localNode);
 		}
 	}
@@ -201,7 +201,7 @@ final public class Engine {
 	 *            The edge to add.
 	 */
 	final void addEdge(Edge localEdge) {
-		synchronized (edgeList) {
+		synchronized ( edgeList ) {
 			edgeList.add(localEdge);
 		}
 	}
@@ -217,7 +217,7 @@ final public class Engine {
 	 *            second node
 	 */
 	final void addEdge(Node node1, Node node2) {
-		synchronized (edgeList) {
+		synchronized ( edgeList ) {
 			edgeList.add(new Edge(node1, node2));
 		}
 	}
@@ -229,7 +229,7 @@ final public class Engine {
 	 *            the edge
 	 */
 	final void removeEdge(Edge edge) {
-		synchronized (edgeList) {
+		synchronized ( edgeList ) {
 			edgeList.remove(edge);
 			edge.removeConnection();
 		}
@@ -241,9 +241,9 @@ final public class Engine {
 		boolean foundfirst = false;
 		boolean foundsecond = false;
 
-		synchronized (edgeList) {
+		synchronized ( edgeList ) {
 
-			for (Edge edge : edgeList) {
+			for ( Edge edge : edgeList ) {
 
 				if ( foundfirst == true && foundsecond == true )
 					break;
@@ -284,18 +284,20 @@ final public class Engine {
 	 * @param localMessage
 	 *            The message to add.
 	 */
-	final synchronized void addMessage(Message localMessage) {
-		newMessages.add(localMessage);
+	final void addMessage(Message localMessage) {
+		synchronized ( newMessages ) {
+			newMessages.add(localMessage);
+		}
 	}
 
 	final void addGraphicalObject(GraphicalObject gob) {
-		synchronized (graphicalObjects) {
+		synchronized ( graphicalObjects ) {
 			graphicalObjects.add(gob);
 		}
 	}
 
 	final void removeGraphicalObject(GraphicalObject gob) {
-		synchronized (graphicalObjects) {
+		synchronized ( graphicalObjects ) {
 			graphicalObjects.remove(gob);
 		}
 	}
@@ -312,9 +314,9 @@ final public class Engine {
 	 */
 	private static int[] getRandomPermutation(int s) {
 		int a[] = new int[s];
-		for (int i = 0; i < s; ++i)
+		for ( int i = 0; i < s; ++i )
 			a[i] = i;
-		for (int i = 0; i < s; ++i) {
+		for ( int i = 0; i < s; ++i ) {
 			int p = (int) (Math.random() * s);
 			int v = a[i];
 			a[i] = a[p];
@@ -333,14 +335,14 @@ final public class Engine {
 	 *            Number of nodes to be initialized.
 	 */
 	public static void initRandomNodes(int num) {
-		synchronized (singleton.nodeList) {
+		synchronized ( singleton.nodeList ) {
 			int s = singleton.nodeList.size();
 			int a[] = getRandomPermutation(s);
 			Node n[] = new Node[s];
 			n = singleton.nodeList.toArray(n);
 			if ( s > num )
 				s = num;
-			while (s > 0)
+			while ( s > 0 )
 				n[a[--s]].init();
 		}
 	}
@@ -360,10 +362,10 @@ final public class Engine {
 	 * This is the internal method called by the wrapper method setUniqueIds().
 	 */
 	final private void internalSetUniqueIds() {
-		synchronized (nodeList) {
+		synchronized ( nodeList ) {
 			int a[] = getRandomPermutation(nodeList.size());
 			java.util.Iterator<Node> nl = nodeList.iterator();
-			for (int i = 0; i < nodeList.size(); ++i) {
+			for ( int i = 0; i < nodeList.size(); ++i ) {
 				nl.next().setId(a[i] + 1);
 			}
 		}
@@ -391,9 +393,9 @@ final public class Engine {
 	 *            Random ids should be in range from 1 to this value.
 	 */
 	final private void internalSetRandomIds(int max) {
-		synchronized (nodeList) {
+		synchronized ( nodeList ) {
 			java.util.Iterator<Node> nl = nodeList.iterator();
-			while (nl.hasNext()) {
+			while ( nl.hasNext() ) {
 				nl.next().setId((int) (Math.random() * max) + 1);
 			}
 		}
@@ -411,27 +413,27 @@ final public class Engine {
 
 		try {
 
-			synchronized (edgeList) {
-				for (Edge ce : edgeList)
+			synchronized ( edgeList ) {
+				for ( Edge ce : edgeList )
 					ce.drawobj(g);
 			}
 
-			synchronized (nodeList) {
-				for (Node cn : nodeList)
+			synchronized ( nodeList ) {
+				for ( Node cn : nodeList )
 					cn.drawobj(g);
 			}
 
-			synchronized (messageList) {
-				for (Message cm : messageList)
+			synchronized ( messageList ) {
+				for ( Message cm : messageList )
 					cm.drawobj(g);
 			}
 
-			synchronized (graphicalObjects) {
-				for (GraphicalObject go : graphicalObjects)
+			synchronized ( graphicalObjects ) {
+				for ( GraphicalObject go : graphicalObjects )
 					go.drawobj(g);
 			}
 
-		} catch (Exception e) {
+		} catch ( Exception e ) {
 			System.out.println("Engine.draw(): " + e);
 		}
 
@@ -482,8 +484,10 @@ final public class Engine {
 	 */
 	final void fixupMessageList() {
 
-		synchronized (messageList) {
-			messageList.addAll(newMessages);
+		synchronized ( newMessages ) {
+			synchronized ( messageList ) {
+				messageList.addAll(newMessages);
+			}
 			newMessages.clear();
 		}
 	}
@@ -500,7 +504,7 @@ final public class Engine {
 
 			long starttime = date.getTime();
 
-			while (true) {
+			while ( true ) {
 
 				try {
 
@@ -523,11 +527,11 @@ final public class Engine {
 
 							final int numMessages;
 
-							synchronized (messageList) {
+							synchronized ( messageList ) {
 
 								fixupMessageList();
 								java.util.Iterator<Message> ml = messageList.iterator();
-								while (ml.hasNext()) {
+								while ( ml.hasNext() ) {
 									Message cm = ml.next();
 									if ( cm.tick() ) {
 										ml.remove();
@@ -543,7 +547,7 @@ final public class Engine {
 							if ( numMessages > maxMessages )
 								maxMessages = numMessages;
 
-							db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
+							repaintGUI();
 
 						}
 
@@ -555,7 +559,7 @@ final public class Engine {
 							active = true;
 
 							// call init() for all nodes in initList
-							for (Node node : initList)
+							for ( Node node : initList )
 								node.init();
 
 						}
@@ -580,13 +584,17 @@ final public class Engine {
 						delay = getTimerPeriod() - diff;
 
 					Thread.sleep(delay);
-				} catch (Exception e) {
+				} catch ( Exception e ) {
 					System.err.println("Engine.run(): " + e);
 				}
 				// t.schedule(new EngineTask(), delay);
 
 			}
 		}
+	}
+
+	public void repaintGUI() {
+		db.repaint(0, 0, 0, db.getWidth(), db.getHeight());
 	}
 
 	/**
@@ -640,9 +648,9 @@ final public class Engine {
 
 	Node findNode(Point point) {
 
-		synchronized (nodeList) {
+		synchronized ( nodeList ) {
 
-			for (Node node : nodeList) {
+			for ( Node node : nodeList ) {
 				if ( node.pointWhithin(point) == true )
 					return node;
 			}
@@ -655,9 +663,9 @@ final public class Engine {
 
 		LinkedList<Node> nodes = new LinkedList<Node>();
 
-		synchronized (nodeList) {
+		synchronized ( nodeList ) {
 
-			for (Node node : nodeList) {
+			for ( Node node : nodeList ) {
 				if ( node.whithinRectangle(point1, point2) ) {
 					nodes.add(node);
 				}

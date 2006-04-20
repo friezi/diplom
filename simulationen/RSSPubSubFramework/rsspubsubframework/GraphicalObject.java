@@ -16,7 +16,19 @@ public abstract class GraphicalObject extends DisplayableObject {
 	 */
 	public GraphicalObject() {
 		super();
-		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * You must call display() for displaying the GraphicalObject
+	 */
+	public void display() {
+		Engine.getSingleton().addGraphicalObject(this);
+	}
+	/**
+	 * Removes the GO from display
+	 */
+	public void undisplay() {
+		Engine.getSingleton().removeGraphicalObject(this);
 	}
 
 	abstract void drawobj(Graphics g);

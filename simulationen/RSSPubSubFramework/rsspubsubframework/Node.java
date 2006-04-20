@@ -454,4 +454,18 @@ abstract public class Node extends DisplayableObject {
 	protected synchronized void setBlocked(boolean blocked) {
 		this.blocked = blocked;
 	}
+
+	/**
+	 * @return Returns the x.
+	 */
+	public int getX() {
+		return x;
+	}
+
+	/**
+	 * @return Returns the y.
+	 */
+	public int getY() {
+		return y;
+	}
 }

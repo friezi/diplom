@@ -102,6 +102,8 @@ public class Simulation {
 		Engine.getSingleton().init();
 
 		Szenario szenario = newSzenario();
+		
+		Engine.getSingleton().repaintGUI();
 
 	}
 

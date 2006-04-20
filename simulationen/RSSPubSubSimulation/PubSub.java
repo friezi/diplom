@@ -1,7 +1,12 @@
 import rsspubsubframework.*;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 public class PubSub extends PubSubNode {
 
@@ -132,6 +137,8 @@ public class PubSub extends PubSubNode {
 
 	protected long networksize = 1;
 
+	protected InfoWindow infoWindow;
+
 	public PubSub(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
 		this.spreadDivisor = params.spreadDivisor;
@@ -245,8 +252,7 @@ public class PubSub extends PubSubNode {
 
 			// show the feed
 			setFeed(fm.getFeed());
-			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this,
-					getFeed()));
+			setRssFeedRepresentation(getRssFeedRepresentationFactory().newRSSFeedRepresentation(this, getFeed()));
 			getRssFeedRepresentation().represent();
 
 			// send the feed to Broker, if we didn't get the message from
@@ -259,8 +265,7 @@ public class PubSub extends PubSubNode {
 				this.getStatistics().addServerFeed(this);
 
 				for ( BrokerNode broker : brokerlist )
-					new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null,
-							getFeed()), params).send();
+					new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
 
 			} else {
 
@@ -276,8 +281,7 @@ public class PubSub extends PubSubNode {
 				// send it to all other brokers
 				for ( BrokerNode broker : brokerlist )
 					if ( broker != fm.getSrc() )
-						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(
-								null, getFeed()), params).send();
+						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
 
 			}
 
@@ -405,8 +409,7 @@ public class PubSub extends PubSubNode {
 
 		new RegisterSubscriberMessage(this, (BrokerNode) broker, params.subnetParamMsgRT).send();
 		AckTimerTask task = new AckTimerTask(this, (BrokerNode) broker);
-		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor
-				* params.pingTimer);
+		ackTimer.schedule(task, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor * params.pingTimer);
 		acktaskmap.put((BrokerNode) broker, task);
 
 	}
@@ -435,5 +438,83 @@ public class PubSub extends PubSubNode {
 			frtPurgeCounter = 0;
 
 		}
+	}
+
+	protected class InfoWindow extends JFrame {
+		
+		protected class CloseWindowAdapter extends WindowAdapter{
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
+			 */
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				
+				hook.undisplay();
+				rope.undisplay();
+				super.windowClosed(arg0);
+			}
+			
+		}
+
+		int xpos = 200;
+
+		int ypos = 200;
+
+		int radius = 6;
+
+		PubSubNode pubsub;
+		
+		GOFilledCircle hook;
+		
+		GOHyperLine rope;
+
+		JPanel panel = new JPanel();
+
+		protected InfoWindow(String titel, PubSubNode pubsub) {
+
+			super(titel);
+			
+			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+			this.pubsub = pubsub;
+
+			(hook = new GOFilledCircle(pubsub.getX(), pubsub.getY(), radius)).display();
+			(rope=new GOHyperLine(pubsub.getX(),pubsub.getY(),this.getX(),this.getY())).display();
+			
+			System.out.println(this.getX() + "   "+this.getY());
+			
+			this.addWindowListener(new CloseWindowAdapter());
+
+			this.setContentPane(panel);
+
+			this.setResizable(false);
+
+			this.setLocation(xpos, ypos);
+
+			this.setAlwaysOnTop(true);
+
+			this.pack();
+			
+			this.setVisible(true);
+
+		}
+
+		/**
+		 * @return Returns the pubsub.
+		 */
+		public PubSubNode getPubsub() {
+			return pubsub;
+		}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see PubSubNode#showInfo()
+	 */
+	@Override
+	public void showInfo() {
+		super.showInfo();
+		(infoWindow = new InfoWindow("PubSub-Info", this)).setVisible(true);
 	}
 }

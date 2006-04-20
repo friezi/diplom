@@ -40,7 +40,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		Node secondnode = null;
 
-		GORectangle rectangle = null;
+		GORectangle rectangle = new GORectangle(0,0,0,0);
 
 		public void mouseDragged(MouseEvent event) {
 
@@ -73,9 +73,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
-					Engine.getSingleton().removeGraphicalObject(rectangle);
-					rectangle = new GORectangle(ds_point);
-					Engine.getSingleton().addGraphicalObject(rectangle);
+					rectangle.undisplay();
+					(rectangle = new GORectangle(ds_point)).display();
 					return;
 				}
 
@@ -83,9 +82,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
-					Engine.getSingleton().removeGraphicalObject(rectangle);
-					rectangle = new GORectangle(ds_point);
-					Engine.getSingleton().addGraphicalObject(rectangle);
+					rectangle.undisplay();
+					(rectangle = new GORectangle(ds_point)).display();
 					return;
 				}
 

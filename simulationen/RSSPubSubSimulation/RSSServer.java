@@ -1,6 +1,14 @@
 import rsspubsubframework.*;
 
+import java.awt.GridLayout;
 import java.util.*;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class RSSServer extends RSSServerNode {
 
@@ -24,7 +32,7 @@ public class RSSServer extends RSSServerNode {
 	 * Message from a timertask to indicate that a new feed should be generated
 	 * 
 	 * @author Friedemann Zintel
-	 *
+	 * 
 	 */
 	protected class GenerateFeedMessage extends InternalMessage {
 
@@ -37,6 +45,8 @@ public class RSSServer extends RSSServerNode {
 	protected RSSFeed feed;
 
 	protected Random random;
+
+	protected JFrame infoWindow;
 
 	Timer timer = new Timer();
 
@@ -90,14 +100,14 @@ public class RSSServer extends RSSServerNode {
 	protected void receiveMessage(Message m) {
 
 		// process only if not blocked
-		if (isBlocked() == true)
+		if ( isBlocked() == true )
 			return;
 
-		if (m instanceof RSSFeedRequestMessage) {
+		if ( m instanceof RSSFeedRequestMessage ) {
 
 			handleRSSFeedRequestMessage((RSSFeedRequestMessage) m);
 
-		} else if (m instanceof GenerateFeedMessage) {
+		} else if ( m instanceof GenerateFeedMessage ) {
 
 			handleUpdateFeedMessage((GenerateFeedMessage) m);
 
@@ -107,7 +117,8 @@ public class RSSServer extends RSSServerNode {
 
 	protected void handleRSSFeedRequestMessage(RSSFeedRequestMessage rfrm) {
 
-		// observers (most probably the Engine) have to be informed about the request
+		// observers (most probably the Engine) have to be informed about the
+		// request
 		this.getStatistics().addReceivedRSSFeedRequest(this);
 
 		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(null, getFeed()), params).send();
@@ -137,6 +148,43 @@ public class RSSServer extends RSSServerNode {
 
 	public synchronized void setDefaultColor() {
 		getRssFeedRepresentation().represent();
+	}
+
+	protected class InfoWindow extends JFrame {
+
+		int xpos = 200;
+
+		int ypos = 200;
+
+		JPanel panel = new JPanel();
+
+		protected InfoWindow(String titel) {
+
+			super(titel);
+
+			this.setContentPane(panel);
+
+			this.setResizable(false);
+
+			this.setLocation(xpos, ypos);
+
+			this.setAlwaysOnTop(true);
+
+			this.pack();
+
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see RSSServerNode#showInfo()
+	 */
+	@Override
+	public void showInfo() {
+		super.showInfo();
+		(infoWindow = new InfoWindow("RSSServer-Info")).setVisible(true);
 	}
 
 }

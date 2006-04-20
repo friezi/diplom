@@ -1,5 +1,15 @@
+import java.awt.GridLayout;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Random;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * 
@@ -28,8 +38,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 * @param rssEventFeedFactory
 	 * @param params
 	 */
-	public CongestionControlEventPubSub(int xp, int yp, RSSEventFeedFactory rssEventFeedFactory,
-			SimParameters params) {
+	public CongestionControlEventPubSub(int xp, int yp, RSSEventFeedFactory rssEventFeedFactory, SimParameters params) {
 		super(xp, yp, rssEventFeedFactory, params);
 	}
 
@@ -102,7 +111,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		// diff)) * 1000;
 		long timeoutsecs = requestFeedTimeoutValue / 1000;
 		// if ( requestFeedTimeoutValue < getMaxRefreshRateMS() )
-		// timeout = params.maxRefreshRate;
+		// timeout = getMaxRefreshRate();
 		// else
 		// timeout = requestFeedTimeoutValue/1000;
 		return (long) ((new Random().nextFloat() * timeoutsecs + (ttl - diffsecs)) * 1000);
@@ -218,10 +227,78 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	/**
 	 * returns the maxRefreshRate in miliseconds
 	 * 
-	 * @return
+	 * @return maxRefreshRate in miliseconds
 	 */
 	protected long getMaxRefreshRateMS() {
-		return params.maxRefreshRate * 1000;
+		return getMaxRefreshRate() * 1000;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see RSSServerNode#showInfo()
+	 */
+	@Override
+	public void showInfo() {
+		super.showInfo();
+		new InfoWindowExtension(infoWindow);
+	}
+
+	protected class InfoWindowExtension implements ChangeListener {
+
+		int maxValue = 60;
+
+		InfoWindow baseWindow;;
+
+		public InfoWindowExtension(InfoWindow baseWindow) {
+
+			this.baseWindow = baseWindow;
+
+			JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
+
+			JSlider slider;
+
+			Hashtable<Integer, JLabel> labeltable = new Hashtable<Integer, JLabel>();
+
+			labeltable.put(1, new JLabel("1"));
+
+			for ( int i = 10; i <= maxValue; i += 10 )
+				labeltable.put(i, new JLabel(new Integer(i).toString()));
+
+			slider = new JSlider(1, maxValue, (int) (baseWindow.getPubsub().getMaxRefreshRate()));
+			slider.setLabelTable(labeltable);
+			slider.addChangeListener(this);
+			slider.setMajorTickSpacing(10);
+			slider.setMinorTickSpacing(1);
+			slider.setPaintTicks(true);
+			slider.setPaintLabels(true);
+
+			sliderpanel.add(new JLabel("max. refresh-rate", JLabel.CENTER));
+			sliderpanel.add(slider);
+
+			baseWindow.getContentPane().add(new JSeparator());
+			baseWindow.getContentPane().add(sliderpanel);
+
+			baseWindow.pack();
+
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+		 */
+		public void stateChanged(ChangeEvent e) {
+			// TODO
+			JSlider slider = (JSlider) e.getSource();
+
+			if ( slider.getValueIsAdjusting() == false ) {
+				baseWindow.getPubsub().setMaxRefreshRate(slider.getValue());
+				System.out.println("maxRefreshRate: " + baseWindow.getPubsub().getMaxRefreshRate());
+			}
+
+		}
+
 	}
 
 }

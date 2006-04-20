@@ -23,33 +23,24 @@ public class GORectangle extends GraphicalObject {
 	 * 
 	 */
 	public GORectangle(int x1, int y1, int x2, int y2) {
-		// TODO Auto-generated constructor stub
-		init(x1, y1, x2, y2);
+		setValues(x1, y1, x2, y2);
 	}
 
 	public GORectangle(Point point) {
-		init(point.x, point.y, point.x, point.y);
+		setValues(point.x, point.y, point.x, point.y);
 	}
 
-	private void init(int x1, int y1, int x2, int y2) {
+	private void setValues(int x1, int y1, int x2, int y2) {
 
 		this.x1 = x1;
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
 		setColor(Color.black);
-		Engine.getSingleton().addGraphicalObject(this);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see rsspubsubframework.DisplayableObject#draw(java.awt.Graphics, int,
-	 *      int)
-	 */
 	protected void draw(Graphics g) {
-		// TODO Auto-generated method stub
 		int x = Engine.scaleX(this.x1);
 		int y = Engine.scaleY(this.y1);
 		int width = Engine.scaleX(this.x2) - x;
@@ -58,6 +49,10 @@ public class GORectangle extends GraphicalObject {
 		g.drawRect(x, y, width, height);
 	}
 
+	/* (non-Javadoc)
+	 * @see rsspubsubframework.GraphicalObject#drawobj(java.awt.Graphics)
+	 */
+	@Override
 	synchronized final void drawobj(Graphics g) {
 		draw(g);
 	}

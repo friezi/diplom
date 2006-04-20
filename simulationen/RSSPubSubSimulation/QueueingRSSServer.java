@@ -26,9 +26,9 @@ public class QueueingRSSServer extends RSSServer {
 
 			RSSFeedRequestMessage request;
 
-			while (isEmpty == false) {
+			while ( isEmpty == false ) {
 
-				synchronized (requestqueue) {
+				synchronized ( requestqueue ) {
 
 					getStatistics().setRequestsInQueue(requestqueue.size());
 
@@ -43,21 +43,22 @@ public class QueueingRSSServer extends RSSServer {
 					int number;
 
 					// also unreplied requests consume processing time
-					synchronized (unrepliedRequests) {
+					synchronized ( unrepliedRequests ) {
 
 						number = unrepliedRequests.size();
 						unrepliedRequests.clear();
 
 					}
 
+					getStatistics().setUnrepliedRequests(number);
 					processUnrepliedRequests(number);
 
-				} catch (Exception e) {
+				} catch ( Exception e ) {
 					System.err.println("HandleRequessTask: run(): caught Exception: " + e);
 					System.exit(1);
 				}
 
-				synchronized (requestqueue) {
+				synchronized ( requestqueue ) {
 
 					requestqueue.removeFirst();
 					isEmpty = requestqueue.isEmpty();
@@ -100,7 +101,7 @@ public class QueueingRSSServer extends RSSServer {
 		// enqueue the new feed-request
 		// all odd requests will be put to unrepliedRequests, they will consume
 		// some processing-time
-		synchronized (requestqueue) {
+		synchronized ( requestqueue ) {
 
 			if ( requestqueue.isEmpty() == true )
 				isEmpty = true;
@@ -113,15 +114,15 @@ public class QueueingRSSServer extends RSSServer {
 
 				requestqueue.addLast(rfrm);
 				if ( rsize < params.serverQueueSize - 1 ) {
-					numberUnrepliedRequests = 0;
-					getStatistics().setUnrepliedRequests(numberUnrepliedRequests);
+					// numberUnrepliedRequests = 0;
+					// getStatistics().setUnrepliedRequests(numberUnrepliedRequests);
 				}
 
 			} else {
-				synchronized (unrepliedRequests) {
+				synchronized ( unrepliedRequests ) {
 					unrepliedRequests.addFirst(rfrm);
-					numberUnrepliedRequests++;
-					getStatistics().setUnrepliedRequests(numberUnrepliedRequests);
+					// numberUnrepliedRequests++;
+					// getStatistics().setUnrepliedRequests(numberUnrepliedRequests);
 				}
 			}
 		}
@@ -144,7 +145,7 @@ public class QueueingRSSServer extends RSSServer {
 			if ( isEmpty == true )
 				new Thread(new HandleRequestsTask()).start();
 
-		} catch (Exception e) {
+		} catch ( Exception e ) {
 			System.err.println("QueueingRSSServer: handleRSSFeedRequestMessage(): caught Exception: " + e);
 			System.exit(1);
 		}
@@ -168,61 +169,67 @@ public class QueueingRSSServer extends RSSServer {
 
 		try {
 			Thread.sleep((Engine.getSingleton().getTimerPeriod() * params.rssFeedMsgRT * number) / 8);
-		} catch (Exception e) {
+		} catch ( Exception e ) {
 			System.out.println("Exception: " + e);
 		}
 
 	}
 
-	protected class InfoWindow extends JFrame implements ChangeListener {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see RSSServerNode#showInfo()
+	 */
+	@Override
+	public void showInfo() {
+		super.showInfo();
+		new InfoWindowExtension(infoWindow, this);
+	}
 
-		int xpos = 200;
-
-		int ypos = 200;
-
-		int maxValue = 50;
+	protected class InfoWindowExtension implements ChangeListener {
 
 		RSSServerNode rssserver;
 
-		JPanel panel = new JPanel();
+		int maxValue = 50;
 
-		JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
+		public InfoWindowExtension(JFrame baseWindow, RSSServerNode rssserver) {
 
-		JSlider slider;
+			JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
 
-		protected InfoWindow(String titel, RSSServerNode rssserver) {
-
-			super(titel);
+			JSlider slider;
 
 			this.rssserver = rssserver;
 
-			slider = new JSlider(0, maxValue, (int)(rssserver.getUploadScalingFactor()*10));
+			Hashtable<Integer, JLabel> labeltable = new Hashtable<Integer, JLabel>();
+
+			labeltable.put(0, new JLabel("0"));
+			labeltable.put(10, new JLabel("1.0"));
+			labeltable.put(20, new JLabel("2.0"));
+			labeltable.put(30, new JLabel("3.0"));
+			labeltable.put(40, new JLabel("4.0"));
+			labeltable.put(50, new JLabel("5.0"));
+
+			slider = new JSlider(0, maxValue, (int) (rssserver.getUploadScalingFactor() * 10));
+			slider.setLabelTable(labeltable);
 			slider.addChangeListener(this);
 			slider.setMajorTickSpacing(10);
 			slider.setMinorTickSpacing(1);
 			slider.setPaintTicks(true);
 			slider.setPaintLabels(true);
-			//	        slider.setBorder(
-			//	                BorderFactory.createEmptyBorder(0,0,10,0));
 
-			sliderpanel.add(new JLabel("reply-delay scaling-factor * 10", JLabel.CENTER));
+			sliderpanel.add(new JLabel("reply-delay scaling-factor", JLabel.CENTER));
 			sliderpanel.add(slider);
 
-			panel.add(sliderpanel);
+			baseWindow.getContentPane().add(new JSeparator());
+			baseWindow.getContentPane().add(sliderpanel);
 
-			this.setContentPane(panel);
-
-			this.setResizable(false);
-
-			this.setLocation(xpos, ypos);
-
-			this.setAlwaysOnTop(true);
-
-			this.pack();
+			baseWindow.pack();
 
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
 		 */
 		public void stateChanged(ChangeEvent e) {
@@ -237,15 +244,6 @@ public class QueueingRSSServer extends RSSServer {
 
 		}
 
-	}
-
-	/* (non-Javadoc)
-	 * @see RSSServerNode#showInfo()
-	 */
-	@Override
-	public void showInfo() {
-		super.showInfo();
-		new InfoWindow("RSSServer-Info", this).setVisible(true);
 	}
 
 	/*

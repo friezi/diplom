@@ -10,8 +10,8 @@ import rsspubsubframework.*;
  * 
  */
 public abstract class PubSubNode extends Node implements PubSubType, Observer {
-	
-	static Color BLOCKEDCOLOR= new Color((float) 0.5, 0, 0);
+
+	static Color BLOCKEDCOLOR = new Color((float) 0.5, 0, 0);
 
 	// a dummy to avoid NullPointerException
 	protected RSSFeedRepresentationFactory rssFeedRepresentationFactory = new RSSFeedRepresentationFactory() {
@@ -27,9 +27,12 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	protected SimParameters params;
 
 	protected RSSServerNode rssServer;
-//
-//	private BrokerNode broker;
-	
+
+	protected int maxRefreshRate;
+
+	//
+	// private BrokerNode broker;
+
 	protected HashSet<BrokerNode> brokerlist = new HashSet<BrokerNode>();
 
 	/**
@@ -43,6 +46,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	public PubSubNode(int xp, int yp, SimParameters params) {
 		super(xp, yp);
 		this.params = params;
+		setMaxRefreshRate(params.maxRefreshRate);
 		this.statistics = new PubSubNodeStatistics(params);
 		setColor(Color.blue);
 
@@ -85,7 +89,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 		g.setColor(textColor());
 		g.drawString(t, x - fm.stringWidth(t) / 2, y + fm.getHeight() / 2);
 
-		if (isBlocked() == true) {
+		if ( isBlocked() == true ) {
 			g.setColor(BLOCKEDCOLOR);
 			crossit(g, x1, y1, width, height);
 		}
@@ -111,21 +115,22 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	public void setRssFeedRepresentation(RSSFeedRepresentation rssFeedRepresentation) {
 		this.rssFeedRepresentation = rssFeedRepresentation;
 	}
-//
-//	/**
-//	 * @return Returns the broker.
-//	 */
-//	public BrokerNode getBroker() {
-//		return broker;
-//	}
-//
-//	/**
-//	 * @param broker
-//	 *            The broker to set.
-//	 */
-//	public void setBroker(BrokerNode broker) {
-//		this.broker = broker;
-//	}
+
+	//
+	// /**
+	// * @return Returns the broker.
+	// */
+	// public BrokerNode getBroker() {
+	// return broker;
+	// }
+	//
+	// /**
+	// * @param broker
+	// * The broker to set.
+	// */
+	// public void setBroker(BrokerNode broker) {
+	// this.broker = broker;
+	// }
 
 	/**
 	 * This method checks if a given point is whithin the borders of the node.
@@ -222,11 +227,28 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 		return statistics;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see rsspubsubframework.PubSubType#showInfo()
 	 */
 	public void showInfo() {
-		
+
+	}
+
+	/**
+	 * @return Returns the maxRefreshRate.
+	 */
+	public synchronized int getMaxRefreshRate() {
+		return maxRefreshRate;
+	}
+
+	/**
+	 * @param maxRefreshRate
+	 *            The maxRefreshRate to set.
+	 */
+	public synchronized void setMaxRefreshRate(int maxRefreshRate) {
+		this.maxRefreshRate = maxRefreshRate;
 	}
 
 }
