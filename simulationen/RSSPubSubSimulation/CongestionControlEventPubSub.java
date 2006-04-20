@@ -265,7 +265,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			for ( int i = 10; i <= maxValue; i += 10 )
 				labeltable.put(i, new JLabel(new Integer(i).toString()));
 
-			slider = new JSlider(1, maxValue, (int) (baseWindow.getPubsub().getMaxRefreshRate()));
+			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getMaxRefreshRate()));
 			slider.setLabelTable(labeltable);
 			slider.addChangeListener(this);
 			slider.setMajorTickSpacing(10);
@@ -289,12 +289,10 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
 		 */
 		public void stateChanged(ChangeEvent e) {
-			// TODO
 			JSlider slider = (JSlider) e.getSource();
 
 			if ( slider.getValueIsAdjusting() == false ) {
-				baseWindow.getPubsub().setMaxRefreshRate(slider.getValue());
-				System.out.println("maxRefreshRate: " + baseWindow.getPubsub().getMaxRefreshRate());
+				((PubSubNode) baseWindow.getNode()).setMaxRefreshRate(slider.getValue());
 			}
 
 		}

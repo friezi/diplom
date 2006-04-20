@@ -697,4 +697,11 @@ final public class Engine {
 	public void setTimerPeriod(int timerPeriod) {
 		this.timerPeriod = timerPeriod;
 	}
+
+	/**
+	 * @return Returns the db.
+	 */
+	public synchronized Gui getDb() {
+		return db;
+	}
 }

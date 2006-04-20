@@ -69,4 +69,20 @@ public class GOFilledCircle extends GraphicalObject {
 		return y;
 	}
 
+	/**
+	 * @param x
+	 *            The x to set.
+	 */
+	public synchronized void setX(int x) {
+		this.x = x;
+	}
+
+	/**
+	 * @param y
+	 *            The y to set.
+	 */
+	public synchronized void setY(int y) {
+		this.y = y;
+	}
+
 }

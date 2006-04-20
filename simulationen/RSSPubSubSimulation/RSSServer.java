@@ -1,14 +1,8 @@
 import rsspubsubframework.*;
 
-import java.awt.GridLayout;
 import java.util.*;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class RSSServer extends RSSServerNode {
 
@@ -150,32 +144,6 @@ public class RSSServer extends RSSServerNode {
 		getRssFeedRepresentation().represent();
 	}
 
-	protected class InfoWindow extends JFrame {
-
-		int xpos = 200;
-
-		int ypos = 200;
-
-		JPanel panel = new JPanel();
-
-		protected InfoWindow(String titel) {
-
-			super(titel);
-
-			this.setContentPane(panel);
-
-			this.setResizable(false);
-
-			this.setLocation(xpos, ypos);
-
-			this.setAlwaysOnTop(true);
-
-			this.pack();
-
-		}
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -184,7 +152,7 @@ public class RSSServer extends RSSServerNode {
 	@Override
 	public void showInfo() {
 		super.showInfo();
-		(infoWindow = new InfoWindow("RSSServer-Info")).setVisible(true);
+		(infoWindow = new InfoWindow("RSSServer-Info", this)).setVisible(true);
 	}
 
 }

@@ -233,13 +233,11 @@ public class QueueingRSSServer extends RSSServer {
 		 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
 		 */
 		public void stateChanged(ChangeEvent e) {
-			// TODO Auto-generated method stub
 
 			JSlider slider = (JSlider) e.getSource();
 
 			if ( slider.getValueIsAdjusting() == false ) {
 				rssserver.setUploadScalingFactor(((float) slider.getValue()) / 10);
-				System.out.println("uploadScalingFactor: " + rssserver.getUploadScalingFactor());
 			}
 
 		}

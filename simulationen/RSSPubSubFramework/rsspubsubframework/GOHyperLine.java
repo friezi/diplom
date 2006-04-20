@@ -7,8 +7,8 @@ import java.awt.Graphics;
 import java.awt.*;
 
 /**
- * A Hyperline has its first point whithin the graphical environment and the second point outside. So it can point outside
- * the simulation-world. 
+ * A Hyperline has its first point whithin the graphical environment and the
+ * second point outside. So it can point outside the simulation-world.
  * 
  * @author friezi
  * 
@@ -49,10 +49,12 @@ public class GOHyperLine extends GraphicalObject {
 	@Override
 	void drawobj(Graphics g) {
 
-		int x1 = Engine.scaleX(this.x1);
-		int y1 = Engine.scaleY(this.y1);
+		int x1 = Engine.scaleX(getX1());
+		int y1 = Engine.scaleY(getY1());
+		int x2=getX2() - Engine.getSingleton().getDb().guiXPos();
+		int y2=getY2() - Engine.getSingleton().getDb().guiYPos();
 		g.setColor(color);
-		g.drawLine(x1, y1, this.x2, this.y2);
+		g.drawLine(x1, y1, x2,y2);
 
 	}
 

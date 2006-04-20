@@ -32,7 +32,7 @@ import java.util.*;
  * 
  * This object handles actual drawing of the user interface.
  */
-class Gui extends javax.swing.JComponent implements ActionListener {
+public class Gui extends javax.swing.JComponent implements ActionListener {
 
 	protected class MouseClick extends MouseInputAdapter {
 
@@ -40,7 +40,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		Node secondnode = null;
 
-		GORectangle rectangle = new GORectangle(0,0,0,0);
+		GORectangle rectangle = new GORectangle(0, 0, 0, 0);
 
 		public void mouseDragged(MouseEvent event) {
 
@@ -211,6 +211,10 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	// / Height of the drawing pane.
 	private int currentHeight;
 
+	private int currentXPos;
+
+	private int currentYPos;
+
 	private int df_width;
 
 	private int df_height;
@@ -338,6 +342,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	private JFrame controlframe;
 
 	private StatisticWindow statisticframe;
+	
+	private JFrame displayframe;
 
 	private MouseClick mouseclick = new MouseClick();
 
@@ -351,7 +357,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 				JFrame.setDefaultLookAndFeelDecorated(true);
 
-				JFrame displayframe = new JFrame(windowtitle);
+				displayframe = new JFrame(windowtitle);
 				displayframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				displayframe.getContentPane().add(guip);
 
@@ -486,7 +492,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	 * 
 	 * @return Width of the drawing pane.
 	 */
-	int guiWidth() {
+	public int guiWidth() {
 		return currentWidth;
 	}
 
@@ -495,8 +501,16 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 	 * 
 	 * @return Height of the drawing pane.
 	 */
-	int guiHeight() {
+	public int guiHeight() {
 		return currentHeight;
+	}
+
+	public int guiXPos() {
+		return currentXPos;
+	}
+
+	public int guiYPos() {
+		return currentYPos;
 	}
 
 	/**
@@ -512,6 +526,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 		java.awt.Insets insets = getInsets();
 		currentWidth = getWidth() - insets.left - insets.right;
 		currentHeight = getHeight() - insets.top - insets.bottom;
+		currentXPos = displayframe.getX();
+		currentYPos = displayframe.getY();
 		Engine.getSingleton().draw(g);
 	}
 
@@ -525,7 +541,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		Set<Map.Entry<JButton, String>> entries = group.entrySet();
 
-		for (Map.Entry<JButton, String> entry : entries)
+		for ( Map.Entry<JButton, String> entry : entries )
 			entry.getKey().setEnabled(false); // disable
 	}
 
@@ -539,7 +555,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		Set<Map.Entry<JButton, String>> entries = group.entrySet();
 
-		for (Map.Entry<JButton, String> entry : entries) {
+		for ( Map.Entry<JButton, String> entry : entries ) {
 			// set default-operation
 			entry.getKey().setText(entry.getValue());
 			// enable
@@ -642,7 +658,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
 			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
-			for (Node node : nodes)
+			for ( Node node : nodes )
 				node.block();
 
 			Engine.getSingleton().removeGraphicalObject(mouseclick.rectangle);
@@ -664,7 +680,7 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
 			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
-			for (Node node : nodes)
+			for ( Node node : nodes )
 				node.unblock();
 
 			Engine.getSingleton().removeGraphicalObject(mouseclick.rectangle);
@@ -675,8 +691,8 @@ class Gui extends javax.swing.JComponent implements ActionListener {
 
 		} else if ( e.getActionCommand().equals(brokersFallApartCmd) ) {
 
-			synchronized (Engine.getSingleton().nodeList) {
-				for (Node node : Engine.getSingleton().nodeList)
+			synchronized ( Engine.getSingleton().nodeList ) {
+				for ( Node node : Engine.getSingleton().nodeList )
 					if ( node instanceof BrokerType )
 						((BrokerType) node).callbackUnregisterFromAllBrokers();
 			}

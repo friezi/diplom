@@ -1,12 +1,6 @@
 import rsspubsubframework.*;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
 public class PubSub extends PubSubNode {
 
@@ -440,76 +434,9 @@ public class PubSub extends PubSubNode {
 		}
 	}
 
-	protected class InfoWindow extends JFrame {
-		
-		protected class CloseWindowAdapter extends WindowAdapter{
-
-			/* (non-Javadoc)
-			 * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
-			 */
-			@Override
-			public void windowClosed(WindowEvent arg0) {
-				
-				hook.undisplay();
-				rope.undisplay();
-				super.windowClosed(arg0);
-			}
-			
-		}
-
-		int xpos = 200;
-
-		int ypos = 200;
-
-		int radius = 6;
-
-		PubSubNode pubsub;
-		
-		GOFilledCircle hook;
-		
-		GOHyperLine rope;
-
-		JPanel panel = new JPanel();
-
-		protected InfoWindow(String titel, PubSubNode pubsub) {
-
-			super(titel);
-			
-			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-			this.pubsub = pubsub;
-
-			(hook = new GOFilledCircle(pubsub.getX(), pubsub.getY(), radius)).display();
-			(rope=new GOHyperLine(pubsub.getX(),pubsub.getY(),this.getX(),this.getY())).display();
-			
-			System.out.println(this.getX() + "   "+this.getY());
-			
-			this.addWindowListener(new CloseWindowAdapter());
-
-			this.setContentPane(panel);
-
-			this.setResizable(false);
-
-			this.setLocation(xpos, ypos);
-
-			this.setAlwaysOnTop(true);
-
-			this.pack();
-			
-			this.setVisible(true);
-
-		}
-
-		/**
-		 * @return Returns the pubsub.
-		 */
-		public PubSubNode getPubsub() {
-			return pubsub;
-		}
-
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see PubSubNode#showInfo()
 	 */
 	@Override

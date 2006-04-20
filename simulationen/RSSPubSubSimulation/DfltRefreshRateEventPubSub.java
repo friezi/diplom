@@ -16,11 +16,11 @@ import javax.swing.event.ChangeListener;
 
 /**
  * 
- * This PubSub refreshes the feeds according to a default refreshrate, given by the user
- * It doesn't care about the networksize.
+ * This PubSub refreshes the feeds according to a default refreshrate, given by
+ * the user It doesn't care about the networksize.
  * 
  * @author Friedemann Zintel
- *
+ * 
  */
 public class DfltRefreshRateEventPubSub extends EventPubSub {
 
@@ -34,15 +34,19 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 		super(xp, yp, rssEventFeedFactory, params);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see PubSub#handleNetworkSizeUpdateMessage(NetworkSizeUpdateMessage)
 	 */
 	@Override
 	protected void handleNetworkSizeUpdateMessage(NetworkSizeUpdateMessage nsum) {
-		// don't handle this anymore 
+		// don't handle this anymore
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see PubSub#calculateInterval()
 	 */
 	@Override
@@ -54,12 +58,15 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 		int diffsecs = (int) ((now.getTime() - feedDate.getTime()) / 1000);
 		if ( diffsecs > ttl )
 			diffsecs = ttl;
-		//			diff = 0;
-		//		return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl - diff)) * 1000;
+		// diff = 0;
+		// return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl -
+		// diff)) * 1000;
 		return (long) ((new Random().nextFloat() * (getMaxRefreshRate()) + (ttl - diffsecs)) * 1000);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see PubSub#updateRequestTimerByNewFeed()
 	 */
 	@Override
@@ -67,7 +74,9 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 		updateRequestTimer(calculateNextRequestTimeout());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see PubSub#updateRequestTimerByOldFeed()
 	 */
 	@Override
@@ -75,7 +84,9 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 		updateRequestTimer(getMaxRefreshRate() * 1000);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see PubSub#updateRequestTimer(long)
 	 */
 	@Override
@@ -121,7 +132,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 			for ( int i = 10; i <= maxValue; i += 10 )
 				labeltable.put(i, new JLabel(new Integer(i).toString()));
 
-			slider = new JSlider(1, maxValue, (int) (baseWindow.getPubsub().getMaxRefreshRate()));
+			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getMaxRefreshRate()));
 			slider.setLabelTable(labeltable);
 			slider.addChangeListener(this);
 			slider.setMajorTickSpacing(10);
@@ -149,7 +160,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 			JSlider slider = (JSlider) e.getSource();
 
 			if ( slider.getValueIsAdjusting() == false ) {
-				baseWindow.getPubsub().setMaxRefreshRate(slider.getValue());
+				((PubSubNode) baseWindow.getNode()).setMaxRefreshRate(slider.getValue());
 			}
 
 		}
