@@ -56,7 +56,7 @@ public class InfoWindow extends JFrame {
 
 	InfoWindow window;
 
-	int nhradius = 4;
+	int nhradius = 2;
 
 	Node node;
 

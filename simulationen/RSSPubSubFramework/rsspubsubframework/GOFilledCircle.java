@@ -27,8 +27,8 @@ public class GOFilledCircle extends GraphicalObject {
 	}
 
 	private void setValues(int x, int y, int radius) {
-		this.x = x - (radius / 2);
-		this.y = y - (radius / 2);
+		this.x = x - radius;
+		this.y = y - radius;
 		this.radius = radius;
 		setColor(Color.black);
 	}
@@ -44,7 +44,7 @@ public class GOFilledCircle extends GraphicalObject {
 		int x = Engine.scaleX(this.x);
 		int y = Engine.scaleY(this.y);
 		g.setColor(color);
-		g.fillOval(x, y, radius, radius);
+		g.fillOval(x, y, 2 * radius, 2 * radius);
 
 	}
 
