@@ -48,7 +48,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -56,7 +57,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -71,7 +73,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.undisplay();
 					(rectangle = new GORectangle(ds_point)).display();
@@ -80,7 +83,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.undisplay();
 					(rectangle = new GORectangle(ds_point)).display();
@@ -211,9 +215,9 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 	// / Height of the drawing pane.
 	private int currentHeight;
 
-	private int currentXPos;
+	private int displayareaXPos;
 
-	private int currentYPos;
+	private int displayareaYPos;
 
 	private int df_width;
 
@@ -342,7 +346,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 	private JFrame controlframe;
 
 	private StatisticWindow statisticframe;
-	
+
 	private JFrame displayframe;
 
 	private MouseClick mouseclick = new MouseClick();
@@ -506,11 +510,11 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 	}
 
 	public int guiXPos() {
-		return currentXPos;
+		return displayareaXPos;
 	}
 
 	public int guiYPos() {
-		return currentYPos;
+		return displayareaYPos;
 	}
 
 	/**
@@ -526,8 +530,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 		java.awt.Insets insets = getInsets();
 		currentWidth = getWidth() - insets.left - insets.right;
 		currentHeight = getHeight() - insets.top - insets.bottom;
-		currentXPos = displayframe.getX();
-		currentYPos = displayframe.getY();
+		displayareaXPos = getLocationOnScreen().x;
+		displayareaYPos = getLocationOnScreen().y;
 		Engine.getSingleton().draw(g);
 	}
 
@@ -576,7 +580,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 			controlframe.setAlwaysOnTop(false);
 
-			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+			if ( JOptionPane.showConfirmDialog(controlframe, "Really exit?", "Please confirm",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
 				System.exit(0);
 
 			controlframe.setAlwaysOnTop(true);
@@ -655,8 +660,10 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(blockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
+					.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
+					.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.block();
@@ -677,8 +684,10 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(unblockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
+					.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
+					.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.unblock();
@@ -691,7 +700,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 		} else if ( e.getActionCommand().equals(brokersFallApartCmd) ) {
 
-			synchronized ( Engine.getSingleton().nodeList ) {
+			synchronized (Engine.getSingleton().nodeList) {
 				for ( Node node : Engine.getSingleton().nodeList )
 					if ( node instanceof BrokerType )
 						((BrokerType) node).callbackUnregisterFromAllBrokers();

@@ -3,7 +3,6 @@
  */
 package rsspubsubframework;
 
-import java.awt.Graphics;
 import java.awt.*;
 
 /**
@@ -49,12 +48,13 @@ public class GOHyperLine extends GraphicalObject {
 	@Override
 	void drawobj(Graphics g) {
 
+		Gui gui = Engine.getSingleton().getDb();
 		int x1 = Engine.scaleX(getX1());
 		int y1 = Engine.scaleY(getY1());
-		int x2=getX2() - Engine.getSingleton().getDb().guiXPos();
-		int y2=getY2() - Engine.getSingleton().getDb().guiYPos();
+		int x2 = getX2() - gui.guiXPos();
+		int y2 = getY2() - gui.guiYPos();
 		g.setColor(color);
-		g.drawLine(x1, y1, x2,y2);
+		g.drawLine(x1, y1, x2, y2);
 
 	}
 
