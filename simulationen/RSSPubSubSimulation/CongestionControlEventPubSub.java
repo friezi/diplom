@@ -1,15 +1,12 @@
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Random;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JSlider;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.border.*;
 
 /**
  * 
@@ -200,8 +197,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			long roundtriptime = (rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime());
 
-			if ( roundtriptime < getMaxRefreshRateMS() )
-				requestFeedTimeoutValue = getMaxRefreshRateMS();
+			if ( roundtriptime < getMaxRefreshRateMilis() )
+				requestFeedTimeoutValue = getMaxRefreshRateMilis();
 			else
 				requestFeedTimeoutValue = roundtriptime;
 		}
@@ -209,7 +206,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	}
 
 	protected void incRequestFeedTimeoutValue() {
-		requestFeedTimeoutValue += getMaxRefreshRateMS();
+		requestFeedTimeoutValue += getMaxRefreshRateMilis();
 	}
 
 	protected void resetRequestFeedTimeoutValue() {
@@ -229,7 +226,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 * 
 	 * @return maxRefreshRate in miliseconds
 	 */
-	protected long getMaxRefreshRateMS() {
+	protected long getMaxRefreshRateMilis() {
 		return getMaxRefreshRate() * 1000;
 	}
 
@@ -257,6 +254,14 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
 
 			JSlider slider;
+			
+			JButton moreInfo;
+			
+			JPanel buttonpanel=new JPanel(new BorderLayout());
+			
+			moreInfo=new JButton("more Info");
+			buttonpanel.add(moreInfo,BorderLayout.NORTH);
+			buttonpanel.setBorder(new EmptyBorder(40,30,40,30));
 
 			Hashtable<Integer, JLabel> labeltable = new Hashtable<Integer, JLabel>();
 
@@ -276,8 +281,9 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			sliderpanel.add(new JLabel("max. refresh-rate", JLabel.CENTER));
 			sliderpanel.add(slider);
 
-			baseWindow.getContentPane().add(new JSeparator());
-			baseWindow.getContentPane().add(sliderpanel);
+			baseWindow.getContentPane().setLayout(new BorderLayout());
+			baseWindow.getContentPane().add(buttonpanel,BorderLayout.NORTH);
+			baseWindow.getContentPane().add(sliderpanel,BorderLayout.SOUTH);
 
 			baseWindow.pack();
 
@@ -292,7 +298,9 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			JSlider slider = (JSlider) e.getSource();
 
 			if ( slider.getValueIsAdjusting() == false ) {
-				((PubSubNode) baseWindow.getNode()).setMaxRefreshRate(slider.getValue());
+				setMaxRefreshRate(slider.getValue());
+				requestFeedTimeoutValue = getMaxRefreshRateMilis();
+				updateRequestTimer(getMaxRefreshRateMilis());
 			}
 
 		}

@@ -30,8 +30,7 @@ public class InfoWindow extends JFrame {
 		@Override
 		public void windowClosed(WindowEvent arg0) {
 
-			nodehook.undisplay();
-			rope.undisplay();
+			undisplayAnchor();
 			super.windowClosed(arg0);
 		}
 
@@ -47,8 +46,7 @@ public class InfoWindow extends JFrame {
 		@Override
 		public void componentMoved(ComponentEvent arg0) {
 
-			rope.setX2(window.getX());
-			rope.setY2(window.getY());
+			adjustAnchor();
 			super.componentMoved(arg0);
 		}
 
@@ -60,11 +58,9 @@ public class InfoWindow extends JFrame {
 
 	Node node;
 
-	GOFilledCircle nodehook;
+	GOFilledCircle hook;
 
 	GOHyperLine rope;
-
-	Color anchorcolor = Color.red;
 
 	JPanel panel = new JPanel();
 
@@ -94,17 +90,39 @@ public class InfoWindow extends JFrame {
 
 		this.setVisible(true);
 
-		// draw a dot (the nodehook) on the node and a line (the rope) to the
+		throwAnchor(node,this);
+
+	}
+	
+	private void throwAnchor(Node node, JFrame window){
+
+		Color anchorcolor = Color.red;
+
+		// draw a dot (the hook) on the node and a line (the rope) to the
 		// window with a dot (windowhook)
-		nodehook = new GOFilledCircle(node.getX(), node.getY(), nhradius);
+		hook = new GOFilledCircle(node.getX(), node.getY(), nhradius);
 		rope = new GOHyperLine(node.getX(), node.getY(), this.getX(), this.getY());
 
-		nodehook.setColor(anchorcolor);
+		hook.setColor(anchorcolor);
 		rope.setColor(anchorcolor);
 
-		nodehook.display();
+		hook.display();
 		rope.display();
+		
+	}
+	
+	private void adjustAnchor(){
+		
+		rope.setX2(window.getX());
+		rope.setY2(window.getY());
 
+	}
+	
+	private void undisplayAnchor(){
+
+		hook.undisplay();
+		rope.undisplay();
+		
 	}
 
 	/**

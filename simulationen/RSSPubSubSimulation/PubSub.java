@@ -300,7 +300,7 @@ public class PubSub extends PubSubNode {
 		long size = nsum.getSize();
 
 		// to prevent malicious values
-		if ( size <= 0 )
+		if ( size < 1 )
 			size = 1;
 
 		spreadFactor = (int) (size / spreadDivisor);
@@ -433,6 +433,7 @@ public class PubSub extends PubSubNode {
 
 		}
 	}
+
 
 	/*
 	 * (non-Javadoc)
