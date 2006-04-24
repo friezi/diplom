@@ -30,7 +30,6 @@ public class AdjustingEventBroker extends AdjustingBroker {
 		 * @see java.lang.Runnable#run()
 		 */
 		public void run() {
-			// TODO Auto-generated method stub
 
 			RSSFeed feed = fm.getFeed();
 
@@ -99,7 +98,6 @@ public class AdjustingEventBroker extends AdjustingBroker {
 
 		super(xp, yp, params);
 		setRssEventFeedFactory(rssEventFeedFactory);
-		// TODO Auto-generated constructor stub
 	}
 
 	protected void handleRSSFeedMessage(RSSFeedMessage fm) {

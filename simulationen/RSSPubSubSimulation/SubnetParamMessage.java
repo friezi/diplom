@@ -73,7 +73,6 @@ public class SubnetParamMessage extends Message {
 	 */
 	@Override
 	protected String text() {
-		// TODO Auto-generated method stub
 		if ( params.showSizeBrokerMsg == true )
 			if ( subParams != null )
 				return String.valueOf(subParams.getSize());

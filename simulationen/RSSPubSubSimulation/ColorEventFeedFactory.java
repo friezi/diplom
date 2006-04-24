@@ -55,7 +55,6 @@ public class ColorEventFeedFactory implements RSSEventFeedFactory {
 	 *      RSSFeedGeneralContent)
 	 */
 	public RSSFeed newRSSEventFeed(Object events, RSSFeedGeneralContent generalContent) {
-		// TODO Auto-generated method stub
 
 		return new ColorEventFeed((LinkedList<ColorEvent>) events, generalContent);
 	}

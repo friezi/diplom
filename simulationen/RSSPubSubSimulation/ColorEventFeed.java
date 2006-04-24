@@ -55,7 +55,6 @@ public class ColorEventFeed extends ColorFeed implements EventFeed {
 	 * @see EventFeed#eventIterator()
 	 */
 	public Iterator<Event> eventIterator() {
-		// TODO Auto-generated method stub
 		return events.iterator();
 	}
 

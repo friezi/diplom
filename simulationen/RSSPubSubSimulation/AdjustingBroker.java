@@ -1036,7 +1036,6 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 	@Override
 	public void callbackUnregisterFromAllBrokers() {
-		// TODO Auto-generated method stub
 		super.callbackUnregisterFromAllBrokers();
 		Set<BrokerNode> brokers = getBrokers();
 		for ( BrokerType broker : brokers )

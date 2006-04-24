@@ -33,7 +33,6 @@ public class ColorEvent implements Event {
 	 * @see Event#equals(Event)
 	 */
 	public boolean equals(Event event) {
-		// TODO Auto-generated method stub
 		return this.id == ((ColorEvent) event).id;
 	}
 	
