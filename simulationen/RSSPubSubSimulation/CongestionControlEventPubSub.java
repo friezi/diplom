@@ -36,7 +36,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 * @param rssEventFeedFactory
 	 * @param params
 	 */
-	public CongestionControlEventPubSub(int xp, int yp, RSSEventFeedFactory rssEventFeedFactory, SimParameters params) {
+	public CongestionControlEventPubSub(int xp, int yp, RSSEventFeedFactory rssEventFeedFactory,
+			SimParameters params) {
 		super(xp, yp, rssEventFeedFactory, params);
 	}
 
@@ -157,19 +158,23 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 */
 	@Override
 	protected synchronized void updateRequestTimerByNewFeedFromBroker() {
-		
-		// if the requestFeedTimeoutValue is very high, it can happen, that we never get the possibility
-		// to request the server: we get "knocked out" by feeds from brokers and can never again achieve the
-		// preferrefdRefreshRate. to prevent this, we have to check, if both values differ and in positive case
-		// we need to update the timer despite the fact that the feed came from a broker.
-		if (getRequestFeedTimeoutValue() > getPreferredRefreshRateMilis()){
+
+		// if the requestFeedTimeoutValue is very high, it can happen, that we
+		// never get the possibility
+		// to request the server: we get "knocked out" by feeds from brokers and
+		// can never again achieve the
+		// preferrefdRefreshRate. to prevent this, we have to check, if both
+		// values differ and in positive case
+		// we need to update the timer despite the fact that the feed came from
+		// a broker.
+		if ( getRequestFeedTimeoutValue() > getPreferredRefreshRateMilis() ) {
 
 			// if one is running aready (must be!) take the shortest timeout
 			long interval = calculateNextRequestTimeout();
-			
+
 			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
 				updateRequestTimer(interval);
-			
+
 		}
 	}
 
@@ -291,9 +296,45 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 	protected class InfoWindowExtension implements ChangeListener {
 
+		private class CloseWindowAdapter extends WindowAdapter {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
+			 */
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				deletePreferredRefreshRateNotifier(preferredRefreshRateObserver);
+				super.windowClosed(arg0);
+			}
+
+		}
+
+		protected class PreferredRefreshRateObserver implements Observer {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.util.Observer#update(java.util.Observable,
+			 *      java.lang.Object)
+			 */
+			public void update(Observable o, Object arg) {
+
+				Integer value = (Integer) arg;
+
+				sliderlabel.setText("preferred refresh-rate: " + value);
+			}
+
+		}
+
 		int maxValue = 60;
 
 		InfoWindow baseWindow;;
+
+		JLabel sliderlabel;
+
+		protected PreferredRefreshRateObserver preferredRefreshRateObserver = new PreferredRefreshRateObserver();
 
 		public InfoWindowExtension(InfoWindow baseWindow) {
 
@@ -312,7 +353,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			for ( int i = 10; i <= maxValue; i += 10 )
 				labeltable.put(i, new JLabel(new Integer(i).toString()));
 
-			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getPreferredRefreshRate()));
+			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode())
+					.getPreferredRefreshRate()));
 			slider.setLabelTable(labeltable);
 			slider.addChangeListener(this);
 			slider.setMajorTickSpacing(10);
@@ -320,12 +362,17 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			slider.setPaintTicks(true);
 			slider.setPaintLabels(true);
 
-			JLabel sliderlabel = new JLabel("preferred refresh-rate", JLabel.CENTER);
+			sliderlabel = new JLabel();
 			sliderlabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			sliderlabel.setLabelFor(slider);
 			sliderpanel.add(sliderlabel);
 			sliderpanel.add(slider);
 			sliderpanel.setBorder(BorderFactory.createEtchedBorder());
+
+			baseWindow.addWindowListener(new CloseWindowAdapter());
+
+			addPreferredRefreshrateObserver(preferredRefreshRateObserver);
+			preferredRefreshRateObserver.update(getPreferredRefreshRateNotifier(), getPreferredRefreshRate());
 
 			JPanel basepanel = (JPanel) baseWindow.getContentPane();
 
@@ -377,7 +424,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 				Long rftv = (Long) arg1;
 
-				reqFdTmOValLabel.setText("current refresh-rate: " + rftv / 1000);
+				reqFdTmOValLabel.setText("current refresh-rate: " + rftv / 1000 + "    ");
 
 			}
 
@@ -395,7 +442,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			requestFeedTimueoutValueNotifier.addObserver(reqFdTmOValObserver);
 
-			reqFdTmOValObserver.update(requestFeedTimueoutValueNotifier, new Long(getRequestFeedTimeoutValue()));
+			reqFdTmOValObserver.update(requestFeedTimueoutValueNotifier, new Long(
+					getRequestFeedTimeoutValue()));
 
 			moreinfowindow.addWindowListener(new CloseWindowAdapter());
 

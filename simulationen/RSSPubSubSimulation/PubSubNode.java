@@ -20,6 +20,18 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 		}
 	};
 
+	protected class PreferredRefreshRateNotifier extends Observable {
+
+		/* (non-Javadoc)
+		 * @see java.util.Observable#notifyObservers(java.lang.Object)
+		 */
+		public void notifyObservers(Integer value) {
+			setChanged();
+			super.notifyObservers(value);
+		}
+
+	}
+
 	protected PubSubNodeStatistics statistics;
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
@@ -29,6 +41,8 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	protected RSSServerNode rssServer;
 
 	protected int preferredRefreshRate;
+
+	private PreferredRefreshRateNotifier preferredRefreshRateNotifier = new PreferredRefreshRateNotifier();
 
 	//
 	// private BrokerNode broker;
@@ -252,6 +266,29 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	 */
 	public synchronized void setPreferredRefreshRate(int maxRefreshRate) {
 		this.preferredRefreshRate = maxRefreshRate;
+		preferredRefreshRateNotifier.notifyObservers(new Integer(maxRefreshRate));
+	}
+
+	/**
+	 * @return Returns the preferredRefreshRateNotifier.
+	 */
+	public PreferredRefreshRateNotifier getPreferredRefreshRateNotifier() {
+		return preferredRefreshRateNotifier;
+	}
+
+	/**
+	 * @param preferredRefreshRateNotifier The preferredRefreshRateNotifier to set.
+	 */
+	public void setPreferredRefreshRateNotifier(PreferredRefreshRateNotifier preferredRefreshRateNotifier) {
+		this.preferredRefreshRateNotifier = preferredRefreshRateNotifier;
+	}
+
+	public synchronized void addPreferredRefreshrateObserver(Observer observer) {
+		preferredRefreshRateNotifier.addObserver(observer);
+	}
+
+	public synchronized void deletePreferredRefreshRateNotifier(Observer observer) {
+		preferredRefreshRateNotifier.deleteObserver(observer);
 	}
 
 }

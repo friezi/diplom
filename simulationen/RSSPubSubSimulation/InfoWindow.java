@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -21,6 +22,12 @@ public class InfoWindow extends JFrame implements ActionListener {
 
 	protected class InfoWindowAdapter extends WindowAdapter {
 
+		InfoWindow window;
+
+		public InfoWindowAdapter(InfoWindow window) {
+			this.window = window;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -30,7 +37,26 @@ public class InfoWindow extends JFrame implements ActionListener {
 		public void windowClosed(WindowEvent arg0) {
 
 			anchor.undisplayAnchor();
+			Engine.getSingleton().getDb().removeWindow(window);
 			super.windowClosed(arg0);
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.WindowAdapter#windowDeiconified(java.awt.event.WindowEvent)
+		 */
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			anchor.grabAnchor();
+			super.windowDeiconified(e);
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.WindowAdapter#windowIconified(java.awt.event.WindowEvent)
+		 */
+		@Override
+		public void windowIconified(WindowEvent e) {
+			anchor.loseAnchor();
+			super.windowIconified(e);
 		}
 
 	}
@@ -75,7 +101,7 @@ public class InfoWindow extends JFrame implements ActionListener {
 
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-		this.addWindowListener(new InfoWindowAdapter());
+		this.addWindowListener(new InfoWindowAdapter(this));
 
 		this.addComponentListener(new InfoWindowComponentAdapter());
 
@@ -108,6 +134,8 @@ public class InfoWindow extends JFrame implements ActionListener {
 		this.setVisible(true);
 
 		anchor = new VisualAnchor(node, this);
+
+		Engine.getSingleton().getDb().addWindow(this);
 
 	}
 

@@ -12,7 +12,7 @@ import javax.swing.*;
  * It will display the connection between a window and the corresponding node.
  * 
  * @author Friedemann Zintel
- *
+ * 
  */
 public class VisualAnchor {
 
@@ -20,9 +20,11 @@ public class VisualAnchor {
 
 	Node node;
 
-	GOFilledCircle hook;
+	Color anchorcolor = Color.red;
 
-	GOHyperLine rope;
+	GOFilledCircle hook = null;
+
+	GOHyperLine rope = null;
 
 	JFrame window;
 
@@ -38,33 +40,60 @@ public class VisualAnchor {
 
 	private void throwAnchor() {
 
-		Color anchorcolor = Color.red;
-
 		// draw a dot (the hook) on the node and a line (the rope) to the
 		// window with a dot (windowhook)
-		hook = new GOFilledCircle(node.getX(), node.getY(), nhradius);
+		rope = newRope();
+		hook = newHook();
+
+	}
+
+	protected GOHyperLine newRope() {
+
 		rope = new GOHyperLine(node.getX(), node.getY(), window.getX(), window.getY());
-
-		hook.setColor(anchorcolor);
 		rope.setColor(anchorcolor);
-
-		hook.display();
 		rope.display();
+
+		return rope;
+
+	}
+
+	protected GOFilledCircle newHook() {
+
+		hook = new GOFilledCircle(node.getX(), node.getY(), nhradius);
+		hook.setColor(anchorcolor);
+		hook.display();
+
+		return hook;
 
 	}
 
 	public void adjustAnchor() {
 
-		rope.setX2(window.getX());
-		rope.setY2(window.getY());
+		if ( rope != null ) {
+			rope.setX2(window.getX());
+			rope.setY2(window.getY());
+		}
 
 	}
 
 	public void undisplayAnchor() {
 
 		hook.undisplay();
-		rope.undisplay();
+		if ( rope != null )
+			rope.undisplay();
 
+	}
+
+	public void loseAnchor() {
+		rope.undisplay();
+		rope = null;
+	}
+
+	public void grabAnchor() {
+
+		if ( rope != null )
+			rope.undisplay();
+		rope = newRope();
 	}
 
 }
