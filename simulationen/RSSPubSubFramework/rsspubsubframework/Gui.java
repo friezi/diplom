@@ -48,7 +48,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -56,7 +57,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -71,7 +73,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.undisplay();
 					(rectangle = new GORectangle(ds_point)).display();
@@ -80,7 +83,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
+							.getPoint().y));
 
 					rectangle.undisplay();
 					(rectangle = new GORectangle(ds_point)).display();
@@ -249,6 +253,14 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String unblockAllCmd = "Unblock all!";
 
+	private static String iconifywindowsCmd = "IW";
+
+	private static String deiconifywindowsCmd = "DW";
+
+	private static String iconifywindowsTT = "Iconify windows";
+
+	private static String deiconifywindowsTT = "Deiconify windows";
+
 	private static String cancelCmd = "Cancel";
 
 	private static String selectFirstNodeTxt = "Select first node ...";
@@ -299,6 +311,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private JButton brokersfallapartbutton;
 
+	private JButton iconifywindowsbutton;
+
 	private JButton cancelbutton;
 
 	private HashMap<JButton, String> buttongroup1 = new HashMap<JButton, String>();
@@ -331,10 +345,12 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private int choice = ADD_CONN_CMD;
 
+	private HashSet<JFrame> windows = new HashSet<JFrame>();
+
 	//
-	//	private boolean toolbar = true;
+	// private boolean toolbar = true;
 	//
-	//	private JFrame controlframe;
+	// private JFrame controlframe;
 
 	private StatisticWindow statisticframe;
 
@@ -451,6 +467,11 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 				brokersfallapartbutton.addActionListener(guip);
 				buttonrow1panel.add(brokersfallapartbutton);
 
+				iconifywindowsbutton = new JButton(iconifywindowsCmd);
+				iconifywindowsbutton.setToolTipText(iconifywindowsTT);
+				iconifywindowsbutton.addActionListener(guip);
+				buttonrow1panel.add(iconifywindowsbutton);
+
 				cancelbutton = new JButton(cancelCmd);
 				// cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
@@ -486,10 +507,10 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				displayframe.add(splitpane);
 
-				//				displayframe.getContentPane().add(buttonpanel);
-				////				displayframe.getContentPane().add(new JSeparator());
-				////				guip.setSize(new Dimension(df_width,df_height-50));
-				//				displayframe.getContentPane().add(guipanel);
+				// displayframe.getContentPane().add(buttonpanel);
+				// // displayframe.getContentPane().add(new JSeparator());
+				// // guip.setSize(new Dimension(df_width,df_height-50));
+				// displayframe.getContentPane().add(guipanel);
 
 				displayframe.setExtendedState(Frame.MAXIMIZED_HORIZ);
 				displayframe.setVisible(true);
@@ -584,7 +605,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 		} else if ( e.getActionCommand().equals(exitCmd) ) {
 
-			if ( JOptionPane.showConfirmDialog(displayframe, "Really exit?", "Please confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+			if ( JOptionPane.showConfirmDialog(displayframe, "Really exit?", "Please confirm",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
 				System.exit(0);
 
 		} else if ( e.getActionCommand().equals(stopSimulationCmd) ) {
@@ -661,8 +683,10 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(blockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
+					.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
+					.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.block();
@@ -683,8 +707,10 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(unblockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
+					.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
+					.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.unblock();
@@ -695,9 +721,21 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 			enableGroup(buttongroup1);
 			choice_status = NO_CHOICE;
 
+		} else if ( e.getActionCommand().equals(iconifywindowsCmd) ) {
+
+			iconifyWindows();
+			iconifywindowsbutton.setText(deiconifywindowsCmd);
+			iconifywindowsbutton.setToolTipText(deiconifywindowsTT);
+
+		} else if ( e.getActionCommand().equals(deiconifywindowsCmd) ) {
+
+			deiconifyWindows();
+			iconifywindowsbutton.setText(iconifywindowsCmd);
+			iconifywindowsbutton.setToolTipText(iconifywindowsTT);
+
 		} else if ( e.getActionCommand().equals(brokersFallApartCmd) ) {
 
-			synchronized ( Engine.getSingleton().nodeList ) {
+			synchronized (Engine.getSingleton().nodeList) {
 				for ( Node node : Engine.getSingleton().nodeList )
 					if ( node instanceof BrokerType )
 						((BrokerType) node).callbackUnregisterFromAllBrokers();
@@ -808,6 +846,38 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 			((PubSubType) node).showInfo();
 		}
 
+	}
+
+	protected void iconifyWindows() {
+
+		synchronized (windows) {
+			Iterator<JFrame> it = windows.iterator();
+			while ( it.hasNext() )
+				it.next().setExtendedState(Frame.ICONIFIED);
+		}
+
+	}
+
+	protected void deiconifyWindows() {
+
+		synchronized (windows) {
+			Iterator<JFrame> it = windows.iterator();
+			while ( it.hasNext() )
+				it.next().setExtendedState(Frame.NORMAL);
+		}
+
+	}
+
+	public void addWindow(JFrame window) {
+		synchronized (windows) {
+			windows.add(window);
+		}
+	}
+
+	public void removeWindow(JFrame window) {
+		synchronized (windows) {
+			windows.remove(window);
+		}
 	}
 	//
 }
