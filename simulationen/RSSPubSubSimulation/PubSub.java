@@ -1,6 +1,7 @@
 import rsspubsubframework.*;
 
 import java.util.*;
+import javax.swing.JLabel;
 
 public class PubSub extends PubSubNode {
 
@@ -133,6 +134,8 @@ public class PubSub extends PubSubNode {
 
 	protected InfoWindow infoWindow;
 
+	protected boolean moreinfo = false;
+
 	public PubSub(int xp, int yp, SimParameters params) {
 		super(xp, yp, params);
 		this.spreadDivisor = params.spreadDivisor;
@@ -222,7 +225,6 @@ public class PubSub extends PubSubNode {
 
 	// for extensibility
 	synchronized protected void updateRequestTimerByOldFeedFromBroker() {
-		updateRequestTimerByOldFeed();
 	}
 
 	synchronized protected void updateRequestTimer(long interval) {
@@ -365,6 +367,21 @@ public class PubSub extends PubSubNode {
 		getRssFeedRepresentation().represent();
 	}
 
+	/**
+	 * @return Returns the moreinfo.
+	 */
+	public boolean isMoreinfo() {
+		return moreinfo;
+	}
+
+	/**
+	 * @param moreinfo
+	 *            The moreinfo to set.
+	 */
+	public void setMoreinfo(boolean moreinfo) {
+		this.moreinfo = moreinfo;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -434,7 +451,6 @@ public class PubSub extends PubSubNode {
 		}
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -443,6 +459,15 @@ public class PubSub extends PubSubNode {
 	@Override
 	public void showInfo() {
 		super.showInfo();
-		(infoWindow = new InfoWindow("PubSub-Info", this)).setVisible(true);
+		(infoWindow = new InfoWindow("PubSub-Info", this, moreinfo)).setVisible(true);
+	}
+
+	/* (non-Javadoc)
+	 * @see PubSubNode#showMoreInfo(MoreInfoWindow)
+	 */
+	@Override
+	protected void showMoreInfo(InfoWindow moreinfowindow) {
+		super.showMoreInfo(moreinfowindow);
+				
 	}
 }

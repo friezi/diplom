@@ -260,4 +260,7 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	public void showInfo() {
 	}
 
+	protected void showMoreInfo(InfoWindow moreinfowindow) {
+	}
+
 }

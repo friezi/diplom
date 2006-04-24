@@ -1,7 +1,6 @@
 import java.awt.*;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Random;
+import java.awt.event.*;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -29,6 +28,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 	private Date rssFeedMessageDate;
 
+	private RequestFeedTimeoutValueNotifier requestFeedTimueoutValueNotifier = new RequestFeedTimeoutValueNotifier();
+
 	/**
 	 * @param xp
 	 * @param yp
@@ -46,6 +47,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 */
 	@Override
 	public void init() {
+		setMoreinfo(true);
 		resetRequestFeedTimeoutValue();
 		resetRequestFeedTimerCounter();
 		super.init();
@@ -106,7 +108,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		// diff = 0;
 		// return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl -
 		// diff)) * 1000;
-		long timeoutsecs = requestFeedTimeoutValue / 1000;
+		long timeoutsecs = getRequestFeedTimeoutValue() / 1000;
 		// if ( requestFeedTimeoutValue < getMaxRefreshRateMS() )
 		// timeout = getMaxRefreshRate();
 		// else
@@ -119,7 +121,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		feedRequestTask.cancel();
 		purgeFeedRequestTimer();
 		feedRequestTask = new FeedRequestTask(this);
-		feedRequestTimer.schedule(feedRequestTask, requestFeedTimeoutValue, requestFeedTimeoutValue);
+		long rftv = getRequestFeedTimeoutValue();
+		feedRequestTimer.schedule(feedRequestTask, rftv, rftv);
 
 	}
 
@@ -134,7 +137,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		feedRequestTask.cancel();
 		purgeFeedRequestTimer();
 		feedRequestTask = new FeedRequestTask(this);
-		feedRequestTimer.schedule(feedRequestTask, interval, requestFeedTimeoutValue);
+		feedRequestTimer.schedule(feedRequestTask, interval, getRequestFeedTimeoutValue());
 
 	}
 
@@ -145,7 +148,6 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 */
 	@Override
 	protected synchronized void updateRequestTimerByOldFeedFromBroker() {
-		updateRequestTimer();
 	}
 
 	/*
@@ -155,7 +157,20 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	 */
 	@Override
 	protected synchronized void updateRequestTimerByNewFeedFromBroker() {
-		updateRequestTimer(calculateNextRequestTimeout());
+		
+		// if the requestFeedTimeoutValue is very high, it can happen, that we never get the possibility
+		// to request the server: we get "knocked out" by feeds from brokers and can never again achieve the
+		// preferrefdRefreshRate. to prevent this, we have to check, if both values differ and in positive case
+		// we need to update the timer despite the fact that the feed came from a broker.
+		if (getRequestFeedTimeoutValue() > getPreferredRefreshRateMilis()){
+
+			// if one is running aready (must be!) take the shortest timeout
+			long interval = calculateNextRequestTimeout();
+			
+			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
+				updateRequestTimer(interval);
+			
+		}
 	}
 
 	/*
@@ -191,26 +206,28 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		if ( requestFeedTimerCounter > 1 ) {
 			// we had to request several times -> set the timeout to meanvalue
 
-			requestFeedTimeoutValue = (requestFeedTimeoutValue * requestFeedTimerCounter + requestFeedTimeoutValue) / 2;
+			long rftv = getRequestFeedTimeoutValue();
+
+			setRequestFeedTimeoutValue((rftv * requestFeedTimerCounter + rftv) / 2);
 
 		} else {
 
 			long roundtriptime = (rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime());
 
-			if ( roundtriptime < getMaxRefreshRateMilis() )
-				requestFeedTimeoutValue = getMaxRefreshRateMilis();
+			if ( roundtriptime < getPreferredRefreshRateMilis() )
+				setRequestFeedTimeoutValue(getPreferredRefreshRateMilis());
 			else
-				requestFeedTimeoutValue = roundtriptime;
+				setRequestFeedTimeoutValue(roundtriptime);
 		}
 
 	}
 
 	protected void incRequestFeedTimeoutValue() {
-		requestFeedTimeoutValue += getMaxRefreshRateMilis();
+		setRequestFeedTimeoutValue(getRequestFeedTimeoutValue() + getPreferredRefreshRateMilis());
 	}
 
 	protected void resetRequestFeedTimeoutValue() {
-		requestFeedTimeoutValue = 0;
+		setRequestFeedTimeoutValue(0);
 	}
 
 	protected void incRequestFeedTimerCounter() {
@@ -222,12 +239,32 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	}
 
 	/**
-	 * returns the maxRefreshRate in miliseconds
+	 * returns the preferredRefreshRate in miliseconds
 	 * 
-	 * @return maxRefreshRate in miliseconds
+	 * @return preferredRefreshRate in miliseconds
 	 */
-	protected long getMaxRefreshRateMilis() {
-		return getMaxRefreshRate() * 1000;
+	protected long getPreferredRefreshRateMilis() {
+		return getPreferredRefreshRate() * 1000;
+	}
+
+	/**
+	 * @return Returns the requestFeedTimeoutValue.
+	 */
+	public synchronized long getRequestFeedTimeoutValue() {
+		return requestFeedTimeoutValue;
+	}
+
+	/**
+	 * @param requestFeedTimeoutValue
+	 *            The requestFeedTimeoutValue to set.
+	 */
+	public synchronized void setRequestFeedTimeoutValue(long requestFeedTimeoutValue) {
+		this.requestFeedTimeoutValue = requestFeedTimeoutValue;
+		requestFeedTimueoutValueNotifier.notifyObservers(new Long(requestFeedTimeoutValue));
+	}
+
+	protected synchronized void addRequestFeedTimeoutValueObserver(Observer observer) {
+		requestFeedTimueoutValueNotifier.addObserver(observer);
 	}
 
 	/*
@@ -241,6 +278,17 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		new InfoWindowExtension(infoWindow);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see PubSub#showMoreInfo(InfoWindow)
+	 */
+	@Override
+	protected void showMoreInfo(InfoWindow moreinfowindow) {
+		super.showMoreInfo(moreinfowindow);
+		new MoreInfoWindowExtension(moreinfowindow);
+	}
+
 	protected class InfoWindowExtension implements ChangeListener {
 
 		int maxValue = 60;
@@ -251,17 +299,11 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			this.baseWindow = baseWindow;
 
-			JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
+			JPanel sliderpanel = new JPanel();
+
+			sliderpanel.setLayout(new BoxLayout(sliderpanel, BoxLayout.Y_AXIS));
 
 			JSlider slider;
-			
-			JButton moreInfo;
-			
-			JPanel buttonpanel=new JPanel(new BorderLayout());
-			
-			moreInfo=new JButton("more Info");
-			buttonpanel.add(moreInfo,BorderLayout.NORTH);
-			buttonpanel.setBorder(new EmptyBorder(40,30,40,30));
 
 			Hashtable<Integer, JLabel> labeltable = new Hashtable<Integer, JLabel>();
 
@@ -270,7 +312,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			for ( int i = 10; i <= maxValue; i += 10 )
 				labeltable.put(i, new JLabel(new Integer(i).toString()));
 
-			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getMaxRefreshRate()));
+			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getPreferredRefreshRate()));
 			slider.setLabelTable(labeltable);
 			slider.addChangeListener(this);
 			slider.setMajorTickSpacing(10);
@@ -278,12 +320,17 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			slider.setPaintTicks(true);
 			slider.setPaintLabels(true);
 
-			sliderpanel.add(new JLabel("max. refresh-rate", JLabel.CENTER));
+			JLabel sliderlabel = new JLabel("preferred refresh-rate", JLabel.CENTER);
+			sliderlabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			sliderlabel.setLabelFor(slider);
+			sliderpanel.add(sliderlabel);
 			sliderpanel.add(slider);
+			sliderpanel.setBorder(BorderFactory.createEtchedBorder());
 
-			baseWindow.getContentPane().setLayout(new BorderLayout());
-			baseWindow.getContentPane().add(buttonpanel,BorderLayout.NORTH);
-			baseWindow.getContentPane().add(sliderpanel,BorderLayout.SOUTH);
+			JPanel basepanel = (JPanel) baseWindow.getContentPane();
+
+			basepanel.setLayout(new BoxLayout(basepanel, BoxLayout.Y_AXIS));
+			basepanel.add(sliderpanel);
 
 			baseWindow.pack();
 
@@ -298,11 +345,79 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			JSlider slider = (JSlider) e.getSource();
 
 			if ( slider.getValueIsAdjusting() == false ) {
-				setMaxRefreshRate(slider.getValue());
-				requestFeedTimeoutValue = getMaxRefreshRateMilis();
-				updateRequestTimer(getMaxRefreshRateMilis());
+				setPreferredRefreshRate(slider.getValue());
+				setRequestFeedTimeoutValue(getPreferredRefreshRateMilis());
+				updateRequestTimer(getPreferredRefreshRateMilis());
 			}
 
+		}
+
+	}
+
+	protected class MoreInfoWindowExtension {
+
+		private class CloseWindowAdapter extends WindowAdapter {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
+			 */
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				requestFeedTimueoutValueNotifier.deleteObserver(reqFdTmOValObserver);
+				super.windowClosed(arg0);
+			}
+
+		}
+
+		private class RequestFeedTimeoutValueObserver implements Observer {
+
+			public void update(Observable observable, Object arg1) {
+
+				Long rftv = (Long) arg1;
+
+				reqFdTmOValLabel.setText("current refresh-rate: " + rftv / 1000);
+
+			}
+
+		}
+
+		JLabel reqFdTmOValLabel = new JLabel();
+
+		RequestFeedTimeoutValueObserver reqFdTmOValObserver = new RequestFeedTimeoutValueObserver();
+
+		InfoWindow moreinfowindow;
+
+		public MoreInfoWindowExtension(InfoWindow moreinfowindow) {
+
+			this.moreinfowindow = moreinfowindow;
+
+			requestFeedTimueoutValueNotifier.addObserver(reqFdTmOValObserver);
+
+			reqFdTmOValObserver.update(requestFeedTimueoutValueNotifier, new Long(getRequestFeedTimeoutValue()));
+
+			moreinfowindow.addWindowListener(new CloseWindowAdapter());
+
+			moreinfowindow.getContentPane().add(reqFdTmOValLabel);
+
+			moreinfowindow.pack();
+
+		}
+
+	}
+
+	protected class RequestFeedTimeoutValueNotifier extends Observable {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Observable#notifyObservers(java.lang.Object)
+		 */
+		@Override
+		public void notifyObservers(Object arg0) {
+			setChanged();
+			super.notifyObservers(arg0);
 		}
 
 	}

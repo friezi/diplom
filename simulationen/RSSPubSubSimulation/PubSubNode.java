@@ -28,7 +28,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 
 	protected RSSServerNode rssServer;
 
-	protected int maxRefreshRate;
+	protected int preferredRefreshRate;
 
 	//
 	// private BrokerNode broker;
@@ -46,7 +46,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	public PubSubNode(int xp, int yp, SimParameters params) {
 		super(xp, yp);
 		this.params = params;
-		setMaxRefreshRate(params.maxRefreshRate);
+		setPreferredRefreshRate(params.maxRefreshRate);
 		this.statistics = new PubSubNodeStatistics(params);
 		setColor(Color.blue);
 
@@ -236,19 +236,22 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 
 	}
 
-	/**
-	 * @return Returns the maxRefreshRate.
-	 */
-	public synchronized int getMaxRefreshRate() {
-		return maxRefreshRate;
+	protected void showMoreInfo(InfoWindow moreinfowindow) {
 	}
 
 	/**
-	 * @param maxRefreshRate
-	 *            The maxRefreshRate to set.
+	 * @return Returns the preferredRefreshRate.
 	 */
-	public synchronized void setMaxRefreshRate(int maxRefreshRate) {
-		this.maxRefreshRate = maxRefreshRate;
+	public synchronized int getPreferredRefreshRate() {
+		return preferredRefreshRate;
+	}
+
+	/**
+	 * @param preferredRefreshRate
+	 *            The preferredRefreshRate to set.
+	 */
+	public synchronized void setPreferredRefreshRate(int maxRefreshRate) {
+		this.preferredRefreshRate = maxRefreshRate;
 	}
 
 }

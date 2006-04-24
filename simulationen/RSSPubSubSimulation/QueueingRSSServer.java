@@ -194,7 +194,9 @@ public class QueueingRSSServer extends RSSServer {
 
 		public InfoWindowExtension(JFrame baseWindow, RSSServerNode rssserver) {
 
-			JPanel sliderpanel = new JPanel(new GridLayout(2, 1));
+			JPanel sliderpanel = new JPanel();
+			
+			sliderpanel.setLayout(new BoxLayout(sliderpanel,BoxLayout.Y_AXIS));
 
 			JSlider slider;
 
@@ -219,8 +221,8 @@ public class QueueingRSSServer extends RSSServer {
 
 			sliderpanel.add(new JLabel("reply-delay scaling-factor", JLabel.CENTER));
 			sliderpanel.add(slider);
+			sliderpanel.setBorder(BorderFactory.createEtchedBorder());
 
-			baseWindow.getContentPane().add(new JSeparator());
 			baseWindow.getContentPane().add(sliderpanel);
 
 			baseWindow.pack();

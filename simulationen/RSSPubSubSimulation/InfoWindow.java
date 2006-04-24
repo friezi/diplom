@@ -1,24 +1,23 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import rsspubsubframework.*;
 
 /**
- * This Window for showing information about a Node. Add desired components to its panel.
  */
 
 /**
+ * This Window for showing information about a Node. Add desired components to
+ * its panel.
+ * 
  * @author Friedemann Zintel
  * 
  */
-public class InfoWindow extends JFrame {
+public class InfoWindow extends JFrame implements ActionListener {
 
 	protected class InfoWindowAdapter extends WindowAdapter {
 
@@ -30,7 +29,7 @@ public class InfoWindow extends JFrame {
 		@Override
 		public void windowClosed(WindowEvent arg0) {
 
-			undisplayAnchor();
+			anchor.undisplayAnchor();
 			super.windowClosed(arg0);
 		}
 
@@ -46,29 +45,31 @@ public class InfoWindow extends JFrame {
 		@Override
 		public void componentMoved(ComponentEvent arg0) {
 
-			adjustAnchor();
+			anchor.adjustAnchor();
 			super.componentMoved(arg0);
 		}
 
 	}
 
-	InfoWindow window;
+	private static String moreInfoTxt = "more Info";
 
-	int nhradius = 2;
+	String title;
 
 	Node node;
 
-	GOFilledCircle hook;
-
-	GOHyperLine rope;
+	VisualAnchor anchor;
 
 	JPanel panel = new JPanel();
 
-	protected InfoWindow(String titel, Node node) {
+	protected InfoWindow(String title, Node node) {
+		this(title, node, false);
+	}
 
-		super(titel);
+	protected InfoWindow(String title, Node node, boolean moreinfo) {
 
-		this.window = this;
+		super(title);
+
+		this.title = title;
 
 		this.node = node;
 
@@ -78,6 +79,8 @@ public class InfoWindow extends JFrame {
 
 		this.addComponentListener(new InfoWindowComponentAdapter());
 
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
 		this.setContentPane(panel);
 
 		this.setResizable(false);
@@ -86,43 +89,26 @@ public class InfoWindow extends JFrame {
 
 		this.setAlwaysOnTop(true);
 
+		JPanel buttonpanel = new JPanel(new BorderLayout());
+
+		if ( moreinfo == true ) {
+
+			JButton moreInfo = new JButton(moreInfoTxt);
+			buttonpanel.add(moreInfo);
+			buttonpanel.setBorder(new EmptyBorder(0, 40, 0, 40));
+
+			moreInfo.addActionListener(this);
+
+		}
+
+		panel.add(buttonpanel);
+
 		this.pack();
 
 		this.setVisible(true);
 
-		throwAnchor(node,this);
+		anchor = new VisualAnchor(node, this);
 
-	}
-	
-	private void throwAnchor(Node node, JFrame window){
-
-		Color anchorcolor = Color.red;
-
-		// draw a dot (the hook) on the node and a line (the rope) to the
-		// window with a dot (windowhook)
-		hook = new GOFilledCircle(node.getX(), node.getY(), nhradius);
-		rope = new GOHyperLine(node.getX(), node.getY(), this.getX(), this.getY());
-
-		hook.setColor(anchorcolor);
-		rope.setColor(anchorcolor);
-
-		hook.display();
-		rope.display();
-		
-	}
-	
-	private void adjustAnchor(){
-		
-		rope.setX2(window.getX());
-		rope.setY2(window.getY());
-
-	}
-	
-	private void undisplayAnchor(){
-
-		hook.undisplay();
-		rope.undisplay();
-		
 	}
 
 	/**
@@ -130,6 +116,25 @@ public class InfoWindow extends JFrame {
 	 */
 	public Node getNode() {
 		return node;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent e) {
+
+		if ( e.getActionCommand().equals(moreInfoTxt) ) {
+
+			if ( node instanceof RSSServerNode )
+				((RSSServerNode) node).showMoreInfo(new InfoWindow(title, node));
+			else if ( node instanceof PubSubNode )
+				((PubSubNode) node).showMoreInfo(new InfoWindow(title, node));
+			else if ( node instanceof BrokerNode )
+				((BrokerNode) node).showMoreInfo(new InfoWindow(title, node));
+		}
+
 	}
 
 }

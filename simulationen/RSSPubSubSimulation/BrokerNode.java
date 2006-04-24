@@ -37,13 +37,11 @@ public abstract class BrokerNode extends Node implements BrokerType, Observer {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void receiveMessage(Message m) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -229,6 +227,9 @@ public abstract class BrokerNode extends Node implements BrokerType, Observer {
 	 */
 	public void showInfo() {
 		
+	}
+
+	protected void showMoreInfo(InfoWindow moreinfowindow) {
 	}
 
 }

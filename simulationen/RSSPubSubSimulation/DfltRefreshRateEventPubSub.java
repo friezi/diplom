@@ -61,7 +61,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 		// diff = 0;
 		// return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl -
 		// diff)) * 1000;
-		return (long) ((new Random().nextFloat() * (getMaxRefreshRate()) + (ttl - diffsecs)) * 1000);
+		return (long) ((new Random().nextFloat() * (getPreferredRefreshRate()) + (ttl - diffsecs)) * 1000);
 	}
 
 	/*
@@ -81,7 +81,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 	 */
 	@Override
 	protected synchronized void updateRequestTimerByOldFeed() {
-		updateRequestTimer(getMaxRefreshRate() * 1000);
+		updateRequestTimer(getPreferredRefreshRate() * 1000);
 	}
 
 	/*
@@ -96,7 +96,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 		purgeFeedRequestTimer();
 		feedRequestTask = new FeedRequestTask(this);
 		// if there's no response from server, we need to re-request
-		feedRequestTimer.schedule(feedRequestTask, interval, getMaxRefreshRate() * 1000);
+		feedRequestTimer.schedule(feedRequestTask, interval, getPreferredRefreshRate() * 1000);
 
 	}
 
@@ -132,7 +132,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 			for ( int i = 10; i <= maxValue; i += 10 )
 				labeltable.put(i, new JLabel(new Integer(i).toString()));
 
-			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getMaxRefreshRate()));
+			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getPreferredRefreshRate()));
 			slider.setLabelTable(labeltable);
 			slider.addChangeListener(this);
 			slider.setMajorTickSpacing(10);
@@ -160,7 +160,7 @@ public class DfltRefreshRateEventPubSub extends EventPubSub {
 			JSlider slider = (JSlider) e.getSource();
 
 			if ( slider.getValueIsAdjusting() == false ) {
-				((PubSubNode) baseWindow.getNode()).setMaxRefreshRate(slider.getValue());
+				((PubSubNode) baseWindow.getNode()).setPreferredRefreshRate(slider.getValue());
 			}
 
 		}
