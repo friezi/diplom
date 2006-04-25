@@ -1,0 +1,5 @@
+SzenarioClass=SzenarioOneSurrounded
+BrokerClass=AdjustingEventBroker
+PubSubClass=DfltRefreshRateEventPubSub
+RSSServerClass=RSSServer
+RSSFeedClass=ColorEventFeed
