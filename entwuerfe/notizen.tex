@@ -232,4 +232,21 @@ für Congestion-Control:\\
 Sum[i=1;n](a*i)=(n*(a*n+a))/2\\
 Für den neuen Timeoutwert ergibt sich (wir müssen durch n teilen);\\
 (a*n+a)/2
+
+\subsection*{18.04.2006}
+Staukontrolle implementiert.
+
+\subsection*{19. - 25.04.2006}
+Generische Konstruktion der Simulation: Klassen der PubSubs, RSSServer und
+Broker können im eigenen Konfigurationsfile definiert werden. Somit lassen
+beliebige Kombinationen bzw. Szenarien leicht erstellen.
+Infofenster für PubSub und RSSServer implementiert. Individuelle Parameter
+lassen sich anpassen. Nützlicher grafischer Schnickschnack wie
+Verbindungslinie zu Bezugsknoten. Bin dabei auf einen eingeschlichenen Fehler
+gestossen: beim Hinzufügen der updateRefreshTimer-Methoden wurde nun auch ein
+Refreshing bei einer alten von einem Broker erhaltenen Nachricht
+durchgeführt. Habe es glücklicherweise durch Zufall entdeckt, da sich
+dieser Fehler nicht markant äusserte.
+
+
 \end{document}
