@@ -48,8 +48,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -57,8 +56,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					rectangle.resetX2Y2(ds_point);
 
@@ -73,8 +71,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == BLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					rectangle.undisplay();
 					(rectangle = new GORectangle(ds_point)).display();
@@ -83,8 +80,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 				if ( choice == UNBLOCK_NODE_SELECTION_CMD ) {
 
-					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event
-							.getPoint().y));
+					Point ds_point = new Point(Engine.deScaleX(event.getPoint().x), Engine.deScaleY(event.getPoint().y));
 
 					rectangle.undisplay();
 					(rectangle = new GORectangle(ds_point)).display();
@@ -231,8 +227,6 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 	private static String statisticCmd = "Stat.";
 
-	private static String showEdgeIdCmd = "SE";
-
 	private static String hideEdgeIdCmd = "HE";
 
 	private static String deleteConnectionCmd = "DC";
@@ -292,8 +286,6 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 	private JButton controlbutton;
 
 	private JButton statisticbutton;
-
-	private JButton edgeidbutton;
 
 	private JButton showinfobutton;
 
@@ -394,89 +386,126 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 				exitbutton.addActionListener(guip);
 				buttonrow1panel.add(exitbutton);
 
+				JToolBar.Separator buttonseparator1 = new JToolBar.Separator(new Dimension(100, 0));
+				buttonseparator1.setOrientation(JSeparator.VERTICAL);
+				buttonrow1panel.add(buttonseparator1);
+
 				controlbutton = new JButton(startSimulationCmd);
 				// controlbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// controlbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				controlbutton.setToolTipText("Start Simulation");
 				controlbutton.addActionListener(guip);
-				buttonrow1panel.add(controlbutton);
+
+				cancelbutton = new JButton(cancelCmd);
+				// cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
+				// cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
+				cancelbutton.addActionListener(guip);
+
+				JPanel buttoncolumn1panel = new JPanel();
+				buttoncolumn1panel.setLayout(new BoxLayout(buttoncolumn1panel, BoxLayout.Y_AXIS));
+
+				buttoncolumn1panel.add(controlbutton);
+				buttoncolumn1panel.add(cancelbutton);
+
+				buttonrow1panel.add(buttoncolumn1panel);
+
+				JToolBar.Separator buttonseparator2 = new JToolBar.Separator(new Dimension(60, 0));
+				buttonseparator2.setOrientation(JSeparator.VERTICAL);
+				buttonrow1panel.add(buttonseparator2);
 
 				statisticbutton = new JButton(statisticCmd);
 				// statisticbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// statisticbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				statisticbutton.setToolTipText("Statistics");
 				statisticbutton.addActionListener(guip);
-				buttonrow1panel.add(statisticbutton);
-
-				edgeidbutton = new JButton(showEdgeIdCmd);
-				// edgeidbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				// edgeidbutton.setHorizontalTextPosition(AbstractButton.LEADING);
-				edgeidbutton.setToolTipText("Show edge-ids");
-				edgeidbutton.addActionListener(guip);
-				buttonrow1panel.add(edgeidbutton);
 
 				showinfobutton = new JButton(showInfoCmd);
 				showinfobutton.setToolTipText("Show node information");
 				showinfobutton.addActionListener(guip);
-				buttonrow1panel.add(showinfobutton);
+
+				JPanel buttoncolumn2panel = new JPanel();
+				buttoncolumn2panel.setLayout(new BoxLayout(buttoncolumn2panel, BoxLayout.Y_AXIS));
+
+				buttoncolumn2panel.add(statisticbutton);
+				buttoncolumn2panel.add(showinfobutton);
+
+				buttonrow1panel.add(buttoncolumn2panel);
 
 				deleteconnectionbutton = new JButton(deleteConnectionCmd);
 				// deleteconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// deleteconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				deleteconnectionbutton.setToolTipText("Delete connection");
 				deleteconnectionbutton.addActionListener(guip);
-				buttonrow1panel.add(deleteconnectionbutton);
 
 				addconnectionbutton = new JButton(addConnectionCmd);
 				// addconnectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// addconnectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				addconnectionbutton.setToolTipText("Add connection");
 				addconnectionbutton.addActionListener(guip);
-				buttonrow1panel.add(addconnectionbutton);
+
+				JPanel buttoncolumn3panel = new JPanel();
+				buttoncolumn3panel.setLayout(new BoxLayout(buttoncolumn3panel, BoxLayout.Y_AXIS));
+
+				buttoncolumn3panel.add(deleteconnectionbutton);
+				buttoncolumn3panel.add(addconnectionbutton);
+
+				buttonrow1panel.add(buttoncolumn3panel);
 
 				blocknodebutton = new JButton(blockCmd);
 				// blocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// blocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				blocknodebutton.setToolTipText("Block node");
 				blocknodebutton.addActionListener(guip);
-				buttonrow1panel.add(blocknodebutton);
 
 				unblocknodebutton = new JButton(unblockCmd);
 				// unblocknodebutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// unblocknodebutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				unblocknodebutton.setToolTipText("Unblock node");
 				unblocknodebutton.addActionListener(guip);
-				buttonrow1panel.add(unblocknodebutton);
+
+				JPanel buttoncolumn4panel = new JPanel();
+				buttoncolumn4panel.setLayout(new BoxLayout(buttoncolumn4panel, BoxLayout.Y_AXIS));
+
+				buttoncolumn4panel.add(blocknodebutton);
+				buttoncolumn4panel.add(unblocknodebutton);
+
+				buttonrow1panel.add(buttoncolumn4panel);
 
 				blocknodeselectionbutton = new JButton(blockSelectionCmd);
 				// blocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// blocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				blocknodeselectionbutton.setToolTipText("Block node-selection");
 				blocknodeselectionbutton.addActionListener(guip);
-				buttonrow1panel.add(blocknodeselectionbutton);
 
 				unblocknodeselectionbutton = new JButton(unblockSelectionCmd);
 				// unblocknodeselectionbutton.setVerticalTextPosition(AbstractButton.CENTER);
 				// unblocknodeselectionbutton.setHorizontalTextPosition(AbstractButton.LEADING);
 				unblocknodeselectionbutton.setToolTipText("Unblock node-selection");
 				unblocknodeselectionbutton.addActionListener(guip);
-				buttonrow1panel.add(unblocknodeselectionbutton);
+
+				JPanel buttoncolumn5panel = new JPanel();
+				buttoncolumn5panel.setLayout(new BoxLayout(buttoncolumn5panel, BoxLayout.Y_AXIS));
+
+				buttoncolumn5panel.add(blocknodeselectionbutton);
+				buttoncolumn5panel.add(unblocknodeselectionbutton);
+
+				buttonrow1panel.add(buttoncolumn5panel);
 
 				brokersfallapartbutton = new JButton(brokersFallApartCmd);
 				brokersfallapartbutton.setToolTipText("Brokers fall apart");
 				brokersfallapartbutton.addActionListener(guip);
-				buttonrow1panel.add(brokersfallapartbutton);
 
 				iconifywindowsbutton = new JButton(iconifywindowsCmd);
 				iconifywindowsbutton.setToolTipText(iconifywindowsTT);
 				iconifywindowsbutton.addActionListener(guip);
-				buttonrow1panel.add(iconifywindowsbutton);
 
-				cancelbutton = new JButton(cancelCmd);
-				// cancelbutton.setVerticalTextPosition(AbstractButton.CENTER);
-				// cancelbutton.setHorizontalTextPosition(AbstractButton.LEADING);
-				cancelbutton.addActionListener(guip);
-				buttonrow1panel.add(cancelbutton);
+				JPanel buttoncolumn6panel = new JPanel();
+				buttoncolumn6panel.setLayout(new BoxLayout(buttoncolumn6panel, BoxLayout.Y_AXIS));
+
+				buttoncolumn6panel.add(brokersfallapartbutton);
+				buttoncolumn6panel.add(iconifywindowsbutton);
+
+				buttonrow1panel.add(buttoncolumn6panel);
 
 				// put buttons in a logical group
 				buttongroup1.put(addconnectionbutton, addConnectionCmd);
@@ -605,8 +634,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 		} else if ( e.getActionCommand().equals(exitCmd) ) {
 
-			if ( JOptionPane.showConfirmDialog(displayframe, "Really exit?", "Please confirm",
-					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+			if ( JOptionPane.showConfirmDialog(displayframe, "Really exit?", "Please confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
 				System.exit(0);
 
 		} else if ( e.getActionCommand().equals(stopSimulationCmd) ) {
@@ -625,18 +653,6 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 			statisticframe = new StatisticWindow("Statistics");
 			statisticframe.setVisible(true);
-
-		} else if ( e.getActionCommand().equals(showEdgeIdCmd) ) {
-
-			Edge.setIdOn(true);
-			edgeidbutton.setText(hideEdgeIdCmd);
-			edgeidbutton.setToolTipText("Hide edge-ids");
-
-		} else if ( e.getActionCommand().equals(hideEdgeIdCmd) ) {
-
-			Edge.setIdOn(false);
-			edgeidbutton.setText(showEdgeIdCmd);
-			edgeidbutton.setToolTipText("Show edge-ids");
 
 		} else if ( e.getActionCommand().equals(showInfoCmd) ) {
 
@@ -683,10 +699,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(blockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
-					.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
-					.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.block();
@@ -707,10 +721,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 		} else if ( e.getActionCommand().equals(unblockAllCmd) ) {
 
 			// block all nodes
-			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine
-					.scaleY(mouseclick.rectangle.getY1()));
-			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine
-					.scaleY(mouseclick.rectangle.getY2()));
+			Point point1 = new Point(Engine.scaleX(mouseclick.rectangle.getX1()), Engine.scaleY(mouseclick.rectangle.getY1()));
+			Point point2 = new Point(Engine.scaleX(mouseclick.rectangle.getX2()), Engine.scaleY(mouseclick.rectangle.getY2()));
 			LinkedList<Node> nodes = Engine.getSingleton().findNodes(point1, point2);
 			for ( Node node : nodes )
 				node.unblock();
@@ -735,7 +747,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 		} else if ( e.getActionCommand().equals(brokersFallApartCmd) ) {
 
-			synchronized (Engine.getSingleton().nodeList) {
+			synchronized ( Engine.getSingleton().nodeList ) {
 				for ( Node node : Engine.getSingleton().nodeList )
 					if ( node instanceof BrokerType )
 						((BrokerType) node).callbackUnregisterFromAllBrokers();
@@ -850,7 +862,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 	protected void iconifyWindows() {
 
-		synchronized (windows) {
+		synchronized ( windows ) {
 			Iterator<JFrame> it = windows.iterator();
 			while ( it.hasNext() )
 				it.next().setExtendedState(Frame.ICONIFIED);
@@ -860,7 +872,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 	protected void deiconifyWindows() {
 
-		synchronized (windows) {
+		synchronized ( windows ) {
 			Iterator<JFrame> it = windows.iterator();
 			while ( it.hasNext() )
 				it.next().setExtendedState(Frame.NORMAL);
@@ -869,13 +881,13 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 	}
 
 	public void addWindow(JFrame window) {
-		synchronized (windows) {
+		synchronized ( windows ) {
 			windows.add(window);
 		}
 	}
 
 	public void removeWindow(JFrame window) {
-		synchronized (windows) {
+		synchronized ( windows ) {
 			windows.remove(window);
 		}
 	}

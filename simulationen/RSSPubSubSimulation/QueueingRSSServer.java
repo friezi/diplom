@@ -10,6 +10,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * @author Friedemann Zintel
@@ -186,17 +188,48 @@ public class QueueingRSSServer extends RSSServer {
 		new InfoWindowExtension(infoWindow, this);
 	}
 
-	protected class InfoWindowExtension implements ChangeListener {
+	protected class InfoWindowExtension extends WindowAdapter implements ChangeListener {
+
+		private class CloseWindowAdapter extends WindowAdapter {
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
+			 */
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				deleteUploadScalingFactorObserver(uploadScalingFaqctorObserver);
+				super.windowClosed(arg0);
+			}
+
+		}
+
+		protected class UploadScalingFactorObserver implements Observer {
+
+			public void update(Observable arg0, Object arg1) {
+				// TODO Auto-generated method stub
+
+				Float value = (Float) arg1;
+				sliderlabel.setText("reply-delay scaling-factor: " + value + "    ");
+
+			}
+
+		}
 
 		RSSServerNode rssserver;
 
 		int maxValue = 50;
 
+		JLabel sliderlabel;
+
+		UploadScalingFactorObserver uploadScalingFaqctorObserver = new UploadScalingFactorObserver();
+
 		public InfoWindowExtension(JFrame baseWindow, RSSServerNode rssserver) {
 
 			JPanel sliderpanel = new JPanel();
-			
-			sliderpanel.setLayout(new BoxLayout(sliderpanel,BoxLayout.Y_AXIS));
+
+			sliderpanel.setLayout(new BoxLayout(sliderpanel, BoxLayout.Y_AXIS));
 
 			JSlider slider;
 
@@ -219,11 +252,18 @@ public class QueueingRSSServer extends RSSServer {
 			slider.setPaintTicks(true);
 			slider.setPaintLabels(true);
 
-			sliderpanel.add(new JLabel("reply-delay scaling-factor", JLabel.CENTER));
+			sliderlabel = new JLabel();
+
+			sliderpanel.add(sliderlabel);
 			sliderpanel.add(slider);
 			sliderpanel.setBorder(BorderFactory.createEtchedBorder());
 
 			baseWindow.getContentPane().add(sliderpanel);
+
+			baseWindow.addWindowListener(new CloseWindowAdapter());
+
+			addUploadScalingfactorObserver(uploadScalingFaqctorObserver);
+			uploadScalingFaqctorObserver.update(getUploadScalingFactorNotifier(), getUploadScalingFactor());
 
 			baseWindow.pack();
 
@@ -241,6 +281,11 @@ public class QueueingRSSServer extends RSSServer {
 			if ( slider.getValueIsAdjusting() == false ) {
 				rssserver.setUploadScalingFactor(((float) slider.getValue()) / 10);
 			}
+
+		}
+
+		public void update(Observable arg0, Object arg1) {
+			// TODO Auto-generated method stub
 
 		}
 

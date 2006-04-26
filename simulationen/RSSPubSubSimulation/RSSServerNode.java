@@ -27,6 +27,16 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 		}
 	};
 
+	protected class UploadScalingFactorNotifier extends Observable {
+
+		public void notifyObserver(Float value) {
+			setChanged();
+			notifyObservers(value);
+		}
+	}
+
+	private UploadScalingFactorNotifier uploadScalingFactorNotifier = new UploadScalingFactorNotifier();
+
 	protected RSSServerNodeStatistics statistics = new RSSServerNodeStatistics();
 
 	protected RSSFeedRepresentation rssFeedRepresentation;
@@ -83,8 +93,8 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	 */
 	protected void upload(Message m) {
 		try {
-			Thread.sleep((int)(Engine.getSingleton().getTimerPeriod() * m.getRuntime() * getUploadScalingFactor()));
-		} catch (Exception e) {
+			Thread.sleep((int) (Engine.getSingleton().getTimerPeriod() * m.getRuntime() * getUploadScalingFactor()));
+		} catch ( Exception e ) {
 			System.out.println("Exception: " + e);
 		}
 	}
@@ -218,6 +228,7 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	 */
 	public synchronized void setUploadScalingFactor(float uploadScalingFactor) {
 		this.uploadScalingFactor = uploadScalingFactor;
+		uploadScalingFactorNotifier.notifyObserver(new Float(uploadScalingFactor));
 	}
 
 	/**
@@ -261,6 +272,29 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 	}
 
 	protected void showMoreInfo(InfoWindow moreinfowindow) {
+	}
+
+	/**
+	 * @return Returns the uploadScalingFactorNotifier.
+	 */
+	public synchronized UploadScalingFactorNotifier getUploadScalingFactorNotifier() {
+		return uploadScalingFactorNotifier;
+	}
+
+	/**
+	 * @param uploadScalingFactorNotifier
+	 *            The uploadScalingFactorNotifier to set.
+	 */
+	public synchronized void setUploadScalingFactorNotifier(UploadScalingFactorNotifier uploadScalingFactorNotifier) {
+		this.uploadScalingFactorNotifier = uploadScalingFactorNotifier;
+	}
+
+	public synchronized void addUploadScalingfactorObserver(Observer observer) {
+		uploadScalingFactorNotifier.addObserver(observer);
+	}
+
+	public synchronized void deleteUploadScalingFactorObserver(Observer observer) {
+		uploadScalingFactorNotifier.deleteObserver(observer);
 	}
 
 }

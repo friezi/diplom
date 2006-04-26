@@ -232,8 +232,7 @@ public class StatisticWindow extends JFrame {
 		 */
 		public void update(Observable arg0, Object arg1) {
 			Integer averageMessageDelayRatio = (Integer) arg1;
-			averageMessageDelayRatioLabel.setText("avg. message-delay-ratio: " + averageMessageDelayRatio
-					+ "%");
+			averageMessageDelayRatioLabel.setText("avg. message-delay-ratio: " + averageMessageDelayRatio + "%");
 		}
 
 	}
@@ -296,6 +295,12 @@ public class StatisticWindow extends JFrame {
 
 	protected class CloseWindowAdapter extends WindowAdapter {
 
+		StatisticWindow window;
+
+		public CloseWindowAdapter(StatisticWindow window) {
+			this.window = window;
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -319,6 +324,8 @@ public class StatisticWindow extends JFrame {
 			stat.getRequestsInQueueObserver().deleteObserver(getRequestsInQueueObserver());
 			stat.getUnrepliedRequestsObserver().deleteObserver(getUnrepliedRequestsObserver());
 
+			Engine.getSingleton().getDb().removeWindow(window);
+
 			super.windowClosed(arg0);
 		}
 
@@ -329,6 +336,8 @@ public class StatisticWindow extends JFrame {
 		super(title);
 
 		RPSStatistics stat = Engine.getSingleton().getRpsStatistics();
+
+		Engine.getSingleton().getDb().addWindow(this);
 
 		// add observers
 		stat.getReceivedRSSFeedRequestObserver().addObserver(getReceivedRSSRequestsObserver());
@@ -346,27 +355,21 @@ public class StatisticWindow extends JFrame {
 		stat.getUnrepliedRequestsObserver().addObserver(getUnrepliedRequestsObserver());
 
 		// get values manually
-		getReceivedRSSRequestsObserver().update(stat.getReceivedRSSFeedRequestObserver(),
-				stat.getReceivedRSSRequests());
-		getOmittedRSSRequestsObserver().update(stat.getOmittedRSSFeedRequestObserver(),
-				stat.getOmittedRSSRequests());
+		getReceivedRSSRequestsObserver().update(stat.getReceivedRSSFeedRequestObserver(), stat.getReceivedRSSRequests());
+		getOmittedRSSRequestsObserver().update(stat.getOmittedRSSFeedRequestObserver(), stat.getOmittedRSSRequests());
 		getServerFeedsObserver().update(stat.getServerFeedObserver(), stat.getServerFeeds());
 		getBrokerFeedsObserver().update(stat.getBrokerFeedObserver(), stat.getBrokerFeeds());
 		getReOmRatioObserver().update(stat.getReOmRatioUpdater(), stat.getReOmRatio());
 		getSrvBrkRatioObserver().update(stat.getSrvBrkRatioUpdater(), stat.getSrvBrkRatio());
 		getRelReOmRatioObserver().update(stat.getRelReOmRatioUpdater(), stat.getRelReOmRatio());
 		getRelSrvBrkRatioObserver().update(stat.getRelSrvBrkRatioUpdater(), stat.getRelSrvBrkRatio());
-		getAverageUptodateRatioObserver().update(stat.getAverageUptodateRatioUpdater(),
-				stat.getAverageUptodateRatio());
-		getDelayedMessagesRatioObserver().update(stat.getDelayedMessagesRatioNotifier(),
-				stat.getDelayedMessagesRatio());
-		getAverageMessageDelayRatioObserver().update(stat.getAverageMessageDelayRatioUpdater(),
-				stat.getAverageMessageDelayRatio());
+		getAverageUptodateRatioObserver().update(stat.getAverageUptodateRatioUpdater(), stat.getAverageUptodateRatio());
+		getDelayedMessagesRatioObserver().update(stat.getDelayedMessagesRatioNotifier(), stat.getDelayedMessagesRatio());
+		getAverageMessageDelayRatioObserver().update(stat.getAverageMessageDelayRatioUpdater(), stat.getAverageMessageDelayRatio());
 		getRequestsInQueueObserver().update(stat.getRequestsInQueueObserver(), stat.getRequestsInQueue());
-		getUnrepliedRequestsObserver().update(stat.getUnrepliedRequestsObserver(),
-				stat.getUnrepliedRequests());
+		getUnrepliedRequestsObserver().update(stat.getUnrepliedRequestsObserver(), stat.getUnrepliedRequests());
 
-		this.addWindowListener(new CloseWindowAdapter());
+		this.addWindowListener(new CloseWindowAdapter(this));
 
 		// this.setPreferredSize(new Dimension(width, height));
 		// this.setSize(new Dimension(width, height));
