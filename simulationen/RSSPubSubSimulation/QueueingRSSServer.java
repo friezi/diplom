@@ -199,7 +199,7 @@ public class QueueingRSSServer extends RSSServer {
 			 */
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				deleteUploadScalingFactorObserver(uploadScalingFaqctorObserver);
+				deleteUploadScalingFactorObserver(uploadScalingFactorObserver);
 				super.windowClosed(arg0);
 			}
 
@@ -208,10 +208,9 @@ public class QueueingRSSServer extends RSSServer {
 		protected class UploadScalingFactorObserver implements Observer {
 
 			public void update(Observable arg0, Object arg1) {
-				// TODO Auto-generated method stub
 
 				Float value = (Float) arg1;
-				sliderlabel.setText("reply-delay scaling-factor: " + value + "    ");
+				sliderlabel.setText("reply-delay scaling-factor: " + value);
 
 			}
 
@@ -223,7 +222,7 @@ public class QueueingRSSServer extends RSSServer {
 
 		JLabel sliderlabel;
 
-		UploadScalingFactorObserver uploadScalingFaqctorObserver = new UploadScalingFactorObserver();
+		UploadScalingFactorObserver uploadScalingFactorObserver = new UploadScalingFactorObserver();
 
 		public InfoWindowExtension(JFrame baseWindow, RSSServerNode rssserver) {
 
@@ -262,8 +261,8 @@ public class QueueingRSSServer extends RSSServer {
 
 			baseWindow.addWindowListener(new CloseWindowAdapter());
 
-			addUploadScalingfactorObserver(uploadScalingFaqctorObserver);
-			uploadScalingFaqctorObserver.update(getUploadScalingFactorNotifier(), getUploadScalingFactor());
+			addUploadScalingfactorObserver(uploadScalingFactorObserver);
+			uploadScalingFactorObserver.update(getUploadScalingFactorNotifier(), getUploadScalingFactor());
 
 			baseWindow.pack();
 
@@ -285,7 +284,6 @@ public class QueueingRSSServer extends RSSServer {
 		}
 
 		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
 
 		}
 

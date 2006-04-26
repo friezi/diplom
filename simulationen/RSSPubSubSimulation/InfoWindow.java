@@ -100,6 +100,8 @@ public class InfoWindow extends JFrame implements ActionListener {
 		this.node = node;
 
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		
+		this.setResizable(true);
 
 		this.addWindowListener(new InfoWindowAdapter(this));
 
@@ -108,8 +110,6 @@ public class InfoWindow extends JFrame implements ActionListener {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		this.setContentPane(panel);
-
-		this.setResizable(false);
 
 		this.setLocation(node.xPos(), node.yPos());
 
