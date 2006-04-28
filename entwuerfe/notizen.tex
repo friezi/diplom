@@ -238,7 +238,7 @@ Staukontrolle implementiert.
 
 \subsection*{19. - 25.04.2006}
 Generische Konstruktion der Simulation: Klassen der PubSubs, RSSServer und
-Broker können im eigenen Konfigurationsfile definiert werden. Somit lassen
+Broker können im eigenen Konfigurationsfile definiert werden. Somit lassen sich
 beliebige Kombinationen bzw. Szenarien leicht erstellen.
 Infofenster für PubSub und RSSServer implementiert. Individuelle Parameter
 lassen sich anpassen. Nützlicher grafischer Schnickschnack wie
@@ -247,6 +247,51 @@ gestossen: beim Hinzufügen der updateRefreshTimer-Methoden wurde nun auch ein
 Refreshing bei einer alten von einem Broker erhaltenen Nachricht
 durchgeführt. Habe es glücklicherweise durch Zufall entdeckt, da sich
 dieser Fehler nicht markant äusserte.
+
+\subsection*{28.04.2006}
+Idee für evtl. Verbesserung der Anpassung der Pollingrate:\\
+Problem: Subscriber, deren Anfragen vom Server immer wieder verworfen werden,
+steigern ihren RTO endlos. Damit sinkt für nachfolgende Anfragen stetig die
+Chance, in die Serverqueue aufgenommen zu werden.\\
+Workaround: Jeder Subscriber übermittelt in der von ihm ausgesandten
+RSSFeed-Nachricht den vom ihm  ermittelten RTT. Erhält ein Subscriber solch
+eine Nachricht durch einen Broker, so betimmt sich sein neuer RTT aus dem
+Maximum seines alten und des übermittelten Wertes.\\\\
+Habe neue Funktionalität eingebaut, Ergebnis ist aber bei schlechter
+Antwortzeit durch den Server nicht zufrieden stellend: Der RTT zirkuliert
+meistens um relativ kleine Werte, Zahl der abgewiesenen Nachrichten steigt
+an.\\
+Neue Idee: neuer RTT bestimmt sich als Mittelwert zwischen altem und
+übermitteltem Wert. Sollte dazu führen, dass Subscriber, deren Anfragen
+wiederholt verworfen werden, ihren RTT erniedrigen können. Sehr niedrige RTT
+aufgrund schneller Serverantwort im Ausnahmefall wirkt sich damit ebenfalls
+nicht sehr störend auf das Gesamtverhalten aus.\\\\
+Resultat sieht sehr gut aus!\\\\
+Kam auf die Idee, nach der Anpassung ein resetRequestFeedTimerCounter()
+auszuführen aufgrund der Tatsache, dass ja nun ein anderer RTT als
+Berechnungsgrundlage für die mittlere Serverantwort dient. Das Ergebnis in der
+Simulation war jedoch fatal! Es fand kaum noch eine Steigerung des RTO's
+statt, die Serrverqueue war ständig stark überlaufen. Ist auch verständlich,
+da nun jede Serverantwort als direkte Antwort auf die erste Anfrage
+interpretiert wird, somit kann kaum eine Steigerung des RTO stattfinden. Was
+mich jedoch stutzig gemacht hat in der Logik ohne
+resetRequestFeedTimerCounter() ist gerade die Tatsache, dass ja nun als
+Berechnungsgrundlage für die Serverantwort der neue RTT dient, wodurch doch
+eigentlich das Ergebnis verfälscht wird, da der Subscriber in Wirklichkeit
+nicht diesen Betrag an Zeit gewartet hat. Aber angenommen, wir hätten nur den
+ursprünglichen RTT als Grundlage genommen, hätte sich am RTO letztendlich
+nichts geändert, wir würden als Ergebnis immer die entsprechend hohe Summe
+erhalten! Das Problem sind ja gerade verloren gegangene Anfragen. Dieses
+Problem soll ja nun durch die neue RTT-Bestimmung umgangen werden. Also macht
+der neue RTT als Grundlage für die Berechnung Sinn!\\
+Innerhalb der methode updateRequestTimerByOldFeedFromBroker() muss nun
+grundsätzlich ein updateRequestTimer(long) erfolgen, damit sichergestellt ist,
+dass die Timerperiode auf den neuen RTT gesetzt wird. Als Timerdelay wird nun
+das Minimum von neuem RTO (interval) und planmässiger Zeitdifferenz bis zum
+nächsten Timeout genommen. Dies gewährleistet, dass es immer zu einem Timeout
+kommt, auch wenn der neue RTO größer ist als die Zeit bis zum nächsten Timeout.
+
+
 
 
 \end{document}
