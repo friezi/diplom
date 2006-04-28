@@ -24,9 +24,9 @@ public class EventPubSub extends PubSub {
 		 */
 		public int compare(Event event1, Event event2) {
 
-			if (event1.getGeneralContend().getPubDate().before(event2.getGeneralContend().getPubDate()))
+			if ( event1.getGeneralContend().getPubDate().before(event2.getGeneralContend().getPubDate()) )
 				return -1;
-			else if (event1.getGeneralContend().getPubDate().after(event2.getGeneralContend().getPubDate()))
+			else if ( event1.getGeneralContend().getPubDate().after(event2.getGeneralContend().getPubDate()) )
 				return 1;
 			else
 				return 0;
@@ -45,10 +45,14 @@ public class EventPubSub extends PubSub {
 
 		RSSFeed feed = fm.getFeed();
 
-		if (!(feed instanceof EventFeed)) {
+		if ( !(feed instanceof EventFeed) ) {
 			System.out.println("Internal Error: AdjustingEventFeed: handleRSSFeedMessage(): feed is not instance of EventFeed!");
 			System.exit(1);
 		}
+
+		// store all additional information, if contained
+		if ( fm instanceof RSSFeedRichMessage )
+			storeRichInformation((RSSFeedRichMessage) fm);
 
 		Iterator<Event> it = ((EventFeed) feed).eventIterator();
 		Event event;
@@ -58,7 +62,7 @@ public class EventPubSub extends PubSub {
 		while (it.hasNext()) {
 
 			event = it.next();
-			if (!events.contains(event)) {
+			if ( events.contains(event) == false ) {
 
 				events.addLast(event);
 				sortedEvents.add(event);
@@ -67,7 +71,7 @@ public class EventPubSub extends PubSub {
 		}
 
 		// calculate ratio of delayed event:
-		if (!sortedEvents.isEmpty())
+		if ( !sortedEvents.isEmpty() )
 			calculateUpdateAndDelay(sortedEvents.first().getGeneralContend().getPubDate().getTime());
 
 		// deletion of event-overhead
@@ -76,7 +80,7 @@ public class EventPubSub extends PubSub {
 
 		LinkedList<Event> newEvents = new LinkedList<Event>(sortedEvents);
 
-		if (newEvents.size() > 0) {
+		if ( newEvents.size() > 0 ) {
 			// it's a new feed
 
 			// show the feed
@@ -87,7 +91,7 @@ public class EventPubSub extends PubSub {
 			// send a new feed (only with new events) to Broker, if we didn't
 			// get the message from
 			// him
-			if (brokerlist.contains(fm.getSrc()) == false) {
+			if ( brokerlist.contains(fm.getSrc()) == false ) {
 				// sender is server
 
 				updateRequestTimerByNewFeedFromServer();
@@ -95,8 +99,13 @@ public class EventPubSub extends PubSub {
 				this.getStatistics().addServerFeed(this);
 
 				RSSFeed newFeed = getRssEventFeedFactory().newRSSEventFeed(newEvents, fm.getFeed().getGeneralContent());
-				for (BrokerNode broker : brokerlist)
-					new RSSFeedMessage(this, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params).send();
+				RSSFeedRichMessage m;
+				// send it to all brokers
+				for (BrokerNode broker : brokerlist) {
+					m = new RSSFeedRichMessage(this, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+					addRichInformation(m);
+					m.send();
+				}
 
 			} else {
 				// sender is a broker
@@ -110,10 +119,14 @@ public class EventPubSub extends PubSub {
 				// -> statistics
 				this.getStatistics().addOmittedRSSFeedRequest(this);
 
+				RSSFeedRichMessage m;
 				// send it to all other brokers
 				for (BrokerNode broker : brokerlist)
-					if (broker != fm.getSrc())
-						new RSSFeedMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
+					if ( broker != fm.getSrc() ) {
+						m = new RSSFeedRichMessage(this, broker, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params);
+						addRichInformation(m);
+						m.send();
+					}
 
 			}
 
@@ -121,9 +134,9 @@ public class EventPubSub extends PubSub {
 			// it's an old feed
 
 			// got an old feed; update timer only if sender is RSSServer
-			if (fm.getSrc() == getRssServer()) {
+			if ( fm.getSrc() == getRssServer() ) {
 				updateRequestTimerByOldFeedFromServer();
-			} else{
+			} else {
 				updateRequestTimerByOldFeedFromBroker();
 			}
 		}
@@ -137,7 +150,7 @@ public class EventPubSub extends PubSub {
 		long overhead = diffsecs - getPreferredRefreshRate();
 		int messageDelayRatio = 0;
 		int uptodateRatio = 100;
-		if (overhead > 0) {
+		if ( overhead > 0 ) {
 
 			messageDelayRatio = (int) ((overhead * 100) / getPreferredRefreshRate());
 			uptodateRatio = (int) ((getPreferredRefreshRate() * 100) / diffsecs);
@@ -166,6 +179,22 @@ public class EventPubSub extends PubSub {
 	 */
 	public void setRssEventFeedFactory(RSSEventFeedFactory rssEventFeedFactory) {
 		this.rssEventFeedFactory = rssEventFeedFactory;
+	}
+
+	/**
+	 * To override. Adds additional information to a RSSFeedRichMessage.
+	 * 
+	 * @param rfrm
+	 */
+	protected void addRichInformation(RSSFeedRichMessage rfrm) {
+	}
+
+	/**
+	 * To override. For storing additional information of a RSSFeedRichMessage.
+	 * 
+	 * @param rfrm
+	 */
+	protected void storeRichInformation(RSSFeedRichMessage rfrm) {
 	}
 
 }

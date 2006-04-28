@@ -8,7 +8,9 @@ import rsspubsubframework.*;
 /**
  * A Broker which receives Feeds consisting of events. Only the new events will
  * be sent whithin a new feed to all neighbours. The new events will be stored
- * at the broker upto a maximum size of SimParams.maxSubscriberEvents.
+ * at the broker upto a maximum size of SimParams.maxSubscriberEvents. It also
+ * checks, if a received RSSFeedMessage is a RSSFeedRichMessage and stores all
+ * additional including information in the new resent-message.
  * 
  * @author Friedemann Zintel
  * 
@@ -26,7 +28,9 @@ public class AdjustingEventBroker extends AdjustingBroker {
 			this.fm = fm;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Runnable#run()
 		 */
 		public void run() {
@@ -43,10 +47,10 @@ public class AdjustingEventBroker extends AdjustingBroker {
 			LinkedList<Event> newEvents = new LinkedList<Event>();
 
 			// store all new events and send them to neighbours
-			while ( it.hasNext() ) {
+			while (it.hasNext()) {
 
 				event = it.next();
-				if ( !events.contains(event) ) {
+				if ( events.contains(event) == false ) {
 
 					events.addLast(event);
 					newEvents.addLast(event);
@@ -54,7 +58,7 @@ public class AdjustingEventBroker extends AdjustingBroker {
 			}
 
 			// deletion of event-overhead
-			while ( events.size() > params.maxSubscriberEvents )
+			while (events.size() > params.maxSubscriberEvents)
 				events.removeFirst();
 
 			if ( newEvents.size() > 0 ) {
@@ -70,16 +74,22 @@ public class AdjustingEventBroker extends AdjustingBroker {
 				Message m;
 
 				// inform first all brokers, then subscribers, simulate upload
-				for ( BrokerNode broker : brokers ) {
+				for (BrokerNode broker : brokers) {
 					if ( broker != fm.getSrc() ) {
-						(m = new RSSFeedMessage(ourself, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params)).send();
+						m = new RSSFeedRichMessage(ourself, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+						if ( fm instanceof RSSFeedRichMessage )
+							((RSSFeedRichMessage) m).copyRichInformation((RSSFeedRichMessage) fm);
+						m.send();
 						upload(m);
 					}
 				}
 
-				for ( PubSubNode subscriber : subscribers ) {
+				for (PubSubNode subscriber : subscribers) {
 					if ( subscriber != fm.getSrc() ) {
-						(m = new RSSFeedMessage(ourself, subscriber, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params)).send();
+						m = new RSSFeedRichMessage(ourself, subscriber, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
+						if ( fm instanceof RSSFeedRichMessage )
+							((RSSFeedRichMessage) m).copyRichInformation((RSSFeedRichMessage) fm);
+						m.send();
 						upload(m);
 					}
 				}
