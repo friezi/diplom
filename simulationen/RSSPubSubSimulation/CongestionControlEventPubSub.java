@@ -107,15 +107,9 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		int diffsecs = (int) ((now.getTime() - feedDate.getTime()) / 1000);
 		if ( diffsecs > ttl )
 			diffsecs = ttl;
-		// diff = 0;
-		// return (new Random().nextInt((spreadFactor) * ttl + 1) + (ttl -
-		// diff)) * 1000;
-		// the retransmissionTimeout in seconds
-		long rtosecs = getRequestFeedTimeoutValue() / 1000;
-		// if ( requestFeedTimeoutValue < getMaxRefreshRateMS() )
-		// timeout = getMaxRefreshRate();
-		// else
-		// timeout = requestFeedTimeoutValue/1000;
+
+		long rtosecs = Math.max(getPreferredRefreshRate(), getRequestFeedTimeoutValue()) / 1000;
+
 		return (long) ((new Random().nextFloat() * rtosecs + (ttl - diffsecs)) * 1000);
 	}
 
@@ -154,22 +148,11 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 		if ( updateRTimer == true ) {
 
-			if ( getRequestFeedTimeoutValue() > getPreferredRefreshRateMilis() ) {
+			// if one is running aready (must be!) take the shortest timeout
+			long interval = calculateNextRequestTimeout();
 
-				// if one is running aready (must be!) take the shortest timeout
-				long interval = calculateNextRequestTimeout();
-
-				long scheduledtime = feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis();
-				if ( scheduledtime < 0 )
-					scheduledtime = 0;
-
-				// if ( interval < feedRequestTask.scheduledExecutionTime() -
-				// System.currentTimeMillis() )
-				// updateRequestTimer(interval);
-
-				updateRequestTimer(Math.min(interval, scheduledtime));
-
-			}
+			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
+				updateRequestTimer(interval);
 
 			updateRTimer = false;
 
@@ -184,15 +167,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	@Override
 	protected synchronized void updateRequestTimerByNewFeedFromBroker() {
 
-		// if the requestFeedTimeoutValue is very high, it can happen, that we
-		// never get the possibility
-		// to request the server: we get "knocked out" by feeds from brokers and
-		// can never again achieve the
-		// preferrefdRefreshRate. to prevent this, we have to check, if both
-		// values differ and in positive case
-		// we need to update the timer despite the fact that the feed came from
-		// a broker.
-		if ( getRequestFeedTimeoutValue() > getPreferredRefreshRateMilis() ) {
+		if ( updateRTimer == true ) {
 
 			// if one is running aready (must be!) take the shortest timeout
 			long interval = calculateNextRequestTimeout();
@@ -200,7 +175,10 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
 				updateRequestTimer(interval);
 
+			updateRTimer = false;
+
 		}
+
 	}
 
 	/*
@@ -250,16 +228,10 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	@Override
 	protected void storeRichInformation(RSSFeedRichMessage rfrm) {
 		super.storeRichInformation(rfrm);
-		// if ( rfrm.getRtt() < getRequestFeedTimeoutValue() ) {
-		// setRequestFeedTimeoutValue(rfrm.getRtt());
-		// updateRTimer = true;
-		// }
 
 		long newRTT = (rfrm.getRtt() + getRequestFeedTimeoutValue()) / 2;
-		if ( newRTT != getRequestFeedTimeoutValue() ) {
-			setRequestFeedTimeoutValue(newRTT);
-			updateRTimer = true;
-		}
+		setRequestFeedTimeoutValue(newRTT);
+		updateRTimer = true;
 	}
 
 	protected void recalculateRequestTimeoutinterval() {
