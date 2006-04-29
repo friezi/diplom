@@ -158,7 +158,7 @@ public class AdjustingBroker extends BrokerNode {
 
 	}
 
-	class PingTask extends TimerTask {
+	class PingTask extends ExtendedTimerTask {
 
 		// the node we belong to
 		BrokerNode timerbroker = null;
@@ -174,12 +174,13 @@ public class AdjustingBroker extends BrokerNode {
 		 */
 		@Override
 		public void run() {
+			super.run();
 			new TimeForPingMessage(timerbroker, timerbroker, this).send();
 		}
 
 	}
 
-	class PingTimeoutTask extends TimerTask {
+	class PingTimeoutTask extends ExtendedTimerTask {
 
 		// the node we're expecting a ping from
 		private Node node = null;
@@ -194,11 +195,12 @@ public class AdjustingBroker extends BrokerNode {
 
 		public void run() {
 			// processBrokerVanished(node);
+			super.run();
 			new PingTimeoutMessage(timerbroker, timerbroker, node, this).send();
 		}
 	}
 
-	protected class InformBrokersTask extends TimerTask {
+	protected class InformBrokersTask extends ExtendedTimerTask {
 
 		// the node we belong to
 		BrokerNode timerbroker = null;
@@ -209,11 +211,12 @@ public class AdjustingBroker extends BrokerNode {
 
 		public void run() {
 			// processSubscribersChanged();
+			super.run();
 			new InformBrokersMessage(timerbroker, timerbroker).send();
 		}
 	}
 
-	protected class InformSubscribersTask extends TimerTask {
+	protected class InformSubscribersTask extends ExtendedTimerTask {
 
 		// the node we belong to
 		BrokerNode timerbroker = null;
@@ -223,6 +226,7 @@ public class AdjustingBroker extends BrokerNode {
 		}
 
 		public void run() {
+			super.run();
 			new InformSubscribersMessage(timerbroker, timerbroker).send();
 		}
 	}
@@ -233,9 +237,9 @@ public class AdjustingBroker extends BrokerNode {
 	// subnets and its settings
 	protected HashMap<BrokerNode, SubnetSettings> subnets = new HashMap<BrokerNode, SubnetSettings>();
 
-	protected HashMap<PubSubNode, Timer> subscriberTimer = new HashMap<PubSubNode, Timer>();
+	protected HashMap<PubSubNode, ExtendedTimer> subscriberTimer = new HashMap<PubSubNode, ExtendedTimer>();
 
-	protected Timer pingtimer = new Timer();
+	protected ExtendedTimer pingtimer = new ExtendedTimer();
 
 	protected PingTask pingtask = null;
 
@@ -243,9 +247,9 @@ public class AdjustingBroker extends BrokerNode {
 
 	protected InformSubscribersTask informsubscriberstask = null;
 
-	protected Timer pingTimeoutTimer = new Timer();
+	protected ExtendedTimer pingTimeoutTimer = new ExtendedTimer();
 
-	protected Timer changetimer = new Timer();
+	protected ExtendedTimer changetimer = new ExtendedTimer();
 
 	protected long netsize = 0;
 
@@ -715,7 +719,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		}
 
-		Timer timer = new Timer();
+		ExtendedTimer timer = new ExtendedTimer();
 		timer.schedule(new PingTimeoutTask(this, subscriber),
 				2 * params.pingTimeoutFactor * params.pingTimer, 2 * params.pingTimeoutFactor
 						* params.pingTimer);

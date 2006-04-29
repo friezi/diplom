@@ -92,7 +92,7 @@ public class SimParameters {
 	 * PubSub: the time after which a new feed should be received by the
 	 * subscriber at most
 	 */
-	int maxRefreshRate = 5;
+	int preferredPollingRate = 5;
 
 	/**
 	 * AdjustingEventBroker, EventPubSub: maximum number of events thatb will be
@@ -149,7 +149,7 @@ public class SimParameters {
 		properties.setProperty("informSubscribersTimeout", String.valueOf(informSubscribersTimeout));
 		properties.setProperty("maxFeedEvents", String.valueOf(maxFeedEvents));
 		properties.setProperty("maxSubscriberEvents", String.valueOf(maxSubscriberEvents));
-		properties.setProperty("maxRefreshRate", String.valueOf(maxRefreshRate));
+		properties.setProperty("preferredPollingRate", String.valueOf(preferredPollingRate));
 		properties.setProperty("engineTimerPeriod", String.valueOf(engineTimerPeriod));
 		properties.setProperty("serverDelay", String.valueOf(serverDelay));
 		properties.setProperty("serverQueueSize", String.valueOf(serverQueueSize));
@@ -213,7 +213,7 @@ public class SimParameters {
 				.getProperty("informSubscribersTimeout"));
 		maxFeedEvents = Integer.valueOf((String) properties.getProperty("maxFeedEvents"));
 		maxSubscriberEvents = Integer.valueOf((String) properties.getProperty("maxSubscriberEvents"));
-		maxRefreshRate = Integer.valueOf((String) properties.getProperty("maxRefreshRate"));
+		preferredPollingRate = Integer.valueOf((String) properties.getProperty("preferredPollingRate"));
 		engineTimerPeriod = Integer.valueOf((String) properties.getProperty("engineTimerPeriod"));
 		serverDelay = Integer.valueOf((String) properties.getProperty("serverDelay"));
 		serverQueueSize = Integer.valueOf((String) properties.getProperty("serverQueueSize"));

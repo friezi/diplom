@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 public class RSSServer extends RSSServerNode {
 
-	protected class GenerateFeedTask extends TimerTask {
+	protected class GenerateFeedTask extends ExtendedTimerTask {
 
 		private RSSServer rssServer;
 
@@ -16,6 +16,7 @@ public class RSSServer extends RSSServerNode {
 
 		public void run() {
 
+			super.run();
 			new GenerateFeedMessage(rssServer, rssServer).send();
 			rssServer.scheduleTimer();
 
@@ -42,7 +43,7 @@ public class RSSServer extends RSSServerNode {
 
 	protected JFrame infoWindow;
 
-	Timer timer = new Timer();
+	ExtendedTimer timer = new ExtendedTimer();
 
 	/**
 	 * @param xp

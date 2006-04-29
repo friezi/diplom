@@ -20,7 +20,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 		}
 	};
 
-	protected class PreferredRefreshRateNotifier extends Observable {
+	protected class PreferredPollingRateNotifier extends Observable {
 
 		/* (non-Javadoc)
 		 * @see java.util.Observable#notifyObservers(java.lang.Object)
@@ -40,9 +40,9 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 
 	protected RSSServerNode rssServer;
 
-	protected int preferredRefreshRate;
+	protected int preferredPollingRate;
 
-	private PreferredRefreshRateNotifier preferredRefreshRateNotifier = new PreferredRefreshRateNotifier();
+	private PreferredPollingRateNotifier preferredPollingRateNotifier = new PreferredPollingRateNotifier();
 
 	//
 	// private BrokerNode broker;
@@ -60,7 +60,7 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	public PubSubNode(int xp, int yp, SimParameters params) {
 		super(xp, yp);
 		this.params = params;
-		setPreferredRefreshRate(params.maxRefreshRate);
+		setPreferredPollingRate(params.preferredPollingRate);
 		this.statistics = new PubSubNodeStatistics(params);
 		setColor(Color.blue);
 
@@ -254,41 +254,41 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	}
 
 	/**
-	 * @return Returns the preferredRefreshRate.
+	 * @return Returns the preferredPollingRate.
 	 */
-	public synchronized int getPreferredRefreshRate() {
-		return preferredRefreshRate;
+	public synchronized int getPreferredPollingRate() {
+		return preferredPollingRate;
 	}
 
 	/**
-	 * @param preferredRefreshRate
-	 *            The preferredRefreshRate to set.
+	 * @param preferredPollingRate
+	 *            The preferredPollingRate to set.
 	 */
-	public synchronized void setPreferredRefreshRate(int maxRefreshRate) {
-		this.preferredRefreshRate = maxRefreshRate;
-		preferredRefreshRateNotifier.notifyObservers(new Integer(maxRefreshRate));
+	public synchronized void setPreferredPollingRate(int preferredPollingRate) {
+		this.preferredPollingRate = preferredPollingRate;
+		preferredPollingRateNotifier.notifyObservers(new Integer(preferredPollingRate));
 	}
 
 	/**
-	 * @return Returns the preferredRefreshRateNotifier.
+	 * @return Returns the preferredPollingRateNotifier.
 	 */
-	public PreferredRefreshRateNotifier getPreferredRefreshRateNotifier() {
-		return preferredRefreshRateNotifier;
+	public PreferredPollingRateNotifier getPreferredPollingRateNotifier() {
+		return preferredPollingRateNotifier;
 	}
 
 	/**
-	 * @param preferredRefreshRateNotifier The preferredRefreshRateNotifier to set.
+	 * @param preferredPollingRateNotifier The preferredPollingRateNotifier to set.
 	 */
-	public void setPreferredRefreshRateNotifier(PreferredRefreshRateNotifier preferredRefreshRateNotifier) {
-		this.preferredRefreshRateNotifier = preferredRefreshRateNotifier;
+	public void setPreferredPollingRateNotifier(PreferredPollingRateNotifier preferredPollingRateNotifier) {
+		this.preferredPollingRateNotifier = preferredPollingRateNotifier;
 	}
 
-	public synchronized void addPreferredRefreshrateObserver(Observer observer) {
-		preferredRefreshRateNotifier.addObserver(observer);
+	public synchronized void addPreferredPollingRateObserver(Observer observer) {
+		preferredPollingRateNotifier.addObserver(observer);
 	}
 
-	public synchronized void deletePreferredRefreshRateNotifier(Observer observer) {
-		preferredRefreshRateNotifier.deleteObserver(observer);
+	public synchronized void deletePreferredPollingRateObserver(Observer observer) {
+		preferredPollingRateNotifier.deleteObserver(observer);
 	}
 
 }

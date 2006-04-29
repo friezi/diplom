@@ -5,7 +5,7 @@ import javax.swing.JLabel;
 
 public class PubSub extends PubSubNode {
 
-	protected class FeedRequestTask extends TimerTask {
+	protected class FeedRequestTask extends ExtendedTimerTask {
 
 		private PubSubNode timerpubsub = null;
 
@@ -14,6 +14,7 @@ public class PubSub extends PubSubNode {
 		}
 
 		public void run() {
+			super.run();
 			new RequestFeedMessage(timerpubsub, timerpubsub).send();
 			// requestFeed();
 			// feedRequestTimer.schedule(new
@@ -78,7 +79,7 @@ public class PubSub extends PubSubNode {
 
 	}
 
-	protected class AckTimerTask extends TimerTask {
+	protected class AckTimerTask extends ExtendedTimerTask {
 
 		// Ourself
 		private PubSubNode timernode;
@@ -97,6 +98,8 @@ public class PubSub extends PubSubNode {
 
 		public void run() {
 
+			super.run();
+			
 			// debugging
 			// if ( broker == null )
 			// System.err.println("PubSub.AckTimerTask.run(): broker==null");
@@ -108,7 +111,7 @@ public class PubSub extends PubSubNode {
 	// dummy feed to prevent NullPointerException
 	protected RSSFeed feed = new RSSFeed(new RSSFeedGeneralContent());
 
-	protected Timer feedRequestTimer = new Timer();
+	protected ExtendedTimer feedRequestTimer = new ExtendedTimer();
 
 	/**
 	 * purge-counter for the feedRequestTimer
@@ -120,7 +123,7 @@ public class PubSub extends PubSubNode {
 	 */
 	protected static int MAXFRTPURGECOUNTER = 20;
 
-	protected Timer ackTimer = new Timer();
+	protected ExtendedTimer ackTimer = new ExtendedTimer();
 
 	protected HashMap<BrokerNode, AckTimerTask> acktaskmap = new HashMap<BrokerNode, AckTimerTask>();
 
@@ -314,7 +317,7 @@ public class PubSub extends PubSubNode {
 		// the new network-size the new interval would be much shorter
 		// we should set up a new task, otherwise we can live with a short
 		// task
-		if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
+		if ( interval < feedRequestTask.getNextExecutionTime() - System.currentTimeMillis() )
 			updateRequestTimer(interval);
 
 	}

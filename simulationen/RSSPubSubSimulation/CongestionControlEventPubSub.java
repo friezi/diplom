@@ -108,7 +108,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		if ( diffsecs > ttl )
 			diffsecs = ttl;
 
-		long rtosecs = Math.max(getPreferredRefreshRate(), getRequestFeedTimeoutValue()) / 1000;
+		long rtosecs = Math.max(getPreferredPollingRate(), getRequestFeedTimeoutValue()) / 1000;
 
 		return (long) ((new Random().nextFloat() * rtosecs + (ttl - diffsecs)) * 1000);
 	}
@@ -151,7 +151,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			// if one is running aready (must be!) take the shortest timeout
 			long interval = calculateNextRequestTimeout();
 
-			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
+			if ( interval < feedRequestTask.getNextExecutionTime() - System.currentTimeMillis() )
 				updateRequestTimer(interval);
 
 			updateRTimer = false;
@@ -172,7 +172,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			// if one is running aready (must be!) take the shortest timeout
 			long interval = calculateNextRequestTimeout();
 
-			if ( interval < feedRequestTask.scheduledExecutionTime() - System.currentTimeMillis() )
+			if ( interval < feedRequestTask.getNextExecutionTime() - System.currentTimeMillis() )
 				updateRequestTimer(interval);
 
 			updateRTimer = false;
@@ -247,8 +247,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			long roundtriptime = (rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime());
 
-			if ( roundtriptime < getPreferredRefreshRateMilis() )
-				setRequestFeedTimeoutValue(getPreferredRefreshRateMilis());
+			if ( roundtriptime < getPreferredPollingRateMillis() )
+				setRequestFeedTimeoutValue(getPreferredPollingRateMillis());
 			else
 				setRequestFeedTimeoutValue(roundtriptime);
 		}
@@ -256,7 +256,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	}
 
 	protected void incRequestFeedTimeoutValue() {
-		setRequestFeedTimeoutValue(getRequestFeedTimeoutValue() + getPreferredRefreshRateMilis());
+		setRequestFeedTimeoutValue(getRequestFeedTimeoutValue() + getPreferredPollingRateMillis());
 	}
 
 	protected void resetRequestFeedTimeoutValue() {
@@ -272,12 +272,12 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	}
 
 	/**
-	 * returns the preferredRefreshRate in miliseconds
+	 * returns the preferredPollingRate in miliseconds
 	 * 
-	 * @return preferredRefreshRate in miliseconds
+	 * @return preferredPollingRate in miliseconds
 	 */
-	protected long getPreferredRefreshRateMilis() {
-		return getPreferredRefreshRate() * 1000;
+	protected long getPreferredPollingRateMillis() {
+		return getPreferredPollingRate() * 1000;
 	}
 
 	/**
@@ -333,13 +333,13 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			 */
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				deletePreferredRefreshRateNotifier(preferredRefreshRateObserver);
+				deletePreferredPollingRateObserver(preferredPollingRateObserver);
 				super.windowClosed(arg0);
 			}
 
 		}
 
-		protected class PreferredRefreshRateObserver implements Observer {
+		protected class PreferredPollingRateObserver implements Observer {
 
 			/*
 			 * (non-Javadoc)
@@ -351,7 +351,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 				Integer value = (Integer) arg;
 
-				sliderlabel.setText("preferred refresh-rate: " + value);
+				sliderlabel.setText("preferred polling-rate: " + value);
 			}
 
 		}
@@ -362,7 +362,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 		JLabel sliderlabel;
 
-		protected PreferredRefreshRateObserver preferredRefreshRateObserver = new PreferredRefreshRateObserver();
+		protected PreferredPollingRateObserver preferredPollingRateObserver = new PreferredPollingRateObserver();
 
 		public InfoWindowExtension(InfoWindow baseWindow) {
 
@@ -381,7 +381,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			for (int i = 10; i <= maxValue; i += 10)
 				labeltable.put(i, new JLabel(new Integer(i).toString()));
 
-			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getPreferredRefreshRate()));
+			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getPreferredPollingRate()));
 			slider.setLabelTable(labeltable);
 			slider.addChangeListener(this);
 			slider.setMajorTickSpacing(10);
@@ -398,8 +398,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			baseWindow.addWindowListener(new CloseWindowAdapter());
 
-			addPreferredRefreshrateObserver(preferredRefreshRateObserver);
-			preferredRefreshRateObserver.update(getPreferredRefreshRateNotifier(), getPreferredRefreshRate());
+			addPreferredPollingRateObserver(preferredPollingRateObserver);
+			preferredPollingRateObserver.update(getPreferredPollingRateNotifier(), getPreferredPollingRate());
 
 			JPanel basepanel = (JPanel) baseWindow.getContentPane();
 
@@ -419,9 +419,9 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			JSlider slider = (JSlider) e.getSource();
 
 			if ( slider.getValueIsAdjusting() == false ) {
-				setPreferredRefreshRate(slider.getValue());
-				setRequestFeedTimeoutValue(getPreferredRefreshRateMilis());
-				updateRequestTimer(getPreferredRefreshRateMilis());
+				setPreferredPollingRate(slider.getValue());
+				setRequestFeedTimeoutValue(getPreferredPollingRateMillis());
+				updateRequestTimer(getPreferredPollingRateMillis());
 			}
 
 		}
@@ -451,8 +451,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 				Long rftv = (Long) arg1;
 
-				reqFdTmOValLabel.setText("current refresh-rate: " + rftv / 1000 + "    ");
-
+				reqFdTmOValLabel.setText("current polling-rate: " + rftv / 1000 + "    ");
 			}
 
 		}
