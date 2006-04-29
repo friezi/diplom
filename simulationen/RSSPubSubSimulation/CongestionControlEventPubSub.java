@@ -22,7 +22,10 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 	private long requestFeedTimerCounter;
 
-	private long requestFeedTimeoutValue;
+	/**
+	 * The RoundTripTime between Subscriber and RSSServer
+	 */
+	private long rtt;
 
 	private Date requestFeedMessageDate;
 
@@ -30,7 +33,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 	private boolean updateRTimer = false;
 
-	private RequestFeedTimeoutValueNotifier requestFeedTimueoutValueNotifier = new RequestFeedTimeoutValueNotifier();
+	private RttNotifier rttNotifier = new RttNotifier();
 
 	/**
 	 * @param xp
@@ -50,7 +53,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	@Override
 	public void init() {
 		setMoreinfo(true);
-		resetRequestFeedTimeoutValue();
+		resetRtt();
 		resetRequestFeedTimerCounter();
 		super.init();
 	}
@@ -73,7 +76,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	@Override
 	protected void handleRequestFeedMessage(RequestFeedMessage rfm) {
 
-		incRequestFeedTimeoutValue();
+		incRtt();
 		incRequestFeedTimerCounter();
 		updateRequestTimer();
 		requestFeedMessageDate = new Date();
@@ -108,7 +111,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		if ( diffsecs > ttl )
 			diffsecs = ttl;
 
-		long rtosecs = Math.max(getPreferredPollingRate(), getRequestFeedTimeoutValue()) / 1000;
+		long rtosecs = Math.max(getPreferredPollingRate(), getRtt()) / 1000;
 
 		return (long) ((new Random().nextFloat() * rtosecs + (ttl - diffsecs)) * 1000);
 	}
@@ -118,7 +121,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		feedRequestTask.cancel();
 		purgeFeedRequestTimer();
 		feedRequestTask = new FeedRequestTask(this);
-		long rftv = getRequestFeedTimeoutValue();
+		long rftv = getRtt();
 		feedRequestTimer.schedule(feedRequestTask, rftv, rftv);
 
 	}
@@ -134,7 +137,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		feedRequestTask.cancel();
 		purgeFeedRequestTimer();
 		feedRequestTask = new FeedRequestTask(this);
-		feedRequestTimer.schedule(feedRequestTask, interval, getRequestFeedTimeoutValue());
+		feedRequestTimer.schedule(feedRequestTask, interval, getRtt());
 
 	}
 
@@ -217,7 +220,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	@Override
 	protected void addRichInformation(RSSFeedRichMessage rfrm) {
 		super.addRichInformation(rfrm);
-		rfrm.setRtt(getRequestFeedTimeoutValue());
+		rfrm.setRtt(getRtt());
 	}
 
 	/*
@@ -229,8 +232,8 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	protected void storeRichInformation(RSSFeedRichMessage rfrm) {
 		super.storeRichInformation(rfrm);
 
-		long newRTT = (rfrm.getRtt() + getRequestFeedTimeoutValue()) / 2;
-		setRequestFeedTimeoutValue(newRTT);
+		long newRTT = (rfrm.getRtt() + getRtt()) / 2;
+		setRtt(newRTT);
 		updateRTimer = true;
 	}
 
@@ -239,28 +242,28 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		if ( requestFeedTimerCounter > 1 ) {
 			// we had to request several times -> set the timeout to meanvalue
 
-			long rftv = getRequestFeedTimeoutValue();
+			long rftv = getRtt();
 
-			setRequestFeedTimeoutValue((rftv * requestFeedTimerCounter + rftv) / 2);
+			setRtt((rftv * requestFeedTimerCounter + rftv) / 2);
 
 		} else {
 
 			long roundtriptime = (rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime());
 
 			if ( roundtriptime < getPreferredPollingRateMillis() )
-				setRequestFeedTimeoutValue(getPreferredPollingRateMillis());
+				setRtt(getPreferredPollingRateMillis());
 			else
-				setRequestFeedTimeoutValue(roundtriptime);
+				setRtt(roundtriptime);
 		}
 
 	}
 
-	protected void incRequestFeedTimeoutValue() {
-		setRequestFeedTimeoutValue(getRequestFeedTimeoutValue() + getPreferredPollingRateMillis());
+	protected void incRtt() {
+		setRtt(getRtt() + getPreferredPollingRateMillis());
 	}
 
-	protected void resetRequestFeedTimeoutValue() {
-		setRequestFeedTimeoutValue(0);
+	protected void resetRtt() {
+		setRtt(0);
 	}
 
 	protected void incRequestFeedTimerCounter() {
@@ -281,25 +284,29 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	}
 
 	/**
-	 * @return Returns the requestFeedTimeoutValue.
+	 * @return Returns the rtt.
 	 */
-	public synchronized long getRequestFeedTimeoutValue() {
-		return requestFeedTimeoutValue;
+	public synchronized long getRtt() {
+		return rtt;
 	}
 
 	/**
-	 * @param requestFeedTimeoutValue
-	 *            The requestFeedTimeoutValue to set.
+	 * @param rtt
+	 *            The rtt to set.
 	 */
-	public synchronized void setRequestFeedTimeoutValue(long requestFeedTimeoutValue) {
-		this.requestFeedTimeoutValue = requestFeedTimeoutValue;
-		requestFeedTimueoutValueNotifier.notifyObservers(new Long(requestFeedTimeoutValue));
+	public synchronized void setRtt(long rtt) {
+		this.rtt = rtt;
+		rttNotifier.notifyObservers(new Long(rtt));
 	}
 
-	protected synchronized void addRequestFeedTimeoutValueObserver(Observer observer) {
-		requestFeedTimueoutValueNotifier.addObserver(observer);
+	protected synchronized void addRttObserver(Observer observer) {
+		rttNotifier.addObserver(observer);
 	}
 
+	protected synchronized void deleteRttObserver(Observer observer){
+		rttNotifier.deleteObserver(observer);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -420,7 +427,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			if ( slider.getValueIsAdjusting() == false ) {
 				setPreferredPollingRate(slider.getValue());
-				setRequestFeedTimeoutValue(getPreferredPollingRateMillis());
+				setRtt(getPreferredPollingRateMillis());
 				updateRequestTimer(getPreferredPollingRateMillis());
 			}
 
@@ -439,26 +446,26 @@ public class CongestionControlEventPubSub extends EventPubSub {
 			 */
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				requestFeedTimueoutValueNotifier.deleteObserver(reqFdTmOValObserver);
+				deleteRttObserver(rttObserver);
 				super.windowClosed(arg0);
 			}
 
 		}
 
-		private class RequestFeedTimeoutValueObserver implements Observer {
+		private class RttObserver implements Observer {
 
 			public void update(Observable observable, Object arg1) {
 
 				Long rftv = (Long) arg1;
 
-				reqFdTmOValLabel.setText("current polling-rate: " + rftv / 1000 + "    ");
+				rttLabel.setText("current polling-rate: " + rftv / 1000 + "    ");
 			}
 
 		}
 
-		JLabel reqFdTmOValLabel = new JLabel();
+		JLabel rttLabel = new JLabel();
 
-		RequestFeedTimeoutValueObserver reqFdTmOValObserver = new RequestFeedTimeoutValueObserver();
+		RttObserver rttObserver = new RttObserver();
 
 		InfoWindow moreinfowindow;
 
@@ -466,13 +473,13 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			this.moreinfowindow = moreinfowindow;
 
-			requestFeedTimueoutValueNotifier.addObserver(reqFdTmOValObserver);
+			addRttObserver(rttObserver);
 
-			reqFdTmOValObserver.update(requestFeedTimueoutValueNotifier, new Long(getRequestFeedTimeoutValue()));
+			rttObserver.update(rttNotifier, new Long(getRtt()));
 
 			moreinfowindow.addWindowListener(new CloseWindowAdapter());
 
-			moreinfowindow.getContentPane().add(reqFdTmOValLabel);
+			moreinfowindow.getContentPane().add(rttLabel);
 
 			moreinfowindow.pack();
 
@@ -480,7 +487,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 	}
 
-	protected class RequestFeedTimeoutValueNotifier extends Observable {
+	protected class RttNotifier extends Observable {
 
 		/*
 		 * (non-Javadoc)
