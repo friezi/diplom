@@ -239,21 +239,22 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 	protected void recalculateRequestTimeoutinterval() {
 
+		long delta_t = (rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime());
+
 		if ( requestFeedTimerCounter > 1 ) {
 			// we had to request several times -> set the timeout to meanvalue
 
 			long rftv = getRtt();
 
-			setRtt((rftv * requestFeedTimerCounter + rftv) / 2);
+			// setRtt((rftv * requestFeedTimerCounter + rftv) / 2);
+			setRtt(getPreferredPollingRateMillis() * (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) + delta_t);
 
 		} else {
 
-			long roundtriptime = (rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime());
-
-			if ( roundtriptime < getPreferredPollingRateMillis() )
+			if ( delta_t < getPreferredPollingRateMillis() )
 				setRtt(getPreferredPollingRateMillis());
 			else
-				setRtt(roundtriptime);
+				setRtt(delta_t);
 		}
 
 	}
@@ -303,10 +304,10 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		rttNotifier.addObserver(observer);
 	}
 
-	protected synchronized void deleteRttObserver(Observer observer){
+	protected synchronized void deleteRttObserver(Observer observer) {
 		rttNotifier.deleteObserver(observer);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -385,7 +386,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			labeltable.put(1, new JLabel("1"));
 
-			for (int i = 10; i <= maxValue; i += 10)
+			for ( int i = 10; i <= maxValue; i += 10 )
 				labeltable.put(i, new JLabel(new Integer(i).toString()));
 
 			slider = new JSlider(1, maxValue, (int) (((PubSubNode) baseWindow.getNode()).getPreferredPollingRate()));
