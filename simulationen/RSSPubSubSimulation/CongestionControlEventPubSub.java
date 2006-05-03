@@ -248,7 +248,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 
 			// setRtt((rftv * requestFeedTimerCounter + rftv) / 2);
 //			setRtt(getPreferredPollingRateMillis() * (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) + delta_t);
-			setRtt(getRtt() * (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) + delta_t);
+			setRtt(getRtt() * (long)((Math.pow(requestFeedTimerCounter,2) - 1) / 3) + delta_t);
 
 		} else {
 
