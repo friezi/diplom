@@ -192,7 +192,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	@Override
 	protected synchronized void updateRequestTimerByNewFeedFromServer() {
 
-		recalculateRequestTimeoutinterval();
+		recalculateRtt();
 		resetRequestFeedTimerCounter();
 		updateRequestTimer(calculateNextRequestTimeout());
 
@@ -206,7 +206,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	@Override
 	protected synchronized void updateRequestTimerByOldFeedFromServer() {
 
-		recalculateRequestTimeoutinterval();
+		recalculateRtt();
 		resetRequestFeedTimerCounter();
 		updateRequestTimer();
 
@@ -237,17 +237,18 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		updateRTimer = true;
 	}
 
-	protected void recalculateRequestTimeoutinterval() {
+	protected void recalculateRtt() {
 
-		long delta_t = (rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime());
+		long delta_t = rssFeedMessageDate.getTime() - requestFeedMessageDate.getTime();
 
 		if ( requestFeedTimerCounter > 1 ) {
 			// we had to request several times -> set the timeout to meanvalue
 
-			long rftv = getRtt();
+//			long rftv = getRtt();
 
 			// setRtt((rftv * requestFeedTimerCounter + rftv) / 2);
-			setRtt(getPreferredPollingRateMillis() * (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) + delta_t);
+//			setRtt(getPreferredPollingRateMillis() * (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) + delta_t);
+			setRtt(getRtt() * (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) + delta_t);
 
 		} else {
 
