@@ -238,28 +238,32 @@ final public class Engine {
 	// modified by Friedemann Zintel
 	public final void removeEdgeFromNodes(Node node1, Node node2) {
 
-		boolean foundfirst = false;
-		boolean foundsecond = false;
+		Edge firstEdge = null;
+		Edge secondEdge = null;
 
 		synchronized ( edgeList ) {
 
 			for ( Edge edge : edgeList ) {
 
-				if ( foundfirst == true && foundsecond == true )
+				if ( firstEdge != null && secondEdge != null )
 					break;
 
 				if ( (edge.node1() == node1 && edge.node2() == node2) ) {
 
-					removeEdge(edge);
-					foundfirst = true;
+					firstEdge = edge;
 
 				} else if ( (edge.node1() == node2 && edge.node2() == node1) ) {
 
-					removeEdge(edge);
-					foundsecond = true;
+					secondEdge = edge;
 
 				}
 			}
+
+			if ( firstEdge != null )
+				removeEdge(firstEdge);
+
+			if ( secondEdge != null )
+				removeEdge(secondEdge);
 
 		}
 

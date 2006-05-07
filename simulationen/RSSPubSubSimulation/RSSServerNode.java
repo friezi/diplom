@@ -25,6 +25,10 @@ public abstract class RSSServerNode extends Node implements RSSServerType {
 		public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 			return new RSSFeedRepresentation(null, null);
 		}
+
+		public RSSFeedRepresentation newRSSFeedRepresentation(RSSFeed feed) {
+			return newRSSFeedRepresentation(null, null);
+		}
 	};
 
 	protected class UploadScalingFactorNotifier extends Observable {

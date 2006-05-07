@@ -18,11 +18,17 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 		public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 			return new RSSFeedRepresentation(null, null);
 		}
+
+		public RSSFeedRepresentation newRSSFeedRepresentation(RSSFeed feed) {
+			return newRSSFeedRepresentation(null, null);
+		}
 	};
 
 	protected class PreferredPollingRateNotifier extends Observable {
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.util.Observable#notifyObservers(java.lang.Object)
 		 */
 		public void notifyObservers(Integer value) {
@@ -277,7 +283,8 @@ public abstract class PubSubNode extends Node implements PubSubType, Observer {
 	}
 
 	/**
-	 * @param preferredPollingRateNotifier The preferredPollingRateNotifier to set.
+	 * @param preferredPollingRateNotifier
+	 *            The preferredPollingRateNotifier to set.
 	 */
 	public void setPreferredPollingRateNotifier(PreferredPollingRateNotifier preferredPollingRateNotifier) {
 		this.preferredPollingRateNotifier = preferredPollingRateNotifier;

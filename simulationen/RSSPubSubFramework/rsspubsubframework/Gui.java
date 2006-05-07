@@ -42,6 +42,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 		GORectangle rectangle = new GORectangle(0, 0, 0, 0);
 
+		@Override
 		public void mouseDragged(MouseEvent event) {
 
 			if ( choice_status == SELECTION ) {
@@ -65,6 +66,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 		}
 
+		@Override
 		public void mousePressed(MouseEvent event) {
 
 			if ( choice_status == SELECTION ) {
@@ -91,6 +93,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent event) {
 
 			if ( choice_status == SELECTION ) {
@@ -112,6 +115,7 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 			}
 		}
 
+		@Override
 		public void mouseClicked(MouseEvent event) {
 
 			// Button3 makes the controlframe visible or invisible
@@ -190,6 +194,28 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 				}
 			}
 		}
+	}
+	
+	protected class DFWindowAdapter extends WindowAdapter{
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.WindowAdapter#windowDeiconified(java.awt.event.WindowEvent)
+		 */
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			super.windowDeiconified(arg0);
+			deiconifyWindows();
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.WindowAdapter#windowIconified(java.awt.event.WindowEvent)
+		 */
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			super.windowIconified(arg0);
+			iconifyWindows();
+		}
+		
 	}
 
 	/**
@@ -373,6 +399,8 @@ public class Gui extends javax.swing.JComponent implements ActionListener {
 				df_height = displayframe.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight();
 				// displayframe.setBounds(new Rectangle(df_width, df_height));
 				displayframe.setSize(new Dimension(df_width, df_height));
+				
+				displayframe.addWindowListener(new DFWindowAdapter());
 
 				guip.addMouseListener(mouseclick);
 				guip.addMouseMotionListener(mouseclick);

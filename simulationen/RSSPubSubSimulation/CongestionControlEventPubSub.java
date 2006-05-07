@@ -111,7 +111,7 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		if ( diffsecs > ttl )
 			diffsecs = ttl;
 
-		long rtosecs = Math.max(getPreferredPollingRate(), getRtt()) / 1000;
+		long rtosecs = getCrt() / 1000;
 
 		return (long) ((new Random().nextFloat() * rtosecs + (ttl - diffsecs)) * 1000);
 	}
@@ -232,8 +232,14 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	protected void storeRichInformation(RSSFeedRichMessage rfrm) {
 		super.storeRichInformation(rfrm);
 
-		long newRTT = (rfrm.getRtt() + getRtt()) / 2;
-		setRtt(newRTT);
+		long sum;
+
+		if ( Long.MAX_VALUE - rfrm.getRtt() < getRtt() )
+			sum = Long.MAX_VALUE;
+		else
+			sum = rfrm.getRtt() + getRtt();
+
+		setRtt(sum / 2);
 		updateRTimer = true;
 	}
 
@@ -244,11 +250,15 @@ public class CongestionControlEventPubSub extends EventPubSub {
 		if ( requestFeedTimerCounter > 1 ) {
 			// we had to request several times -> set the timeout to meanvalue
 
-//			long rftv = getRtt();
+			// long rftv = getRtt();
 
 			// setRtt((rftv * requestFeedTimerCounter + rftv) / 2);
-//			setRtt(getPreferredPollingRateMillis() * (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) + delta_t);
-			setRtt(getRtt() * (long)((Math.pow(requestFeedTimerCounter,2) - 1) / 3) + delta_t);
+			// setRtt(getPreferredPollingRateMillis() *
+			// (((requestFeedTimerCounter * requestFeedTimerCounter) - 1) / 3) +
+			// delta_t);
+			// setRtt(getRtt() * (long)((Math.pow(requestFeedTimerCounter,2) -
+			// 1) / 3) + delta_t);
+			setRtt((getCrt() * (sum2pot(1, requestFeedTimerCounter) - 2) + ((requestFeedTimerCounter - 1) * delta_t)) / requestFeedTimerCounter);
 
 		} else {
 
@@ -261,11 +271,32 @@ public class CongestionControlEventPubSub extends EventPubSub {
 	}
 
 	protected void incRtt() {
-		setRtt(getRtt() + getPreferredPollingRateMillis());
+		// setRtt(getRtt() + getPreferredPollingRateMillis());
+		setRtt(2 * getRtt());
 	}
 
 	protected void resetRtt() {
-		setRtt(0);
+		// setRtt(0);
+		setRtt(getPreferredPollingRateMillis());
+	}
+
+	/**
+	 * returns the current polling-rate
+	 * 
+	 * @return current polling-rate
+	 */
+	long getCrt() {
+		return Math.max(getRtt(), getPreferredPollingRateMillis());
+	}
+
+	long sum2pot(long start, long n) {
+
+		long sum = 0;
+
+		for ( long i = start; i <= n; i++ )
+			sum += Math.pow(2, i);
+
+		return sum;
 	}
 
 	protected void incRequestFeedTimerCounter() {

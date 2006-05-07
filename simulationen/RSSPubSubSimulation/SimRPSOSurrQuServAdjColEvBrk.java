@@ -9,7 +9,7 @@ import rsspubsubframework.Engine;
 
 /**
  * @author Friedemann Zintel
- *
+ * 
  */
 public class SimRPSOSurrQuServAdjColEvBrk {
 
@@ -51,6 +51,10 @@ public class SimRPSOSurrQuServAdjColEvBrk {
 		}, new ColorEventFeedFactory(params), new RSSFeedRepresentationFactory() {
 			public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 				return new ColorFeedRepresentation(dObj, (ColorFeed) feed);
+			}
+
+			public RSSFeedRepresentation newRSSFeedRepresentation(RSSFeed feed) {
+				return newRSSFeedRepresentation(null, (ColorFeed) feed);
 			}
 		}, params);
 

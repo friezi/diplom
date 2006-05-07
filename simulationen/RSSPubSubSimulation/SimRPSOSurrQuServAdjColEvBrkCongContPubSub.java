@@ -51,6 +51,10 @@ public class SimRPSOSurrQuServAdjColEvBrkCongContPubSub extends Szenario {
 			public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 				return new ColorFeedRepresentation(dObj, (ColorFeed) feed);
 			}
+
+			public RSSFeedRepresentation newRSSFeedRepresentation(RSSFeed feed) {
+				return newRSSFeedRepresentation(null, (ColorFeed) feed);
+			}
 		}, params);
 
 	}

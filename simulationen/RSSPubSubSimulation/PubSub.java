@@ -99,7 +99,7 @@ public class PubSub extends PubSubNode {
 		public void run() {
 
 			super.run();
-			
+
 			// debugging
 			// if ( broker == null )
 			// System.err.println("PubSub.AckTimerTask.run(): broker==null");
@@ -367,7 +367,10 @@ public class PubSub extends PubSubNode {
 	}
 
 	public synchronized void setDefaultColor() {
-		getRssFeedRepresentation().represent();
+		if ( getRssFeedRepresentation() != null )
+			getRssFeedRepresentation().represent();
+		else
+			super.setDefaultColor();
 	}
 
 	/**
@@ -471,6 +474,6 @@ public class PubSub extends PubSubNode {
 	@Override
 	protected void showMoreInfo(InfoWindow moreinfowindow) {
 		super.showMoreInfo(moreinfowindow);
-				
+
 	}
 }

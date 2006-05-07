@@ -4,7 +4,7 @@ public class RSSFeedRepresentation {
 
 	protected RSSFeed feed;
 
-	protected DisplayableObject dObj;
+	protected DisplayableObject dObj = null;
 
 	/**
 	 * @param dObj
@@ -17,6 +17,10 @@ public class RSSFeedRepresentation {
 		this.feed = feed;
 	}
 
+	public RSSFeedRepresentation(RSSFeed feed) {
+		this.feed = feed;
+	}
+
 	/**
 	 * Will represent resp. show the feed.
 	 * 
@@ -24,6 +28,7 @@ public class RSSFeedRepresentation {
 	 * 
 	 */
 	public void represent() {
+		dObj.setColor(MessageColors.registerAckColor);
 	}
 
 	/**

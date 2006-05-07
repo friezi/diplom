@@ -102,7 +102,7 @@ public class Simulation {
 		Engine.getSingleton().init();
 
 		Szenario szenario = newSzenario();
-		
+
 		Engine.getSingleton().repaintGUI();
 
 	}
@@ -240,6 +240,10 @@ public class Simulation {
 		return new RSSFeedRepresentationFactory() {
 			public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 				return new ColorFeedRepresentation(dObj, (ColorFeed) feed);
+			}
+
+			public RSSFeedRepresentation newRSSFeedRepresentation(RSSFeed feed) {
+				return newRSSFeedRepresentation(null, (ColorFeed) feed);
 			}
 		};
 	}

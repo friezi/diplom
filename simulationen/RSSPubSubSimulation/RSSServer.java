@@ -116,7 +116,7 @@ public class RSSServer extends RSSServerNode {
 		// request
 		this.getStatistics().addReceivedRSSFeedRequest(this);
 
-		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(null, getFeed()), params).send();
+		new RSSFeedMessage(this, rfrm.getSrc(), getFeed(), getRssFeedRepresentationFactory().newRSSFeedRepresentation(getFeed()), params).send();
 
 	}
 

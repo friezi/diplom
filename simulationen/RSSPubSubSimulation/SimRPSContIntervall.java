@@ -30,9 +30,9 @@ public class SimRPSContIntervall {
 		}
 
 		SimParameters params = new SimParameters(parameterfile);
-		
+
 		Engine.getSingleton().setTimerPeriod(params.engineTimerPeriod);
-		
+
 		Engine.getSingleton().init();
 
 		Szenario szenario = new SzenarioAllForOne(new RPSFactory() {
@@ -50,6 +50,10 @@ public class SimRPSContIntervall {
 		}, new ColorFeedFactory(), new RSSFeedRepresentationFactory() {
 			public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 				return new ColorFeedRepresentation(dObj, (ColorFeed) feed);
+			}
+
+			public RSSFeedRepresentation newRSSFeedRepresentation(RSSFeed feed) {
+				return newRSSFeedRepresentation(null, (ColorFeed) feed);
 			}
 		}, params);
 	}

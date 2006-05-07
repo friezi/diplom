@@ -34,9 +34,9 @@ public class SimRPSOSurrAdjColEvBrk {
 		}
 
 		SimParameters params = new SimParameters(parameterfile);
-		
+
 		Engine.getSingleton().setTimerPeriod(params.engineTimerPeriod);
-		
+
 		Engine.getSingleton().init();
 
 		Szenario szenario = new SzenarioOneSurrounded(new RPSFactory() {
@@ -54,6 +54,10 @@ public class SimRPSOSurrAdjColEvBrk {
 		}, new ColorEventFeedFactory(params), new RSSFeedRepresentationFactory() {
 			public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 				return new ColorFeedRepresentation(dObj, (ColorFeed) feed);
+			}
+
+			public RSSFeedRepresentation newRSSFeedRepresentation(RSSFeed feed) {
+				return newRSSFeedRepresentation(null, (ColorFeed) feed);
 			}
 		}, params);
 	}

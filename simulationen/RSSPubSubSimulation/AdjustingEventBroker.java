@@ -1,6 +1,7 @@
 import java.util.*;
 
 import rsspubsubframework.*;
+import sun.java2d.pipe.GeneralCompositePipe;
 
 /**
  */
@@ -47,7 +48,7 @@ public class AdjustingEventBroker extends AdjustingBroker {
 			LinkedList<Event> newEvents = new LinkedList<Event>();
 
 			// store all new events and send them to neighbours
-			while (it.hasNext()) {
+			while ( it.hasNext() ) {
 
 				event = it.next();
 				if ( events.contains(event) == false ) {
@@ -58,7 +59,7 @@ public class AdjustingEventBroker extends AdjustingBroker {
 			}
 
 			// deletion of event-overhead
-			while (events.size() > params.maxSubscriberEvents)
+			while ( events.size() > params.maxSubscriberEvents )
 				events.removeFirst();
 
 			if ( newEvents.size() > 0 ) {
@@ -74,7 +75,7 @@ public class AdjustingEventBroker extends AdjustingBroker {
 				Message m;
 
 				// inform first all brokers, then subscribers, simulate upload
-				for (BrokerNode broker : brokers) {
+				for ( BrokerNode broker : brokers ) {
 					if ( broker != fm.getSrc() ) {
 						m = new RSSFeedRichMessage(ourself, broker, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
 						if ( fm instanceof RSSFeedRichMessage )
@@ -84,7 +85,7 @@ public class AdjustingEventBroker extends AdjustingBroker {
 					}
 				}
 
-				for (PubSubNode subscriber : subscribers) {
+				for ( PubSubNode subscriber : subscribers ) {
 					if ( subscriber != fm.getSrc() ) {
 						m = new RSSFeedRichMessage(ourself, subscriber, newFeed, fm.getRssFeedRepresentation().copyWith(null, newFeed), params);
 						if ( fm instanceof RSSFeedRichMessage )
@@ -108,6 +109,7 @@ public class AdjustingEventBroker extends AdjustingBroker {
 
 		super(xp, yp, params);
 		setRssEventFeedFactory(rssEventFeedFactory);
+		feed = rssEventFeedFactory.newRSSEventFeed(new LinkedList<Event>(), new RSSFeedGeneralContent());
 	}
 
 	protected void handleRSSFeedMessage(RSSFeedMessage fm) {

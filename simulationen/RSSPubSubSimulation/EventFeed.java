@@ -12,6 +12,6 @@ import java.util.*;
  */
 public interface EventFeed {
 	
-	Iterator<Event> eventIterator();
+	public Iterator<Event> eventIterator();
 
 }

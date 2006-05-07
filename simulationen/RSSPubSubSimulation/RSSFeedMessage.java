@@ -11,8 +11,7 @@ public class RSSFeedMessage extends Message {
 
 	protected RSSFeed feed;
 
-	public RSSFeedMessage(Node src, Node dst, RSSFeed feed, RSSFeedRepresentation rssFeedRepresentation,
-			SimParameters params) {
+	public RSSFeedMessage(Node src, Node dst, RSSFeed feed, RSSFeedRepresentation rssFeedRepresentation, SimParameters params) {
 		super(src, dst, params.rssFeedMsgRT);
 		this.feed = feed;
 		this.rssFeedRepresentation = rssFeedRepresentation;
@@ -23,7 +22,8 @@ public class RSSFeedMessage extends Message {
 
 		// only represent feed on special demand
 		if ( params.rssFeedMsgRepresent == true )
-			getRssFeedRepresentation().represent();
+			if ( getRssFeedRepresentation() != null )
+				getRssFeedRepresentation().represent();
 	}
 
 	public RSSFeedRepresentation getRssFeedRepresentation() {

@@ -400,13 +400,12 @@ public class AdjustingBroker extends BrokerNode {
 	 */
 	protected void sendSubnetSize(BrokerNode broker, Node messageInitiator, Node causeOfMessage) {
 
-		new SubnetParamMessage(this, broker, messageInitiator, causeOfMessage, new SubnetParameters(
-				calcNetSizeWithout(broker), new Date()), params).send();
+		new SubnetParamMessage(this, broker, messageInitiator, causeOfMessage, new SubnetParameters(calcNetSizeWithout(broker), new Date()), params)
+				.send();
 
 	}
 
-	synchronized protected PingTimeoutTask updatePingTimeoutTimer(PingTimeoutTask pingtimeouttask,
-			BrokerNode broker) {
+	synchronized protected PingTimeoutTask updatePingTimeoutTimer(PingTimeoutTask pingtimeouttask, BrokerNode broker) {
 
 		if ( pingtimeouttask != null ) {
 			pingtimeouttask.cancel();
@@ -415,8 +414,7 @@ public class AdjustingBroker extends BrokerNode {
 		pingtimeouttask = new PingTimeoutTask(this, broker);
 		// if the broker gets bloked the task must continue triggering until the
 		// broker does processing again
-		pingTimeoutTimer.schedule(pingtimeouttask, params.pingTimeoutFactor * params.pingTimer,
-				params.pingTimeoutFactor * params.pingTimer);
+		pingTimeoutTimer.schedule(pingtimeouttask, params.pingTimeoutFactor * params.pingTimer, params.pingTimeoutFactor * params.pingTimer);
 		return pingtimeouttask;
 	}
 
@@ -450,8 +448,7 @@ public class AdjustingBroker extends BrokerNode {
 	protected void registerAtBroker(BrokerNode broker) {
 
 		// send a RegisterBrokerMessage
-		new RegisterBrokerMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
-				params).send();
+		new RegisterBrokerMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()), params).send();
 
 	}
 
@@ -477,8 +474,7 @@ public class AdjustingBroker extends BrokerNode {
 			Set<Node> peers = getPeers();
 			for ( Node peer : peers ) {
 				if ( peer != fm.getSrc() )
-					new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(null,
-							getFeed()), params).send();
+					new RSSFeedMessage(this, peer, getFeed(), fm.getRssFeedRepresentation().copyWith(null, getFeed()), params).send();
 			}
 
 		}
@@ -702,6 +698,9 @@ public class AdjustingBroker extends BrokerNode {
 			// send acknowledgement
 			new RegisterAckMessage(this, subscriber, params.subnetParamMsgRT).send();
 
+			// send current RSSFeed
+			sendRssFeedMessage(this, subscriber);
+
 			adjustNetsize(1);
 
 			// wait an amount of time before informing the other brokers
@@ -709,8 +708,7 @@ public class AdjustingBroker extends BrokerNode {
 			// must be again triggered
 			if ( isCollectingSubscrInfo() == false ) {
 				informbrokerstask = new InformBrokersTask(this);
-				changetimer.schedule(informbrokerstask, params.informBrokersTimeout,
-						params.informBrokersTimeout);
+				changetimer.schedule(informbrokerstask, params.informBrokersTimeout, params.informBrokersTimeout);
 				setCollectingSubscrInfo(true);
 			}
 		} else if ( subscriberTimer.containsKey(subscriber) ) {
@@ -720,11 +718,14 @@ public class AdjustingBroker extends BrokerNode {
 		}
 
 		ExtendedTimer timer = new ExtendedTimer();
-		timer.schedule(new PingTimeoutTask(this, subscriber),
-				2 * params.pingTimeoutFactor * params.pingTimer, 2 * params.pingTimeoutFactor
-						* params.pingTimer);
+		timer.schedule(new PingTimeoutTask(this, subscriber), 2 * params.pingTimeoutFactor * params.pingTimer, 2 * params.pingTimeoutFactor
+				* params.pingTimer);
 		subscriberTimer.put(subscriber, timer);
 
+	}
+
+	protected void sendRssFeedMessage(Node src, Node dst) {
+		new RSSFeedMessage(src, dst, getFeed(), new RSSFeedRepresentation(getFeed()), params).send();
 	}
 
 	protected void handleUnregisteredSubscriber(PubSubNode subscriber) {
@@ -742,8 +743,7 @@ public class AdjustingBroker extends BrokerNode {
 			// must be again triggered
 			if ( isCollectingSubscrInfo() == false ) {
 				informbrokerstask = new InformBrokersTask(this);
-				changetimer.schedule(informbrokerstask, params.informBrokersTimeout,
-						params.informBrokersTimeout);
+				changetimer.schedule(informbrokerstask, params.informBrokersTimeout, params.informBrokersTimeout);
 				setCollectingSubscrInfo(true);
 			}
 		}
@@ -790,8 +790,7 @@ public class AdjustingBroker extends BrokerNode {
 		// wait an amount of time before informing the other brokers
 		if ( isCollectingNetworkInfo() == false ) {
 			informsubscriberstask = new InformSubscribersTask(this);
-			changetimer.schedule(informsubscriberstask, params.informSubscribersTimeout,
-					params.informSubscribersTimeout);
+			changetimer.schedule(informsubscriberstask, params.informSubscribersTimeout, params.informSubscribersTimeout);
 			setCollectingNetworkInfo(true);
 		}
 
@@ -909,8 +908,7 @@ public class AdjustingBroker extends BrokerNode {
 
 		Set<BrokerNode> currbrokers = getBrokers();
 		for ( BrokerNode broker : currbrokers ) {
-			new PingMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()),
-					params).send();
+			new PingMessage(this, broker, new SubnetParameters(calcNetSizeWithout(broker), new Date()), params).send();
 		}
 	}
 
