@@ -1,8 +1,6 @@
 import java.awt.*;
 import java.util.*;
 
-import rsspubsubframework.*;
-
 /**
  * A base-class for Publish/Subscribe-nodes
  * 

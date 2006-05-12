@@ -1,4 +1,4 @@
-import rsspubsubframework.DisplayableObject;
+
 
 public class ColorFeedRepresentation extends RSSFeedRepresentation {
 

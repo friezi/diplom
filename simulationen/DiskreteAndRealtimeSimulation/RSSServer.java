@@ -1,5 +1,3 @@
-import rsspubsubframework.*;
-
 import java.util.*;
 
 import javax.swing.JFrame;

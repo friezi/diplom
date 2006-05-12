@@ -1,7 +1,5 @@
 import java.awt.Color;
 
-import rsspubsubframework.*;
-
 import javax.swing.*;
 
 /**

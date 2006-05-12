@@ -1,8 +1,5 @@
 import java.util.LinkedList;
 
-import rsspubsubframework.EdgeFactory;
-import rsspubsubframework.Engine;
-
 /**
  * A Szenario consisting of one RSS-Server and several Brokers, each o them has
  * two Publishers/Subscribers connected to.

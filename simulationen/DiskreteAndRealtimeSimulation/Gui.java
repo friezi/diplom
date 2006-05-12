@@ -17,7 +17,7 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-package rsspubsubframework;
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

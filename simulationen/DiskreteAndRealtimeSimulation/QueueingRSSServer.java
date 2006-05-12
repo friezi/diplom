@@ -5,7 +5,6 @@
 import java.util.*;
 import java.lang.*;
 import java.lang.reflect.*;
-import rsspubsubframework.*;
 import javax.swing.*;
 import javax.swing.event.*;
 

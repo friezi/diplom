@@ -1,4 +1,4 @@
-package rsspubsubframework;
+
 
 /**
  * This type represents a broker.

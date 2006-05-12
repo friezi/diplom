@@ -3,8 +3,6 @@
  */
 import java.util.*;
 
-import rsspubsubframework.Node;
-
 
 /**
  * A base-interface for all kinds of feed-factories which will produce event-feeds

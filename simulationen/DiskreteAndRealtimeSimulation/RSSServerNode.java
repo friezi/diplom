@@ -1,5 +1,3 @@
-import rsspubsubframework.*;
-
 import java.awt.*;
 import java.util.*;
 

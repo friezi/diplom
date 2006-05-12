@@ -4,8 +4,6 @@
 
 import java.util.*;
 
-import rsspubsubframework.Engine;
-
 /**
  * @author Friedemann Zintel
  *

@@ -1,7 +1,5 @@
 import java.awt.Color;
 
-import rsspubsubframework.Message;
-
 public class RSSFeedRequestMessage extends Message {
 	
 	protected SimParameters params;

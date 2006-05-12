@@ -1,5 +1,4 @@
-import rsspubsubframework.Message;
-import rsspubsubframework.Node;
+
 
 public class RSSFeedMessage extends Message {
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rsspubsubframework;
+
 
 import java.awt.*;
 import java.awt.event.*;

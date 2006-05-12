@@ -1,4 +1,4 @@
-import rsspubsubframework.*;
+
 
 /**
  * Acknowledgement for a register-message

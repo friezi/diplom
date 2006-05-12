@@ -1,4 +1,4 @@
-import rsspubsubframework.*;
+
 
 /**
  * Registers a new subscriber at broker.
