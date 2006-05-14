@@ -1,0 +1,5 @@
+SzenarioClass=SzenarioOneSurrounded
+BrokerClass=AdjustingEventBroker
+PubSubClass=CongestionControlEventPubSub
+RSSServerClass=QueueingRSSServer
+RSSFeedClass=ColorEventFeed
