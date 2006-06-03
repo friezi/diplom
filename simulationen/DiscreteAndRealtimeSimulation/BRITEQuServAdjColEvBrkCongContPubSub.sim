@@ -1,0 +1,6 @@
+SzenarioClass=BRITESzenario
+BRITEFile=topology.brite
+BrokerClass=AdjustingEventBroker
+PubSubClass=CongestionControlEventPubSub
+RSSServerClass=QueueingRSSServer
+RSSFeedClass=ColorEventFeed
