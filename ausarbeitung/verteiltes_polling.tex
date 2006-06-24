@@ -1,0 +1,17 @@
+
+\subsection{Verteiltes Polling}
+Betrachten wir die Gesamtheit der Subscriber und ihr Polling-Verhalten, so erkennen wir, dass aus Sicht eines Servers das Polling-Intervall
+dieser Gesamtheit größer ist als das Polling-Intervall jedes einzelnen Subscribers. Wünschenswert wäre es, wenn jeder Subscriber von dem
+Polling-Intervall der Gesamtheit profitieren könnte. Die Idee ist nun, die Subscriber untereinander über ein Overlay-Netzwerk zu verbinden,
+damit sie sich
+gegenseitig die erhaltenen Informationen übermitteln können. Das Polling wird also verteilt auf die beteiligten Subscriber. Aber nicht nur das,
+wir haben es nun mit einer Kombination aus einem Pull- und einem Push-Ansatz zu tun. Allerdings übernimmt die Push-Funktion nicht der Server,
+sondern die beteiligten Einheiten des Overlay-Netzes, von dem der Server kein Bestandteil ist . Und warum favorisieren wir nicht gleich den
+Push-Ansatz bezogen auf den Server? RSS ist ein schon seit längerer Zeit bestehendes Konzept bzw. bestehende Technik.
+Darüber hinaus ist es weit verbreitet.
+Eine Modifikation des Grundkonzeptes würde für Unternehmen, die es unterstützen, bedeuten, bestehende Software austauschen zu müssen und
+ganz neue Serviceleistungen bereitstellen zu müssen. Dies würde sicherlich auf Ablehnung stoßen und möglicherweise nicht die gewünschte
+Verbreitung des neuen Konzeptes mit sich bringen. Ziel ist es, auf dem bestehenden Konzept aufzubauen und es in ein erweitertes Konzept zu
+integrieren, um möglichst für den Benutzer als auch für den Dienstanbieter ein Minimum an Aufwand zu erreichen. Deolasee et al.
+beschäftigen sich in \cite{bhide02adaptive} mit einer Kombination aus Push-Pull und beschreiben die Probleme, die sich aus reinen Pull- bzw.
+Push-Ansätzen ergeben.
