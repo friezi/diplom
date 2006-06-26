@@ -24,11 +24,13 @@ negativ beeinflussen:
 
 Zu \ref{enum:anf_zsp}.: da wir es bei dem bestehenden Pull-Ansatz mit aktivem Polling der Subscriber zu tun haben, bewirkt eine höhere
 Polling-Rate eine höhere Chance, dass Anfragen den Server mit geringer Verzögerung erreichen (bezogen auf neue vorliegende Informationen).
-Eine höhere Polling-rate bedeutet mehr Anfragen, die den Server pro Zeiteinheit erreichen.\\
+Gegenmaßnahme wäre also, die Polling-Rate eines Subscribers zu erhöhen, um die Anzahl der Anfragen, die den Server pro Zeiteinheit erreichen,
+zu erhöhen.\\
 
 Zu \ref{enum:ant_zsp}.: zu spät erhaltene Antworten können darauf zurückzuführen sein (abgesehen von langen
 Inter"-net"--Über"-tra"-gungs"-zeiten),
-dass der Server mit der Beantwortung nicht nachkommt, seine Queue also zu voll ist. Abhilfe schafft hier eine Drosselung der Anfragen.\\
+dass der Server mit der Beantwortung nicht nachkommt, seine Queue also zu voll ist. Abhilfe schafft hier eine Drosselung der Anzahl der
+Anfragen an den Server.\\
 
 Zu \ref{enum:k_ant}.: um trotzdem an die gewünschten Informationen zu gelangen, muss dafür gesorgt werden, dass der Server nicht die einzige
 Quelle ist, von der jene Informationen bezogen werden können.\\

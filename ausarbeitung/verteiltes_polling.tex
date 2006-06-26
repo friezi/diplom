@@ -12,6 +12,20 @@ Darüber hinaus ist es weit verbreitet.
 Eine Modifikation des Grundkonzeptes würde für Unternehmen, die es unterstützen, bedeuten, bestehende Software austauschen zu müssen und
 ganz neue Serviceleistungen bereitstellen zu müssen. Dies würde sicherlich auf Ablehnung stoßen und möglicherweise nicht die gewünschte
 Verbreitung des neuen Konzeptes mit sich bringen. Ziel ist es, auf dem bestehenden Konzept aufzubauen und es in ein erweitertes Konzept zu
-integrieren, um möglichst für den Benutzer als auch für den Dienstanbieter ein Minimum an Aufwand zu erreichen. Deolasee et al.
+integrieren, um möglichst für den Benutzer als auch für den Dienstanbieter ein Minimum an Aufwand zu erreichen (Deolasee et al.
 beschäftigen sich in \cite{bhide02adaptive} mit einer Kombination aus Push-Pull und beschreiben die Probleme, die sich aus reinen Pull- bzw.
-Push-Ansätzen ergeben.
+Push-Ansätzen ergeben).\\
+Es ist naheliegend, das Publish-Subscribe-Paradigma auf unser Problem anzuwenden: Die Informationen, konkret also die RSS-Feeds, sollen über ein
+Notifikationssystem an die Interessenten, sprich Subscriber, ausgeliefert werden. Da sich die Funktion bzw. Rolle des RSS-Servers nicht ändern
+soll, muss die Funktion des Publishers eine andere Einheit übernehmen. Es bietet sich an, die Rolle des Publishers ebenfalls den Klienten
+zuzuweisen. Ein Klient erhält in der Rolle des Subscribers auf eine Anfrage hin den RSS-Feed von einem Server. Der Klient kann nun diesen Feed in
+der Rolle des Publishers in das Notifikationssystem einspeisen. Das Notifikationssystem soll aus einem System von vernetzten Brokern
+bestehen. Ein Broker, welcher einen Feed erhält, liefert diesen an die übrigen mit ihm verbundenen Subscriber bzw. Broker aus. Für einen
+Subscriber gibt es also zwei Möglichkeiten, einen Feed zu erhalten: entweder auf direkte Anfrage von einem Server (Pull) oder von einem
+Broker (Push). Um einen neuen Feed zu erhalten, kann ein Subscriber selbst aktiv werden und den Feed vom Server anfordern, oder er kann warten,
+bis ihm ein neuer Feed durch das Netzwerk über einen Broker übermittelt wird. Es ergibt sich dabei folgende Fragestellung: wann soll ein
+Klient aktiv werden und den Server kontaktieren und wann soll ein Klient inaktiv bleiben, um den Feed indirekt zu erhalten? Denn
+folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden Server, ist nichts gewonnen; erreicht
+einen Klienten der neue Feed über einen Broker, so besitzt der entsprechende Klient diesen neuen Feed bereits. Es muss also zu einer Abstimmung
+bzw. Koordinierung der Klienten unter einander kommmen, die dafür sorgt, dass nur ein Teil der Klienten den Server kontaktiert.
+
