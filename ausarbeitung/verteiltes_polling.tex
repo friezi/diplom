@@ -1,5 +1,5 @@
 
-\subsection{Verteiltes Polling}
+\section{Verteiltes Polling}
 Betrachten wir die Gesamtheit der Subscriber und ihr Polling-Verhalten, so erkennen wir, dass aus Sicht eines Servers das Polling-Intervall
 dieser Gesamtheit größer ist als das Polling-Intervall jedes einzelnen Subscribers. Wünschenswert wäre es, wenn jeder Subscriber von dem
 Polling-Intervall der Gesamtheit profitieren könnte. Die Idee ist nun, die Subscriber untereinander über ein Overlay-Netzwerk zu verbinden,
@@ -14,7 +14,8 @@ ganz neue Serviceleistungen bereitstellen zu müssen. Dies würde sicherlich auf A
 Verbreitung des neuen Konzeptes mit sich bringen. Ziel ist es, auf dem bestehenden Konzept aufzubauen und es in ein erweitertes Konzept zu
 integrieren, um möglichst für den Benutzer als auch für den Dienstanbieter ein Minimum an Aufwand zu erreichen (Deolasee et al.
 beschäftigen sich in \cite{bhide02adaptive} mit einer Kombination aus Push-Pull und beschreiben die Probleme, die sich aus reinen Pull- bzw.
-Push-Ansätzen ergeben).\\
+Push-Ansätzen ergeben).
+\subsubsection{Einbettung in PubSub}
 Es ist naheliegend, das Publish-Subscribe-Paradigma auf unser Problem anzuwenden: Die Informationen, konkret also die RSS-Feeds, sollen über ein
 Notifikationssystem an die Interessenten, sprich Subscriber, ausgeliefert werden. Da sich die Funktion bzw. Rolle des RSS-Servers nicht ändern
 soll, muss die Funktion des Publishers eine andere Einheit übernehmen. Es bietet sich an, die Rolle des Publishers ebenfalls den Klienten
@@ -24,8 +25,18 @@ bestehen. Ein Broker, welcher einen Feed erhält, liefert diesen an die übrigen m
 Subscriber gibt es also zwei Möglichkeiten, einen Feed zu erhalten: entweder auf direkte Anfrage von einem Server (Pull) oder von einem
 Broker (Push). Um einen neuen Feed zu erhalten, kann ein Subscriber selbst aktiv werden und den Feed vom Server anfordern, oder er kann warten,
 bis ihm ein neuer Feed durch das Netzwerk über einen Broker übermittelt wird. Es ergibt sich dabei folgende Fragestellung: wann soll ein
-Klient aktiv werden und den Server kontaktieren und wann soll ein Klient inaktiv bleiben, um den Feed indirekt zu erhalten? Denn
-folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden Server, ist nichts gewonnen; erreicht
-einen Klienten der neue Feed über einen Broker, so besitzt der entsprechende Klient diesen neuen Feed bereits. Es muss also zu einer Abstimmung
-bzw. Koordinierung der Klienten unter einander kommmen, die dafür sorgt, dass nur ein Teil der Klienten den Server kontaktiert.
+Klient aktiv werden und den Server kontaktieren und wann soll ein Klient inaktiv bleiben, um den Feed über das Brokernetzwerk zu erhalten? Denn
+folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden Server, ist nichts gewonnen; erreicht der neue Feed
+einen Klienten über einen Broker, so besitzt der Klient diesen neuen Feed bereits, da er zuvor eigenmächtig den Server kontaktiert hat.
+Die einfachste Lösung wäre sicherlich, einen dedizierten Subscriber zu bestimmen, welcher als alleiniger das Polling übernimmt. Alle weiteren Subscriber
+würden die Feeds über das Borker-Netzwerk erhalten. Vorteil wäre, daß es relativ wenig
+Anfragen an den Server gäbe. Die Nachteile überwiegen jedoch: in Abhängigkeit von der Netzstruktur kann es zu langen Übertragungszeiten der Feeds für einzelne
+oder mehrere Subscriber kommen. Wir müssten eine geringere Aktualität der Daten in Kauf nehmen. Zudem hätten wir das Problem des
+\glqq Single Point of Failure\grqq: fällt der dedizierte Subscriber aus, kann die Verbreitung der Feeds zunächst nicht mehr gewährleistet werden.
+Erst, nachdem das Netzwerk den Ausfall registriert hat und entsprechende Gegenmaßnahmen eingeleitet hat (sprich Bestimmung eines neuen dedizierten
+Subscribers), kann es zu einer weiteren Verbreitung der Feeds kommen. Darüber hinaus könnten die Klienten nicht von verteiltem Polling profitieren.
+Daher favorisieren wir eine Lösung, bei der zu gegebener Zeit nur eine gewisse Auswahl der Klienten gleichzeitig Anfragen an den Server senden.
+Es muss also zu einer Abstimmung bzw. Koordinierung der Klienten unter einander kommmen, um diese Auswahl zu bestimmen. Auch hierbei ist zu beachten,
+dass Ausfälle von Subscribern im Netz nicht zu Datenverlust führen soll; d. h. jeder Klient sollte die Informationen bzw. Feeds, die er zu erhalten wünscht,
+auch dann erhalten, wenn die pollenden Klienten ausfallen.
 

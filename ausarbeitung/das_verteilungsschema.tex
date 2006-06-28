@@ -1,16 +1,16 @@
-\subsection{Das Verteilungsschema}
+\section{Das Verteilungsschema}
 Ein Problem bei Dienstapplikationen im Internet ist eine starke Serverbelastung zu gewissen Stoßzeiten.
 Die Masse der Anfragen an einen Server kann dazu führen, dass dieser der zeitgerechten Beantwortung nicht mehr nachkommen kann.
 Im schlimmsten Fall
 können einige Anfragen gar nicht beantwortet werden, da die Masse der Anfragen die zur Verfügung gestellte Speicherkapazität des Servers
 übersteigt. Ein Server unterhält im Regelfall eine Warteschlange (Queue) in der diejenigen Anfragen vorgehalten werden, welche aufgrund
 anderer in Abfertigung befindlicher Anfragen momentan nicht bearbeitet werden können. Wird die Kapazitätsgrenze dieser Warteschlange erreicht,
-können weitere überschüssigen Anfragen nicht bearbeitet werden, sie werden verworfen.
+können weitere überschüssige Anfragen nicht bearbeitet werden, sie werden verworfen.
 Beim bestehenden Konzept zur Verteilung der RSS-Feeds kann es
 vorkommen, dass Subscriber, deren Anfragen sich sehr weit hinten in der Warteschlange befinden, erst sehr spät bzw. zu spät die gewünschten
 Informationen erhalten. Man denke z.B. an aktuelle Börsennachrichten, welche im Sekundenbereich aktualisiert werden. Hier kann eine Nachricht
 schon als veraltet gelten, erreicht sie den Interessenten einige Sekunden zu spät. Subscriber, deren Anfragen den Server bei bereits
-ausgeschöpfter Kapazität der Warteschlange erreichen, kommen gar nicht an die gewünschte Information.
+ausgeschöpfter Kapazität der Warteschlange erreichen, kommen gar nicht an die gewünschte Information.\\
 
 Unser Ziel ist es, ein Verteilungsschema zu konzipieren, bei dem jeder Subscriber die gewünschte Information in angemessener bzw.
 gewünschter Zeit erhält. Je früher ein Subscriber die neueste Information, die beim Server vorliegt, erhält, desto größer ist ihr Aktualitätsgrad.

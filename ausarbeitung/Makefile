@@ -1,6 +1,6 @@
 TARGET = diplomarbeit
 
-MODULES = $(TARGET) adaptive_informationsverteilung das_verteilungsschema verteiltes_polling
+MODULES = $(TARGET) einleitung publish_subscribe rss adaptive_informationsverteilung das_verteilungsschema verteiltes_polling koordinierung_der_subscriber
 
 FILES = $(MODULES:%=%.tex)
 

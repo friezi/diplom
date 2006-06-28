@@ -1,19 +1,23 @@
-\documentclass{article}
+\documentclass{book}
 \usepackage[latin1]{inputenc}
 \usepackage{latexsym}
 \usepackage[german]{babel}
 \usepackage[a4paper]{geometry}
-\geometry{textwidth=17cm, textheight=22cm} 
-\parindent0em
+%\geometry{textwidth=17cm, textheight=22cm} 
+%\parindent0em
 \pagenumbering{arabic}
-\includeonly{adaptive_informationsverteilung}
+\includeonly{einleitung,publish_subscribe,rss,adaptive_informationsverteilung}
 \begin{document}
 
 \bibliographystyle{ieeetr}
 
 \tableofcontents
 
+\include{einleitung}
+\include{publish_subscribe}
+\include{rss}
 \include{adaptive_informationsverteilung}
+
 
 \bibliography{../bibdatabase}
 
