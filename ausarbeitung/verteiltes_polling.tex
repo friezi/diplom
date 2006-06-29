@@ -1,13 +1,13 @@
-
 \section{Verteiltes Polling}
-Betrachten wir die Gesamtheit der Subscriber und ihr Polling-Verhalten, so erkennen wir, dass aus Sicht eines Servers das Polling-Intervall
+\todo{Literaturangaben}\\
+Betrachten wir die Gesamtheit der Subscriber und ihr Polling-Verhalten, so erkennen wir, dass aus Sicht eines RSS-Servers das Polling-Intervall
 dieser Gesamtheit größer ist als das Polling-Intervall jedes einzelnen Subscribers. Wünschenswert wäre es, wenn jeder Subscriber von dem
 Polling-Intervall der Gesamtheit profitieren könnte. Die Idee ist nun, die Subscriber untereinander über ein Overlay-Netzwerk zu verbinden,
 damit sie sich
 gegenseitig die erhaltenen Informationen übermitteln können. Das Polling wird also verteilt auf die beteiligten Subscriber. Aber nicht nur das,
-wir haben es nun mit einer Kombination aus einem Pull- und einem Push-Ansatz zu tun. Allerdings übernimmt die Push-Funktion nicht der Server,
-sondern die beteiligten Einheiten des Overlay-Netzes, von dem der Server kein Bestandteil ist . Und warum favorisieren wir nicht gleich den
-Push-Ansatz bezogen auf den Server? RSS ist ein schon seit längerer Zeit bestehendes Konzept bzw. bestehende Technik.
+wir haben es nun mit einer Kombination aus einem Pull- und einem Push-Ansatz zu tun. Allerdings übernimmt die Push-Funktion nicht der RSS-Server,
+sondern die beteiligten Einheiten des Overlay-Netzes, von dem der RSS-Server kein Bestandteil ist . Und warum favorisieren wir nicht gleich den
+Push-Ansatz bezogen auf den RSS-Server? RSS ist ein schon seit längerer Zeit bestehendes Konzept bzw. bestehende Technik.
 Darüber hinaus ist es weit verbreitet.
 Eine Modifikation des Grundkonzeptes würde für Unternehmen, die es unterstützen, bedeuten, bestehende Software austauschen zu müssen und
 ganz neue Serviceleistungen bereitstellen zu müssen. Dies würde sicherlich auf Ablehnung stoßen und möglicherweise nicht die gewünschte
@@ -19,24 +19,27 @@ Push-Ansätzen ergeben).
 Es ist naheliegend, das Publish-Subscribe-Paradigma auf unser Problem anzuwenden: Die Informationen, konkret also die RSS-Feeds, sollen über ein
 Notifikationssystem an die Interessenten, sprich Subscriber, ausgeliefert werden. Da sich die Funktion bzw. Rolle des RSS-Servers nicht ändern
 soll, muss die Funktion des Publishers eine andere Einheit übernehmen. Es bietet sich an, die Rolle des Publishers ebenfalls den Klienten
-zuzuweisen. Ein Klient erhält in der Rolle des Subscribers auf eine Anfrage hin den RSS-Feed von einem Server. Der Klient kann nun diesen Feed in
+zuzuweisen. Ein Klient erhält in der Rolle des Subscribers nach einer Anfrage seinerseits den RSS-Feed von einem RSS-Server.
+Der Klient kann nun diesen Feed in
 der Rolle des Publishers in das Notifikationssystem einspeisen. Das Notifikationssystem soll aus einem System von vernetzten Brokern
 bestehen. Ein Broker, welcher einen Feed erhält, liefert diesen an die übrigen mit ihm verbundenen Subscriber bzw. Broker aus. Für einen
-Subscriber gibt es also zwei Möglichkeiten, einen Feed zu erhalten: entweder auf direkte Anfrage von einem Server (Pull) oder von einem
-Broker (Push). Um einen neuen Feed zu erhalten, kann ein Subscriber selbst aktiv werden und den Feed vom Server anfordern, oder er kann warten,
+Subscriber gibt es also zwei Möglichkeiten, einen Feed zu erhalten: entweder auf direkte Anfrage von einem RSS-Server (Pull) oder von einem
+Broker (Push). Um einen neuen Feed zu erhalten, kann ein Subscriber selbst aktiv werden und den Feed vom RSS-Server anfordern, oder er kann warten,
 bis ihm ein neuer Feed durch das Netzwerk über einen Broker übermittelt wird. Es ergibt sich dabei folgende Fragestellung: wann soll ein
-Klient aktiv werden und den Server kontaktieren und wann soll ein Klient inaktiv bleiben, um den Feed über das Brokernetzwerk zu erhalten? Denn
-folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden Server, ist nichts gewonnen; erreicht der neue Feed
-einen Klienten über einen Broker, so besitzt der Klient diesen neuen Feed bereits, da er zuvor eigenmächtig den Server kontaktiert hat.
-Die einfachste Lösung wäre sicherlich, einen dedizierten Subscriber zu bestimmen, welcher als alleiniger das Polling übernimmt. Alle weiteren Subscriber
-würden die Feeds über das Borker-Netzwerk erhalten. Vorteil wäre, daß es relativ wenig
-Anfragen an den Server gäbe. Die Nachteile überwiegen jedoch: in Abhängigkeit von der Netzstruktur kann es zu langen Übertragungszeiten der Feeds für einzelne
+Klient aktiv werden und den RSS-Server kontaktieren und wann soll ein Klient inaktiv bleiben, um den Feed über das Brokernetzwerk zu erhalten? Denn
+folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden RSS-Server, ist nichts gewonnen; erreicht der neue Feed
+einen Klienten über einen Broker, so besitzt der Klient diesen neuen Feed bereits, da er zuvor eigenmächtig den RSS-Server kontaktiert hat.
+\subsubsection{Ein Publisher}
+Die einfachste Lösung wäre sicherlich, einen dedizierten Publisher zu bestimmen, welcher als alleiniger Klient das Polling übernimmt. Alle weiteren Klienten
+würden die Feeds über das Broker-Netzwerk erhalten. Vorteil wäre, daß es relativ wenig
+Anfragen an den RSS-Server gäbe. Die Nachteile überwiegen jedoch: in Abhängigkeit von der Netzstruktur kann es zu langen Übertragungszeiten der Feeds für einzelne
 oder mehrere Subscriber kommen. Wir müssten eine geringere Aktualität der Daten in Kauf nehmen. Zudem hätten wir das Problem des
-\glqq Single Point of Failure\grqq: fällt der dedizierte Subscriber aus, kann die Verbreitung der Feeds zunächst nicht mehr gewährleistet werden.
+\glqq Single Point of Failure\grqq: fällt der dedizierte Publisher aus, kann die Verbreitung der Feeds zunächst nicht mehr erfolgen.
 Erst, nachdem das Netzwerk den Ausfall registriert hat und entsprechende Gegenmaßnahmen eingeleitet hat (sprich Bestimmung eines neuen dedizierten
-Subscribers), kann es zu einer weiteren Verbreitung der Feeds kommen. Darüber hinaus könnten die Klienten nicht von verteiltem Polling profitieren.
-Daher favorisieren wir eine Lösung, bei der zu gegebener Zeit nur eine gewisse Auswahl der Klienten gleichzeitig Anfragen an den Server senden.
+Publishers), kann es zu einer weiteren Verbreitung der Feeds kommen. Darüber hinaus könnten die Klienten nicht von verteiltem Polling profitieren.
+\subsubsection{Mehrere Publisher}
+Daher favorisieren wir eine Lösung, bei der zu gegebener Zeit nur eine gewisse Auswahl der Klienten gleichzeitig Anfragen an den RSS-Server senden.
 Es muss also zu einer Abstimmung bzw. Koordinierung der Klienten unter einander kommmen, um diese Auswahl zu bestimmen. Auch hierbei ist zu beachten,
-dass Ausfälle von Subscribern im Netz nicht zu Datenverlust führen soll; d. h. jeder Klient sollte die Informationen bzw. Feeds, die er zu erhalten wünscht,
+dass Ausfälle von Publishern im Netz nicht zu Datenverlust führen soll; d. h. jeder Subscriber sollte die Informationen bzw. Feeds, die er zu erhalten wünscht,
 auch dann erhalten, wenn die pollenden Klienten ausfallen.
 

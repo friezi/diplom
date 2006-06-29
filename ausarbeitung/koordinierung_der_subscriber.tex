@@ -1,5 +1,67 @@
 \section{Koordinierung der Subscriber}
+\todo{Literaturangaben}\\
+\todo{Auflistung der Anforderungen an den Algorithmus}\\
 Um das Netz nicht noch zusätzlich zu belasten, sollte der Overhead, der durch eventuelle Abstimmungsnachrichten entsteht, minimal sein.
-Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt\\
-Die Grundidee ist sehr simpel: jeder
-Gehen wir zunächst davon aus, es gäbe (ausgehende vom jetzigen Zeitpunkt $t_0$) einen Zeitpunkt $nextUpdate$, zu dem der Server einen neuen Feed bereitstellt.
+Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten geschehen:
+\begin{itemize}
+  \item Polling durch mehrere bzw. wechselnde Klienten
+  \item Anfragen an den RSS-Server sollten nicht gleichzeitig für alle Klienten geschehen 
+  \item Ausfall von Klienten im Overlaynetzwerk soll Informationsverteilung nicht blockieren
+  \item Overhead durch Abstimmungsnachrichten sollte gering gehalten werden
+\end{itemize} 
+Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt.
+\subsubsection{Der Grundlegende Algorithmus}
+Die Grundidee ist recht simpel: es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
+$t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\Delta I$ wählt sich jeder Subscriber $i$ innerhalb
+des Zeitintervalls $I:=[t_x,t_x+\Delta I]$ einen zufälligen Zeitpunkt $TTR_i$ (TimeToRefresh, $TTR$ im allgemeinen), zu dem
+er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}).
+
+\begin{picturehere}{3}{1.5}{$TTR$s}{Abb:determine_ttr}
+ 
+\psset{xunit=1cm,yunit=1cm,runit=1cm}
+\begin{pspicture}(1.5,-0.5)(7,1)
+  \psline{->}(0,0)(7,0)
+  \psline{-}(0,0.2)(0,-0.2)
+  \uput[0](0,-0.5){$t_0$}
+  \psline{-}(3,0.2)(3,-0.2)
+  \uput[0](3,-0.5){$t_x$}
+  \psline{-}(6,0.2)(6,-0.2)
+  \uput[0](6,-0.5){$t_x+\Delta I$}
+  \psline{-}(5,0.1)(5,-0.1)
+  \uput[0](5,0.4){$TTR_i$}
+\end{pspicture}
+% \includegraphics{determine_ttr}
+\end{picturehere}
+
+
+Ist $TTR_i$ erreicht, so erfragt Subscriber $i$ den aktuellen Feed vom RSS-Server und setzt nun $TTR_i$ auf einen
+Zufallswert innerhalb des
+Zeitintervalls $I:=[t_x,t_x+\Delta I]$, wobei $t_x$ ebenfalls neu gewählt wird.
+Erhält Subscriber $i$ vor dem Erreichen des Zeitpunktes $TTR_i$ einen Feed $feed_{new}$ von einem Broker zum 
+Zeitpunkt $t_f$ (sei $feed_{old}$ der bisher bei $i$ gespeicherte Feed), so geschieht folgendes:
+\pagebreak[3]
+\begin{description}
+  \item [Fall I:] $feed_{new}$ ist nicht aktueller als $feed_{old}$:
+    \begin{description}
+      \item keine Änderungen
+    \end{description}
+  \item[Fall II:] $feed_{new}$ ist aktueller als $feed_{old}$:
+    \begin{description}
+      \item wähle $t_x$ neu mit $t_0\leq t_x$
+      \item  $TTR_i$ wird gesetzt auf einen Zufallswert innerhalb des Zeitintervalls
+        $I:=[t_x,t_x+\Delta I]$
+    \end{description}
+\end{description}
+
+Die $TTR$s der verschiedenen Subscriber sollten bei der Wahl einer geeigneten Zufallsfunktion über $I$ gleichmäßig
+verteilt sein. Durch die Wahl eines zufälligen Wertes innerhalb von $I$ ist gewährleistet, dass nur in extremen Ausnahmefällen (theoretisch) 
+alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $TTR$s verschiedener Subscriber auf den gleichen Zeitpunkt fallen
+(je nach Größe der Intervallspanne $\Delta I$ und der Anzahl der Klienten). Die Verteilung unterliegt jedoch einem kontinuierlichen Wechsel, da die $TTR$s immer
+wieder neu berechnet werden. $\Delta I$ bildet eine obere Schranke für den erhalt des nächsten Feeds, da jeder Klient nach spätestens $\Delta I$ selbständig
+den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Ausfälle von Klienten können zwar zu Verzögerungen beim Erhalt der Feeds
+führen, sie können aber die Übermittlung der Feeds zwischen den übrigen Klienten nicht stören.\todo{lange Übertragungszeiten}
+
+
+
+
+Gehen wir zunächst davon aus, es gäbe (ausgehend vom aktuellen Zeitpunkt $t_0$) einen Zeitpunkt $nextUpdate$, zu dem der RSS-Server einen neuen Feed bereitstellt.

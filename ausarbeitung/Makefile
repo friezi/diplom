@@ -29,10 +29,9 @@ $(TARGET)_latexdiff:
 	latex $(TARGET)_latexdiff
 	pdflatex $(TARGET)_latexdiff
 
-
 ed:
 	$(EDITOR) *.tex ../*.bib Makefile&
 
 clean:
-	\rm *.aux *.bbl *.blg *.log *.dvi *.pdf *.ps
+	\rm *.aux *.bbl *.blg *.log *.dvi *.pdf *.ps *.eps
 

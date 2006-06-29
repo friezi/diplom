@@ -3,15 +3,26 @@
 \usepackage{latexsym}
 \usepackage[german]{babel}
 \usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{pst-all}
+\usepackage{multido}
+\pagestyle{empty}
+\usepackage{color}
+\usepackage{keyval}
 %\geometry{textwidth=17cm, textheight=22cm} 
-%\parindent0em
+\parindent0em
 \pagenumbering{arabic}
+
+\input{macros}
+
 \includeonly{einleitung,publish_subscribe,rss,adaptive_informationsverteilung}
+
 \begin{document}
 
 \bibliographystyle{ieeetr}
 
 \tableofcontents
+\listoffigures
 
 \include{einleitung}
 \include{publish_subscribe}

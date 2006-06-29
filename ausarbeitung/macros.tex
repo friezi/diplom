@@ -1,0 +1,30 @@
+
+\newcommand{\todo}[1]{\hspace{0.5cm}\textbf{\textcolor{red}{TODO}: #1}\hspace{0.5cm}}
+
+\makeatletter
+% args are: width,height,caption,label
+\newcommand{\picturehere@caption}{false}
+\newcommand{\picturehere@label}{false}
+\define@key{picturehere}{caption}[false]{
+  \renewcommand{\picturehere@caption}{#1}}
+\define@key{picturehere}{label}[false]{
+  \renewcommand{\picturehere@label}{#1}}
+\newenvironment{picturehere}[4]%
+{%
+ \setkeys{picturehere}{caption = #3, label = #4}
+  \begin{figure*}[h]%
+    \begin{center}%
+      \begin{minipage}[b]{.3\linewidth}%
+        \psset{xunit=1cm,yunit=1cm,runit=1cm}%
+        \begin{pspicture}(#1,#2)%
+}%
+{%
+        \end{pspicture}%
+        \caption{\picturehere@caption}%
+        \label{\picturehere@label}%
+      \end{minipage}%
+    \end{center}%
+  \end{figure*}%
+}
+\makeatother
+
