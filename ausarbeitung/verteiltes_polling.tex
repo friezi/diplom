@@ -15,7 +15,7 @@ Verbreitung des neuen Konzeptes mit sich bringen. Ziel ist es, auf dem bestehend
 integrieren, um möglichst für den Benutzer als auch für den Dienstanbieter ein Minimum an Aufwand zu erreichen (Deolasee et al.
 beschäftigen sich in \cite{bhide02adaptive} mit einer Kombination aus Push-Pull und beschreiben die Probleme, die sich aus reinen Pull- bzw.
 Push-Ansätzen ergeben).
-\subsubsection{Einbettung in PubSub}
+\subsubsection*{Einbettung in PubSub}
 Es ist naheliegend, das Publish-Subscribe-Paradigma auf unser Problem anzuwenden: Die Informationen, konkret also die RSS-Feeds, sollen über ein
 Notifikationssystem an die Interessenten, sprich Subscriber, ausgeliefert werden. Da sich die Funktion bzw. Rolle des RSS-Servers nicht ändern
 soll, muss die Funktion des Publishers eine andere Einheit übernehmen. Es bietet sich an, die Rolle des Publishers ebenfalls den Klienten
@@ -29,7 +29,7 @@ bis ihm ein neuer Feed durch das Netzwerk über einen Broker übermittelt wird. Es
 Klient aktiv werden und den RSS-Server kontaktieren und wann soll ein Klient inaktiv bleiben, um den Feed über das Brokernetzwerk zu erhalten? Denn
 folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden RSS-Server, ist nichts gewonnen; erreicht der neue Feed
 einen Klienten über einen Broker, so besitzt der Klient diesen neuen Feed bereits, da er zuvor eigenmächtig den RSS-Server kontaktiert hat.
-\subsubsection{Ein Publisher}
+\subsubsection*{Ein Publisher}
 Die einfachste Lösung wäre sicherlich, einen dedizierten Publisher zu bestimmen, welcher als alleiniger Klient das Polling übernimmt. Alle weiteren Klienten
 würden die Feeds über das Broker-Netzwerk erhalten. Vorteil wäre, daß es relativ wenig
 Anfragen an den RSS-Server gäbe. Die Nachteile überwiegen jedoch: in Abhängigkeit von der Netzstruktur kann es zu langen Übertragungszeiten der Feeds für einzelne
@@ -37,7 +37,7 @@ oder mehrere Subscriber kommen. Wir müssten eine geringere Aktualität der Daten 
 \glqq Single Point of Failure\grqq: fällt der dedizierte Publisher aus, kann die Verbreitung der Feeds zunächst nicht mehr erfolgen.
 Erst, nachdem das Netzwerk den Ausfall registriert hat und entsprechende Gegenmaßnahmen eingeleitet hat (sprich Bestimmung eines neuen dedizierten
 Publishers), kann es zu einer weiteren Verbreitung der Feeds kommen. Darüber hinaus könnten die Klienten nicht von verteiltem Polling profitieren.
-\subsubsection{Mehrere Publisher}
+\subsubsection*{Mehrere Publisher}
 Daher favorisieren wir eine Lösung, bei der zu gegebener Zeit nur eine gewisse Auswahl der Klienten gleichzeitig Anfragen an den RSS-Server senden.
 Es muss also zu einer Abstimmung bzw. Koordinierung der Klienten unter einander kommmen, um diese Auswahl zu bestimmen. Auch hierbei ist zu beachten,
 dass Ausfälle von Publishern im Netz nicht zu Datenverlust führen soll; d. h. jeder Subscriber sollte die Informationen bzw. Feeds, die er zu erhalten wünscht,

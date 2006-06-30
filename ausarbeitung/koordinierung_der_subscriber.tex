@@ -2,7 +2,7 @@
 \todo{Literaturangaben}\\
 \todo{Auflistung der Anforderungen an den Algorithmus}\\
 Um das Netz nicht noch zusätzlich zu belasten, sollte der Overhead, der durch eventuelle Abstimmungsnachrichten entsteht, minimal sein.
-Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten geschehen:
+Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
 \begin{itemize}
   \item Polling durch mehrere bzw. wechselnde Klienten
   \item Anfragen an den RSS-Server sollten nicht gleichzeitig für alle Klienten geschehen 
@@ -10,26 +10,28 @@ Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten geschehe
   \item Overhead durch Abstimmungsnachrichten sollte gering gehalten werden
 \end{itemize} 
 Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt.
-\subsubsection{Der Grundlegende Algorithmus}
-Die Grundidee ist recht simpel: es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
+\subsubsection*{Der Grundlegende Algorithmus}
+Es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
 $t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\Delta I$ wählt sich jeder Subscriber $i$ innerhalb
 des Zeitintervalls $I:=[t_x,t_x+\Delta I]$ einen zufälligen Zeitpunkt $TTR_i$ (TimeToRefresh, $TTR$ im allgemeinen), zu dem
 er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}).
 
 \begin{picturehere}{3}{1.5}{$TTR$s}{Abb:determine_ttr}
  
-\psset{xunit=1cm,yunit=1cm,runit=1cm}
-\begin{pspicture}(1.5,-0.5)(7,1)
-  \psline{->}(0,0)(7,0)
-  \psline{-}(0,0.2)(0,-0.2)
-  \uput[0](0,-0.5){$t_0$}
-  \psline{-}(3,0.2)(3,-0.2)
-  \uput[0](3,-0.5){$t_x$}
-  \psline{-}(6,0.2)(6,-0.2)
-  \uput[0](6,-0.5){$t_x+\Delta I$}
-  \psline{-}(5,0.1)(5,-0.1)
-  \uput[0](5,0.4){$TTR_i$}
-\end{pspicture}
+%\psset{xunit=1cm,yunit=1cm,runit=1cm}
+%\begin{picture}(1.5,-0.5)(7,1)
+\begin{picture}(7,1)(1.5,-0.5)
+  \put(0,0){\vector(1,0){7}}
+  \put(0,-0.2){\line(0,1){0.4}}
+  \put(0,-0.5){$t_0$}
+  \put(3,-0.2){\line(0,1){0.4}}
+  \put(3,-0.5){$t_x$}
+  \put(6,-0.2){\line(0,1){0.4}}
+  \put(6,-0.5){$t_x+\Delta I$}
+  \put(5,-0.1){\line(0,1){0.2}}
+  \put(4.5,0.4){$TTR_i$}
+  \put(7.8,0){$time$}
+\end{picture}
 % \includegraphics{determine_ttr}
 \end{picturehere}
 
@@ -48,18 +50,24 @@ Zeitpunkt $t_f$ (sei $feed_{old}$ der bisher bei $i$ gespeicherte Feed), so gesc
   \item[Fall II:] $feed_{new}$ ist aktueller als $feed_{old}$:
     \begin{description}
       \item wähle $t_x$ neu mit $t_0\leq t_x$
-      \item  $TTR_i$ wird gesetzt auf einen Zufallswert innerhalb des Zeitintervalls
+      \item  $TTR_i$ wird auf einen Zufallswert gesetzt innerhalb des Zeitintervalls
         $I:=[t_x,t_x+\Delta I]$
     \end{description}
 \end{description}
 
 Die $TTR$s der verschiedenen Subscriber sollten bei der Wahl einer geeigneten Zufallsfunktion über $I$ gleichmäßig
 verteilt sein. Durch die Wahl eines zufälligen Wertes innerhalb von $I$ ist gewährleistet, dass nur in extremen Ausnahmefällen (theoretisch) 
-alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $TTR$s verschiedener Subscriber auf den gleichen Zeitpunkt fallen
-(je nach Größe der Intervallspanne $\Delta I$ und der Anzahl der Klienten). Die Verteilung unterliegt jedoch einem kontinuierlichen Wechsel, da die $TTR$s immer
-wieder neu berechnet werden. $\Delta I$ bildet eine obere Schranke für den erhalt des nächsten Feeds, da jeder Klient nach spätestens $\Delta I$ selbständig
-den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Ausfälle von Klienten können zwar zu Verzögerungen beim Erhalt der Feeds
-führen, sie können aber die Übermittlung der Feeds zwischen den übrigen Klienten nicht stören.\todo{lange Übertragungszeiten}
+alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $TTR$s verschiedener
+Subscriber auf den gleichen Zeitpunkt fallen (je nach Größe der Intervallspanne $\Delta I$ und der Anzahl der Klienten).
+Die Verteilung unterliegt jedoch einem kontinuierlichen Wechsel, da die $TTR$s immer
+wieder neu berechnet werden. $\Delta I$ bildet eine obere Schranke für den Erhalt des nächsten Feeds, da jeder Klient nach
+spätestens $\Delta I$ selbständig den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Dadurch können lange
+Übertragungszeiten zwischen den Klienten ausgeglichen werden.
+Ausfälle von Klienten können zwar zu Verzögerungen beim
+Erhalt der Feeds führen, sie können aber die Übermittlung der Feeds zwischen den übrigen Klienten nicht stören,
+solange nicht das Sublayer betroffen ist und das Brokernetz intakt ist.
+\subsubsection*{Übertragung auf RSS}
+ Nach \cite{RSSSpecWi2004} existiert
 
 
 
