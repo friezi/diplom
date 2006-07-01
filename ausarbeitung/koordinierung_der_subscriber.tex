@@ -66,10 +66,30 @@ spätestens $\Delta I$ selbständig den Server kontaktiert, falls in der Zwischenz
 Ausfälle von Klienten können zwar zu Verzögerungen beim
 Erhalt der Feeds führen, sie können aber die Übermittlung der Feeds zwischen den übrigen Klienten nicht stören,
 solange nicht das Sublayer betroffen ist und das Brokernetz intakt ist.
-\subsubsection*{Übertragung auf RSS}
- Nach \cite{RSSSpecWi2004} existiert
+\subsubsection*{Konkrete Anpassung an RSS}
+Die Frage ist, wie sich $t_x$ bestimmt. Lässt sich der Zeitpunkt $nextBuild$, zu dem der RSS-Server einen neuen Feed
+bereitstellt, innerhalb eines gewissen Toleranzbereiches genau bestimmen, dann können wir $t_x:=nextBuild$ setzen. Kann
+$nextBuild$ innerhalb des gewünschten Toleranzbereiches nicht genau bestimmt werden, kann es nötig sein $t_x:=t_0$ zu setzen. Unter welchen
+Umständen welche Variante vorzuziehen ist, werden wir später noch erörtern.
+\subsubsection*{Bestimmung von $nextBuild$}
+Es gibt verschiedene Möglichkeiten $nextBuild$ zu bestimmen:
+\paragraph{Server-seitig unterstützte Bestimmung:}
+Der RSS 2.0 Standard\cite{RSSSpecWi2004} sieht einige sehr hilfreiche optionale Parameter vor: $TTL$, $lastBuildDate$ und $pubDate$
+(Beschreibung siehe Kapitel\ref{ch_rss} auf Seite \pageref{op_rss}). Falls der RSS-Server diese Parameter unterstützt, lässt sich
+$nextBuild$ aufgrund des letzten aktuellen Feeds wie folgt berechnen:
+\[nextBuild:=t_0+\Delta t\] mit \[\Delta t:=\left\{\begin{array}{r@{\quad:\quad}l}
+    0 & (t_0-lastBuildDate)>TTL \\TTL-(t_0-lastBuildDate) & sonst
+  \end{array}\right. \]
+
+Ob es aus Sicht des Informationsanbieters Sinn macht, diese optionalen Parameter bereitzustellen, hängt von der Vorhersagbarkeit des Auftretens
+neuer Daten und der zeiltichen Möglichkeit, diese Daten bereit zu stellen, ab. Beispielsweise ist das Auftreten von Ereignissen des
+aktuellen Tagesgeschehens mit Sicherheit nicht vorhersagbar. Werden diese zum Zeitpunkt der Berichterstattung bereitgestellt, so wird
+es sicherlich wenig Sinn machen, den Parameter $TTL$ zu definieren, da nicht vorherbestimmt werden kann, wann neue Ereignisse eintreten. Ein
+Betreiber einer Webseite, der täglich sein Tagebuch veröffentlicht, könnte diesen Parameter jedoch mitliefern, wenn er z.B. immer um Punkt
+10 Uhr seine Webseite aktualisiert.
+
+\paragraph{Bestimmung durch den Klienten}:
+Wird der Parameter $TTL$ vom Betreiber nicht unterstützt, so kann $nextBuild$ heuristisch bestimmt werden. Hierzu gibt es verschiedene
+Verfahren, von denen wir zwei vorstellen wollen.\todo{Bestimmung des TTL}
 
 
-
-
-Gehen wir zunächst davon aus, es gäbe (ausgehend vom aktuellen Zeitpunkt $t_0$) einen Zeitpunkt $nextUpdate$, zu dem der RSS-Server einen neuen Feed bereitstellt.
