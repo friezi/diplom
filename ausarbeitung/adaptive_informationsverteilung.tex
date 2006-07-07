@@ -1,5 +1,11 @@
 \chapter{Adaptive Informationsverteilung}
-\todo{einleitende Worte}
+Im folgenden wollen wir eine Methode beschreiben, ereignisbasierte Informationen an interessierte Klienten zu verteilen. Konkret orientieren wir
+uns dabei an RSS. Mit ``Ereignis'' meinen wir im folgenden eine Informationseinheit (ein Eintrag im RSS-Feed, z. B. eine Schlagzeile),
+mehrere Ereignisse können in einem Datenpaket (RSS-Feed) gesammelt an den Klienten übermittelt werden. Dazu betrachten wir zunächst, nach welchem
+Schema die Informationen entsprechend des RSS-Systems verbreitet werden, zeigen vorherrschende Probleme auf und schlagen ein Konzept vor,
+wie diese Probleme vermieden bzw. verringert werden können.
+ 
 \input{das_verteilungsschema}
 \input{verteiltes_polling}
 \input{koordinierung_der_subscriber}
+\input{heuristische_bestimmung_des_ttl}
