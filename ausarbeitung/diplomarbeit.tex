@@ -16,7 +16,7 @@
 
 \input{macros}
 
-\includeonly{einleitung,publish_subscribe,rss,adaptive_informationsverteilung}
+\includeonly{einleitung,publish_subscribe,rss,rss_mittels_verteiltem_pubsub,adaptive_informationsverteilung}
 
 \begin{document}
 
@@ -25,13 +25,24 @@
 %\bibliographystyle{ieeetr}
 \bibliographystyle{alpha}
 
+\frontmatter
+
 \tableofcontents
 \listoffigures
 
+\mainmatter
+
 \include{einleitung}
+\chapter{Peer-To-Peer}
 \include{publish_subscribe}
+
 \include{rss}
+\include{rss_mittels_verteiltem_pubsub}
 \include{adaptive_informationsverteilung}
+\chapter{Experimente und Auswertung}
+\section{Gesichtspunkte der Experimente}
+\chapter{Implementierung}
+\chapter{Ausblick}
 
 
 \bibliography{../bibdatabase}

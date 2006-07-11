@@ -1,4 +1,4 @@
-\section{Das Verteilungsschema}
+\section{Das Verteilungsschema - die Problematik bei RSS}
 Ein Problem bei Dienstapplikationen im Internet ist eine starke Serverbelastung zu gewissen Stoßzeiten.
 Die Masse der Anfragen an einen Server kann dazu führen, dass dieser der zeitgerechten Beantwortung nicht mehr nachkommen kann.
 Im schlimmsten Fall
@@ -11,8 +11,10 @@ vorkommen, dass Subscriber, deren Anfragen sich sehr weit hinten in der Wartesch
 Informationen erhalten. Man denke z.B. an aktuelle Börsennachrichten, welche im Sekundenbereich aktualisiert werden. Hier kann eine Nachricht
 schon als veraltet gelten, erreicht sie den Interessenten einige Sekunden zu spät. Subscriber, deren Anfragen den RSS-Server bei bereits
 ausgeschöpfter Kapazität der Warteschlange erreichen, kommen gar nicht an die gewünschte Information.\\
+\todo{Problematik der Datenmengen}
 
 \todo{Literaturangaben}
+\section{Ziele}
 Unser Ziel ist es, ein Verteilungsschema zu konzipieren, bei dem jeder Subscriber die gewünschte Information in angemessener bzw.
 gewünschter Zeit erhält. Je früher ein Subscriber die neueste Information, die beim RSS-Server vorliegt, erhält, desto größer ist ihr Aktualitätsgrad.
 Führen wir uns kurz vor Augen, welche Faktoren den Aktualitätsgrad beeinflussen können. Denkbar sind drei Situationen, die den Aktualitätsgrad
