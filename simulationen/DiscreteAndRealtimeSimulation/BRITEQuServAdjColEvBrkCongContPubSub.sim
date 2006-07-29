@@ -1,4 +1,4 @@
-SzenarioClass=BRITESzenario
+TopologyClass=BRITETopology
 BRITESublayerFile=1000_sublayer_topology.brite
 BRITEToplayerFile=100_toplayer_topology.brite
 BrokerClass=AdjustingEventBroker
