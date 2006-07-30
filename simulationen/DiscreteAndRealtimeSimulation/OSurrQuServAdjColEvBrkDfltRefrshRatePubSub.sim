@@ -1,4 +1,4 @@
-SzenarioClass=SzenarioOneSurrounded
+TopologyClass=TopologyOneSurrounded
 BrokerClass=AdjustingEventBroker
 PubSubClass=DfltRefreshRateEventPubSub
 RSSServerClass=QueueingRSSServer
