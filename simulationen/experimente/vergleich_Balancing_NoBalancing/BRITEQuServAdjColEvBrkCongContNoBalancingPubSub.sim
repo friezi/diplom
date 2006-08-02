@@ -1,0 +1,7 @@
+TopologyClass=BRITETopology
+BRITESublayerFile=../../DiscreteAndRealtimeSimulation/1000_sublayer_topology.brite
+BRITEToplayerFile=../../DiscreteAndRealtimeSimulation/100_toplayer_topology.brite
+BrokerClass=AdjustingEventBroker
+PubSubClass=NoBalancingCongestionControlEventPubSub
+RSSServerClass=QueueingRSSServer
+RSSFeedClass=ColorEventFeed
