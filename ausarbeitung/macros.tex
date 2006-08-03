@@ -1,6 +1,17 @@
 
 \newcommand{\todo}[1]{\hspace{0.5cm}\textbf{\textcolor{red}{TODO}: #1}\hspace{0.5cm}}
 
+\newenvironment{notizen}
+{%
+
+
+\textbf{\textcolor{blue}{Notizen:}}\newline\textbf{\textcolor{blue}{$|^{---}$}}\begin{quote}
+}%
+{%
+  \end{quote}
+  \textbf{\textcolor{blue}{$|_{---}$}} \newline
+}%
+
 \makeatletter
 % args are: width,height,caption,label
 \newcommand{\picturehere@caption}{false}

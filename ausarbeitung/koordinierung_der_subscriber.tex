@@ -1,13 +1,13 @@
 \section{Koordinierung der Subscriber}
 \todo{Literaturangaben}\\
 
-Um das Netz nicht noch zusätzlich zu belasten, sollte der Overhead, der durch eventuelle Abstimmungsnachrichten entsteht, minimal sein.
+Um das Netz nicht noch zusätzlich zu belasten, sollte die Netzbelastung, die durch eventuelle Abstimmungsnachrichten entsteht, minimal sein.
 Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
 \begin{itemize}
   \item Polling durch mehrere bzw. wechselnde Klienten
   \item Anfragen an den RSS-Server sollten nicht gleichzeitig für alle Klienten geschehen 
   \item Ausfall von Klienten im Overlaynetzwerk soll Informationsverteilung nicht blockieren
-  \item Overhead durch Abstimmungsnachrichten sollte gering gehalten werden
+  \item Netzbelastung durch Abstimmungsnachrichten sollte gering gehalten werden
 \end{itemize} 
 Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt.
 \subsubsection*{Der Grundlegende Algorithmus}
