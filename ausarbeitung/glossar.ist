@@ -1,0 +1,10 @@
+quote	'\''
+delim_0	" "
+%
+heading_prefix	"  \\glsgroup{"
+heading_suffix	"}"
+headings_flag	1
+%
+preamble	"\n \\begin{description}[\\setleftmargin{1.5cm}]\n"
+postamble	"\n \\end{description}\n"
+keyword		"\\glossaryentry"

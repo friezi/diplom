@@ -13,10 +13,10 @@ Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bis
 \subsubsection*{Der Grundlegende Algorithmus}
 Es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
 $t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\Delta I$ wählt sich jeder Subscriber $i$ innerhalb
-des Zeitintervalls $I:=[t_x,t_x+\Delta I]$ einen zufälligen Zeitpunkt $TTR_i$ (TimeToRefresh, $TTR$ im allgemeinen), zu dem
+des Zeitintervalls $I:=[t_x,t_x+\Delta I]$ einen zufälligen Zeitpunkt $ttr_i$ (TimeToRefresh, $ttr$ im allgemeinen), zu dem
 er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}).
 
-\begin{picturehere}{3}{1.5}{$TTR$s}{Abb:determine_ttr}
+\begin{picturehere}{3}{1.5}{$ttr$s}{Abb:determine_ttr}
  
 %\psset{xunit=1cm,yunit=1cm,runit=1cm}
 %\begin{picture}(1.5,-0.5)(7,1)
@@ -29,37 +29,37 @@ er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}
   \put(6,-0.2){\line(0,1){0.4}}
   \put(6,-0.5){$t_x+\Delta I$}
   \put(5,-0.1){\line(0,1){0.2}}
-  \put(4.5,0.4){$TTR_i$}
+  \put(4.5,0.4){$ttr_i$}
   \put(7.8,0){$time$}
 \end{picture}
 % \includegraphics{determine_ttr}
 \end{picturehere}
 
 
-Ist $TTR_i$ erreicht, so erfragt Subscriber $i$ den aktuellen Feed vom RSS-Server und setzt nun $TTR_i$ auf einen
+Ist $ttr_i$ erreicht, so erfragt Subscriber $i$ den aktuellen Feed vom RSS-Server und setzt nun $ttr_i$ auf einen
 Zufallswert innerhalb des
 Zeitintervalls $I:=[t_x,t_x+\Delta I]$, wobei $t_x$ ebenfalls neu gewählt wird.
-Erhält Subscriber $i$ vor dem Erreichen des Zeitpunktes $TTR_i$ einen Feed $feed_{new}$ von einem Broker zum 
+Erhält Subscriber $i$ vor dem Erreichen des Zeitpunktes $ttr_i$ einen Feed $feed_{new}$ von einem Broker zum 
 Zeitpunkt $t_f$ (sei $feed_{old}$ der bisher bei $i$ gespeicherte Feed), so geschieht folgendes:
 \pagebreak[3]
-\begin{description}
+\begin{description}[\compact]
   \item [Fall I:] $feed_{new}$ ist nicht aktueller als $feed_{old}$:
-    \begin{description}
+    \begin{description}[\breaklabel\compact]
       \item keine Änderungen
     \end{description}
   \item[Fall II:] $feed_{new}$ ist aktueller als $feed_{old}$:
-    \begin{description}
+    \begin{description}[\breaklabel\compact]
       \item wähle $t_x$ neu mit $t_0\leq t_x$
-      \item  $TTR_i$ wird auf einen Zufallswert gesetzt innerhalb des Zeitintervalls
-        $I:=[t_x,t_x+\Delta I]$
+      \item  $ttr_i$ wird auf einen Zufallswert gesetzt innerhalb des Zeitintervalls\\
+        \mbox{$I:=[t_x,t_x+\Delta I]$}
     \end{description}
 \end{description}
 
-Die $TTR$s der verschiedenen Subscriber sollten bei der Wahl einer geeigneten Zufallsfunktion über $I$ gleichmäßig
+Die $ttr$s der verschiedenen Subscriber sollten bei der Wahl einer geeigneten Zufallsfunktion über $I$ gleichmäßig
 verteilt sein. Durch die Wahl eines zufälligen Wertes innerhalb von $I$ ist gewährleistet, dass nur in extremen Ausnahmefällen (theoretisch) 
-alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $TTR$s verschiedener
+alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $ttr$s verschiedener
 Subscriber auf den gleichen Zeitpunkt fallen (je nach Größe der Intervallspanne $\Delta I$ und der Anzahl der Klienten).
-Die Verteilung unterliegt jedoch einem kontinuierlichen Wechsel, da die $TTR$s immer
+Die Verteilung unterliegt jedoch einem kontinuierlichen Wechsel, da die $ttr$s immer
 wieder neu berechnet werden. $\Delta I$ bildet eine obere Schranke für den Erhalt des nächsten Feeds, da jeder Klient nach
 spätestens $\Delta I$ selbständig den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Dadurch können lange
 Übertragungszeiten zwischen den Klienten ausgeglichen werden.
@@ -79,6 +79,7 @@ Der RSS 2.0 Standard\cite{RSSSpecWi2004} sieht unter anderem die optionalen Para
 dass mindestens der Parameter $lastBuildDate$ vom Server bereitgestellt wird.
 (Beschreibung siehe Kapitel \ref{ch_rss} auf Seite \pageref{op_rss}). $nextBuild$ lässt sich
 aufgrund des letzten aktuellen Feeds wie folgt berechnen:
+\pagebreak[3]
 \[nextBuild:=t_0+\Delta t\] mit \[\Delta t:=\left\{\begin{array}{r@{\quad:\quad}l}
     0 & (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
   \end{array}\right. \]

@@ -1,7 +1,8 @@
 TARGET = diplomarbeit
 
 MODULES = $(TARGET) einleitung publish_subscribe rss rss_mittels_verteiltem_pubsub adaptive_informationsverteilung das_verteilungsschema \
-	verteiltes_polling koordinierung_der_subscriber bestimmung_der_intervallspanne_deltai optimierungsziel_bevorzugte_polling_periode
+	verteiltes_polling koordinierung_der_subscriber bestimmung_der_intervallspanne_deltai optimierungsziel_bevorzugte_polling_periode \
+	glossar
 
 FILES = $(MODULES:%=%.tex)
 
@@ -11,6 +12,7 @@ all:	$(TARGET).dvi
 
 $(TARGET).dvi: $(FILES)
 	latex $(TARGET)
+	makeindex -g -s glossar.ist -o $(TARGET).gls $(TARGET).glo
 	bibtex $(TARGET)
 	latex $(TARGET)
 	latex $(TARGET)
@@ -34,5 +36,5 @@ ed:
 	$(EDITOR) *.tex ../*.bib Makefile&
 
 clean:
-	\rm *.aux *.bbl *.blg *.log *.dvi *.pdf *.ps
+	\rm *.aux *.bbl *.blg *.glo *.gls *.ilg *.log *.dvi *.pdf *.ps
 

@@ -1,12 +1,16 @@
-\documentclass{book}
+\documentclass{scrbook}
 \usepackage[latin1]{inputenc}
 \usepackage{latexsym}
 \usepackage[german]{babel}
+%\usepackage{ngerman}
 \usepackage[a4paper]{geometry}
 \usepackage{graphicx}
 \usepackage{pst-all}
 \usepackage{multido}
-\pagestyle{empty}
+\usepackage{glossar}
+\usepackage{expdlist}
+%\usepackage{nomencl}
+\pagestyle{plain}
 \usepackage{color}
 \usepackage{keyval}
 %\usepackage{charter}
@@ -14,9 +18,11 @@
 \parindent0em
 \pagenumbering{arabic}
 
+\renewcommand{\glshead}{\chapter*{Glossar}}
+
 \input{macros}
 
-\includeonly{einleitung,publish_subscribe,rss,rss_mittels_verteiltem_pubsub,adaptive_informationsverteilung}
+\includeonly{einleitung,publish_subscribe,rss,rss_mittels_verteiltem_pubsub,adaptive_informationsverteilung,glossar}
 
 \begin{document}
 
@@ -46,6 +52,9 @@
 \chapter{Zusammenfassung und Ausblick}
 
 \backmatter
+%\newpage
+
+\include{glossar}
 
 \bibliography{../bibdatabase}
 
