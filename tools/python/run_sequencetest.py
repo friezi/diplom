@@ -31,14 +31,17 @@ if len(sys.argv) != 2:
     sys.exit(1)
     
 dir = sys.argv[1]
+execdir = os.path.dirname(sys.argv[0])
 
 try:
     for line in fileinput.input(seedsfile):
         seedvalue = cutNewline(line)
         passvalue+=1
         os.system("echo " + seedvalue + " > seed")
-        os.system("echo " + str(passvalue) + " > pass")
-        os.system(os.path.dirname(sys.argv[0]) + "/run_test.py " + dir)
+        print "pass = " ,passvalue
+        os.system(execdir + "/run_test.py " + dir + " " + str(passvalue))
+        
+    os.system('java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir)
         
 except IOError:
     print 'file "' + seedsfile + '" not found'

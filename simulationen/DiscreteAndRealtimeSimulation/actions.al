@@ -6,6 +6,6 @@
 3000	: setUploadScalingFactor(1)
 #4000	: setUploadScalingFactor(1)
 #5000	: setUploadScalingFactor(1.2)
-6000 : stopGnuplotRecording
-6001 : exitSimulation
+6001 : stopGnuplotRecording
+6002 : exitSimulation
 
