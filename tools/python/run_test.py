@@ -17,10 +17,11 @@ def cutNewline( line ):
     else:
         return line
  
-    if retstring[len( retstring )-1] == '\n':
-        retstring = retstring[0:len( retstring )-1]
-    elif retstring[len( retstring )-1] == '\r':
-        retstring = retstring[0:len( retstring )-1]
+    if len( retstring ) >= 1:
+        if retstring[len( retstring )-1] == '\n':
+            retstring = retstring[0:len( retstring )-1]
+        elif retstring[len( retstring )-1] == '\r':
+            retstring = retstring[0:len( retstring )-1]
         
     return retstring
 
@@ -50,7 +51,12 @@ os.chdir( dir )
 print "entering directory " + dir
 
 for line in fileinput.input( testscenarios ):
+
     simulation = cutNewline( line )
+    
+    if ( simulation == "" ):
+        continue
+
     if seedvalue != "":
         os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + seedvalue +"/g' " + simulation + " > " + tempfile )
         os.rename( tempfile, simulation )
