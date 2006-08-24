@@ -45,12 +45,12 @@ try:
         passvalue+=1
         os.system("echo " + seedvalue + " > seed")
         print "pass = " ,passvalue
-        os.system(execdir + "/run_test.py " + dir + " " + str(passvalue))
+        os.system("python " + execdir + "/run_test.py " + dir + " " + str(passvalue))
         
     os.system('java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir)
 
     os.system('echo ' + dir + ' > ' + mailfile)
-    os.system(execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account=" + account + " --textfile=" + mailfile)
+    os.system("python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account=" + account + " --textfile=" + mailfile)
     print 'mail sent'
     os.remove(mailfile)
         
