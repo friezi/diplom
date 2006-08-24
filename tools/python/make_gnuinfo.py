@@ -49,7 +49,7 @@ def extractInfo(file):
 
 files = listdir(options.dir)
 gnuplotdatafilename = options.dir + "/" + options.dir + "_rss.gnuplotdata"
-gnuplotcommandsfilename = options.dir + "/" + options.dir + "_rss.gnuplotcommands"
+gnuplotcommandsfilename = options.dir + "/" + options.dir + "_rss.gnuplot"
 
 """ insert all events """
 maxevent = 0
