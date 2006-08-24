@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 from os import remove, system
-from time import sleep, localtime
+from time import sleep, localtime, time
 from string import maketrans, translate
 from filecmp import cmp
 from optparse import OptionParser
