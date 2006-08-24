@@ -68,6 +68,8 @@ if len(events) > 0:
     startingmillis = events[1]
     startinghour = localtime(startingmillis)[3]
     startingsecs = localtime(startingmillis)[4]
+else:
+    sys.exit()
 
 """ time in minutes """
 for event in range(1,maxevent+1):
