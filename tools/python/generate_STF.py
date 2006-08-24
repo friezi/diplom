@@ -13,7 +13,9 @@ def parsecmdl():
     parser.add_option('--startvalue',action='store',type='int',dest='startvalue')
     parser.add_option('--endvalue',action='store',type='int',dest='endvalue')
     parser.add_option('--step',action='store',type='int',dest='step')
+ 
     (options,args) = parser.parse_args()
+ 
     if options.starttime == None:
         print "Please give starttime in '--starttime='" 
         error = True

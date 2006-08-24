@@ -25,6 +25,8 @@ def cutNewline(line):
         
     return retstring
 
+""" main """
+
 if len(sys.argv) != 2:
     print "invalid syntax!"
     print "usage: " + os.path.basename(sys.argv[0]) + " <directory>"
@@ -32,6 +34,10 @@ if len(sys.argv) != 2:
     
 dir = sys.argv[1]
 execdir = os.path.dirname(sys.argv[0])
+me = 'ka1379-912@online.de'
+account = '1und1'
+subject = '\'sequence-test finished!\''
+mailfile = 'mailfile'
 
 try:
     for line in fileinput.input(seedsfile):
@@ -42,6 +48,11 @@ try:
         os.system(execdir + "/run_test.py " + dir + " " + str(passvalue))
         
     os.system('java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir)
+
+    os.system('echo ' + dir + ' > ' + mailfile)
+    os.system(execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account=" + account + " --textfile=" + mailfile)
+    print 'mail sent'
+    os.remove(mailfile)
         
 except IOError:
     print 'file "' + seedsfile + '" not found'
