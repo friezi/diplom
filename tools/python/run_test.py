@@ -3,27 +3,12 @@
 import sys
 import fileinput
 import os
+import linescanner
 
 testscenarios = "testscenarios"
+seedfile = "seed"
 tempfile = "t.e.m.p.f.i.l.e"
 infix = ".pass"
-
-def cutNewline( line ):
-    retstring = line
-    if line[len( line )-1] == '\n':
-        retstring = line[0:len( line )-1]
-    elif line[len( line )-1] == '\r':
-        retstring = line[0:len( line )-1]
-    else:
-        return line
- 
-    if len( retstring ) >= 1:
-        if retstring[len( retstring )-1] == '\n':
-            retstring = retstring[0:len( retstring )-1]
-        elif retstring[len( retstring )-1] == '\r':
-            retstring = retstring[0:len( retstring )-1]
-        
-    return retstring
 
 
 """ main """
@@ -37,10 +22,16 @@ seedvalue = ""
 passvalue = ""
 
 try:
-    seedvalue = cutNewline( fileinput.input( "seed" )[0] )
-    fileinput.close()
+    input = fileinput.input(seedfile)
+    seedvalue = linescanner.token(0,input)
+    input.close()
 except IOError:
     print 'file "seed" not found'
+    sys.exit()
+except linescanner.OutOfBoundsError, e:
+    print e.value
+    input.close()
+    sys.exit()
 
 if len( sys.argv ) == 3:
     passvalue=sys.argv[2]
@@ -50,12 +41,8 @@ os.chdir( dir )
 
 print "entering directory " + dir
 
-for line in fileinput.input( testscenarios ):
-
-    simulation = cutNewline( line )
-    
-    if ( simulation == "" ):
-        continue
+input = fileinput.input(testscenarios)
+for simulation in linescanner.linetokens( input ):
 
     if seedvalue != "":
         os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + seedvalue +"/g' " + simulation + " > " + tempfile )
@@ -89,5 +76,7 @@ for line in fileinput.input( testscenarios ):
                + " -e 's/^[ ]*\(gnuplotFileTotalTemporaryRequests\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                + simulation + " > " + tempfile )
     os.rename( tempfile, simulation )
+    
+input.close()
     
     

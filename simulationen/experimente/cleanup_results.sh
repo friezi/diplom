@@ -5,7 +5,7 @@
 for dir in vergleich_*
 do
 	cd $dir
-	rm -f *.gnuplotdata *.dygnuplot *.bak
+	rm -f *.gnuplotdata queue*.*gnuplot *.bak
 	cd ..
 done
 

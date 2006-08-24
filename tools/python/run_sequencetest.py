@@ -1,58 +1,60 @@
 #! /usr/bin/python
 
 import sys
-import fileinput
 import os
 import os.path
+import linescanner
+import fileinput
 
 seedsfile = "seeds"
 seedvalue = ""
 passvalue = 0
 
-def cutNewline(line):
-    retstring = line
-    if line[len(line)-1] == '\n':
-        retstring = line[0:len(line)-1]
-    elif line[len(line)-1] == '\r':
-        retstring = line[0:len(line)-1]
-    else:
-        return line
- 
-    if retstring[len(retstring)-1] == '\n':
-        retstring = retstring[0:len(retstring)-1]
-    elif retstring[len(retstring)-1] == '\r':
-        retstring = retstring[0:len(retstring)-1]
-        
-    return retstring
-
 """ main """
 
-if len(sys.argv) != 2:
+mail = 'false'
+
+if ( len(sys.argv) < 2 or len(sys.argv) >3 ):
     print "invalid syntax!"
-    print "usage: " + os.path.basename(sys.argv[0]) + " <directory>"
+    print "usage: " + os.path.basename(sys.argv[0]) + " <directory> [-mail]"
     sys.exit(1)
     
 dir = sys.argv[1]
 execdir = os.path.dirname(sys.argv[0])
+
+if len(sys.argv) == 3:
+    if sys.argv[2] == '-mail':
+        mail = 'true'
+     
 me = 'ka1379-912@online.de'
 account = '1und1'
 subject = '\'sequence-test finished!\''
 mailfile = 'mailfile'
 
 try:
-    for line in fileinput.input(seedsfile):
-        seedvalue = cutNewline(line)
+    
+    input = fileinput.input(seedsfile)
+    
+    for seedvalue in linescanner.linetokens(input):
+
         passvalue+=1
         os.system("echo " + seedvalue + " > seed")
         print "pass = " ,passvalue
+        print "seedvalue = ",seedvalue
         os.system("python " + execdir + "/run_test.py " + dir + " " + str(passvalue))
         
+    input.close()
+        
     os.system('java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir)
+    
+    os.system("python " + execdir + "/exec_gnuplotfile.py " + dir)
 
     os.system('echo ' + dir + ' > ' + mailfile)
-    os.system("python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account=" + account + " --textfile=" + mailfile)
-    print 'mail sent'
-    os.remove(mailfile)
+    
+    if mail == 'true':
+        os.system("python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account=" + account + " --textfile=" + mailfile)
+        print 'mail sent'
+        os.remove(mailfile)
         
 except IOError:
     print 'file "' + seedsfile + '" not found'
