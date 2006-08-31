@@ -18,6 +18,7 @@ def parsecmdl():
     parser = OptionParser()
     parser.add_option( '--dir', action='store', type='string', dest='dir' )
     parser.add_option( '--pass', action='store', type='string', dest='passvalue' )
+    parser.add_option( '--errormail', action='store_true', dest='errormail' )
     parser.add_option( '--mem', action='store', type='string', dest='mem' )
  
     ( options, args ) = parser.parse_args()
@@ -27,7 +28,7 @@ def parsecmdl():
         error = True
        
     if error == True:
-        print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> [--pass=<passvalue>] [--mem=<memory_in_MB>]"
+        print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> [--pass=<passvalue>] [--errormail] [--mem=<memory_in_MB>]"
         sys.exit( 1 )
         
     return ( options, args )
@@ -35,11 +36,18 @@ def parsecmdl():
 
 """ main """
 
-(options,args) = parsecmdl()
+( options, args ) = parsecmdl()
     
 seedvalue = ""
 passvalue = ""
 mem = ""
+errormail = 'false'
+mailfile = 'mailfile'
+execdir = os.path.dirname( sys.argv[0] )
+me = 'ka1379-912@online.de'
+account = '1und1'
+subject = '\'DiscreteAndRealtimeSimulation: ERROR occured!\''
+errorfile = '../error.log'
 
 try:
     file = open( seedfile, 'r' )
@@ -58,6 +66,10 @@ if options.passvalue != None:
     
 if options.mem != None:
     mem = "-Xmx" + options.mem + "m -Xms" + options.mem + "m "
+    
+if options.errormail != None:
+    errormail = 'true'
+    print 'errormail ist true'
 
 dir = options.dir
 os.chdir( dir )
@@ -90,7 +102,17 @@ for simulation in linescanner.linetokens( file ):
         os.rename( tempfile, simulation )
     
     print "starting simulation " + simulation    
-    os.system( "java " + mem + "-cp ../../DiscreteAndRealtimeSimulation/ Simulation " + simulation )
+    if os.system( "java " + mem + "-cp ../../DiscreteAndRealtimeSimulation/ Simulation " + simulation ) != 0:
+        if errormail == 'true':
+            """ mail """
+            os.system( 'echo $HOSTNAME > ' + mailfile )
+            os.system( 'echo ' + dir + ' >> ' + mailfile )
+            os.system( 'echo "" >> ' + mailfile )
+            os.system( 'echo  ERROR: >> ' +  mailfile )
+            os.system( 'cat ' + errorfile + ' >> mailfile' )
+            os.system( "python ../" + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account="
+                       + account + " --textfile=" + mailfile )
+            os.remove( mailfile )
 
     """ infix wieder entfernen """
     os.system( "sed -e 's/^[ ]*\(gnuplotFileCoeffVarCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"

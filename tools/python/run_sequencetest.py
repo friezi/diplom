@@ -16,12 +16,12 @@ def parsecmdl():
     
     """ parse commandline """
     parser = OptionParser()
-    parser.add_option('--dir',action='store',type='string',dest='dir')
-    parser.add_option('--seedsfile',action='store',type='string',dest='seedsfile')
-    parser.add_option('--mail',action='store_true',dest='mail')
-    parser.add_option('--mem',action='store',type='string',dest='mem')
+    parser.add_option( '--dir', action='store', type='string', dest='dir' )
+    parser.add_option( '--seedsfile', action='store', type='string', dest='seedsfile' )
+    parser.add_option( '--mail', action='store_true', dest='mail' )
+    parser.add_option( '--mem', action='store', type='string', dest='mem' )
  
-    (options,args) = parser.parse_args()
+    ( options, args ) = parser.parse_args()
  
     if options.dir == None:
         print "Please give directory in '--dir='" 
@@ -33,16 +33,17 @@ def parsecmdl():
         
     if error == True:
         print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> --seedsfile=<seedsfile> [--mem=<memory_in_MB>] [--mail]"
-        sys.exit(1)
+        sys.exit( 1 )
         
-    return (options,args)
+    return ( options, args )
 
 """ main """
 
 mail = 'false'
+errormail = ""
 mem = ""
 
-(options,args) = parsecmdl()
+( options, args ) = parsecmdl()
     
 dir = options.dir
 execdir = os.path.dirname( sys.argv[0] )
@@ -50,6 +51,7 @@ seedsfile = options.seedsfile
 
 if options.mail != None:
     mail = 'true'
+    errormail = ' --errormail '
     
 if options.mem != None:
     mem = "--mem=" + options.mem + " "
@@ -57,11 +59,13 @@ if options.mem != None:
 me = 'ka1379-912@online.de'
 account = '1und1'
 subject = '\'DiscreteAndRealtimeSimulation: sequence-test finished!\''
+errorsubject = '\'DiscreteAndRealtimeSimulation: ERROR occured!\''
+errorfile = 'error.log'
 mailfile = 'mailfile'
 
 try:
     
-    file = open( seedsfile,'r' )
+    file = open( seedsfile, 'r' )
     
     for seedvalue in linescanner.linetokens( file ):
 
@@ -69,12 +73,22 @@ try:
         os.system( "echo " + seedvalue + " > seed" )
         print "pass = " , passvalue
         print "seedvalue = ", seedvalue
-        os.system( "python " + execdir + "/run_test.py " + "--dir=" + dir + " " + mem + "--pass=" + str( passvalue ) )
+        os.system( "python " + execdir + "/run_test.py " + "--dir=" + dir + " " + mem + "--pass=" + str( passvalue ) + errormail )
         
     file.close()
         
     """ confidence-intervals """
-    os.system( 'java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir )
+    if os.system( 'java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir ) != 0:
+        if mail == 'true':
+            os.system( 'echo $HOSTNAME > ' + mailfile )
+            os.system( 'echo ' + dir + ' >> ' + mailfile )
+            os.system( 'echo "" >> ' + mailfile )
+            os.system( 'echo  ERROR: >> ' +  mailfile )
+            os.system( 'cat ' + errorfile + ' >> mailfile' )
+            os.system( "python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + errorsubject + " --account="
+                   + account + " --textfile=" + mailfile )
+            print 'mail sent'
+            os.remove( mailfile )
  
     """ gnuplot """
     os.system( "python " + execdir + "/exec_gnuplotfile.py " + dir )
