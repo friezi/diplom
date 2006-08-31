@@ -37,6 +37,8 @@ def parsecmdl():
         
     return (options,args)
 
+""" main """
+
 (options,args) = parsecmdl()
 
 time = options.starttime

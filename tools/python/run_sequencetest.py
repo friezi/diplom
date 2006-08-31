@@ -4,47 +4,74 @@ import sys
 import os
 import os.path
 import linescanner
-import fileinput
+from optparse import OptionParser
 
-seedsfile = "seeds"
 tarfileprefix = "datas"
 seedvalue = ""
 passvalue = 0
 
+def parsecmdl():
+    
+    error = False
+    
+    """ parse commandline """
+    parser = OptionParser()
+    parser.add_option('--dir',action='store',type='string',dest='dir')
+    parser.add_option('--seedsfile',action='store',type='string',dest='seedsfile')
+    parser.add_option('--mail',action='store_true',dest='mail')
+    parser.add_option('--mem',action='store',type='string',dest='mem')
+ 
+    (options,args) = parser.parse_args()
+ 
+    if options.dir == None:
+        print "Please give directory in '--dir='" 
+        error = True
+  
+    if options.seedsfile == None:
+        print "Please give seedsfile in '--seedsfile='" 
+        error = True
+        
+    if error == True:
+        print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> --seedsfile=<seedsfile> [--mem=<memory_in_MB>] [--mail]"
+        sys.exit(1)
+        
+    return (options,args)
+
 """ main """
 
 mail = 'false'
+mem = ""
 
-if ( len( sys.argv ) < 2 or len( sys.argv ) >3 ):
-    print "invalid syntax!"
-    print "usage: " + os.path.basename( sys.argv[0] ) + " <directory> [-mail]"
-    sys.exit( 1 )
+(options,args) = parsecmdl()
     
-dir = sys.argv[1]
+dir = options.dir
 execdir = os.path.dirname( sys.argv[0] )
+seedsfile = options.seedsfile
 
-if len( sys.argv ) == 3:
-    if sys.argv[2] == '-mail':
-        mail = 'true'
+if options.mail != None:
+    mail = 'true'
+    
+if options.mem != None:
+    mem = "--mem=" + options.mem + " "
      
 me = 'ka1379-912@online.de'
 account = '1und1'
-subject = '\'sequence-test finished!\''
+subject = '\'DiscreteAndRealtimeSimulation: sequence-test finished!\''
 mailfile = 'mailfile'
 
 try:
     
-    input = fileinput.input( seedsfile )
+    file = open( seedsfile,'r' )
     
-    for seedvalue in linescanner.linetokens( input ):
+    for seedvalue in linescanner.linetokens( file ):
 
         passvalue+=1
         os.system( "echo " + seedvalue + " > seed" )
         print "pass = " , passvalue
         print "seedvalue = ", seedvalue
-        os.system( "python " + execdir + "/run_test.py " + dir + " " + str( passvalue ) )
+        os.system( "python " + execdir + "/run_test.py " + "--dir=" + dir + " " + mem + "--pass=" + str( passvalue ) )
         
-    input.close()
+    file.close()
         
     """ confidence-intervals """
     os.system( 'java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir )
@@ -54,7 +81,7 @@ try:
  
     """ tar-archive """
     olddir = os.getcwd()
-    newdir = os.path.dirname( sys.argv[1] )
+    newdir = dir
     os.chdir( newdir )
     print "building tar-archive " + tarfileprefix + ".tgz of generated data-files"
     os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata queue*.gnuplot *.ps' )
@@ -62,8 +89,10 @@ try:
     
     """ mail """
     if mail == 'true':
-        os.system( 'echo ' + dir + ' > ' + mailfile )
-        os.system( "python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account=" + account + " --textfile=" + mailfile )
+        os.system( 'echo $HOSTNAME > ' + mailfile )
+        os.system( 'echo ' + dir + ' >> ' + mailfile )
+        os.system( "python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account="
+                   + account + " --textfile=" + mailfile )
         print 'mail sent'
         os.remove( mailfile )
         

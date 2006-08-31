@@ -1,48 +1,71 @@
 #! /usr/bin/python
 
 import sys
-import fileinput
 import os
 import linescanner
+from optparse import OptionParser
 
 testscenarios = "testscenarios"
 seedfile = "seed"
 tempfile = "t.e.m.p.f.i.l.e"
 infix = ".pass"
 
+def parsecmdl():
+    
+    error = False
+    
+    """ parse commandline """
+    parser = OptionParser()
+    parser.add_option( '--dir', action='store', type='string', dest='dir' )
+    parser.add_option( '--pass', action='store', type='string', dest='passvalue' )
+    parser.add_option( '--mem', action='store', type='string', dest='mem' )
+ 
+    ( options, args ) = parser.parse_args()
+ 
+    if options.dir == None:
+        print "Please give directory in '--dir='" 
+        error = True
+       
+    if error == True:
+        print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> [--pass=<passvalue>] [--mem=<memory_in_MB>]"
+        sys.exit( 1 )
+        
+    return ( options, args )
+
 
 """ main """
 
-if len( sys.argv ) < 2 & len( sys.argv ) > 3:
-    print "invalid syntax!"
-    print "usage: " + os.path.basename( sys.argv[0] ) + ' <directory> [<pass>]'
-    sys.exit( 1 )
+(options,args) = parsecmdl()
     
 seedvalue = ""
 passvalue = ""
+mem = ""
 
 try:
-    input = fileinput.input(seedfile)
-    seedvalue = linescanner.token(0,input)
-    input.close()
+    file = open( seedfile, 'r' )
+    seedvalue = linescanner.token( 0, file )
+    file.close()
 except IOError:
     print 'file "seed" not found'
     sys.exit()
 except linescanner.OutOfBoundsError, e:
     print e.value
-    input.close()
+    file.close()
     sys.exit()
 
-if len( sys.argv ) == 3:
-    passvalue=sys.argv[2]
+if options.passvalue != None:
+    passvalue=options.passvalue
+    
+if options.mem != None:
+    mem = "-Xmx" + options.mem + "m -Xms" + options.mem + "m "
 
-dir = sys.argv[1]
+dir = options.dir
 os.chdir( dir )
 
 print "entering directory " + dir
 
-input = fileinput.input(testscenarios)
-for simulation in linescanner.linetokens( input ):
+file = open( testscenarios, 'r' )
+for simulation in linescanner.linetokens( file ):
 
     if seedvalue != "":
         os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + seedvalue +"/g' " + simulation + " > " + tempfile )
@@ -67,7 +90,7 @@ for simulation in linescanner.linetokens( input ):
         os.rename( tempfile, simulation )
     
     print "starting simulation " + simulation    
-    os.system( "java -cp ../../DiscreteAndRealtimeSimulation/ Simulation " + simulation )
+    os.system( "java " + mem + "-cp ../../DiscreteAndRealtimeSimulation/ Simulation " + simulation )
 
     """ infix wieder entfernen """
     os.system( "sed -e 's/^[ ]*\(gnuplotFileCoeffVarCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
@@ -77,6 +100,6 @@ for simulation in linescanner.linetokens( input ):
                + simulation + " > " + tempfile )
     os.rename( tempfile, simulation )
     
-input.close()
+file.close()
     
     

@@ -12,9 +12,9 @@ all:	$(TARGET).dvi
 
 $(TARGET).dvi: $(FILES)
 	latex $(TARGET)
-	makeindex -g -s glossar.ist -o $(TARGET).gls $(TARGET).glo
 	bibtex $(TARGET)
 	latex $(TARGET)
+	makeindex -g -s glossar.ist -o $(TARGET).gls $(TARGET).glo
 	latex $(TARGET)
 
 pdf:	$(TARGET).pdf

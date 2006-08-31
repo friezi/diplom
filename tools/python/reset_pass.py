@@ -2,7 +2,6 @@
 import os
 import sys
 import linescanner
-import fileinput
 
 tempfile = "t.e.m.p.f.i.l.e"
 infix = ".pass"
@@ -15,8 +14,8 @@ if len(sys.argv) != 2:
 os.chdir(sys.argv[1])
 
 
-input = fileinput.input(testscenarios)
-for simulation in linescanner.linetokens( input ):
+file = open(testscenarios,'r')
+for simulation in linescanner.linetokens( file ):
 
     """ potentiellen infix entfernen """
     os.system( "sed -e 's/^[ ]*\(gnuplotFileCoeffVarCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
@@ -25,3 +24,5 @@ for simulation in linescanner.linetokens( input ):
                 + " -e 's/^[ ]*\(gnuplotFileTotalTemporaryRequests\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                 + simulation + " > " + tempfile )
     os.rename( tempfile, simulation )
+    
+file.close()

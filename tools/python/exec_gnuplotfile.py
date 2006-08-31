@@ -1,6 +1,5 @@
 #! /usr/bin/python
 
-import fileinput
 import linescanner
 import os, sys
 import os.path
@@ -11,19 +10,21 @@ if len( sys.argv ) != 2:
     print "please give dirname"
     sys.exit()
 
-path = os.path.dirname( sys.argv[1] )
+path = sys.argv[1]
 
 olddir = os.getcwd()
 os.chdir( path )
 
 try:
     
-    input = fileinput.input( gnuplotfiles )
+    file = open( gnuplotfiles,'r' )
 
     print "executing .gnuplot -files from definitionfile " + path + "/" + gnuplotfiles 
 
-    for gnuplotfile in linescanner.linetokens( input ):
+    for gnuplotfile in linescanner.linetokens( file ):
         os.system( 'gnuplot ' + gnuplotfile + ' > /dev/null' )
+        
+    file.close()
     
     os.chdir( olddir )
     

@@ -28,7 +28,7 @@ def parsecmdl():
         
     return (options,args)
 
-def extractInfo(file):
+def extractInfo(ts_file):
     """ Extracts event- and timeinfo.
     
     """
