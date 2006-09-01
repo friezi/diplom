@@ -1,5 +1,4 @@
 mac_parameters_mpp3600.cfg
 mac_parameters_mpp910800.cfg
-mac_parameters_mpp3600_uploadScalingFactor50.cfg
-mac_parameters_mpp910800_uploadScalingFactor50.cfg
-
+mac_parameters_mpp3600_serviceTimeFactor50.cfg
+mac_parameters_mpp910800_serviceTimeFactor50.cfg
