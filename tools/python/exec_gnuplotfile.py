@@ -6,11 +6,29 @@ import os.path
 
 gnuplotfiles = 'gnuplotfiles'
 
-if len( sys.argv ) != 2:
-    print "please give dirname"
-    sys.exit()
+def parsecmdl():
+    
+    error = False
+    
+    """ parse commandline """
+    parser = OptionParser()
+    parser.add_option('--dir',action='store',type='string',dest='dir')
+    (options,args) = parser.parse_args()
 
-path = sys.argv[1]
+    if options.dir == None:
+        print "Please give direcory in '--dir='" 
+        error = True
+        
+    if error == True:
+        sys.exit(1)
+        
+    return (options,args)
+
+""" main """
+
+(options,args) = parsecmdl()
+
+path = options.dir
 
 olddir = os.getcwd()
 os.chdir( path )

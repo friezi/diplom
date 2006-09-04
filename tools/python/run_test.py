@@ -6,7 +6,6 @@ import linescanner
 from optparse import OptionParser
 
 testscenarios = "testscenarios"
-seedfile = "seed"
 tempfile = "t.e.m.p.f.i.l.e"
 infix = ".pass"
 
@@ -20,11 +19,16 @@ def parsecmdl():
     parser.add_option( '--pass', action='store', type='string', dest='passvalue' )
     parser.add_option( '--errormail', action='store_true', dest='errormail' )
     parser.add_option( '--mem', action='store', type='string', dest='mem' )
+    parser.add_option( '--seedfile', action='store', type='string', dest='seedfile' )
  
     ( options, args ) = parser.parse_args()
  
     if options.dir == None:
         print "Please give directory in '--dir='" 
+        error = True
+ 
+    if options.seedfile == None:
+        print "Please give seedfile in '--seedfile='" 
         error = True
        
     if error == True:
@@ -37,7 +41,8 @@ def parsecmdl():
 """ main """
 
 ( options, args ) = parsecmdl()
-    
+
+seedfile = options.seedfile    
 seedvalue = ""
 passvalue = ""
 mem = ""

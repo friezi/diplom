@@ -6,7 +6,8 @@ import os.path
 import linescanner
 from optparse import OptionParser
 
-tarfileprefix = "datas"
+tarfileprefix = "results"
+seedfile = 's.e.e.d'
 seedvalue = ""
 passvalue = 0
 
@@ -70,10 +71,12 @@ try:
     for seedvalue in linescanner.linetokens( file ):
 
         passvalue+=1
-        os.system( "echo " + seedvalue + " > seed" )
+        os.system( "echo " + seedvalue + " > " + seedfile )
         print "pass = " , passvalue
         print "seedvalue = ", seedvalue
-        os.system( "python " + execdir + "/run_test.py " + "--dir=" + dir + " " + mem + "--pass=" + str( passvalue ) + errormail )
+        os.system( "python " + execdir + "/run_test.py " + "--seedfile=" + seedfile + "--dir=" + dir + " "
+                   + mem + "--pass=" + str( passvalue ) + errormail )
+        os.remove( seedfile )
         
     file.close()
         
@@ -91,7 +94,7 @@ try:
             os.remove( mailfile )
  
     """ gnuplot """
-    os.system( "python " + execdir + "/exec_gnuplotfile.py " + dir )
+    os.system( "python " + execdir + "/exec_gnuplotfile.py --dir=" + dir )
  
     """ tar-archive """
     olddir = os.getcwd()
