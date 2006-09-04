@@ -55,7 +55,7 @@ if options.mail != None:
     errormail = ' --errormail '
     
 if options.mem != None:
-    mem = "--mem=" + options.mem + " "
+    mem = " --mem=" + options.mem
      
 me = 'ka1379-912@online.de'
 account = '1und1'
@@ -74,8 +74,8 @@ try:
         os.system( "echo " + seedvalue + " > " + seedfile )
         print "pass = " , passvalue
         print "seedvalue = ", seedvalue
-        os.system( "python " + execdir + "/run_test.py " + "--seedfile=" + seedfile + "--dir=" + dir + " "
-                   + mem + "--pass=" + str( passvalue ) + errormail )
+        os.system( "python " + execdir + "/run_test.py" + " --seedfile=" + seedfile + " --dir=" + dir
+                   + mem + " --pass=" + str( passvalue ) + errormail )
         os.remove( seedfile )
         
     file.close()
