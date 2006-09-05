@@ -1,0 +1,1 @@
+For testing a polynomial or exponential decrease adaption (increase of polling-period) to an increase of server-load
