@@ -3,6 +3,7 @@
 import linescanner
 import os, sys
 import os.path
+from optparse import OptionParser
 
 gnuplotfiles = 'gnuplotfiles'
 

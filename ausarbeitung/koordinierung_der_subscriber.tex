@@ -10,7 +10,7 @@ Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten erfolgen
   \item Netzbelastung durch Abstimmungsnachrichten sollte gering gehalten werden
 \end{itemize} 
 Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt.
-\subsubsection*{Der Grundlegende Algorithmus}
+\subsection{Der Grundlegende Algorithmus}
 Es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
 $t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\Delta I$ wählt sich jeder Subscriber $i$ innerhalb
 des Zeitintervalls $I:=[t_x,t_x+\Delta I]$ einen zufälligen Zeitpunkt $ttr_i$ (TimeToRefresh, $ttr$ im allgemeinen), zu dem
@@ -66,12 +66,14 @@ spätestens $\Delta I$ selbständig den Server kontaktiert, falls in der Zwischenz
 Ausfälle von Klienten können zwar zu Verzögerungen beim
 Erhalt der Feeds führen, sie können aber die Übermittlung der Feeds zwischen den übrigen Klienten nicht stören,
 solange nicht das Sublayer betroffen ist und das Brokernetz intakt ist.
-\subsubsection*{Konkrete Anpassung an RSS}
+\subsection{Konkrete Anpassung an RSS -- Bestimmung relevanter Parameter}
+Im Folgenden betrachten wir, wie sich die relevanten Parameter in Zusammenhang mit RSS bestimmen lassen.
+\subsubsection{Bestimmung von $t_x$}
 Die Frage ist, wie sich $t_x$ bestimmt. Lässt sich der Zeitpunkt $nextBuild$, zu dem der RSS-Server einen neuen Feed
 bereitstellt, innerhalb eines gewissen Toleranzbereiches genau bestimmen, dann können wir $t_x:=nextBuild$ setzen. Kann
 $nextBuild$ innerhalb des gewünschten Toleranzbereiches nicht genau bestimmt werden, kann es nötig sein $t_x:=t_0$ zu setzen. Unter welchen
 Umständen welche Variante vorzuziehen ist, werden wir später noch erörtern.
-\subsubsection*{Bestimmung von $nextBuild$}
+\subsubsection{Bestimmung von $nextBuild$}
 Um $nextBuild$ zu bestimmen, definieren wir zwei weitere Parameter: $ttl$ und $lastBuildDate$. $ttl$ steht für ``time to live'' und bezeichnet
 die Anzahl Minuten, die ein Feed aktuell bleibt, bevor er server-seitig aktualisiert wird. $lastBuildDate$ steht für den Zeitpunkt, zu dem ein
 Feed vom Server aktualisiert wurde.
@@ -84,7 +86,9 @@ aufgrund des letzten aktuellen Feeds wie folgt berechnen:
     0 & (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
   \end{array}\right. \]
 
-Alternativ könnte statt $lastBuilddate$ auch $pubDate$ zur Berechnung genommen werden. Um $ttl$ zu bestimmen, gibt es zwei Möglichkeiten.
+Alternativ könnte statt $lastBuilddate$ auch $pubDate$ zur Berechnung genommen werden.
+\subsubsection{Bestimmung des $ttl$}
+Um $ttl$ zu bestimmen, gibt es zwei Möglichkeiten.
 
 \paragraph{Bereitstellung des $ttl$ durch den Informationsanbieter:}
 RSS 2.0\cite{RSSSpecWi2004} sieht ebenfalls den optionalen Parameter $ttl$ vor.
@@ -100,4 +104,7 @@ Wird der Parameter $ttl$ vom Informationsanbieter nicht unterstützt, so kann $tt
 Hierzu gibt es verschiedene Verfahren, von denen wir eines vorstellen wollen.
 Cho und Garcia-Molina beschreiben in \cite{ChGM:2003:ChangeFrequency} eine Methode zur Bestimmung der Update-Frequenz mit besseren
 Eigenschaften als die naive Methode.
+
+\input{heuristische_bestimmung_des_ttl}
+\input{bestimmung_der_intervallspanne_deltai}
 

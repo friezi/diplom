@@ -32,7 +32,8 @@ def parsecmdl():
         error = True
        
     if error == True:
-        print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> [--pass=<passvalue>] [--errormail] [--mem=<memory_in_MB>]"
+        print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> --seedfile=<seedfile> [--pass=<passvalue>] " \
+                        + "[--errormail] [--mem=<memory_in_MB>]"
         sys.exit( 1 )
         
     return ( options, args )
@@ -93,6 +94,7 @@ for simulation in linescanner.linetokens( file ):
                + " -e 's/^[ ]*\(gnuplotFileMeanValueCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
                + " -e 's/^[ ]*\(gnuplotFileStdDevCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
                + " -e 's/^[ ]*\(gnuplotFileTotalTemporaryRequests\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
+               + " -e 's/^[ ]*\(gnuplotFileAvgMsgDelayRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                + simulation + " > " + tempfile )
     os.rename( tempfile, simulation )
         
@@ -103,6 +105,7 @@ for simulation in linescanner.linetokens( file ):
                    + " -e 's/^[ ]*\(gnuplotFileMeanValueCPP\)[ ]*=\(.*\)\(.gnuplotdata\)$/\\1=\\2" + infix + passvalue +"\\3/g'"
                    + " -e 's/^[ ]*\(gnuplotFileStdDevCPP\)[ ]*=\(.*\)\(.gnuplotdata\)$/\\1=\\2" + infix + passvalue +"\\3/g'"
                    + " -e 's/^[ ]*\(gnuplotFileTotalTemporaryRequests\)[ ]*=\(.*\)\(.gnuplotdata\)$/\\1=\\2" + infix + passvalue +"\\3/g' "
+                   + " -e 's/^[ ]*\(gnuplotFileAvgMsgDelayRatio\)[ ]*=\(.*\)\(.gnuplotdata\)$/\\1=\\2" + infix + passvalue +"\\3/g' "
                    + simulation + " > " + tempfile )
         os.rename( tempfile, simulation )
     
@@ -124,6 +127,7 @@ for simulation in linescanner.linetokens( file ):
                + " -e 's/^[ ]*\(gnuplotFileMeanValueCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
                + " -e 's/^[ ]*\(gnuplotFileStdDevCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
                + " -e 's/^[ ]*\(gnuplotFileTotalTemporaryRequests\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
+               + " -e 's/^[ ]*\(gnuplotFileAvgMsgDelayRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                + simulation + " > " + tempfile )
     os.rename( tempfile, simulation )
     

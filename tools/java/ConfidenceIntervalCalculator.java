@@ -108,6 +108,7 @@ public class ConfidenceIntervalCalculator {
 			collectAndCalculate(dirname, properties.getProperty("gnuplotFileStdDevCPP"));
 			collectAndCalculate(dirname, properties.getProperty("gnuplotFileMeanValueCPP"));
 			collectAndCalculate(dirname, properties.getProperty("gnuplotFileCoeffVarCPP"));
+			collectAndCalculate(dirname, properties.getProperty("gnuplotFileAvgMsgDelayRatio"));
 
 		}
 
