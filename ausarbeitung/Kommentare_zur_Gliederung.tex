@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage[latin1]{inputenc}
+\usepackage{latexsym}
+\usepackage[german]{babel}
+\usepackage[a4paper]{geometry}
+\pagestyle{empty}
+%\usepackage{charter}
+%\geometry{textwidth=17cm, textheight=22cm} 
+\parindent0em
+
+\begin{document}
+
+Hier ein paar Anmerkungen zu den einzelnen Kapiteln. Die Gliederung ist ein erster Entwurf. Es kann sein, dass ich im Verlauf der Arbeit
+Änderungen vornehmen werde in der Form, dass Überschriften wechseln, Abschnitte gestrichen werden oder Abschnitte neu hinzu kommen,
+wenn das nötig zu sein schein.
+
+\paragraph{Kapitel 2 - 4:}
+Vorstellung der relevanten Begriffe. Was ich in das Kapitel über Peer-To-Peer mit aufnehme (und ob es überhaupt nötig ist),
+weiss ich noch nicht, wird sicherlich einer der letzten Punkte sein.
+
+\paragraph{Kapitel 5:}
+Hier möchte ich genauer auf die derzeitige Problematik bei RSS eingehen. Ich definiere die Zielsetzung, aufgrund dessen ein neues Konzept
+erstellt werden soll.
+
+\paragraph{Kapitel 6:}
+Hier werde ich Schritt für Schritt Design und Realisierung des neuen Ansatzes herleiten. Dafür werden die relevanten Parameter eingeführt und
+deren Bestimmung erklärt. Hiervon sind schon einige Abschnitte ausformuliert. Das Design spaltet sich im weiteren Verlauf in zwei Hauptrichtungen
+(Abschnitte 6.6 und 6.7), wobei das Hauptaugenmerk auf 6.7 liegen soll. Ich werde ähnliche Lösungsansätze für Teilprobleme referenzieren (z.B.
+TCP u. a.) und darstellen, warum diese Lösungsansätze bei der Problematik meines Themas nicht greifen.
+
+\paragraph{Kapitel 7:}
+Die Reaktion des Systems auf bestimmte veränderliche Parameter soll getestet und bewertet werden. Im Falle der Präferenz
+``bevorzugte Polling-Rate'' ist die entscheidende Frage, ob durch Anpassung der Polling-Raten der RSS-Server an seine Belastungsgrenze
+gebracht wird. Dazu wird folgendes getestet:\\
+\textbf{initiale Phase}: Einpegelung des Klienten-Pollings bei folgenden veränderbaren Parametern:
+\begin{itemize}
+\item Größe der Queue
+\item maximale Polling-Rate
+\item Anzahl der Subscriber
+\item Reaktionszeit des Servers bzw. Serverbelastung
+\end{itemize}
+\textbf{laufender Betrieb:} Einpegelung des Klienten-Pollings bei folgenden veränderbaren Parametern:
+\begin{itemize}
+\item Reaktionszeit des Servers bzw. Serverbelastung
+\end{itemize}
+
+Zusätzlich soll demonstriert werden, wie sich das Fehlen bestimmter Techniken in einigen Algorithmen auswirkt, so z. B. das Fehlen des
+Ausbalancierens der Polling-Raten auf die Polling-Raten der einzelnen Subscriber. Die Algorithmen sollen also ``in sich'' getestet und bewertet
+werden und nicht im Vergleich zu anderen Algorithmen, da ich keine anderen Algorithmen zu dieser Problematik referenziere.
+
+\end{document}
