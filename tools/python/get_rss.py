@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 from os import remove, system
+import os.path
 from time import sleep, localtime, time
 from string import maketrans, translate
 from filecmp import cmp
@@ -79,16 +80,15 @@ count = 1
 newfile = ""
 oldfile = ""
 map = maketrans( ' :()', '_-se' )
+execdir = os.path.dirname(sys.argv[0])
 
 starttime = time()
-
-""" close stderr """
 
 while True:
 
     """ exit on reached timelimit """    
     if minutes > 0:
-        if ( time()-starttime )*60 >= minutes:
+        if ( time()-starttime ) >= minutes * 60:
             break 
 
     """ generate filename """
@@ -113,4 +113,5 @@ while True:
     
     sleep( interval )
 
+system('python ' + execdir + "/" + 'make_gnuinfo.py --dir=' + dir)
     

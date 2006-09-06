@@ -75,7 +75,6 @@ if options.mem != None:
     
 if options.errormail != None:
     errormail = 'true'
-    print 'errormail ist true'
 
 dir = options.dir
 os.chdir( dir )
