@@ -2,7 +2,7 @@ TARGET = diplomarbeit
 
 MODULES = $(TARGET) einleitung publish_subscribe rss rss_mittels_verteiltem_pubsub adaptive_informationsverteilung das_verteilungsschema \
 	verteiltes_polling koordinierung_der_subscriber bestimmung_der_intervallspanne_deltai optimierungsziel_bevorzugte_polling_periode \
-	glossar
+	staukontrolle glossar
 
 FILES = $(MODULES:%=%.tex)
 
