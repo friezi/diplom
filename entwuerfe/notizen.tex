@@ -52,6 +52,12 @@
 \item this helps to reduce resending of packets if ACKs are lost
 
 \end{itemize}
+
+\section*{TCP}
+van Jacobson stellt heraus, dass bei Stauaufkommen nur exponentielles Inkrementieren der Timer Erfolg verspricht, denn Netzwerke sind lineare
+Systeme, d. h. sind sie stabil, so ist die Stabilität exponentiell.
+
+
 \newpage
 \section*{Algorithmus zur Koordination der Broker bezüglich des Pollings der Publisher}
 Zunächst muss gesagt werden, dass es grundsätzlich nicht möglich ist, eine gleichzeitige Aktualisierung und Verbreitung der RSS-Feeds seitens der

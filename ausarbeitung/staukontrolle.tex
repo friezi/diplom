@@ -1,22 +1,100 @@
 
 \subsection{Staukontrolle}
-Seit dem Computer-Netzwerke explosionsartig an Größe und Komplexität zugenommen haben, hat sich ein Problem verstärkt bemerkbar gemacht: Datenstau.
-Van Jacobson et. al. (\cite{jacobson88congestion}) schildert die Beobachtung, dass in der Zeit der Mitte 1980er Jahre Internet-Gateways 10 \todo{Prozent} der ankommenden Pakete
-aufgrund von Pufferüberläufen verwarfen. Laut seiner Aussage lag dabei das Problem nicht in den Protokollspezifikationen selbst, sondern in deren Implementierung.
-TCP (Transmission Control Protocol) ist ein
-verbindungsorientiertes Transportprotokoll, mit dessen Hilfe der Großteil des Netzwerkverkehrs vonstatten geht. Im Laufe der Zeit wurden in TCP Mechanismen eingebaut und verbessert,
-um Datenstau festzustellen und zu soweit wie möglich zu vermeiden.\\
+Seitdem Computer-Netzwerke explosionsartig an Größe und Komplexität zugenommen haben, hat sich ein Problem verstärkt bemerkbar gemacht: Datenstau.
+Van Jacobson et. al. (\cite{jacobson88congestion}) schildert die Beobachtung, dass in der Zeit mitte der 1980er Jahre Internet-Gateways 10\% der
+ankommenden Pakete aufgrund von Pufferüberläufen verwarfen. Laut seiner Aussage lag dabei das Problem nicht in den Protokollspezifikationen selbst, sondern
+hauptsächlich in deren Implementierungen. TCP (Transmission Control Protocol) ist ein verbindungsorientiertes Transportprotokoll, mit dessen Hilfe der Großteil
+des Netzwerkverkehrs vonstatten geht. Im Laufe der Zeit wurden in TCP Mechanismen eingebaut und verbessert, um Datenstau festzustellen und soweit wie möglich
+zu vermeiden.\\
 
-Auf dem Gebiet der Regelungstechnik beschäftigt man sich damit, wie eine Größe einen bestimmten vorgegebenen Wert erreichen und halten kann. Bei einer Regelung finden Kontrollmechanismen
+Auf dem Gebiet der Regelungstechnik beschäftigt man sich damit, wie eine Größe einen bestimmten vorgegebenen Wert erreichen und halten kann. Bei einer Regelung
+finden Kontrollmechanismen
 Anwendung, um Wertabweichungen festzustellen und auszugleichen.\\
 
 Im Folgenden werden wir Techniken aus diesen Teilgebieten betrachten und diese auf ihre Tauglichkeit bezüglich der Lösung unseres beschriebenen Problems untersuchen.
-Nicht alle der vorgestellten Techniken sind ohne weiteres auf unsere Problemstellung anwendbar, und wir werden eine Lösung entwickeln, die auf die konkrete Problemstellung unter
-Berücksichtigung der gegebenen Umstände zurecht geschnitten ist.
+Nicht alle der vorgestellten Techniken sind ohne weiteres auf unsere Problemstellung anwendbar, und wir werden eine Lösung entwickeln, die auf die konkrete
+Problemstellung unter Berücksichtigung der gegebenen Umstände zurecht geschnitten ist.
 
 \subsubsection{Staukontrolle bei TCP}
+\label{css:tcp}
+TCP (Transmission Control Protocol) ist ein verbindungsorientiertes Über\-tra\-gungs\-pro\-to\-koll und kontrolliert die Datenübertragung zwischen Sender und
+Empfänger der Endknoten. Dabei wird gewährleistet, dass jedes der einzelnen Datenpakete (die einen Datenstrom formen) den Empfänger erreicht
+und die Ordnung der Pakete
+innerhalb des Datenstroms bestehen bleibt. Bei Datenstau handelt es sich um Verlust von Datenpaketen. Falls es zu Datenstau kommt, so tritt dieser immer an
+Verbindungsknoten (einschliesslich des Empfangsknotens) auf und kann durch verschiedene Faktoren auf dem Weg zwischen Sender und Empfänger hervorgerufen werden:
+\begin{description}
+  \item [Bandbreiten:]
+    unterschiedliche Bandbreiten auf dem Weg zwischen Sender und Empfänger beeinflussen die Übertragungsgeschwindigkeit einer Verbindung
+    nachteilig in der
+    Form, dass die ``langsamste'' Leitung (also die mit der geringsten Bandbreite) die
+    Gesamt-Übertragungsgeschwindigkeit vorgibt. Trifft eine schnelle Leitung auf eine langsame Leitung, so können die an der langsamen Leitung ankommenden
+    Pakete nicht schnell genug weiter geleitet werden. An diesem Knoten kommt es zum Pufferüberlauf, überschüssige Datenpakete gehen verloren.
+  \item [Anzahl der Verbindungen:]
+    an einem Knotenpunkt können mehrere Verbindungen zusammen kommen, die den Gesamt-Datenfluss an diesem Punkt erhöhen. Auch hier kann es zum Pufferüberlauf
+    kommen, so dass überschüssige Datenpakete verloren gehen.
+\end{description}
+Damit jedes ausgesandte Paket den Empfänger erreicht, werden in TCP Bestätigungs-Nachrichten (Acknowledgements, im Foldenden kurz $acks$ genannt) versand.
+Erhält der Sender für ein gesendetes Datenpaket kein $ack$, so wird er das Datenpaket erneut senden.
+Um eine Staukontrolle zu erreichen wurden sieben Algorithmen in TCP integriert (siehe \cite{jacobson88congestion}, wir halten uns dabei an die englischen
+Bezeichnungen):
+\begin{itemize}
+  \item slow-start
+  \item round-trip-time variance estimation
+  \item exponential retransmit timer backoff
+  \item more aggressive receiver ack policy
+  \item dynamic window sizing on congestion
+  \item Karn's clamped retransmit backoff
+  \item fast retransmit
+\end{itemize}
 
+Dabei soll erreicht werden, dass die maximal mögliche Bandbreite (begrenzt durch die minimale Bandbreite auf dem Verbindungsweg, s. o.) voll ausgenutzt wird, ohne
+dass Pakete verlorengehen; es darf also kein Paket in das Netzwerk eingespeist werden, bevor ein altes Paket entfernt wurde (die Verbindung befindet sich dann im
+``Equilibrium'', der Paketfluss ist ``conservative'' \cite{jacobson88congestion}). Im Folgenden wollen wir die wichtigsten der oben genannten Algorithmen
+betrachten.
 
+\paragraph{slow-start:}
+TCP ist ``self-clocking'': da $acks$ erst nach Erhalt der entsprechenden Datenpakete versendet werden können, bestimmt die Frequenz der versendeten $acks$ die
+Frequenz der versendeten Datenpakete. Das Protokoll passt sich somit automatisch der Bandbreite an. Ein Problem tritt nur beim Start des Datentransfers auf, da
+hier zunächst eine feste Frequenz gewählt werden muss. Es wird eine relativ niedrige Frequenz gewählt, bzw. ein Staufenster ``congestion window'' ($cngw$) 
+bestimmt die Anzahl der Pakete pro Sendevorgang. Bei Start des Transfers oder nach Paketverlust wird die Größe des Staufenster auf 1 gesetzt.
+Für jedes $ack$ wird das Staufenster um den Betrag 1 erhöht. Begrenzt wird dessen Größe durch das ``advertised receiver window'',
+welches angibt, wieviele Bytes maximal als nächstes übersendet werden sollen. Die Zunahme der Größe $w$ des Staufensters geschieht in der Zeit
+$rtt*log_2w$, wobei $rtt$ die ``round-trip-time'' des letzten versendeten Datenpakets ist (Zeit zwischen Versenden eines Datenpakets und Erhalt des
+entsprechenden $acks$). Siehe dazu \cite{jacobson88congestion}, \cite{RFC2581}. 
+
+\paragraph{round-trip-time variance estimation:}
+$Acks$ können die Geschwindigkeit des Datenflusses steuern, doch was geschieht, wenn $acks$ aufgrund verloren gegangener Pakete ausbleiben? Müssen sich
+beispielsweise bei voll ausgenutzter Bandbreite plötzlich zwei Datenströme dieselbe Leitung teilen, kommt es mit Sicherheit zu Paketverlusten und somit zu
+ausbleibenden $acks$. Der Sender muss einen Timer unterhalten, bei dessen Ablauf das zuletzt gesendete Datenpaket erneut versendet wird. Paketverlust kann auch
+durch Beschädigung der Daten während der Übermittlung auftreten. Nach van Jacobson \cite{jacobson88congestion} Liegt die Wahrscheinlichkeit dafür aber weit
+unter 1\%. Daher lassen Timeouts bei gut eingestellten Timern mit sicherer Gewissheit auf Paketverluste schließen \footnote{Zur Problematik
+bei Timern siehe \ref{css:timer}}. Diese Timeouts ($rto$=``retransmission timeout'') werden pro Verbindung dynamisch berechnet. Entsprechend der TCP-Spezifikation
+berechnet sich (siehe \cite{18216}):
+\[rto=min(UBound, max(LBound, \beta * srtt))\]
+$\beta$ ist dabei ein empirisch ermittelter Varianz-Faktor, $UBound$ und $LBound$ sind untere und
+obere Schranke für den $rto$. $srtt$ ist die ``smoothed roundtrip time'' und wird wie folgt ermittelt:
+\[srtt= \alpha * srtt+ (1 - \alpha) * rtt\] 
+$\alpha$ ist ein ebenfalls empirisch ermittelter Glättungsfaktor (``smoothing factor'').\\
+Laut van Jacobson \cite{jacobson88congestion} liegt hierin folgende Problematik: $\beta$ kann sich höchstens an bis zu 30\% gesteigerte Last anpassen. Aber die
+Varianz des Wertes $rtt$ steigert sich rapide mit ansteigender Last. Bei
+Laststeigerung über die 30\%-Marke hinaus kommt es zu verspäteten $acks$. Der jeweilige abgelaufene Timer bewirkt die erneute Aussendung des entsprechenden
+Datenpakets, was zu unnötiger Mehrarbeit des Systems und Bandbreitenverschwendung führt. Daher wird $\beta$ ebenfalls dynamisch berechnet. Eine Berechnungsmethode
+findet sich in \cite{jacobson88congestion}.
+
+\paragraph{exponential retransmit timer backoff:}
+Um den Datenstau durch mehrfach ausgesandte Pakete nicht noch zu vermehren, müssen sich die Timeout-Intervalle stetig vergrößern.
+Van Jacobson stellt heraus, dass nur exponentielles Wachstum der Timeout-Intervalle Erfolg verspricht. Die Größe $cwnd$ der Staufenster wird ebenfalls
+exponentiell verkleinert. Die Anpassung von $cwnd$ geschieht nach folgendem Schema:
+\begin{itemize}
+  \item Nach jedem Timeout wird $cwnd$ halbiert.
+  \item Nach jedem $ack$ für neue Daten wird $cwnd$ um $1/cwnd$ erhöht.
+  \item Beim Senden wird das Minimum and Daten von $cwnd$ und dem ``receivers advertised window'' gesendet.
+\end{itemize}
+
+Dabei besteht dieser Algorithmus parallel zum ``slow-start''-Algorithmus. Van Jacobson gibt in \cite{jacobson88congestion} ein Auswahlkriterium an, nachdem
+dynamisch zwischen beiden Algorithmen ausgewählt wird.
+
+\paragraph{Bezug zur Zielsetzung:} \todo{} 
 
 
 \subsubsection{Anwendung eines Regelkreises}
@@ -89,26 +167,30 @@ wie eingangs gesagt, geht es darum, die Auslastung der Server-Queue stabil zu ha
 ist. Wir können diesen Vorgang durch einen Regelkreis beschreiben. Die zu regelnde Größe ist dabei $\rho$. Die Stellgröße ist $cpp$. Aus Sicht eines Klienten
 sind die $cpp$s der übrigen Klienten eine Störgröße, da ihre Veränderung die Auslastung des Servers beeinflusst. Bei der Regelstrecke handelt es
 sich im allgemeinen um einen nicht-linearen Typ mit Ausgleich und Totzeit. Als Regler sollten wir daher einen PI-Regler verwenden. Eine differentiale Eigenschaft
-wollen wir zunächst ausser acht lassen.\\
+wollen wir zunächst ausser acht lassen, da diese nur zur Feinabstimmung beiträgt.\\
 
-Um $\rho$ zu messen, muss der Regler einen direkten Zugriff auf die Werte $\lambda$ und $\bar x$ (s.o.) haben können. Dies ist aber im allgemeinen, bzw. bei unserem
+Um $\rho$ messen zu können, muss der Regler einen direkten Zugriff auf die Werte $\lambda$ und $\bar x$ (s.o.) erhalten können.
+Dies ist aber im allgemeinen, bzw. bei unserem
 favorisierten Ansatz nicht möglich, da nur der Server diese Werte ermitteln kann und diese entsprechend des Konzeptes nicht an die Klienten übermittelt.
 Ein Klient kann somit nur aufgrund anderer Indizien auf diese Werte rückschließen.
 Das einzige Indiz ist das Antwortverhalten bzw. die Antwortzeit des Servers auf eine Anfrage des Klienten. Abstrahieren wir von den Nachrichtenlaufzeiten,
-so lässt eine lange Antwortzeit des Servers auf einen gewissen Überlastungsgrad schließen. Mit Hilfe der $rtt$ können wir somit die $cpp$ bestimmen (proportionaler
-Anteil). Eine konstante Abtastrate wäre wünschenswert, damit ein PI-Regler zu jedem
+so lässt eine lange Antwortzeit des Servers auf einen gewissen Überlastungsgrad schließen. Mit Hilfe der $rtt$ können wir somit die $cpp$ bestimmen, also
+$cpp=f*rtt$, wobei $f$ ein beliebiger Faktor ist (proportionaler
+Anteil des Reglers). Eine konstante Abtastrate wäre wünschenswert, damit ein Regler zu jedem
 Zeitpunkt die gleiche Reaktionszeit zeigen kann. Falls wir nur mit den regulären Anfragen nach RSS-Feeds zur Bestimmung der Server-Antwort arbeiten,
 bewirkt eine Drosselung des $cpp$ ebenfalls eine Drosselung der Abtastrate.
 Man könnte die Reaktionszeit des Servers anders ermitteln, z. B. durch konstantes Anpingen (z. B. mit Hilfe des Kommandos ``ping'').
 Dies hätte jedoch u. a. zur Folge, dass dadurch bei einer großen Anzahl Klienten im Overlay-Netzwerk ebenfalls
-eine Server-Überlastung erreicht werden könnte. Die Beobachtung der zu regelnden Größe würde diese also gleichzeitig beeinflussen. Des Weiteren kann es vorkommen,
-dass eine Anfrage eines Klienten bei voller Queue vom Server verworfen wird. Eine Server-seitige Antwort wird in diesem Fall ausbleiben. Nach einem gewissen
+eine Server-Überlastung erreicht werden könnte. Die Beobachtung der zu regelnden Größe würde diese also gleichzeitig beeinflussen. Ausserdem erreicht ein Ping
+nicht die Anwendungsschicht des Servers, eine Überlastung auf dieser Ebene bleibt eventuell unbemerkt. Des Weiteren kann es vorkommen,
+dass eine Anfrage eines Klienten bei voller Queue vom Server verworfen wird. Eine Server-seitige Antwort wird in diesem Falle ausbleiben. Nach einem gewissen
 Timeout muss also der Klient seine Anfrage erneut stellen. Ist dieses Timeout konstant und relativ klein, so kann dies ebenfalls zu einer Mehrbelastung des Servers
 führen. Hierbei kommt das für den Regler erforderliche Ereignis (Server-Antwort) gar nicht zustande, somit kann eine Regelung über den Regler gar nicht in der
 gewünschten Weise stattfinden. Das Indiz für eine gesteigerte Server-Belastung ist hier also eine Negativ-Nachricht: das Ausbleiben der Server-Antwort. Um die
-Mehrbelastung des Servers in diesem Fall einzudämmen, können wir die Timeouts und somit die $ccp$ je nach Zeitdauer vergrößern (integrativer Anteil).\\
+Mehrbelastung des Servers in diesem Fall einzudämmen, können wir die Timeouts und somit die $ccp$ je nach Zeitdauer vergrößern (integrativer Anteil,
+vgl. Abschnitt \ref{css:tcp} TCP).\\
 
-Es zeigt sich, dass das Konzept des PID-Reglers nur modifiziert anwendbar ist auf unsere Problemstellung. Wie schon angedeutet, werden wir die Grundideen
-eines PID-Reglers in unserer hergeleiteten Methode wiederfinden.
+\paragraph{Bezug zur Zielsetzung:} es zeigt sich, dass das Konzept des PID-Reglers nur modifiziert anwendbar ist auf unsere Problemstellung.
+Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer hergeleiteten Methode wiederfinden.
 
 \subsubsection{Staukontrolle bei Pub/Sub-RSS}
