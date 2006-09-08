@@ -33,7 +33,8 @@ def parsecmdl():
         error = True
         
     if error == True:
-        print "usage: " + os.path.basename( sys.argv[0] ) + " --dir=<directory> --seedsfile=<seedsfile> [--mem=<memory_in_MB>] [--mail]"
+        print "usage: " + os.path.basename( sys.argv[0] ) + \
+            " --dir=<directory> --seedsfile=<seedsfile> [--mem=<memory_in_MB>] [--mail]"
         sys.exit( 1 )
         
     return ( options, args )
@@ -101,7 +102,7 @@ try:
     newdir = dir
     os.chdir( newdir )
     print "building tar-archive " + tarfileprefix + ".tgz of generated data-files"
-    os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata queue*.gnuplot *.ps' )
+    os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata *.gnuplot *.ps' )
     os.chdir( olddir )
     
     """ mail """
