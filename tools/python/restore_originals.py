@@ -3,8 +3,13 @@
 from optparse import OptionParser
 from re import compile, match
 from dircache import listdir
+import linescanner
 import os
 import sys
+
+tempseedfile = "t.e.m.p.s.e.e.d.f.i.l.e"
+testscenarios = "testscenarios"
+tempfile = "t.e.m.p.f.i.l.e"
 
 pattern = compile("^(.*)\.orig")
 
@@ -41,3 +46,19 @@ for file in files:
     match = pattern.match(file)
     if match != None:
         os.rename(file,match.group(1))
+        
+    """ restore old seed values """
+    if file == tempseedfile:
+        
+        oldseedfile = open( tempseedfile, 'r' )
+        oldseedvalue = linescanner.token( 0, oldseedfile )
+        oldseedfile.close()
+        
+        scenarios = open(testscenarios,'r')
+        for simulation in linescanner.linetokens(scenarios):
+        
+            os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + oldseedvalue +"/g' " + simulation + " > " + tempfile )
+            os.rename( tempfile, simulation )
+            
+        os.remove( tempseedfile )
+

@@ -3,10 +3,12 @@
 import sys
 import os
 import linescanner
+from propertyreader import PropertyReader, PropertyReaderException
 from optparse import OptionParser
 
 testscenarios = "testscenarios"
 tempfile = "t.e.m.p.f.i.l.e"
+tempseedfile = "t.e.m.p.s.e.e.d.f.i.l.e"
 infix = ".pass"
 
 def parsecmdl():
@@ -85,6 +87,13 @@ file = open( testscenarios, 'r' )
 for simulation in linescanner.linetokens( file ):
 
     if seedvalue != "":
+        
+        """ save old seed value """
+        propertyReader = PropertyReader( simulation )
+        oldseedvalue = propertyReader.getProperty( 'seedValue' )
+        os.system( "echo " + oldseedvalue + " > " + tempseedfile )
+        
+        """ modify seed value """
         os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + seedvalue +"/g' " + simulation + " > " + tempfile )
         os.rename( tempfile, simulation )
  
@@ -130,6 +139,17 @@ for simulation in linescanner.linetokens( file ):
                + simulation + " > " + tempfile )
     os.rename( tempfile, simulation )
     
+    """ alten seed value wieder setzen """
+    if seedvalue != "":
+        
+        oldseedfile = open( tempseedfile, 'r' )
+        oldseedvalue = linescanner.token( 0, oldseedfile )
+        oldseedfile.close()
+        
+        os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + oldseedvalue +"/g' " + simulation + " > " + tempfile )
+        os.rename( tempfile, simulation )
+        os.remove( tempseedfile )
+   
 file.close()
     
     
