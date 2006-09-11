@@ -146,8 +146,9 @@ erreicht  (\cite{RFC2581}). Die identischen $acks$ lassen sowohl darauf schließe
 Empfänger höchstwahrscheinlich erreichen, da die identischen $acks$ sonst ausgeblieben wären. Die den identischen $acks$ zugrundeliegenden Datenpakete beeinflussen
 das Datenaufkommen nicht mehr, da diese schon die Empfänger-Queue erreicht haben. Daher geht man davon aus, dass das erneute, schnelle Senden des fehlenden
 Datenpaketes das Netz nicht wesentlich im Negativen beeinflusst. ``Fast retransmit'' sollte, muss aber nicht von einer konkreten TCP-Implementation unterstützt
-werden.
+werden.\\
 
+Zusätzliche Erweiterungen zum TCP in Hinsicht auf hohe Performanz finden sich in \cite{jacobson93tcp}.
 
 \paragraph{Bezug zur Zielsetzung:}
 Wie zu Beginn des Abschnittes gesagt, geht es darum, die Auslastung der Server-Queue stabil zu halten, bzw. dafür zu sorgen,
