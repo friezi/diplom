@@ -1,5 +1,4 @@
 \section{Verteiltes Polling}
-\todo{Literaturangaben}\\
 Betrachten wir die Gesamtheit der Subscriber und ihr Polling-Verhalten, so erkennen wir, dass aus Sicht eines RSS-Servers die Polling-Frequenz
 dieser Gesamtheit (mittlere Ankunftsrate der Anfragen) größer ist als die Polling-Frequenz jedes einzelnen Subscribers.
 Wünschenswert wäre es, wenn jeder Subscriber von der
@@ -30,7 +29,7 @@ bis ihm ein neuer Feed durch das Netzwerk über einen Broker übermittelt wird. Es
 Klient aktiv werden, um den RSS-Server kontaktieren, und wann soll ein Klient inaktiv bleiben, um den Feed über das Brokernetzwerk zu erhalten? Denn
 folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden RSS-Server, ist nichts gewonnen; erreicht der neue Feed
 einen Klienten über einen Broker, so besitzt der Klient diesen neuen Feed bereits, da er zuvor eigenmächtig den RSS-Server kontaktiert hat.
-\todo{irgendwo Filter erwähnen!}
+\todo{Filter}
 \subsubsection*{Ansatz: Ein Publisher}
 Die einfachste Lösung wäre sicherlich, einen dedizierten Publisher zu bestimmen, welcher als alleiniger Klient das Polling übernimmt. Alle weiteren Klienten
 würden die Feeds über das Broker-Netzwerk erhalten. Vorteil wäre, daß es relativ wenig
@@ -41,7 +40,7 @@ Erst, nachdem das Netzwerk den Ausfall registriert hat und entsprechende Gegenma
 Publishers), kann es zu einer weiteren Verbreitung der Feeds kommen. Darüber hinaus könnten die Klienten nicht von verteiltem Polling profitieren.
 \subsubsection*{Ansatz: Mehrere Publisher}
 Daher favorisieren wir eine Lösung, bei der zu gegebener Zeit nur eine gewisse Auswahl der Klienten gleichzeitig Anfragen an den RSS-Server senden.
-Es muss also zu einer Abstimmung bzw. Koordinierung der Klienten unter einander kommen, um diese Auswahl zu bestimmen. Auch hierbei ist zu beachten,
+Es muss also zu einer Abstimmung bzw. Koordinierung der Klienten untereinander kommen, um diese Auswahl zu bestimmen. Auch hierbei ist zu beachten,
 dass Ausfälle von Publishern im Netz nicht zu Datenverlust führen sollen; d. h. jeder Subscriber sollte die Informationen bzw. Feeds, die er zu erhalten wünscht,
 auch dann erhalten, wenn die für das Polling vorgesehenen Klienten ausfallen.
 

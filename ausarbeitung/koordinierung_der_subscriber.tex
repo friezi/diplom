@@ -1,5 +1,4 @@
 \section{Koordinierung der Subscriber}
-\todo{Literaturangaben}\\
 
 Um das Netz nicht noch zusätzlich zu belasten, sollte die Netzbelastung, die durch eventuelle Abstimmungsnachrichten entsteht, minimal sein.
 Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
@@ -69,13 +68,13 @@ solange nicht das physikalische Netz betroffen ist und das Brokernetz intakt ist
 \subsection{Konkrete Anpassung an RSS -- Bestimmung relevanter Parameter}
 Im Folgenden betrachten wir, wie sich die relevanten Parameter in Zusammenhang mit RSS bestimmen lassen.
 \subsubsection{Bestimmung von $t_x$}
-Die Frage ist, wie sich $t_x$ bestimmt. Lässt sich der Zeitpunkt $nextBuild$, zu dem der RSS-Server einen neuen Feed
+Lässt sich der Zeitpunkt $nextBuild$, zu dem der RSS-Server einen neuen Feed
 bereitstellt, innerhalb eines gewissen Toleranzbereiches genau bestimmen, dann können wir $t_x:=nextBuild$ setzen. Kann
 $nextBuild$ innerhalb des gewünschten Toleranzbereiches nicht genau bestimmt werden, kann es nötig sein $t_x:=t_0$ zu setzen. Unter welchen
 Umständen welche Variante vorzuziehen ist, werden wir später noch erörtern.
 \subsubsection{Bestimmung von $nextBuild$}
 Um $nextBuild$ zu bestimmen, definieren wir zwei weitere Parameter: $ttl$ und $lastBuildDate$. $ttl$ steht für ``time to live'' und bezeichnet
-die Anzahl Minuten, die ein Feed aktuell bleibt, bevor er server-seitig aktualisiert wird. $lastBuildDate$ steht für den Zeitpunkt, zu dem ein
+die Zeit, die ein Feed aktuell bleibt, bevor er Server-seitig aktualisiert wird. $lastBuildDate$ steht für den Zeitpunkt, zu dem ein
 Feed vom Server aktualisiert wurde.
 Der RSS 2.0 Standard\cite{RSSSpecWi2004} sieht unter anderem die optionalen Parameter $lastBuildDate$ und $pubDate$ vor. Setzen wir voraus,
 dass mindestens der Parameter $lastBuildDate$ vom Server bereitgestellt wird.
@@ -86,25 +85,48 @@ aufgrund des letzten aktuellen Feeds wie folgt berechnen:
     0 & (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
   \end{array}\right. \]
 
-Alternativ könnte statt $lastBuilddate$ auch $pubDate$ zur Berechnung genommen werden.
+Alternativ könnte statt $lastBuildDate$ auch $pubDate$ zur Berechnung genommen werden.
 \subsubsection{Bestimmung des $ttl$}
-Um $ttl$ zu bestimmen, gibt es zwei Möglichkeiten.
+Um $ttl$ zu bestimmen, gibt es zwei Möglichkeiten:
+\begin{itemize}
+  \item {\bf Bereitstellung des $ttl$ durch den Informationsanbieter:}
+    RSS 2.0\cite{RSSSpecWi2004} sieht ebenfalls den optionalen Parameter $ttl$ vor.
 
-\paragraph{Bereitstellung des $ttl$ durch den Informationsanbieter:}
-RSS 2.0\cite{RSSSpecWi2004} sieht ebenfalls den optionalen Parameter $ttl$ vor.
-Ob es aus Sicht des Informationsanbieters Sinn macht, diesen optionalen Parameter bereitzustellen, hängt von der Vorhersagbarkeit des Auftretens
-neuer Daten und der zeitlichen Möglichkeit, diese Daten bereit zu stellen, ab. Beispielsweise ist das Auftreten von Ereignissen des
-aktuellen Tagesgeschehens mit Sicherheit nicht vorhersagbar. Werden diese zum Zeitpunkt der Berichterstattung bereitgestellt, so wird
-es sicherlich wenig Sinn machen, den Parameter $ttl$ zu definieren, da nicht vorherbestimmt werden kann, wann neue Ereignisse eintreten. Ein
-Betreiber einer Webseite jedoch, der täglich sein Tagebuch veröffentlicht, könnte diesen Parameter mitliefern, wenn er z.B. immer um Punkt
-10 Uhr seine Webseite aktualisiert.
+  \item {\bf Bestimmung des $ttl$ durch den Klienten:}
+    Wird der Parameter $ttl$ vom Informationsanbieter nicht unterstützt, so kann $ttl$ heuristisch durch den Klienten bestimmt werden.
+\end{itemize}
 
-\paragraph{Bestimmung des $ttl$ durch den Klienten:}
-Wird der Parameter $ttl$ vom Informationsanbieter nicht unterstützt, so kann $ttl$ heuristisch durch den Klienten bestimmt werden.
-Hierzu gibt es verschiedene Verfahren, von denen wir eines vorstellen wollen.
-Cho und Garcia-Molina beschreiben in \cite{ChGM:2003:ChangeFrequency} eine Methode zur Bestimmung der Update-Frequenz mit besseren
-Eigenschaften als die naive Methode.
+Wie wir sehen, sind $ttl$ und $nextBuild$ eng miteinander verknüpft. Wollen wir $ttl$ und damit $nextBuild$ ermitteln können, stellt sich zunächst die Frage,
+ob und in welchen Fällen dies überhaupt sinnvoll ist. Informationen können vielfältiger Art sein, Informationsanbieter können ganz unterschiedliche Gewohnheiten an
+den Tag legen. Es hängt von der Vorhersagbarkeit des Auftretens neuer Daten und der zeitlichen Möglichkeit ab, diese Daten bereit zu stellen. Stellen wir uns eine
+Person vor, die regelmäßig jeden Tag ihr Tagebuch in einem Blog samt RSS-Feeds veröffentlicht. Sie besitzt ein nicht besonders
+leistungsfähiges Rechnersystem, welches bei einer großen und dauerhaften Anzahl von Webzugriffen schnell überlastet wird. Die Person steht jeden Tag um 8.00 Uhr auf,
+so dass sie um 9.00 Uhr die Einträge des vorherigen Tages bereit gestellt hat. Sie kann somit in den RSS-Feed einen $ttl$-Wert von 24 Stunden eintragen. So wie es
+aussieht, spielt Aktualität in diesem Fall keine große Rolle, so dass für die Interessenten ein relativ großer $\Delta I$ Wert festgelegt werden kann (z. B. 12
+Stunden). Ein RSS-Reader eines Interessenten braucht somit frühsten um 9.00 beim Anbieter nachzufragen und hat einen Spielraum von 12 Stunden. Mit dem von uns
+geplanten Pub/Sub-RSS-System reichen in diesem Falle schon sehr wenige Subscriber aus (vielleicht sogar nur einer), um den aktuellen Feed an die gesamte Fangemeinde
+zu übermitteln. Betrachten wir nun einen anderen Fall: eine Nachrichtenagentur stellt rund um die Uhr die neuesten Schlagzeilen in einem RSS-Feed zur Verfügung. Es
+ist nicht absehbar, wann ein neues Weltereignis eintritt, so dass die Nachrichtenagentur nicht plant, den RSS-Feed mit dem Wert $ttl$ zu versorgen. Eine
+heuristische Bestimmung des $ttl$ durch den Klienten ist wahrscheinlich mit einer großen Varianz behaftet und dadurch sehr ungenau. Und dennoch ist der Spielraum
+groß, was eine empirische Datenerhebung verdeutlicht.
+
+\begin{picturehere}{1}{10}{\mbox{RSS-Feed-Aktualisierung}}{Abb:rss_aktualisierung}
+ \includegraphics[bb=530 310 730 600,scale=0.55,angle=-90]{rss_aktualisierung}
+\end{picturehere}
+
+Abbildung \ref{Abb:rss_aktualisierung} zeigt, wie oft und regelmäßig verschiedene Anbieter von RSS-Feeds (Spiegel, Heise, NY-Times, Slashdot, Sourceforge)
+diese aktualisieren. Der gemessene Zeitraum erstreckt sich über
+24 Stunden, die Abtastrate betrug 60 Sekunden. Hierbei fällt auf, dass Spiegel und Heise in der Zeit zwischen ca. 0.00 und 5.00 Uhr keine Aktualisierungen
+vornehmen, wogegen zu den übrigen Zeiten die Aktualisierungsintervalle schwanken. Zur Nachtzeit würde es sich also anbieten, den $ttl$ zu setzten. Auch bei
+den NY-Times fällt ein Zeitraum auf, indem nicht aktualisiert wird. Die zeitliche Differenz zu den deutschen Betreibern lässt sich vermutlich durch eine
+Zeitverschiebung erklären. Bei den NY-Times fällt weiterhin auf, dass in der übrigen Zeit Aktualisierungen nur stündlich vorgenommen werden. Also auch hier ein
+Fall für einen vom Anbieter vorgegebenen $ttl$. Ebenfalls lässt sich bei Slashdot und Sourceforge eine gewisse Linearität der Aktualisierungsintervalle 
+feststellen, wenn sie auch um einiges kürzer sind.
+
 
 \input{heuristische_bestimmung_des_ttl}
+
+Hierzu gibt es verschiedene Verfahren, von denen wir eines vorstellen wollen.
+Cho und Garcia-Molina beschreiben in \cite{ChGM:2003:ChangeFrequency} eine Methode zur Bestimmung der Update-Frequenz.
 \input{bestimmung_der_intervallspanne_deltai}
 

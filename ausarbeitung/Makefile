@@ -36,5 +36,5 @@ ed:
 	$(EDITOR) *.tex ../*.bib Makefile&
 
 clean:
-	\rm *.aux *.bbl *.blg *.glo *.gls *.ilg *.log *.dvi *.pdf *.ps
+	\rm *.aux *.bbl *.blg *.glo *.gls *.ilg *.log *.dvi *.pdf
 
