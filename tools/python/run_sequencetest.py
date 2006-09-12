@@ -68,7 +68,8 @@ mailfile = 'mailfile'
 try:
     
     file = open( seedsfile, 'r' )
-    
+
+    """ run test """    
     for seedvalue in linescanner.linetokens( file ):
 
         passvalue+=1
@@ -87,7 +88,7 @@ try:
             os.system( 'echo $HOSTNAME > ' + mailfile )
             os.system( 'echo ' + dir + ' >> ' + mailfile )
             os.system( 'echo "" >> ' + mailfile )
-            os.system( 'echo  ERROR: >> ' +  mailfile )
+            os.system( 'echo  ERROR while running java ConfidenceIntervalCalculator for dir ' + dir + ': >> ' +  mailfile )
             os.system( 'cat ' + errorfile + ' >> mailfile' )
             os.system( "python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + errorsubject + " --account="
                    + account + " --textfile=" + mailfile )

@@ -124,7 +124,7 @@ for simulation in linescanner.linetokens( file ):
             os.system( 'echo $HOSTNAME > ' + mailfile )
             os.system( 'echo ' + dir + ' >> ' + mailfile )
             os.system( 'echo "" >> ' + mailfile )
-            os.system( 'echo  ERROR: >> ' +  mailfile )
+            os.system( 'echo  ERROR while running java Simulation in simulation ' + simulation + ': >> ' +  mailfile )
             os.system( 'cat ' + errorfile + ' >> mailfile' )
             os.system( "python ../" + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account="
                        + account + " --textfile=" + mailfile )
