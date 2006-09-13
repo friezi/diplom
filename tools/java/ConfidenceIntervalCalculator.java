@@ -97,6 +97,9 @@ public class ConfidenceIntervalCalculator {
 
 		String line = null;
 		while ( (line = scanner.readLine()) != null ) {
+			
+			if (line.equals(""))
+				continue;
 
 			String scenario = dirname + "/" + line;
 
@@ -109,6 +112,8 @@ public class ConfidenceIntervalCalculator {
 			collectAndCalculate(dirname, properties.getProperty("gnuplotFileMeanValueCPP"));
 			collectAndCalculate(dirname, properties.getProperty("gnuplotFileCoeffVarCPP"));
 			collectAndCalculate(dirname, properties.getProperty("gnuplotFileAvgMsgDelayRatio"));
+			collectAndCalculate(dirname, properties.getProperty("gnuplotFileRelReOmRatio"));
+			collectAndCalculate(dirname, properties.getProperty("gnuplotFileAvgUptodateRatio"));
 
 		}
 

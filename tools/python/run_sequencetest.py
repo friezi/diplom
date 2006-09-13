@@ -83,7 +83,8 @@ try:
     file.close()
         
     """ confidence-intervals """
-    if os.system( 'java -cp ' + execdir + '/../java:' + execdir + "/../java/commons-math-1.1.jar ConfidenceIntervalCalculator " + dir ) != 0:
+    if os.system( 'java -cp ' + execdir + '/../java:' + execdir + '/../java/commons-math-1.1.jar ConfidenceIntervalCalculator '
+                  + dir + ' 2>>' + errorfile) != 0:
         if mail == 'true':
             os.system( 'echo $HOSTNAME > ' + mailfile )
             os.system( 'echo ' + dir + ' >> ' + mailfile )
