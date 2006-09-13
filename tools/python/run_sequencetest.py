@@ -97,14 +97,14 @@ try:
             os.remove( mailfile )
  
     """ gnuplot """
-    os.system( "python " + execdir + "/exec_gnuplotfile.py --dir=" + dir )
+    os.system( "python " + execdir + "/exec_gnuplotfile.py --dir=" + dir + ' 2>>' + errorfile)
  
     """ tar-archive """
     olddir = os.getcwd()
     newdir = dir
     os.chdir( newdir )
     print "building tar-archive " + tarfileprefix + ".tgz of generated data-files"
-    os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata *.gnuplot *.ps' )
+    os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata *.gnuplot *.ps' + ' 2>>' + errorfile )
     os.chdir( olddir )
     
     """ mail """
