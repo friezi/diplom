@@ -5,4 +5,4 @@ plot 'totalTemporaryRequests_NoBalancing_MeanValueRanges.gnuplotdata' w l
 load 'queue.gnuplot'
 replot queue
 set output 'ToTR_NoBalancing_MVR.ps'
-replot 'totalTemporaryRequests_NoBalancing_MeanValues.gnuplotdata' w l
+replot

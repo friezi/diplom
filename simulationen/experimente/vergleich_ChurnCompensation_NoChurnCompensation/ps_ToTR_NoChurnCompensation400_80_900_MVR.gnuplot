@@ -6,4 +6,4 @@ load 'queue.gnuplot'
 load 'markers400_80_900.gnuplot'
 replot queue
 set output 'ToTR_NoChurnCompensation400_80_900_MVR.ps'
-replot 'totalTemporaryRequests_NoChurnCompensation400_80_900_MeanValues.gnuplotdata' w l
+replot

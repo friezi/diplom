@@ -6,4 +6,4 @@ load 'queue.gnuplot'
 load 'markers.gnuplot'
 replot queue
 set output 'ToTR_Polynomial_MVR.ps'
-replot 'totalTemporaryRequests_Polynomial_MeanValues.gnuplotdata' w l
+replot
