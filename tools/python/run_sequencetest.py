@@ -104,7 +104,8 @@ try:
     newdir = dir
     os.chdir( newdir )
     print "building tar-archive " + tarfileprefix + ".tgz of generated data-files"
-    os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata *.gnuplot *.ps' + ' 2>>' + errorfile )
+    os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata *.gnuplot *.ps *.cfg *.sim *.al testscenarios gnuplotfiles'
+                + ' 2>>' + errorfile )
     os.chdir( olddir )
     
     """ mail """
