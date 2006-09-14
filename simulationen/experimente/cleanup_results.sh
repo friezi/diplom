@@ -5,7 +5,7 @@
 for dir in $*
 do
 	cd $dir
-	rm -f *.gnuplotdata queue*.*gnuplot markers*.gnuplot *.bak *.tgz
+	rm -f *.gnuplotdata queue*.*gnuplot markers*.gnuplot *.bak *.log *.tgz
 	cd ..
 done
 
