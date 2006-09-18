@@ -120,11 +120,13 @@ desselben Datenpaketes, so tritt ein Problem auf, welches Karn und Partridge in 
 es kann nicht festgestellt werden, auf welche Aussendung desselben Datenpaketes sich das $ack$ bezieht. Damit ist nicht klar, anhand welches Paketes
 sich der $rtt$ bestimmen soll, er wird in jedem Falle nicht verlässlich sein. Verschiedene Protokollimplementationen behandeln dieses Problem
 auf unterschiedliche Weise: teils wird die am längsten zurückliegende Aussendung als Grundlage zur Berechnung herangezogen, teils die am kürzesten zurückliegende
-Aussendung.
-Wird die am längsten zurück liegende Aussendung  gewählt, so können der $rtt$, damit der $srtt$ und letztlich der $rto$ unverhältnismäßig in die Höhe schießen.
+Aussendung.\\
+
+Wird die am längsten zurückliegende Aussendung  gewählt, so können der $rtt$, damit der $srtt$ und letztlich der $rto$ unverhältnismäßig in die Höhe schießen.
 In vielen Fällen ist die nachteilige Wirkung nicht besonders groß, da aufgrund des Datenstaus eine Drosselung der Datentransferrate erwünscht ist.
 Kommt es aufgrund anderer Ursachen zu Paketverlusten (z. B. bei verlustreichen Leitungen durch Störsignale), so tritt das Gegenteil des gewünschten Verhaltens
-ein: der $srtt$ sinkt auf ein sehr niedriges Niveau, obwohl sich in diesem Falle die Datentransferrate erhöhen sollte.
+ein: der $srtt$ sinkt auf ein sehr niedriges Niveau, obwohl sich in diesem Falle die Datentransferrate erhöhen sollte.\\
+
 Wird die am kürzesten zurückliegende Aussendung herangezogen, so ist die Wahrscheinlichkeit laut Karn sehr groß, dass die Zeitfolge zwischen dieser Sendung und dem
 ankommenden $ack$ sehr kurz ist, obwohl sich das $ack$ auf eine weiter zurückliegende Sendung bezieht. Dies führt zu einer drastischen Reduzierung des $srtt$,
 was überflüssige Retransmissionen und damit eine zusätzliche Verschwendung der Bandbreite zur Folge hat (\cite{Karn1991},\cite{Jain1986}). Andere Implementationen
@@ -153,7 +155,9 @@ Zusätzliche Erweiterungen zum TCP in Hinsicht auf hohe Performanz finden sich in
 \paragraph{Bezug zur Zielsetzung:}
 Wie zu Beginn des Abschnittes gesagt, geht es darum, die Auslastung der Server-Queue stabil zu halten, bzw. dafür zu sorgen,
 dass die Ungleichung $0\leq\rho<1$ erfüllt
-ist. Zeigen wir zunächst die Parallelen zwischen unserem Kommunikationsmodell und der Ebene, auf der TCP Anwendung findet: bei unserem Kommunikationsmodell
+ist.\\
+
+Zeigen wir zunächst die Parallelen zwischen unserem Kommunikationsmodell und der Ebene, auf der TCP Anwendung findet: bei unserem Kommunikationsmodell
 befinden sich die kommunizierenden Parteien (RSS-Server, Subscriber) ebenfalls an Endknoten. Befindet sich der RSS-Server unter starker Last, so wird seine
 Antwort (die Übermittlung des RSS-Feeds) länger auf sich warten lassen, als unter geringerer Last. Die $rtt$ zwischen Anfrage und dem vom RSS-Server übermittelten
 Feed (entsprechend einem $ack$) lässt in gewissem Rahmen auf die Auslastung des Servers schließen. Auch in unserem Fall kann die Antwortzeit durch
@@ -264,7 +268,12 @@ vgl. Abschnitt \ref{css:tcp} TCP).\\
 Es zeigt sich, dass das Konzept des PID-Reglers nur modifiziert anwendbar ist auf unsere Problemstellung.
 Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer hergeleiteten Methode wiederfinden.
 
+\subsubsection{Grundsätzliches zu Timern}
+\label{css:timer}
+
 \subsubsection{Staukontrolle bei Pub/Sub-RSS}
 \label{css:staukontrolle_pubsubrss}
+
+\subsubsection{Timer bei Pub/Sub-RSS}
 
 
