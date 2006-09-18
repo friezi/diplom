@@ -1,0 +1,15 @@
+\section{Rolle der Broker}
+\todo{folgt}
+Die Broker sind der zentrale Bestandteil des Notifikationssystems. Ein Broker empfängt Feeds von Brokern oder von Subscribern.
+Anschließend sorgt er für eine Verteilung der
+Feeds an eine bestimmte Auswahl von mit ihm verbundenen Brokern bzw. Subscribern. Ein Broker kann also eine zentrale Sammelstelle für Feeds
+unterschiedlicher Anbieter sein. Die einzelnen in den Feeds zusammengefassten Ereignisse können durch den Broker neu zusammengestellt werden.
+Als Kriterien für neue Zusammenstellungen bieten sich die Aktualität der einzelnen Ereignisse sowie bestimmte Filterregeln an. Einzelne 
+Ereignisse, die den Broker bereits erreicht haben, brauchen nicht erneut weitergeleitet zu werden und finden daher nach unserem Konzept keinen
+Eingang in die neu zusammengestellten Feeds. Dadurch können Netzresourcen gespart werden. Voraussetzung dafür ist, dass der Broker einen Cache
+unterhält, in dem eine bestimmte Menge an Ereignissen zwischengespeichert werden. Filter können durch Subscriber definiert und beim Broker
+hinterlegt werden. Aufgrund der Filterregeln können Ereignisse verschiedener Anbieter z. B. themenbasiert in einem Feed gesammelt werden. Ein
+Subscriber kann also eine individuelle Zusammenstellung der Ereignisse erhalten. Filterregeln und ihre Anwendung wurden schon ausführlich
+erforscht und sollen nicht Gegenstand dieser Arbeit sein. Deshalb fanden sie auch keinen Eingang in die weiter unten beschriebene
+Simulationsumgebung. Unser System \pubsubrss könnte mit bestehenden Pub/Sub-Systemen, welche Filtertechniken unterstützen (wie z. B. das System
+REBECA \cite{MuFiBu:2001:ArchFrameECommApp}), kombiniert werden.

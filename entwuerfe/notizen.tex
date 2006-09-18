@@ -297,7 +297,14 @@ das Minimum von neuem RTO (interval) und planmässiger Zeitdifferenz bis zum
 nächsten Timeout genommen. Dies gewährleistet, dass es immer zu einem Timeout
 kommt, auch wenn der neue RTO größer ist als die Zeit bis zum nächsten Timeout.
 
+\subsection*{14.09.2006}
+Beobachtungen und Kommentare zu durchgeführten Experimenten:
 
+\begin{itemize}
+\item NoBalancing: die auftretenden Spitzen verteilen sich exponentiell über den zeitl. Verlauf. Mögl.Erklärung: zuerst ankommende Anfragen
+``sperren'' die restlichen aus. Die auftretenden Spitzen kommen durch Anfragen der restlichen Klienten, die nun keine Chance haben, in die
+Queue zu gelangen.
+\end{itemize}
 
 
 \end{document}
