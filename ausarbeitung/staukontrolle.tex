@@ -273,6 +273,19 @@ Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer her
 
 \subsubsection{Staukontrolle bei Pub/Sub-RSS}
 \label{css:staukontrolle_pubsubrss}
+Wollen wir kurz zusammenfassen, welche primären Ziele und damit verbundenen sekundären Ziele wir verfolgen: um einer längerfristigen
+Überlastung des RSS-Servers entgegenzuwirken, muss der $cpp$ eines Subscribers entsprechend der Serverbelastung angepasst werden.
+Wir müssen also ein Maß für die Serverbelastung bestimmen, was auch bei uns die ``Roundtrip-Time'' sein soll, also die Zeit, die zwischen Aussendung
+einer Anfrage und dem Erhalt des entsprechenden Feeds vergeht. Soll auch im Folgenden diese durch den Wert $rtt$ bezeichnet sein, den es gilt
+zu bestimmen. Mit Hilfe von $rtt$ können wir dann $cpp$ ermitteln.\\
+
+Beim Anpassen des $cpp$ müssen wir berücksichtigen, dass grundsätzlich nicht ein Subscriber alleine für eine Überlastung verantwortlich ist, sondern in den
+meisten Fällen eine Menge von Subscribern, die gemeinsam auf den gleichen RSS-Server zugreifen. Eine Senkung des $cpp$ kann also multiplikative Wirkung haben,
+da je nach Verfahren diese Maßnahme eventuell jeder beteiligte Subscriber ergreift.\\
+
+Zur Berechnung des $rtt$ müssen wir die RSS-Feeds nach ihrem Ursprung unterscheiden: Feeds, die ein Subscriber von einem Broker erhält, müssen anders behandelt
+werden als Feeds, die von einem RSS-Server ausgesandt werden. Für die Berechnung des $rtt$ spielen nur diese Feeds eine Rolle.
+
 
 \subsubsection{Timer bei Pub/Sub-RSS}
 

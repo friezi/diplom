@@ -35,11 +35,11 @@ def parsecmdl():
         
     return ( options, args )
 
-def escapeForSed(string):
+def escapeForSed( string ):
     
     new = ""
     
-    for i in range(len(string)):
+    for i in range( len( string ) ):
         if string[i] == '/':
             new = new + '\\'
         new = new + string[i]
@@ -64,10 +64,10 @@ toplayer = cp_propertyReader.getProperty( 'Toplayer' )
 sublayer = cp_propertyReader.getProperty( 'Sublayer' )
 
 if toplayer != None:
-        sedcommands = sedcommands + " -e 's/^[ ]*\(BRITEToplayerFile\)[ ]*=\(.*\)$/\\1=" + escapeForSed(toplayer) + "/g'"
+        sedcommands = sedcommands + " -e 's/^[ ]*\( BRITEToplayerFile\ )[ ]*=\( .*\ )$/\\1=" + escapeForSed(toplayer) + "/g'"
 
 if sublayer != None:
-        sedcommands = sedcommands + " -e 's/^[ ]*\(BRITESublayerFile\)[ ]*=\(.*\)$/\\1=" + escapeForSed(sublayer) + "/g'"
+        sedcommands = sedcommands + " -e 's/^[ ]*\( BRITESublayerFile\ )[ ]*=\( .*\ )$/\\1=" + escapeForSed(sublayer) + "/g'"
     
 """ read testscenarios """
 os.chdir( dir )
@@ -78,12 +78,14 @@ for ts_line in linescanner.linetokens(ts_file):
     """ read properties from testscenario """
     ts_propertyReader = PropertyReader( ts_line )
     sc_filename = ts_propertyReader.getProperty('scenarioFile')
+    original = sc_filename + ".orig"
 
-    """ invoke sed on secanrioFile """
+    """ invoke sed on scenarioFile """
     if sc_filename != 'none':
-        os.system("sed " + sedcommands + " " + sc_filename + " > " + tempfile)
-        os.rename(sc_filename,sc_filename + ".orig")
-        os.rename(tempfile,sc_filename)
+        if os.path.exists(original) == False:
+            os.system("sed " + sedcommands + " " + sc_filename + " > " + tempfile)
+            os.rename(sc_filename,original)
+            os.rename(tempfile,sc_filename)
 
 ts_file.close()
         
