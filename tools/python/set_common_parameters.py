@@ -64,10 +64,10 @@ toplayer = cp_propertyReader.getProperty( 'Toplayer' )
 sublayer = cp_propertyReader.getProperty( 'Sublayer' )
 
 if toplayer != None:
-        sedcommands = sedcommands + " -e 's/^[ ]*\( BRITEToplayerFile\ )[ ]*=\( .*\ )$/\\1=" + escapeForSed(toplayer) + "/g'"
+        sedcommands = sedcommands + " -e 's/^[ ]*\(BRITEToplayerFile\)[ ]*=\(.*\)$/\\1=" + escapeForSed(toplayer) + "/g'"
 
 if sublayer != None:
-        sedcommands = sedcommands + " -e 's/^[ ]*\( BRITESublayerFile\ )[ ]*=\( .*\ )$/\\1=" + escapeForSed(sublayer) + "/g'"
+        sedcommands = sedcommands + " -e 's/^[ ]*\(BRITESublayerFile\)[ ]*=\(.*\)$/\\1=" + escapeForSed(sublayer) + "/g'"
     
 """ read testscenarios """
 os.chdir( dir )
