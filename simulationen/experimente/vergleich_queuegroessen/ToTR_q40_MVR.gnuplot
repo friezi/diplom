@@ -1,4 +1,6 @@
 unset parametric
+set xlabel "Time/secs"
+set ylabel "RSSFeed-Requests"
 plot 'totalTemporaryRequests_queue40_MeanValueRanges.gnuplotdata' w l
 load 'queue40.gnuplot'
 replot queue
