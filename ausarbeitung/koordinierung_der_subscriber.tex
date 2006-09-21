@@ -10,6 +10,7 @@ Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten erfolgen
 \end{itemize} 
 Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt.
 \subsection{Der Grundlegende Algorithmus}
+\label{cs:der_grundlegende_algorithmus}
 Es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
 $t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\Delta Z$ wählt sich jeder
 Subscriber $i$ innerhalb des Zufallsintervalls $Z:=[t_x,t_x+\Delta Z]$ einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh'', $ttr$ im allgemeinen), zu dem
@@ -54,13 +55,14 @@ Zeitpunkt $t_f$ (sei $feed_{old}$ der bisher bei $i$ gespeicherte Feed), so gesc
     \end{description}
 \end{description}
 
+Bezeichne $\Delta ttr_i$ die Zeitspanne zwischen $t_0$ und $ttr_i$ ($\Delta ttr$ im allgemeinen), also gilt $ttr_i:=t_0+\Delta ttr_i$.
 Die $ttr$s der verschiedenen Subscriber sollten bei der Wahl einer geeigneten Zufallsfunktion über $Z$ gleichmäßig
 verteilt sein. Durch die Wahl eines zufälligen Wertes innerhalb von $Z$ ist gewährleistet, dass nur in extremen Ausnahmefällen (theoretisch) 
 alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $ttr$s verschiedener
 Subscriber auf den gleichen Zeitpunkt fallen (je nach Größe der Zufallsspanne $\Delta Z$ und der Anzahl der Klienten).
 Die Verteilung unterliegt jedoch einem kontinuierlichen Wechsel, da die $ttr$s immer
-wieder neu berechnet werden. $\Delta Z$ bildet eine obere Schranke für den Erhalt des nächsten Feeds, da jeder Klient nach
-spätestens $\Delta Z$ selbständig den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Dadurch können lange
+wieder neu berechnet werden. Ausgehend von $t_x$ bildet $\Delta Z$ eine obere Schranke für den Erhalt des nächsten Feeds, da jeder Klient nach
+spätestens der Zeit $\Delta Z$ selbständig den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Dadurch können lange
 Übertragungszeiten zwischen den Klienten ausgeglichen werden.
 Ausfälle von Klienten können zwar zu Verzögerungen beim
 Erhalt der Feeds führen, sie können aber die Übermittlung der Feeds zwischen den übrigen Klienten nicht stören,

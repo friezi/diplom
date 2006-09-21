@@ -115,6 +115,7 @@ Dieser Algorithmus trägt zur Stauvermeidung (``congestion avoidance'') bei und b
 \cite{jacobson88congestion} ein Auswahlkriterium an, nachdem zustandsabhängig zwischen beiden Algorithmen ausgewählt wird.
 
 \paragraph{Karn's clamped retransmit backoff:}
+\label{csp:karns_algorithmus}
 Sequenznummern ermöglichen die Zuordnung eines $acks$ zu dem entsprechenden Datenpaket. Kommt es aufgrund von Timeouts zu Retransmissionen
 desselben Datenpaketes, so tritt ein Problem auf, welches Karn und Partridge in \cite{Karn1991} als ``retransmission ambiguity'' bezeichnen:
 es kann nicht festgestellt werden, auf welche Aussendung desselben Datenpaketes sich das $ack$ bezieht. Damit ist nicht klar, anhand welches Paketes
@@ -273,18 +274,97 @@ Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer her
 
 \subsubsection{Staukontrolle bei Pub/Sub-RSS}
 \label{css:staukontrolle_pubsubrss}
-Wollen wir kurz zusammenfassen, welche primären Ziele und damit verbundenen sekundären Ziele wir verfolgen: um einer längerfristigen
+Wollen wir kurz zusammenfassen, welche primären Ziele und damit verbundenen sekundären Ziele wir verfolgen: grundsätzlich geht es um die Bestimmung des Wertes
+$ttr$ eines Subscribers (siehe Abschnitt \ref{cs:der_grundlegende_algorithmus}).
+Zur Erinnerung: $ttr$ bezeichnet ``Time-To-Refresh'', also den konkreten Zeitpunkt, zu dem die nächste Anfrage an den jeweiligen RSS-Server
+gestellt werden soll. Um $ttr$ zu bestimmen benötigen wir $\Delta ttr$. Ein wichtiger Parameter zur Bestimmung von $\Delta ttr$ ist der $cpp$. Um einer
+längerfristigen
 Überlastung des RSS-Servers entgegenzuwirken, muss der $cpp$ eines Subscribers entsprechend der Serverbelastung angepasst werden.
 Wir müssen also ein Maß für die Serverbelastung bestimmen, was auch bei uns die ``Roundtrip-Time'' sein soll, also die Zeit, die zwischen Aussendung
 einer Anfrage und dem Erhalt des entsprechenden Feeds vergeht. Soll auch im Folgenden diese durch den Wert $rtt$ bezeichnet sein, den es gilt
-zu bestimmen. Mit Hilfe von $rtt$ können wir dann $cpp$ ermitteln.\\
+zu bestimmen. Mit Hilfe von $rtt$ können wir dann $rto$ und $cpp$ ermitteln.\\
+
+Der konzeptionelle Unterschied zwischen $rto$ und $cpp$ ist folgender: während der $cpp$ zur Berechnung des $\Delta ttr$ bei erfolgreicher Anfrage (also nach Erhalt
+eine RSS-Feeds) dient, dient der $rto$ zur Berechnung des $\Delta ttr$ bei nicht erfolgreicher Anfrage, also nach Ablauf des ``Retransmission-Timers'' ohne
+Erhalt eines
+RSS-Feeds. Ob wir diese Werte separat berechnen, oder ob wir einen funktionalen Zusammenhang zwischen diesen Werten herstellen, werden wir im Folgenden erörtern.
+
+Bei TCP gibt es ebenfalls eine funktionale Unterscheidung zwischen $srtt$ und $rto$, besonders in Zusammenhang mit Karn's Algorithmus
+(siehe Abschnitt im Kapitel \ref{csp:karns_algorithmus}),
+wobei der $cpp$ hier für den $srtt$ bei TCP steht. Im Unterschied zu TCP reicht bei uns der $cpp$ als Wert für ein Timeout für die nächste Anfrage jedoch nicht aus,
+da es in unserem Falle
+nicht um einen Datenstrom und somit nicht um die Aussendung des nächsten Datenpaketes geht. In unserem Fall muss die Zeit $\Delta ttr$, deren Bestandteil $cpp$ ist,
+bis zum nächsten Aussenden einer Anfrage berechnet werden. Daher werden wir im Folgenden den Begriff $srtt$ nicht verwenden, sondern den bereits
+eingeführten Begriff $cpp$, da dieser im Zusammenhang mit \pubsubrss eher angebracht ist.\\
 
 Beim Anpassen des $cpp$ müssen wir berücksichtigen, dass grundsätzlich nicht ein Subscriber alleine für eine Überlastung verantwortlich ist, sondern in den
 meisten Fällen eine Menge von Subscribern, die gemeinsam auf den gleichen RSS-Server zugreifen. Eine Senkung des $cpp$ kann also multiplikative Wirkung haben,
 da je nach Verfahren diese Maßnahme eventuell jeder beteiligte Subscriber ergreift.\\
 
 Zur Berechnung des $rtt$ müssen wir die RSS-Feeds nach ihrem Ursprung unterscheiden: Feeds, die ein Subscriber von einem Broker erhält, müssen anders behandelt
-werden als Feeds, die von einem RSS-Server ausgesandt werden. Für die Berechnung des $rtt$ spielen nur diese Feeds eine Rolle.
+werden als Feeds, die von einem RSS-Server ausgesandt werden. Für die Berechnung des $rtt$ spielen nur diese Feeds eine Rolle, da nur diese Auskunft über eine
+eventuelle Server-Belastung geben können.\\
+
+Ob wir uns bei der Lösung unseres Problems an den Konzepten zur Staukontrolle bei TCP orientieren, oder ob wir uns des Modells eines
+Regelkreises bedienen, spielt im Grunde keine Rolle, da die Problematik die gleiche bleibt. Daher wollen wir im Folgenden eine Lösung aufgrund einer
+problemorientierten Sichtweise konzipieren und dort Bezüge zu den beiden anderen Konzepten herstellen, wo es angebracht ist.\\
+
+Im Gegensatz zu TCP haben wir es bei den auftretenden Anfragen an den RSS-Server nicht mit einem Datenstrom zu tun, der in eine Folge von
+Datenpaketen unterteilt wird, sondern mit unabhängigen Anfragen. Erhält ein Subscriber einen RSS-Feed, welcher als Acknowledgement zu einer Anfrage aufgefasst
+werden kann, so spielt es zunächst keine Rolle, auf welche Anfrage dieser sich bezieht. Entscheidend ist, dass dieser Feed der höchstwahrscheinlich aktuellste ist
+und die Informationen enthält, die der Subscriber wünscht. Natürlich ist davon auszugehen, dass sich das Overlay-Netzwerk ebenfalls TCP als Übertragungsprotokoll
+bedient (denkbar sind jedoch auch Varianten, bei denen z. B. UDP zur Übermittlung eingesetzt wird). Dies spielt sich jedoch auf einer tieferen Schicht ab, von der
+wir, wie oben schon gesagt, zunächst noch abstrahieren wollen. Die konkrete Anpassung an TCP findet sich im Kapitel \ref{c:anpassung_an_tcp}.\\
+Da wir es nicht mit einem Datenstrom zu tun haben, entfällt zunächst das Problem der Sequenznummern, ein ankommender Feed ist das Datenpaket,
+auf das der entsprechende Subscriber wartet. Erhält ein Subscriber
+einen Feed, so muss in jedem Fall der $ttr$ für die Aussendung der nächsten Anfrage (im Folgenden als ``Feed-Request'' bezeichnet) berechnet und ein entsprechender
+Timer $RQT$ (für ``Request-Timer'') eingerichtet werden, nach dessen Ablauf der Feed-Request versendet wird. Nach Aussendung des Feed-Requests muss nun ein
+Timer $RT$ (für ``Retransmission-Timer'') eingerichtet werden, nach dessen Ablauf der Feed-Request erneut ausgesandt wird. Aber da Sequenznummern keine Rolle
+spielen, können wir im Grunde definieren: $RT:=RQT$, der $RQT$ wird dann je nach Situation unterschiedlich gesetzt. Mitbestimmend für den $RQT$ ist der $cpp$,
+mitbestimmend für den $RT$ der $rto$. Aufgrund der vorherigen Definition müssen wir sagen $rto:=cpp$. Wir werden im Weiteren nur noch mit $cpp$ arbeiten, der
+ebenfalls je nach Situation unterschiedlich berechnet wird. Um eine klarere Differenzierung vorzunehmen, werden wir trotzdem zwischen den Begriffen 
+$RQT$ und $RT$ unterscheiden. In der Implementierung der Simulationsumgebung wurden jedoch ausschließlich die Begriffe $RQT$ und $cpp$ verwendet. Grundlage
+für das Aufsetzen der Timer $RQT$ und $RT$ bildet also der $cpp$.\\
+
+Eine untere Schranke für $cpp$ soll $ppp$ bilden. Da jeder Subscriber $ppp$ individuell festlegen kann, ist es nicht notwendig, $cpp$ kleiner als $ppp$ zu wählen.
+Das heißt nicht, dass ein Subscriber frühestens nach Ablauf der Zeit $ppp$ einen neuen Feed bekommt: existieren im gleichen Netzwerk andere Subscriber, die einen
+niedrigeren $ppp$ eingestellt haben, so kann jener Subscriber davon profitieren, da ihm dann ebenfalls neu auftretende Feeds nach kürzerer Zeit zugestellt werden.
+Möchte ein Subscriber sicher gehen, dass ein bestimmter Aktualitätsgrad der Feeds erreicht wird, so muss er eben den $ppp$ entsprechend setzen.\\
+
+Wir wollen ebenfalls eine obere Schranke für $cpp$, den $mpp$ (steht für maximale Polling-Periode), definieren. Dieser vermeidet, dass bei ungünstigen
+Konstellationen der $cpp$ zu groß wird (z. B. wenn zufällig jeder Feed-Request eines Subscribers vom RSS-Server verworfen wird, obwohl der Server nicht stark
+überlastet ist). Dieser sollte abhängig vom jeweiligen Overlay-Netzwerk bestimmt werden.\\
+
+\paragraph{Das Verfahren:}
+Neuberechnungen von $cpp$ unhd $rtt$ finden zunächst nur dann statt, wenn ein Subscriber einen RSS-Feed von einem RSS-Server erhält.
+Weitere Verbesserungen werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} betrachten.\\
+
+$rtt$ kann anscheinend eindeutig bestimmt werden (warum nur anscheinend, werden wir später erörtern), bevor der $RT$ das erste Mal abgelaufen ist. Ist der $RT$
+bereits zum wiederholten Male abgelaufen, und bekommt ein Subscriber einen RSS-Feed, so haben wir hier das gleiche Problem, welches uns schon von TCP her als
+``retransmission ambiguity'' (siehe \ref{csp:karns_algorithmus}) bekannt ist: wir können nicht bestimmen, durch welchen Feed-Request der ankommende Feed ausgelöst
+wurde. $rtt$ lässt sich also nicht eindeutig bestimmen. 
+
+\paragraph{Berechnung von $cpp$}
+\begin{description}
+  \item [Fall I: Subscriber erhält RSS-Feed vom RSS-Server:]
+    Grundsätzlich dient der Wert $rtt$ als Bezugspunkt für $cpp$. Erhält ein Subscriber einen RSS-Feed von einem RSS-Server, kann $rtt$ berechnet werden.
+    $cpp$ berechnet sich dann wie folgt: \[cpp:=min\{mpp,max\{rtt,ppp\}\}\]
+    Ein Varianzfaktor wird hierbei nicht hinzugezogen. Berechnungen auf dieser Grundlage
+    lieferten in der Simulation gute Ergebnisse. Eine Optimierung wäre eventuell möglich, wenn man einen Varianzfaktor entsprechend der $rto$-Berechnung bei
+    TCP hinzuzieht. Dies soll aber nicht Gegenstand dieser Arbeit sein und soll offen bleiben für weitere Forschungen.
+  \item [Fall II: $RT$ läuft ab:]
+    In diesem Fall wird $cpp$ einfach verdoppelt, also \[cpp:=2*cpp\]
+    Dies bedeutet exponentielles Wachstum von $cpp$. Damit das System skalierbar ist und auch bei großen Netzen funktioniert, muss die Anpassung exponentiell
+    erfolgen (siehe ``exponential retransmit timer backoff'' in Abschnitt \ref{css:tcp}).
+\end{description}
+\paragraph{Berechnung von $rtt$:}
+
+
+
+
+ 
+
+
 
 
 \subsubsection{Timer bei Pub/Sub-RSS}
