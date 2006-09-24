@@ -1,0 +1,110 @@
+\subsection{Ausbalancierung der Polling-Perioden}
+\label{cs:ausbalancierung_der_polling-perioden}
+Wie wir schon in Abschnitt \ref{cssp:ung_u_probl:dysbalance} auf Seite \pageref{cssp:ung_u_probl:dysbalance} beschrieben haben, kann es vorkommen, dass Subscriber
+aufgrund von Dysbalancen der Polling-Perioden im System ``ausgesperrt'' werden: Subscriber, deren Polling-Periode sehr niedrig ist, haben fast ausschließlichen
+Zugriff auf den Server, während die Polling-Perioden der übrigen Subscriber unaufhörlich in die Höhe schießen, da ihre Anfragen keinen Zugang zur Server-Queue
+finden. Um diesem Problem beizukommen, müssen bei Dysbalancen im System Subscriber mit niedrigen Polling-Perioden diese erhöhen, während Subscriber mit hohen
+Polling-Perioden Gelegenheit bekommen müssen, diese zu erniedrigen.\\
+
+Um dieses Ziel zu erreichen, verwenden wir folgendes Verfahren: speist ein Subscriber einen RSS-Feed in das Notifikationssystem ein (er sendet den Feed an den
+ihm zugewiesenen Broker), so übermittelt er als zusätzliches Attribut den von ihm gemessenen $rtt$. Erhält ein Subscriber einen RSS-Feed vom Notifikationssystem,
+so stellt sein neuer $rtt$-Wert den Mittelwert aus seinem eigenen $rtt$ und dem übermitteltem $rtt$ dar, also:
+\[rtt:=\frac{rtt+feed.rtt}{2}\]
+Es handelt sich dabei um ein kooperatives Modell: die gegenseitige Unterstützung der Subscriber wird vorausgesetzt, ein gemeinsames Ziel verlangt die Einschränkung
+des einzelnen.\\
+
+Das Verfahren führt dazu, dass Subscriber mit einer hohen Polling-Periode, die einen Feed mit einem niedrigen $rtt$ erhalten, ihre Polling-Periode senken,
+allerdings nicht auf das Niveau des Subscribers, welcher den Feed ausgesandt hat. Somit wird eine zu schnelle Überlastung des Systems vermieden.
+Im Gegenzug wird ein Subscriber mit einer gesenkten Polling-Periode schneller in den Genuss einer Server-Antwort kommen, so dass er ebenfalls einen Feed mit
+seinem noch relativ hohen $rtt$ in das Notifikationssystem einspeisen kann.Das führt dazu, dass Subscriber mit einer niedrigen Polling-Periode diese bei Erhalt
+jenes Feeds erhöhen.\\
+
+Dies hat noch einen weiteren positiven Nebeneffekt: angenommen, alle Subscriber haben eine hohe Polling-Periode aufgrund einer länger anhaltenden Server-Überlastung
+eingestellt. Kommt es zu einer plötzlichen Reaktionsfreudigkeit des Servers, so wird der erste Subscriber, der diese feststellt, nicht nur seine Polling-Periode
+entsprechend anpassen, sondern alle anderen Subscriber, die die Ansprechbarkeit des Servers nicht bemerkt haben, mitziehen. Ein plötzlicher übermäßiger Ansturm auf
+den Server sollte aber ausbleiben, da die übrigen Subscriber ihre Polling-Perioden nicht drastisch, sondern nur allmählich senken. Die Subscriber, welche ihre
+Polling-Periode drastisch gesenkt haben, werden gezwungen sein, ihre Polling-Periode wieder anzuheben. Dadurch kommt es zu einer homogeneren Adaption der
+Polling-Perioden an die Server-Auslastung. Um es bildlich auszudrücken: diejenigen Subscriber,
+welche das Ziel sehen (``Server reagiert schnell'') rennen los und rufen den anderen zu: ``Los, kommt mit!'', wogegen diese Antworten: ``Moment, wir können nicht so
+schnell!''. Entsprechend umgekehrtes gilt bei plötzlicher Server-Überlastung.\\
+
+Dadurch, dass der $rtt$ und nicht der $cpp$ übermittelt wird, kann jeder Subscriber seinen eigenen $cpp$ entsprechend seinen Voreinstellungen ($ppp$) unabhängig
+der Voreinstellungen anderer Subscriber berechnen.\\
+
+Die Wirksamkeit der ausbalancierenden Methode gegenüber der nicht-ausbalancierenden Methode wurde mit Hilfe der selbst entwickelten Simulationsumgebung gezeigt,
+die Ergebnisse sind in Kapitel \ref{c:experimente} zusammengetragen.\\
+
+Wollen wir kurz die Vorteile und möglichen Nachteile dieser Methode auflisten:
+\begin{itemize}
+\item Vorteile
+  \begin{itemize}
+  \item Polling-Perioden werden Ausbalanciert
+  \item Bei unbemerkter Veränderung der Serverbelastung werden Subscriber mitgezogen
+  \item Ansturm auf Server wird vermieden
+  \end{itemize}
+\item Nachteile
+  \begin{itemize}
+  \item Kooperatives Modell kann ausgetrickst werden: spielen einige Subscriber nicht mit, kann das System ausgehebelt werden.
+  \end{itemize}
+\end{itemize}
+
+Das Verfahren erfordert auf der Ebene des Notifikationssystems eine neue Datenstruktur, um den neu hinzugekommenen Wert $rtt$ aufzunehmen. Folgende auf Java-Syntax
+beruhende Datenstrukturen sind denkbar:
+
+\begin{verbatim}
+class RichRSSFeed extends RSSFeed{
+
+    RSSFeed feed;
+    RichInformation additional_information;
+
+}
+
+class RichInformation{
+
+    long rtt;
+
+}
+
+\end{verbatim}
+
+Der Vorteil, den $rtt$ in eine eigene Klasse zu packen, liegt darin, dass die Klasse $Rich\-Information$ erweiterbar ist um eventuelle zusätzliche Informationen.\\
+
+Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen. Dabei tritt ein
+Problem auf: erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein $RQT$ abgelaufen ist, so wird dieser immer wieder neu gesetzt, so dass
+eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt, falls sich der $cpp$ dabei ständig erhöht. Um hier Abhilfe zu schaffen,
+setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der Feed-Request früher ausgesendet werden würde. Ansonsten kommt der neue $cpp$ erst bei
+der nächsten Runde in Betracht.
+
+\begin{verbatim}
+
+aktualisiereRQTdurchAltenBrokerFeed {
+
+    deltaTTR = berechneDeltaTTR(cpp);
+    if ( deltaTTR < RQT.ZeitdifferenzBisAblauf )
+      aktualisiereRQT(deltaTTR);
+
+}
+
+aktualisiereRQTdurchNeuenBrokerFeed {
+
+    deltaTTR = berechneDeltaTTR(cpp);
+    if ( deltaTTR < RQT.ZeitdifferenzBisAblauf )
+      aktualisiereRQT(deltaTTR);
+
+}
+
+aktualisiereRQTdurchAltenServerFeed {
+
+    aktualisiereRQT(cpp);
+
+}
+
+aktualisiereRQTdurchNeuenServerFeed {
+
+    deltaTTR = berechneDeltaTTR(cpp);
+    aktualisiereRQT(deltaTTR);
+
+}
+
+
+\end{verbatim}
