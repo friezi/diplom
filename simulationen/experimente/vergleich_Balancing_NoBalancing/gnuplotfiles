@@ -1,4 +1,6 @@
 ps_ToTR_Balancing_MVR.gnuplot
 ps_ToTR_NoBalancing_MVR.gnuplot
 ps_vgl_ToTR.gnuplot
-
+ps_ToTR_Balancing_setServiceTimeFactor50_1_MVR.gnuplot
+ps_ToTR_NoBalancing_setServiceTimeFactor50_1_MVR.gnuplot
+ps_vgl_ToTR_setServiceTimeFactor50_1.gnuplot
