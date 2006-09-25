@@ -323,10 +323,9 @@ einen Feed, so muss in jedem Fall der $ttr$ für die Aussendung der nächsten Anfr
 Timer $RQT$ (für ``Request-Timer'') eingerichtet werden, nach dessen Ablauf der Feed-Request versendet wird. Nach Aussendung des Feed-Requests muss nun ein
 Timer $RT$ (für ``Retransmission-Timer'') eingerichtet werden, nach dessen Ablauf der Feed-Request erneut ausgesandt wird. Aber da Sequenznummern keine Rolle
 spielen, können wir im Grunde definieren: $RT:=RQT$, der $RQT$ wird dann je nach Situation unterschiedlich gesetzt. Mitbestimmend für den $RQT$ ist der $cpp$,
-mitbestimmend für den $RT$ der $rto$. Aufgrund der vorherigen Definition müssen wir sagen $rto:=cpp$. $cpp$ wird ebenfalls je nach Situation unterschiedlich
-berechnet. Um eine klarere Differenzierung vorzunehmen, werden wir trotzdem dort zwischen den Begriffen 
-$RQT$ und $RT$ bzw. $cpp$ und $rto$ unterscheiden, wo es der Deutlichkeit halber angebracht erscheint.
-In der Implementierung der Simulationsumgebung wurden jedoch ausschließlich die Begriffe $RQT$ und $cpp$ verwendet.\\
+mitbestimmend für den $RT$ der $rto$. Diese beiden Timer laufen nie parallel sondern schließen sich gegenseitig aus. $cpp$ wird ebenfalls je nach Situation
+unterschiedlich berechnet. Um eine klarere Differenzierung vorzunehmen, werden wir trotzdem dort zwischen den Begriffen 
+$RQT$ und $RT$ unterscheiden, wo es der Deutlichkeit halber angebracht erscheint.\\
 
 Eine untere Schranke für $cpp$ soll $ppp$ bilden. Da jeder Subscriber $ppp$ individuell festlegen kann, ist es nicht notwendig, $cpp$ kleiner als $ppp$ zu wählen.
 Das heißt nicht, dass ein Subscriber frühestens nach Ablauf der Zeit $ppp$ einen neuen Feed bekommt: existieren im gleichen Netzwerk andere Subscriber, die einen
@@ -352,9 +351,11 @@ TCP her als ``retransmission ambiguity'' (siehe \ref{csp:karns_algorithmus}, Sei
 durch welchen Feed-Request der ankommende
 Feed ausgelöst wurde. $rtt$ lässt sich in diesem Falle also nicht eindeutig bestimmen. Wie Karn festgestellt hat, ist es sowohl
 ungünstig, den zuletzt ausgesandten Feed-Request wie auch den zuerst ausgesandten Feed-Request als Berechnungsgrundlage zu wählen. Wir wollen daher an dieser
-Stelle eine mittleren Wert berechnen, um die Differenz zur eigentlichen Roundtrip-Time möglichst gering zu halten. Hat es $i$ Retransmissionen gegeben, so gilt
-$rto=2^i*cpp$. Dann wählen wir $rtt:=2^{i/2}*cpp$. Dies ist zwar nicht die mittlere Roundtrip-Time, aber die Roundtrip-Time bezogen auf die
-mittlere Retransmission. Der Ansatz, die Berechnungen von $cpp$ und $rto$ zu trennen, ist dem von Karn sehr ähnlich, nur ist die Berechnung eine andere. Hier kann
+Stelle den Mittelwert der möglichen Roundtrip-Times berechnen, um die Differenz zur eigentlichen Roundtrip-Time möglichst gering zu halten.
+Hat es $i$ Retransmissionen gegeben, so gilt
+$rto=2^i*cpp$. Dann wählen wir \[rtt:=\frac{2^{i-1}*cpp+\Delta t}{i}\] Dabei ist $\Delta t$ die Zeitspanne zwischen der letzten Retransmission und $t_0$,
+wobei gilt $0\leq\Delta t\leq 2^i*cpp$.
+Der Ansatz, die Berechnungen von $cpp$ und $rto$ zu trennen, ist dem von Karn sehr ähnlich, nur ist die Berechnung eine andere. Hier kann
 man auch eine Analogie zur Idee der PI-Reglern herstellen (obwohl es nur Parallelen in den Grundideen gibt): während man den bereits berechneten $cpp$
 als proportionalen Anteil in der Berechnung auffassen kann, gibt es eine Parallele zwischen der Anpassung des $rto$ und dem integrativen Anteil beim PI-Regler,
 da die Anpassung des $rto$ die zeitliche Dauer der Server-Antwort berücksichtigt.\\
@@ -365,14 +366,10 @@ TCP hinzuzieht. Dies soll aber nicht Gegenstand dieser Arbeit sein und soll offe
 Neuberechnungen von $cpp$ und $rtt$ finden zunächst nur dann statt, wenn ein Subscriber einen RSS-Feed von einem RSS-Server erhält.
 Weitere Verbesserungen werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} betrachten.\\
 
-\paragraph{In der Praxis:}
-Wie eingangs beschrieben gibt es nur eine konzeptionelle Unterscheidung zwischen $cpp$ und $rto$. In der Praxis brauchen wir nur $cpp$ zu verwenden, welcher als
-Stellwert für den $RT$ dient.
-
 \paragraph{Ungenauigkeiten und Probleme:}
 Wie oben angedeutet, entspricht der gemessene $rtt$, auch wenn der $RT$ noch nicht abgelaufen ist, nicht immer der tatsächlichen Roundtrip-Time.
 Denn denkbar ist folgendes
-Szenario: aufgrund abgelaufener Retransmissiontimer hat ein Subscriber einige Feed-Requests mehrfach ausgesandt. Diese sind aber nicht verloren gegangen, sondern
+Szenario: aufgrund abgelaufener Retransmissionstimer hat ein Subscriber einige Feed-Requests mehrfach ausgesandt. Diese sind aber nicht verloren gegangen, sondern
 befinden sich in der Queue des RSS-Servers, welcher einer zeitgerechten Antwort nicht nachkommen kann. Der erste vom Server ausgesandte Feed dient als
 Berechnungsgrundlage für den $rtt$ des Subscribers, welcher nach kurzer Zeit (nach Ablauf von $RQT$) eine neue (erste) Anfrage stellt. Sendet ihm nun der RSS-Server
 einen Feed aufgrund eines noch in der Queue befindlichen Feed-Requests, so interpretiert der Subscriber jenen als Antwort auf seine letzte Anfrage, obwohl er sich
@@ -392,13 +389,13 @@ sind aber stark auseinander gerissen, sie befinden sich in Dysbalance. Verlassen
 zunächst fast still, da die restlichen Subscriber Anfragen erst nach einer großen Zeitdifferenz erneut aussenden. Wie man dieser Dysbalance entgegenwirken kann,
 werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} darstellen.\\
 
-Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt ist die Berechnung von $rtt$ falls $RT$ noch nicht abgelaufen ist.
+Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt ist die Berechnung von $rtt$, falls $RT$ noch nicht abgelaufen ist.
 In diesem Fall wird bei unserer Berechnung
 der $rtt$ direkt auf die gemessene Roundtrip-Time gesetzt, während bei TCP diese nur zum Teil (unter zusätzlicher Zuhilfenahme des Glättungsfaktors $\alpha$,
 siehe Abschnitt \ref{cssp:tcp_rtt}, Seite \pageref{cssp:tcp_rtt}) in die Berechnung eingeht. Man könnte nun berechtigt einwenden, dass diese direkte
 Rück\-setzung zu einem starken Schwingungsverhalten der
 Server-Belastung und somit der Polling-Perioden im System führen kann. Hier könnte man erwidern, dass einerseits eine schnelle Reaktion des Systems auf eine
-verbesserte Server-Reaktionsfähigkeit erwünscht ist und andererseits nicht alle Subscriber gleichzeitig den $rtt$ auf diese Weise ermitteln werden. Dies ist jedoch
-eine Wunschvorstellung, von der man nicht ausgehen kann. Tatsächlich kann es passieren, dass es bei einer plötzlichen Erreichbarkeit des Servers zu einem Ansturm
+verbesserte Server-Reaktionsfähigkeit erwünscht ist und andererseits nicht alle Subscriber gleichzeitig den $rtt$ auf diese Weise ermitteln werden. Von dieser
+Wunschvorstellung können wir jedoch nicht ausgehen. Tatsächlich kann es passieren, dass es bei einer plötzlichen Erreichbarkeit des Servers zu einem Ansturm
 auf diesen kommt. Wir werden aber
-in Zusammenhang mit der vorgestellten Technik in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} diese Phänomen eindämmen können. 
+in Zusammenhang mit der vorgestellten Technik in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} dieses Phänomen eindämmen können. 

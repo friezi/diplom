@@ -16,17 +16,17 @@ des einzelnen.\\
 Das Verfahren führt dazu, dass Subscriber mit einer hohen Polling-Periode, die einen Feed mit einem niedrigen $rtt$ erhalten, ihre Polling-Periode senken,
 allerdings nicht auf das Niveau des Subscribers, welcher den Feed ausgesandt hat. Somit wird eine zu schnelle Überlastung des Systems vermieden.
 Im Gegenzug wird ein Subscriber mit einer gesenkten Polling-Periode schneller in den Genuss einer Server-Antwort kommen, so dass er ebenfalls einen Feed mit
-seinem noch relativ hohen $rtt$ in das Notifikationssystem einspeisen kann.Das führt dazu, dass Subscriber mit einer niedrigen Polling-Periode diese bei Erhalt
+seinem noch relativ hohen $rtt$ in das Notifikationssystem einspeisen kann. Das führt dazu, dass Subscriber mit einer niedrigen Polling-Periode diese bei Erhalt
 jenes Feeds erhöhen.\\
 
 Dies hat noch einen weiteren positiven Nebeneffekt: angenommen, alle Subscriber haben eine hohe Polling-Periode aufgrund einer länger anhaltenden Server-Überlastung
 eingestellt. Kommt es zu einer plötzlichen Reaktionsfreudigkeit des Servers, so wird der erste Subscriber, der diese feststellt, nicht nur seine Polling-Periode
 entsprechend anpassen, sondern alle anderen Subscriber, die die Ansprechbarkeit des Servers nicht bemerkt haben, mitziehen. Ein plötzlicher übermäßiger Ansturm auf
 den Server sollte aber ausbleiben, da die übrigen Subscriber ihre Polling-Perioden nicht drastisch, sondern nur allmählich senken. Die Subscriber, welche ihre
-Polling-Periode drastisch gesenkt haben, werden gezwungen sein, ihre Polling-Periode wieder anzuheben. Dadurch kommt es zu einer homogeneren Adaption der
-Polling-Perioden an die Server-Auslastung. Um es bildlich auszudrücken: diejenigen Subscriber,
-welche das Ziel sehen (``Server reagiert schnell'') rennen los und rufen den anderen zu: ``Los, kommt mit!'', wogegen diese Antworten: ``Moment, wir können nicht so
-schnell!''. Entsprechend umgekehrtes gilt bei plötzlicher Server-Überlastung.\\
+Polling-Periode drastisch gesenkt haben, werden gezwungen sein, ihre Polling-Periode wieder anzuheben. Um es bildlich auszudrücken: diejenigen Subscriber,
+welche das Ziel sehen (``Server reagiert schnell''), rennen los und rufen den anderen zu: ``Los, kommt mit!'', wogegen diese Antworten: ``Moment, wir können nicht so
+schnell!''. Dadurch erwarten wir eine homogenere Adaption der Polling-Perioden an die Server-Auslastung.\\
+Bei einer plötzlichen Server-Überlastung wird das jeder Subscriber schnell mitbekommen, weswegen sich in diesem Fall nicht viel ändert.\\
 
 Dadurch, dass der $rtt$ und nicht der $cpp$ übermittelt wird, kann jeder Subscriber seinen eigenen $cpp$ entsprechend seinen Voreinstellungen ($ppp$) unabhängig
 der Voreinstellungen anderer Subscriber berechnen.\\
@@ -69,7 +69,9 @@ class RichInformation{
 
 Der Vorteil, den $rtt$ in eine eigene Klasse zu packen, liegt darin, dass die Klasse $Rich\-Information$ erweiterbar ist um eventuelle zusätzliche Informationen.\\
 
-Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen. Dabei tritt ein
+Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit wir zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time mitteilen
+können, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
+Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen. Dabei tritt ein
 Problem auf: erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein $RQT$ abgelaufen ist, so wird dieser immer wieder neu gesetzt, so dass
 eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt, falls sich der $cpp$ dabei ständig erhöht. Um hier Abhilfe zu schaffen,
 setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der Feed-Request früher ausgesendet werden würde. Ansonsten kommt der neue $cpp$ erst bei
@@ -106,5 +108,13 @@ aktualisiereRQTdurchNeuenServerFeed {
 
 }
 
-
 \end{verbatim}
+
+Aber was passiert, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Retransmissionen auftraten und der Subscriber sich
+gerade in der Messung der Roundtrip-Time befindet? Die Messung und die Retransmissionen laufen weiter, nur dient als Berechnungsgrundlage nun der neue $cpp$
+(ermittelt durch den im Feed enthaltenen $rtt$). Man mag sich fragen, ob dies sinnvoll ist, da nach Abschluss der Messung als Ergebnis ein $rtt$ geliefert wird,
+der mit Sicherheit in keiner Beziehung zur eigentlichen Roundtrip-Time steht. Doch geht es ja bei der Berechnung des $rtt$ letztendlich um die Anpassung an
+die Server-Belastung. Der im Feed enthaltene $rtt$ ist vermutlich aussagekräftiger als unsere bisherige Messung, da dieser Wert aufgrund eines vom Server
+ausgesandten Feeds berechnet werden konnte. Anders herum: würden wir den neuen $cpp$ nicht als Berechnungsgrundlage nehmen, so hätte die Übermittlung eines $rtt$
+zwischen Subscribern in diesem Fall keinerlei Auswirkung, denn nach Abschluss der Messung wird der $rtt$ gesetzt und zwar dann mit Hilfe des alten $cpp$. Der $rtt$
+bestimmt den $cpp$, und es hätte keine Ausbalancierung stattgefunden.
