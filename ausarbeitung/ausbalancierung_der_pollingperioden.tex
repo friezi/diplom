@@ -69,13 +69,32 @@ class RichInformation{
 
 Der Vorteil, den $rtt$ in eine eigene Klasse zu packen, liegt darin, dass die Klasse $Rich\-Information$ erweiterbar ist um eventuelle zusätzliche Informationen.\\
 
-Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit wir zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time mitteilen
-können, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
+Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time
+mitteilen kann, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
 Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen. Dabei tritt ein
 Problem auf: erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein $RQT$ abgelaufen ist, so wird dieser immer wieder neu gesetzt, so dass
 eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt, falls sich der $cpp$ dabei ständig erhöht. Um hier Abhilfe zu schaffen,
-setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der Feed-Request früher ausgesendet werden würde. Ansonsten kommt der neue $cpp$ erst bei
-der nächsten Runde in Betracht.
+setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der anstehende Feed-Request früher ausgesendet werden würde. Ansonsten kommt der neue
+$cpp$ erst bei der nächsten Runde in Betracht.\\
+
+Aber was soll passieren, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Retransmissionen auftraten und der Subscriber
+sich gerade in der Messung der Roundtrip-Time befindet ($RT$ läuft also)? Die Messung und die Retransmissionen sollten weiter laufen. Nach dem bisherigen
+Konzept dient als
+Berechnungsgrundlage für den $rtt$ nun jedoch der neue $cpp$ (ermittelt durch den im Feed enthaltenen $rtt$; im Folgenden nennen wir ihn $feed.rtt$).
+Der so gemessene $rtt$ steht mit Sicherheit in
+keiner Beziehung zur eigentlichen Roundtrip-Time. Um diesem Phänomen vorzubeugen, müssen wir einen neuen Wert definieren, den $initialcpp$, welcher als
+Berechnungsgrundlage für $rto$ und $rtt$ dienen soll und den $cpp$ in diesem Zusammenhang ersetzt. Bei jedem Setzen des $RQT$ wird $initialcpp$ auf
+$initialcpp:=cpp$ gesetzt. Während einer Messung der Roundtrip-Time kann nun der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
+Dies bedeutet aber auch, dass in diesem Falle die Übermittlung des $rtt$ eines anderen Subscriber keinen Einfluss mehr auf den empfangenden Subscriber hat.
+Ist der übermittelte $feed.rtt$ größer als der $rtt$ des Empfängers, so ist dies ein akzeptables Verhalten, denn der übermittelte
+$feed.rtt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen Roundtrip-Time vorbei gehen. Der empfangende
+Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.rtt$ jedoch kleiner als der $rtt$ des Empfängers, so
+wäre eine Einflussnahme von Vorteil, da der $feed.rtt$ vermutlich aussagekräftiger ist. Denn entweder wurden weniger Retransmissionen benötigt, um diesen zu
+ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. In diesem Fall setzen wir $initialcpp:=cpp$ (da der $cpp$ schon aufgrund des
+$feed.rtt$ neu berechnet wurde). Die Berechnung des $rtt$ nach Abschluss der Messung beruht zwar auf einem falschen Wert, führt aber zu der Möglichkeit, den
+$ppp$ durch den $cpp$ anzunähern. Würden wir diese Modifikation vermeiden, hätte keine Ausbalancierung stattgefunden.\\
+
+Unsere Algorithmen müssen wir also wie folgt modifizieren:
 
 \begin{verbatim}
 
@@ -109,12 +128,3 @@ aktualisiereRQTdurchNeuenServerFeed {
 }
 
 \end{verbatim}
-
-Aber was passiert, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Retransmissionen auftraten und der Subscriber sich
-gerade in der Messung der Roundtrip-Time befindet? Die Messung und die Retransmissionen laufen weiter, nur dient als Berechnungsgrundlage nun der neue $cpp$
-(ermittelt durch den im Feed enthaltenen $rtt$). Man mag sich fragen, ob dies sinnvoll ist, da nach Abschluss der Messung als Ergebnis ein $rtt$ geliefert wird,
-der mit Sicherheit in keiner Beziehung zur eigentlichen Roundtrip-Time steht. Doch geht es ja bei der Berechnung des $rtt$ letztendlich um die Anpassung an
-die Server-Belastung. Der im Feed enthaltene $rtt$ ist vermutlich aussagekräftiger als unsere bisherige Messung, da dieser Wert aufgrund eines vom Server
-ausgesandten Feeds berechnet werden konnte. Anders herum: würden wir den neuen $cpp$ nicht als Berechnungsgrundlage nehmen, so hätte die Übermittlung eines $rtt$
-zwischen Subscribern in diesem Fall keinerlei Auswirkung, denn nach Abschluss der Messung wird der $rtt$ gesetzt und zwar dann mit Hilfe des alten $cpp$. Der $rtt$
-bestimmt den $cpp$, und es hätte keine Ausbalancierung stattgefunden.

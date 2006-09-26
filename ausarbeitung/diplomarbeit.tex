@@ -1,9 +1,10 @@
-\documentclass{scrbook}
+\documentclass[fleqn]{scrbook}
 \usepackage[latin1]{inputenc}
 \usepackage{latexsym}
 \usepackage[german]{babel}
 %\usepackage{ngerman}
 \usepackage[a4paper]{geometry}
+\usepackage[sumlimits]{amsmath}
 \usepackage{graphicx}
 \usepackage{pst-all}
 \usepackage{multido}
@@ -22,7 +23,7 @@
 
 \input{macros}
 
-\includeonly{einleitung,publish_subscribe,rss_mittels_verteiltem_pubsub,adaptive_informationsverteilung,glossar}
+\includeonly{einleitung,publish_subscribe,rss_mittels_verteiltem_pubsub,adaptive_informationsverteilung,anhang,glossar}
 
 \title{Adaptive Informationsverbreitung mittels RSS und Publish/Subscribe \\[2cm]\textnormal{Diplomarbeit}}
 \author{Friedemann Zintel}
@@ -62,8 +63,10 @@
 \backmatter
 %\newpage
 
+\include{anhang}
 \include{glossar}
 
+\addcontentsline{toc}{section}{Literaturverzeichnis}
 \bibliography{../bibdatabase}
 
 \end{document}

@@ -279,15 +279,16 @@ Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer her
 Wollen wir kurz zusammenfassen, welche primären Ziele und damit verbundenen sekundären Ziele wir verfolgen: grundsätzlich geht es um die Bestimmung des Wertes
 $ttr$ eines Subscribers (siehe Abschnitt \ref{cs:der_grundlegende_algorithmus}).
 Zur Erinnerung: $ttr$ bezeichnet ``Time-To-Refresh'', also den konkreten Zeitpunkt, zu dem die nächste Anfrage an den jeweiligen RSS-Server
-gestellt werden soll. Um $ttr$ zu bestimmen benötigen wir $\Delta ttr$. Ein wichtiger Parameter zur Bestimmung von $\Delta ttr$ ist der $cpp$. Um einer
+gestellt werden soll. Um $ttr$ zu bestimmen benötigen wir $\varDelta ttr$. Ein wichtiger Parameter zur Bestimmung von $\varDelta ttr$ ist der $cpp$. Um einer
 längerfristigen
 Überlastung des RSS-Servers entgegenzuwirken, muss der $cpp$ eines Subscribers entsprechend der Serverbelastung angepasst werden.
 Wir müssen also ein Maß für die Serverbelastung bestimmen, was auch bei uns die ``Roundtrip-Time'' sein soll, also die Zeit, die zwischen Aussendung
 einer Anfrage und dem Erhalt des entsprechenden Feeds vergeht. Soll auch im Folgenden diese durch den Wert $rtt$ bezeichnet sein, den es gilt
 zu bestimmen. Mit Hilfe von $rtt$ können wir dann $rto$ und $cpp$ ermitteln.\\
 
-Der konzeptionelle Unterschied zwischen $rto$ und $cpp$ ist folgender: während der $cpp$ zur Berechnung des $\Delta ttr$ bei erfolgreicher Anfrage (also nach Erhalt
-eine RSS-Feeds) dient, dient der $rto$ zur Berechnung des $\Delta ttr$ bei nicht erfolgreicher Anfrage, also nach Ablauf des ``Retransmission-Timers'' ohne
+Der konzeptionelle Unterschied zwischen $rto$ und $cpp$ ist folgender: während der $cpp$ zur Berechnung des $\varDelta ttr$ bei erfolgreicher Anfrage
+(also nach Erhalt
+eine RSS-Feeds) dient, dient der $rto$ zur Berechnung des $\varDelta ttr$ bei nicht erfolgreicher Anfrage, also nach Ablauf des ``Retransmission-Timers'' ohne
 Erhalt eines
 RSS-Feeds. Ob wir diese Werte separat berechnen, oder ob wir einen funktionalen Zusammenhang zwischen diesen Werten herstellen, werden wir im Folgenden erörtern.
 
@@ -295,8 +296,8 @@ Bei TCP gibt es ebenfalls eine funktionale Unterscheidung zwischen $srtt$ und $r
 (siehe Abschnitt im Kapitel \ref{csp:karns_algorithmus}),
 wobei der $cpp$ hier für den $srtt$ bei TCP steht. Im Unterschied zu TCP reicht bei uns der $cpp$ als Wert für ein Timeout für die nächste Anfrage jedoch nicht aus,
 da es in unserem Falle
-nicht um einen Datenstrom und somit nicht um die Aussendung des nächsten Datenpaketes geht. In unserem Fall muss die Zeit $\Delta ttr$, deren Bestandteil $cpp$ ist,
-bis zum nächsten Aussenden einer Anfrage berechnet werden. Daher werden wir im Folgenden den Begriff $srtt$ nicht verwenden, sondern den bereits
+nicht um einen Datenstrom und somit nicht um die Aussendung des nächsten Datenpaketes geht. In unserem Fall muss die Zeit $\varDelta ttr$, deren Bestandteil
+$cpp$ ist, bis zum nächsten Aussenden einer Anfrage berechnet werden. Daher werden wir im Folgenden den Begriff $srtt$ nicht verwenden, sondern den bereits
 eingeführten Begriff $cpp$, da dieser im Zusammenhang mit \pubsubrss eher angebracht ist.\\
 
 Beim Anpassen des $cpp$ müssen wir berücksichtigen, dass grundsätzlich nicht ein Subscriber alleine für eine Überlastung verantwortlich ist, sondern in den
@@ -352,9 +353,10 @@ durch welchen Feed-Request der ankommende
 Feed ausgelöst wurde. $rtt$ lässt sich in diesem Falle also nicht eindeutig bestimmen. Wie Karn festgestellt hat, ist es sowohl
 ungünstig, den zuletzt ausgesandten Feed-Request wie auch den zuerst ausgesandten Feed-Request als Berechnungsgrundlage zu wählen. Wir wollen daher an dieser
 Stelle den Mittelwert der möglichen Roundtrip-Times berechnen, um die Differenz zur eigentlichen Roundtrip-Time möglichst gering zu halten.
-Hat es $i$ Retransmissionen gegeben, so gilt
-$rto=2^i*cpp$. Dann wählen wir \[rtt:=\frac{2^{i-1}*cpp+\Delta t}{i}\] Dabei ist $\Delta t$ die Zeitspanne zwischen der letzten Retransmission und $t_0$,
-wobei gilt $0\leq\Delta t\leq 2^i*cpp$.
+Hat es $i$ Retransmissionen gegeben (einschließlich erster Transmission), so gilt
+$rto=2^i*cpp$. Dann wählen wir \[rtt:=\frac{cpp\sum^{i-1}_{k=1}2^kk}{i}+\varDelta t\]
+Dabei ist $\varDelta t$ die Zeitspanne zwischen der letzten Retransmission und $t_0$, wobei gilt $0\leq\varDelta t\leq 2^i*cpp$. Die Herleitung dieser Formel
+findet sich im Anhang.
 Der Ansatz, die Berechnungen von $cpp$ und $rto$ zu trennen, ist dem von Karn sehr ähnlich, nur ist die Berechnung eine andere. Hier kann
 man auch eine Analogie zur Idee der PI-Reglern herstellen (obwohl es nur Parallelen in den Grundideen gibt): während man den bereits berechneten $cpp$
 als proportionalen Anteil in der Berechnung auffassen kann, gibt es eine Parallele zwischen der Anpassung des $rto$ und dem integrativen Anteil beim PI-Regler,

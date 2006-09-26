@@ -12,24 +12,27 @@ Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bis
 \subsection{Der Grundlegende Algorithmus}
 \label{cs:der_grundlegende_algorithmus}
 Es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
-$t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\Delta Z$ wählt sich jeder
-Subscriber $i$ innerhalb des Zufallsintervalls $Z:=[t_x,t_x+\Delta Z]$ einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh'', $ttr$ im allgemeinen), zu dem
-er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}). Im Folgenden nennen wir $t_x$ Einstiegspunkt und $\Delta Z$ Zufallsspanne.
+$t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\varDelta Z$ wählt sich jeder
+Subscriber $i$ innerhalb des Zufallsintervalls $Z:=[t_x,t_x+\varDelta Z]$ einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh'', $ttr$ im allgemeinen), zu dem
+er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}). Im Folgenden nennen wir $t_x$ Einstiegspunkt und $\varDelta Z$ Zufallsspanne.
 
-\begin{picturehere}{3}{1.5}{$ttr$s}{Abb:determine_ttr}
+\begin{picturehere}{3}{2}{$ttr$}{Abb:determine_ttr}
  
 %\psset{xunit=1cm,yunit=1cm,runit=1cm}
 %\begin{picture}(1.5,-0.5)(7,1)
-\begin{picture}(7,1)(1.5,-0.5)
+\begin{picture}(7,1)(1.5,-1)
   \put(0,0){\vector(1,0){7}}
   \put(0,-0.2){\line(0,1){0.4}}
   \put(0,-0.5){$t_0$}
   \put(3,-0.2){\line(0,1){0.4}}
   \put(3,-0.5){$t_x$}
   \put(6,-0.2){\line(0,1){0.4}}
-  \put(6,-0.5){$t_x+\Delta Z$}
+  \put(6,-0.5){$t_x+\varDelta Z$}
+  \put(3,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta Z}$}
   \put(5,-0.1){\line(0,1){0.2}}
-  \put(4.5,0.4){$ttr_i$}
+  \put(4.5,0.2){$ttr$}
+  \put(0,0.6){$\overbrace{\hspace{5cm}}^{\varDelta ttr}$}
+  \put(0,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta ttl}$}
   \put(7.8,0){$time$}
 \end{picture}
 % \includegraphics{determine_ttr}
@@ -38,7 +41,7 @@ er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}
 
 Ist $ttr_i$ erreicht, so erfragt Subscriber $i$ den aktuellen Feed vom RSS-Server und setzt nun $ttr_i$ auf einen
 Zufallswert innerhalb des
-Zeitintervalls $Z:=[t_x,t_x+\Delta Z]$, wobei $t_x$ ebenfalls neu gewählt wird.
+Zeitintervalls $Z:=[t_x,t_x+\varDelta Z]$, wobei $t_x$ ebenfalls neu gewählt wird.
 Erhält Subscriber $i$ vor dem Erreichen des Zeitpunktes $ttr_i$ einen Feed $feed_{new}$ von einem Broker zum 
 Zeitpunkt $t_f$ (sei $feed_{old}$ der bisher bei $i$ gespeicherte Feed), so geschieht folgendes:
 \pagebreak[3]
@@ -51,18 +54,18 @@ Zeitpunkt $t_f$ (sei $feed_{old}$ der bisher bei $i$ gespeicherte Feed), so gesc
     \begin{description}[\breaklabel\compact]
       \item wähle $t_x$ neu mit $t_0\leq t_x$
       \item  $ttr_i$ wird auf einen Zufallswert gesetzt innerhalb des Zeitintervalls\\
-        \mbox{$Z:=[t_x,t_x+\Delta Z]$}
+        \mbox{$Z:=[t_x,t_x+\varDelta Z]$}
     \end{description}
 \end{description}
 
-Bezeichne $\Delta ttr_i$ die Zeitspanne zwischen $t_0$ und $ttr_i$ ($\Delta ttr$ im allgemeinen), also gilt $ttr_i:=t_0+\Delta ttr_i$.
+Bezeichne $\varDelta ttr_i$ die Zeitspanne zwischen $t_0$ und $ttr_i$ ($\varDelta ttr$ im allgemeinen), also gilt $ttr_i:=t_0+\varDelta ttr_i$.
 Die $ttr$s der verschiedenen Subscriber sollten bei der Wahl einer geeigneten Zufallsfunktion über $Z$ gleichmäßig
 verteilt sein. Durch die Wahl eines zufälligen Wertes innerhalb von $Z$ ist gewährleistet, dass nur in extremen Ausnahmefällen (theoretisch) 
 alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $ttr$s verschiedener
-Subscriber auf den gleichen Zeitpunkt fallen (je nach Größe der Zufallsspanne $\Delta Z$ und der Anzahl der Klienten).
+Subscriber auf den gleichen Zeitpunkt fallen (je nach Größe der Zufallsspanne $\varDelta Z$ und der Anzahl der Klienten).
 Die Verteilung unterliegt jedoch einem kontinuierlichen Wechsel, da die $ttr$s immer
-wieder neu berechnet werden. Ausgehend von $t_x$ bildet $\Delta Z$ eine obere Schranke für den Erhalt des nächsten Feeds, da jeder Klient nach
-spätestens der Zeit $\Delta Z$ selbständig den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Dadurch können lange
+wieder neu berechnet werden. Ausgehend von $t_x$ bildet $\varDelta Z$ eine obere Schranke für den Erhalt des nächsten Feeds, da jeder Klient nach
+spätestens der Zeit $\varDelta Z$ selbständig den Server kontaktiert, falls in der Zwischenzeit kein aktueller Feed erhalten wurde. Dadurch können lange
 Übertragungszeiten zwischen den Klienten ausgeglichen werden.
 Ausfälle von Klienten können zwar zu Verzögerungen beim
 Erhalt der Feeds führen, sie können aber die Übermittlung der Feeds zwischen den übrigen Klienten nicht stören,
@@ -70,8 +73,8 @@ solange physikalisches Netz und Brokernetz intakt sind.
 \subsection{Konkrete Anpassung an RSS -- Bestimmung relevanter Parameter}
 Im Folgenden betrachten wir, wie sich die relevanten Parameter in Zusammenhang mit RSS bestimmen lassen.
 \subsubsection{Bestimmung des Einstiegspunktes}
-Lässt sich der Zeitpunkt $nextBuild$ (Neue-Info-Punkt), zu dem der RSS-Server einen neuen Feed
-bereitstellt, innerhalb eines gewissen Toleranzbereiches genau bestimmen, dann können wir den Einstiegspunkt $t_x:=nextBuild$ setzen. Kann
+Lässt sich der Zeitpunkt $nextBuild$ (Neue-Info-Punkt), zu dem der RSS-Server voraussichtlich einen neuen Feed
+bereitstellen wird, innerhalb eines gewissen Toleranzbereiches genau bestimmen, dann können wir den Einstiegspunkt $t_x:=nextBuild$ setzen. Kann
 $nextBuild$ innerhalb des gewünschten Toleranzbereiches nicht genau bestimmt werden, kann es nötig sein $t_x:=t_0$ zu setzen. Unter welchen
 Umständen welche Variante vorzuziehen ist, werden wir später noch erörtern.
 \subsubsection{Bestimmung des Neue-Info-Punktes}
@@ -83,8 +86,8 @@ dass mindestens der Parameter $lastBuildDate$ vom Server bereitgestellt wird.
 (Beschreibung siehe Kapitel \ref{ch_rss} auf Seite \pageref{op_rss}). $nextBuild$ lässt sich
 aufgrund des letzten aktuellen Feeds wie folgt berechnen:
 \pagebreak[3]
-\[nextBuild:=t_0+\Delta t\] mit \[\Delta t:=\left\{\begin{array}{r@{\quad:\quad}l}
-    0 & (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
+\[nextBuild:=t_0+\varDelta ttl\] mit \[\varDelta ttl:=\left\{\begin{array}{r@{\quad:\quad}l}
+    0 & falls\quad (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
   \end{array}\right. \]
 
 Alternativ könnte statt $lastBuildDate$ auch $pubDate$ zur Berechnung genommen werden.
@@ -105,7 +108,7 @@ der $ttl$ berechnet werden kann. Stellen wir uns eine
 Person vor, die regelmäßig jeden Tag ihr Tagebuch in einem Blog samt RSS-Feeds veröffentlicht. Sie besitzt ein nicht besonders
 leistungsfähiges Rechnersystem, welches bei einer großen und dauerhaften Anzahl von Webzugriffen schnell überlastet wird. Die Person steht jeden Tag um 8.00 Uhr auf,
 so dass sie um 9.00 Uhr die Einträge des vorherigen Tages bereit gestellt hat. Sie kann somit in den RSS-Feed einen $ttl$-Wert von 24 Stunden eintragen. So wie es
-aussieht, spielt Aktualität in diesem Fall keine große Rolle, so dass für die Interessenten ein relativ großer $\Delta Z$ Wert festgelegt werden kann (z. B. 12
+aussieht, spielt Aktualität in diesem Fall keine große Rolle, so dass für die Interessenten ein relativ großer $\varDelta Z$ Wert festgelegt werden kann (z. B. 12
 Stunden). Ein RSS-Reader eines Interessenten braucht somit frühsten um 9.00 beim Anbieter nachzufragen und hat einen Spielraum von 12 Stunden. Mit dem von uns
 geplanten Pub/Sub-RSS-System reichen in diesem Falle schon sehr wenige Subscriber aus (vielleicht sogar nur einer), um den aktuellen Feed an die gesamte Fangemeinde
 zu übermitteln. Betrachten wir nun einen anderen Fall: eine Nachrichtenagentur stellt rund um die Uhr die neuesten Schlagzeilen in einem RSS-Feed zur Verfügung. Es
