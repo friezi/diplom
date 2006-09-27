@@ -380,19 +380,23 @@ eindeutig zuordenbar wären (z. B. durch Sequenz- und Retransmissions-Sequenznumm
 leider in Kauf nehmen.\\
 
 Ein Problem ist denkbar, welches sich auch in der Simulation gezeigt hat: einige wenige Subscriber, welche Anfragen mit einer hohen Frequenz aussenden (also
-bei einer sehr niedrigen Polling-Periode) können die übrigen Subscriber ``aussperren''. Die Subscriber, welche eine geringe Polling-Periode berechnet haben, können
-diese halten, da ihre Anfragen (bedingt durch deren Menge) eine größere Chance haben, in der Server-Queue zu landen. Somit erhalten sie die Feeds als Antwort auch
-mit einer höheren Frequenz vom Server. Dagegen schießen die Polling-Perioden der übrigen Subscriber in die Höhe.
-Denn gerade durch den Umstand, dass ihre
+bei einer sehr niedrigen Polling-Periode), können die übrigen Subscriber ``aussperren''. Die Subscriber, welche eine geringe Polling-Periode berechnet haben, können
+diese halten, da ihre Anfragen (bedingt durch deren Menge) eine größere Chance haben, in der Server-Queue zu landen. Die Queue wird unter diesen wenigen
+Subscribern aufgeteilt. Somit erhalten sie die Feeds als Antwort auch mit einer höheren Frequenz vom Server. Dabei muss man bedenken,
+dass sich die Anfragen mehrfacher Retransmissionen in der Server-Queue befinden können. Diese werden
+nach und nach bearbeitet, Feeds werden an den jeweiligen Subscriber geschickt. Eine eventuelle Messung der Roundtrip-time wird dadurch verfälscht, so dass der
+Subscriber (in der Annahme, der Server kann der Beantwortung einer Anfrage schnell nachkommen) seinen $cpp$ konstant halten kann. Die Polling-Perioden der
+übrigen Subscriber schießen dagegen in die Höhe. Denn gerade durch den Umstand, dass ihre
 Anfragen seltener in der Server-Queue landen, werden sie durch die daraufhin verzögerten (oder ausbleibenden) Antworten ihre Polling-Perioden anheben.
 Dieser Rückkopplungseffekt führt dazu, dass sich ihre Polling-Perioden dauerhaft auf hohem Niveau befinden und für diese Subscriber kaum Chancen bestehen,
 Feeds vom Server zu erhalten. Natürlich bekommen diese Subscriber ebenfalls die Feeds über das Netzwerk zugesandt. Die Polling-Perioden der verschiedenen Subscriber
-sind aber stark auseinander gerissen, sie befinden sich in Dysbalance. Verlassen nun die Subscriber mit einer geringen Polling-Periode das Netz, so steht dieses
+sind aber stark auseinander gerissen, sie befinden sich in Dysbalance, wobei keine Änderungen der Polling-Perioden mehr zu erwarten sind.
+Verlassen nun die Subscriber mit einer geringen Polling-Periode das Netz, so steht dieses
 zunächst fast still, da die restlichen Subscriber Anfragen erst nach einer großen Zeitdifferenz erneut aussenden. Wie man dieser Dysbalance entgegenwirken kann,
 werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} darstellen.\\
 
-Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt ist die Berechnung von $rtt$, falls $RT$ noch nicht abgelaufen ist.
-In diesem Fall wird bei unserer Berechnung
+Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt (im obigen Absatz bereits angesprochen) ist die Berechnung von $rtt$,
+falls $RT$ noch nicht abgelaufen ist. In diesem Fall wird bei unserer Berechnung
 der $rtt$ direkt auf die gemessene Roundtrip-Time gesetzt, während bei TCP diese nur zum Teil (unter zusätzlicher Zuhilfenahme des Glättungsfaktors $\alpha$,
 siehe Abschnitt \ref{cssp:tcp_rtt}, Seite \pageref{cssp:tcp_rtt}) in die Berechnung eingeht. Man könnte nun berechtigt einwenden, dass diese direkte
 Rück\-setzung zu einem starken Schwingungsverhalten der

@@ -15,30 +15,38 @@ Ereignisse abzufangen. Bei Erhalt eines Feeds von einem RSS-Server ohne neue Inf
 neu gesetzt werden, denn es ist davon auszugehen, dass dem Feed ein Feed-Request aufgrund eines abgelaufenen $RQT$ vorausgegangen ist.
 Dabei wird das $RQT$-Intervall auf $cpp$ gesetzt, $\varDelta Z$ wird nicht neu berechnet und $t_x$ wird auf $t_x:=t_0+cpp$ gesetzt.\\
 
-Das ganze nochmal in an Java angelehnter Pseudonotation:
+Das ganze als algorithmisches Beispiel in an Java angelehnter Pseudonotation:
 
 \begin{verbatim}
 
-aktualisiereRQTdurchAltenBrokerFeed {
+aktualisiere_RQT_durch_alten_Brokerfeed {
 }
 
-aktualisiereRQTdurchNeuenBrokerFeed {
+aktualisiere_RQT_durch_neuen_Brokerfeed {
 
-    deltaTTR = berechneDeltaTTR(cpp);
-    aktualisiereRQT(deltaTTR);
-
-}
-
-aktualisiereRQTdurchAltenServerFeed {
-
-    aktualisiereRQT(cpp);
+    berechne_delta_ttr(cpp);
+    setze_RQT(delta_ttr);
 
 }
 
-aktualisiereRQTdurchNeuenServerFeed {
+aktualisiere_RQT_durch_alten_Serverfeed {
 
-    deltaTTR = berechneDeltaTTR(cpp);
-    aktualisiereRQT(deltaTTR);
+    berechne_rtt();
+    setze_cpp(rtt);
+    stoppe_RT();
+    setze_rto_zurück();
+    setze_RQT(cpp);
+
+}
+
+aktualisiere_RQT_durch_neuen_Serverfeed {
+
+    berechne_rtt();
+    setze_cpp(rtt);
+    stoppe_RT();
+    setze_rto_zurück();
+    berechne_delta_ttr(cpp);
+    setze_RQT(delta_ttr);
 
 }
 

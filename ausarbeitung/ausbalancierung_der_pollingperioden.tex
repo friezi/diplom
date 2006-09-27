@@ -13,6 +13,7 @@ so stellt sein neuer $rtt$-Wert den Mittelwert aus seinem eigenen $rtt$ und dem 
 Es handelt sich dabei um ein kooperatives Modell: die gegenseitige Unterstützung der Subscriber wird vorausgesetzt, ein gemeinsames Ziel verlangt die Einschränkung
 des einzelnen.\\
 
+\paragraph{Auswirkungen:}
 Das Verfahren führt dazu, dass Subscriber mit einer hohen Polling-Periode, die einen Feed mit einem niedrigen $rtt$ erhalten, ihre Polling-Periode senken,
 allerdings nicht auf das Niveau des Subscribers, welcher den Feed ausgesandt hat. Somit wird eine zu schnelle Überlastung des Systems vermieden.
 Im Gegenzug wird ein Subscriber mit einer gesenkten Polling-Periode schneller in den Genuss einer Server-Antwort kommen, so dass er ebenfalls einen Feed mit
@@ -44,7 +45,8 @@ Wollen wir kurz die Vorteile und möglichen Nachteile dieser Methode auflisten:
   \end{itemize}
 \item Nachteile
   \begin{itemize}
-  \item Kooperatives Modell kann ausgetrickst werden: spielen einige Subscriber nicht mit, kann das System ausgehebelt werden.
+  \item Kooperatives Modell erfordert kooperatives Verhalten: spielen einige Subscriber nicht mit, wird die Idee des Systems untergraben. Das System kann nicht
+    mehr in der gewünschten Weise funktionieren.
   \end{itemize}
 \end{itemize}
 
@@ -71,59 +73,92 @@ Der Vorteil, den $rtt$ in eine eigene Klasse zu packen, liegt darin, dass die Kl
 
 Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time
 mitteilen kann, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
-Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen. Dabei tritt ein
-Problem auf: erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein $RQT$ abgelaufen ist, so wird dieser immer wieder neu gesetzt, so dass
-eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt, falls sich der $cpp$ dabei ständig erhöht. Um hier Abhilfe zu schaffen,
+Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen.\\
+Auch hierbei können gewisse Probleme und Seiteneffekte auftreten, die wir im Folgenden mitsamt Lösungen beschreiben.
+
+\paragraph{Lahmlegen des $RQT$:}
+Erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein $RQT$ abgelaufen ist, so wird dieser immer wieder neu gesetzt, so dass
+eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt. Um hier Abhilfe zu schaffen,
 setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der anstehende Feed-Request früher ausgesendet werden würde. Ansonsten kommt der neue
 $cpp$ erst bei der nächsten Runde in Betracht.\\
 
-Aber was soll passieren, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Retransmissionen auftraten und der Subscriber
-sich gerade in der Messung der Roundtrip-Time befindet ($RT$ läuft also)? Die Messung und die Retransmissionen sollten weiter laufen. Nach dem bisherigen
+\paragraph{Beeinflussung des $cpp$:}
+Was soll passieren, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Retransmissionen auftraten und der Subscriber
+sich bei laufendem $RT$ gerade in der Messung der Roundtrip-Time befindet? Die Messung und die Retransmissionen sollten weiter laufen. Nach dem bisherigen
 Konzept dient als
 Berechnungsgrundlage für den $rtt$ nun jedoch der neue $cpp$ (ermittelt durch den im Feed enthaltenen $rtt$; im Folgenden nennen wir ihn $feed.rtt$).
-Der so gemessene $rtt$ steht mit Sicherheit in
-keiner Beziehung zur eigentlichen Roundtrip-Time. Um diesem Phänomen vorzubeugen, müssen wir einen neuen Wert definieren, den $initialcpp$, welcher als
-Berechnungsgrundlage für $rto$ und $rtt$ dienen soll und den $cpp$ in diesem Zusammenhang ersetzt. Bei jedem Setzen des $RQT$ wird $initialcpp$ auf
-$initialcpp:=cpp$ gesetzt. Während einer Messung der Roundtrip-Time kann nun der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
+Der nach Abschluss der Messung ermittelte $rtt$ steht mit Sicherheit in
+keiner Beziehung zur eigentlichen Roundtrip-Time. Um diesem Phänomen vorzubeugen, müssen wir einen neuen Wert definieren, den $icpp$ (für initial-cpp), welcher als
+Berechnungsgrundlage für $rto$ und $rtt$ dienen soll und den $cpp$ in diesem Zusammenhang ersetzt. Bei jedem Setzen des $RQT$ wird $icpp$ auf
+$icpp:=cpp$ gesetzt. Während einer Messung der Roundtrip-Time kann nun der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
 Dies bedeutet aber auch, dass in diesem Falle die Übermittlung des $rtt$ eines anderen Subscriber keinen Einfluss mehr auf den empfangenden Subscriber hat.
 Ist der übermittelte $feed.rtt$ größer als der $rtt$ des Empfängers, so ist dies ein akzeptables Verhalten, denn der übermittelte
 $feed.rtt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen Roundtrip-Time vorbei gehen. Der empfangende
 Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.rtt$ jedoch kleiner als der $rtt$ des Empfängers, so
 wäre eine Einflussnahme von Vorteil, da der $feed.rtt$ vermutlich aussagekräftiger ist. Denn entweder wurden weniger Retransmissionen benötigt, um diesen zu
-ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. In diesem Fall setzen wir $initialcpp:=cpp$ (da der $cpp$ schon aufgrund des
+ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. In diesem Fall setzen wir $icpp:=cpp$ (da der $cpp$ schon aufgrund des
 $feed.rtt$ neu berechnet wurde). Die Berechnung des $rtt$ nach Abschluss der Messung beruht zwar auf einem falschen Wert, führt aber zu der Möglichkeit, den
 $ppp$ durch den $cpp$ anzunähern. Würden wir diese Modifikation vermeiden, hätte keine Ausbalancierung stattgefunden.\\
 
-Unsere Algorithmen müssen wir also wie folgt modifizieren:
+Unsere Algorithmen müssen wir also wie folgt modifizieren und vervollständigen:
 
 \begin{verbatim}
 
-aktualisiereRQTdurchAltenBrokerFeed {
+berechne_mittleren_rtt(Feed feed){
 
-    deltaTTR = berechneDeltaTTR(cpp);
-    if ( deltaTTR < RQT.ZeitdifferenzBisAblauf )
-      aktualisiereRQT(deltaTTR);
+    alter_rtt = rtt;
+    setze_rtt((feed.rtt + rtt) / 2);
+    setze_cpp(rtt);
 
-}
-
-aktualisiereRQTdurchNeuenBrokerFeed {
-
-    deltaTTR = berechneDeltaTTR(cpp);
-    if ( deltaTTR < RQT.ZeitdifferenzBisAblauf )
-      aktualisiereRQT(deltaTTR);
+    if ( feed.rtt < alter_rtt )
+      setze_icpp(cpp);
 
 }
 
-aktualisiereRQTdurchAltenServerFeed {
+aktualisiere_RQT_durch_alten_Brokerfeed {
 
-    aktualisiereRQT(cpp);
+    berechne_mittleren_rtt(feed);
+
+    if ( RT_läuft_nicht ){
+
+      berechne_delta_ttr(cpp);
+      if ( delta_ttr < RQT.Zeitdifferenz_bis_ablauf )
+        setze_RQT(delta_ttr);
+
+    }
 
 }
 
-aktualisiereRQTdurchNeuenServerFeed {
+aktualisiere_RQT_durch_neuen_Brokerfeed {
 
-    deltaTTR = berechneDeltaTTR(cpp);
-    aktualisiereRQT(deltaTTR);
+    berechne_mittleren_rtt(feed);
+
+    berechne_delta_ttr(cpp);
+    if ( delta_ttr < RQT.Zeitdifferenz_bis_ablauf )
+      setze_RQT(delta_ttr);
+
+}
+
+aktualisiere_RQT_durch_alten_Serverfeed {
+
+    berechne_rtt();
+    setze_cpp(rtt);
+    setze_icpp(cpp);
+    stoppe_RT();
+    setze_rto_zurück();
+    setze_RQT(cpp);
+
+}
+
+aktualisiere_RQT_durch_neuen_Serverfeed {
+
+    berechne_rtt();
+    setze_cpp(rtt);
+    setze_icpp(cpp);
+    stoppe_RT();
+    setze_rto_zurück();
+    berechne_delta_ttr(cpp);
+    setze_RQT(delta_ttr);
 
 }
 
