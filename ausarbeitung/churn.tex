@@ -1,3 +1,19 @@
 \subsection{Churn}
 \label{cs:churn}
-Bei allen Peer-To-Peer-Systemen tritt ein Phänomen, welches als ``Churn'' bezeichnet wird: das dynamische An- und Abwandern der Klienten.
+Bei allen Peer-To-Peer-Systemen tritt ein Phänomen auf, welches als ``Churn'' bezeichnet wird: das dynamische Zu- und Abwandern von Klienten bzw. Knoten. In
+Peer-To-Peer-Systemen spielen die Klienten eine entscheidende Rolle. In fast allen diesen Systemen kommunizieren die Klienten direkt miteinander, um Daten
+auszutauschen oder wichtige Informationen zu liefern (z. B. Dateien oder Routing-Informationen). Je nach Struktur des Peer-To-Peer-Netzes kann die plötzliche
+Abwesenheit von beteiligten Knoten zu Beeinträchtigungen oder gar Fehlfunktionen des Systems führen. Während unstrukturierte Peer-To-Peer-Netze Churn zum Teil
+gut verkraften können, können strukturierte Peer-To-Peer-Netze (z. B. DHTs) mit Churn nicht anstandslos umgehen, bzw. benötigen spezielle Mechanismen, um den
+Einflüssen von Churn entgegenzuwirken \cite{Stutzbach2004}.\\
+
+\paragraph{Auswirkungen}
+Die Auswirkungen von Churn können verschiedenartig sein. So kann Churn beispielsweise bei BitTorrent dazu führen, dass sich Downloadzeiten verlängern, falls einfache
+Klienten das System verlassen, oder dass bestimmte Dateien nicht zugreifbar sind, falls ein Tracker ausfällt. Bei DHT-basierten Netzen kann schon ein
+vorüber\-gehen\-der Verlust eines Nachbarknoten zu Performanzeinbußen führen (gute Performanz ist ein Designziel bei DHT), da der Ausgangsknoten gezwungen ist,
+suboptimale Routen zu wählen \cite{Rhea2004}. Dabei erhöht sich die Wahrscheinlichkeit zukünftiger Ausfälle des Systems.
+
+\paragraph{Messung:}
+Um Churn messen zu können, ist eine Metrik erforderlich, die über Zu- und Abwanderung Auskunft gibt. Es bietet sich an, die Zeit zwischen Betreten und Verlassen
+des Systems durch einen Knoten zu messen. Beobachtungen haben gezeigt, dass sich die durchschnittliche Zeiten zwischen einer Stunde und einigen Minuten bewegen
+können \cite{Rhea2004}. 
