@@ -91,7 +91,7 @@ Der nach Abschluss der Messung ermittelte $rtt$ steht mit Sicherheit in
 keiner Beziehung zur eigentlichen Roundtrip-Time. Um diesem Phänomen vorzubeugen, müssen wir einen neuen Wert definieren, den $icpp$ (für initial-cpp), welcher als
 Berechnungsgrundlage für $rto$ und $rtt$ dienen soll und den $cpp$ in diesem Zusammenhang ersetzt. Bei jedem Setzen des $RQT$ wird $icpp$ auf
 $icpp:=cpp$ gesetzt. Während einer Messung der Roundtrip-Time kann nun der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
-Dies bedeutet aber auch, dass in diesem Falle die Übermittlung des $rtt$ eines anderen Subscriber keinen Einfluss mehr auf den empfangenden Subscriber hat.
+Dies bedeutet aber auch, dass in diesem Falle die Übermittlung des $rtt$ eines anderen Subscribers keinen Einfluss mehr auf den empfangenden Subscriber hat.
 Ist der übermittelte $feed.rtt$ größer als der $rtt$ des Empfängers, so ist dies ein akzeptables Verhalten, denn der übermittelte
 $feed.rtt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen Roundtrip-Time vorbei gehen. Der empfangende
 Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.rtt$ jedoch kleiner als der $rtt$ des Empfängers, so
