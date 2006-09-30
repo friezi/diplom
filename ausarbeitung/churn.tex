@@ -19,7 +19,34 @@ Um Churn messen zu können, ist eine Metrik erforderlich, die über Zu- und Abwand
 des Systems durch einen Knoten zu messen. Beobachtungen haben gezeigt, dass sich die durchschnittlichen Zeiten zwischen einer Stunde und einigen Minuten bewegen
 können \cite{Rhea2004}. Stutzbach und Rejaie \cite{Stutzbach2004} haben eine Reihe von Techniken entwickelt und in einem von ihnen entwickelten Tool ($Cruiser$)
 vereint, um das Gnutella-Netzwerk in relativ kurzer Zeit zu durchforsten und einen aktuellen Schnappschuss (``Snapshot'') der Gnutella-Population zu erhalten. Wie
-Stutzbach und Rejaie feststellen, ist das Gnutella-Netzwerk ist ein sehr großes Peer-To-Peer-Netzwerk bestehend aus hunderttausenden von heterogenen und
+Stutzbach und Rejaie feststellen, ist das Gnutella-Netzwerk ein sehr großes Peer-To-Peer-Netzwerk bestehend aus hunderttausenden von heterogenen und
 geographisch verteilten Peers. Darüber hinaus wird jeder User-Client-Prozess direkt durch einen Benutzer gesteuert. Das heißt das ``Verhalten der User-Clients
-repräsentiert vollständig Benutzer-gesteuerte Aspekte dynamischer Mitgliedschaft'' im System \cite{Stutzbach2004}. Ergebnisse einer solchen Untersuchung können
-damit für Peer-To-Peer-Systeme auf gleicher Funktionsbasis herangezogen werden.
+repräsentiert vollständig Benutzer-gesteuerte Aspekte dynamischer Mitgliedschaften'' im System \cite{Stutzbach2004}. Ergebnisse einer solchen Untersuchung können
+damit für Peer-To-Peer-Systeme auf gleicher Basis herangezogen werden. Nach Stutzbach und Rejaie entspricht die Verteilung der Zeitwerte, die sich Benutzer im
+System befinden, nicht, wie bisher angenommen, einer Poisson-Verteilung, sondern einer Exponentialverteilung.
+
+\paragraph{Gegenmaßnahmen:}
+Um den Auswirkungen von Churn entgegen zu wirken, wurden einige Techniken in Abhängigkeit von der zugrunde liegenden Netzwerkstruktur entwickelt. Mit
+Churn-Kompensation bei CMR-basierten Netzen (``Concentric Multi-ring Overlay'') beschäftigen sich Wepiw\'e und Albayrak in \cite{Giscard2006}, Rhea et al.
+in \cite{Rhea2004} bei DHT-basierten Netzen.\todo{art der Churn-Kompensation}
+
+\paragraph{Auswirkungen von Churn auf \pubsubrss:}
+Verlassen einzelne Broker das Netzwerk, so kann man sich sehr leicht vorstellen, welche Auswirkungen das auf das Gesamtsystem hat: da das Brokersystem in einer
+baumartigen Struktur aufgebaut ist, bedeutet der Verlust einzelner Broker ein Auseinanderfallen des Baumes in mehrere unabhängige Teilbäume. Während das Erfragen
+von RSS-Feeds durch Subscriber und das Messen der Roundtrip-Times weiterhin vonstatten gehen kann, können zwischen den Teilbäumen keine Nachrichten mehr
+ausgetauscht werden. Je größer also der Zerfall ist, desto geringer wird der Aktualitätsgrad der RSS-Feeds sein und desto länger dauert eine Anpassung der
+Polling-Perioden der Subscriber an eine veränderte Server-Belastung, da eine Ausbalancierung der Polling-Perioden in immer geringerem Maße erfolgen wird.\\
+Welche Knoten in einem Netzwerk die Rolle der Broker übernehmen, bleibt zunächst offen. Ob Broker das System benutzergesteuert verlassen können, hängt ganz von der
+jeweiligen Umsetzung des Systems ab. Denkbar sind beispielsweise dedizierte Knoten, welche dauerhaft online sind und kaum Ausfallerscheinungen aufweisen. Deshalb
+wollen wir hier auf eine mögliche Kompensation von Churn bei Brokern nicht eingehen.\\
+
+Da in \pubsubrss Subscriber nicht direkt mit einander kommunizieren, hat Churn keinerlei Auswirkung auf die Übertragungsgeschwindigkeit von Daten noch auf die
+Erreichbarkeit einzelner Daten (Feeds).\\
+Verlassen Subscriber das System, so hat das weniger Feed-Requests pro Zeiteinheit zur Folge, woraufhin die übrigen
+Subscriber ihre Polling-Perioden erniedrigen werden. Dies ist kein nachteiliger Effekt.\\
+Beim Eintreten von Subscribern in das System stellen diese zunächst ihren
+$cpp$ auf den von ihnen gewählten $ppp$ ein. Erst im Laufe der Messung der Roundtrip-Times werden diese Subscriber ihren $cpp$ erhöhen. Bei einer hohen Anzahl von
+pro Zeiteinheit neu in das System hinzukommenden Subscribern gibt es also eine erhöhte Rate an Feed-Requests. Dies bedeutet eine Mehrbelastung des jeweiligen
+RSS-Servers. Egal, wie gut die Anpassung an die Server-Belastung von statten geht: die Mehrbelastung ist einzig und allein abhängig von der Churn-Rate.
+
+\subsubsection{Churn-Kompensation bei \pubsubrss}
