@@ -1,5 +1,6 @@
 0 : startGnuplotRecording
-3500 : blockSubscribers(50)
+2000 : blockSubscribers(50)
+4000 : unblockSubscribers
 6001 : stopGnuplotRecording
 6002 : exitSimulation
 
