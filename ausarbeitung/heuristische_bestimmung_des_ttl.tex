@@ -1,4 +1,57 @@
 \subsubsection{Heuristische Bestimmung von Time-To-Live}
-Hierzu gibt es verschiedene Verfahren, von denen wir eines vorstellen wollen.
-Cho und Garcia-Molina beschreiben in \cite{ChGM:2003:ChangeFrequency} eine Methode zur Bestimmung der Update-Frequenz.
-\todo{folgt}
+Hierzu gibt es verschiedene Verfahren. Um $ttl$
+berechnen zu können, muss zunächst die Rate geschätzt werden, mit der Feeds Server-seitig aktualisiert werden. Dafür misst ein Subscriber innerhalb eines
+Zeitintervalles $T$ die Anzahl $X$ der aufgetretenen Aktualisierungen eines Feeds. Eine Aktualisierung wird dann festgestellt, wenn ein Subscriber eine neuen Feed
+erhält. Dabei kann das Attribut $PubDate$ der einzelnen Ereignisse (Items) eines RSS-Feeds herangezogen werden, um eine feinere Bestimmung der Aktualisierungen
+vorzunehmen. Jedes neue Event steht dabei für eine Aktualisierung. Bei Eintritt eines Subscribers in das Netzwerk sollte der $ttl$ zunächst auf $0$ gesetzt werden,
+er wird dann während der Zeit, die sich ein Subscriber aktiv im Overlay-Netzwerk befindet, angepasst. Natürlich kann der errechnet Wert bei Verlassen des
+Systems zwischengespeichert werden, damit er beim nächsten Eintritt in das System wieder zur Verfügung steht.\\
+
+Zunächst beschreiben wir eine simple und intuitive Methode, welche jedoch starke Verzerrungen aufweisen kann. Im Anschluss daran werden wir ein verbessertes
+Verfahren vorstellen, welches von Cho und Garcia-Molina entwickelt wurde.
+\paragraph{IntuitiveMethode:}
+$\hat\mu_r:=\frac{X}{T}$ liefert eine geschätzte Aktualisierungsrate der Feeds. Das Verhältnis zwischen der tatsächlichen Aktualisierungsrate $\mu$ und der
+Abtastrate $f$ (Anzahl der erhaltenen RSS-Feeds bzw. Ereignisse pro Zeiteinheit) $r:=\frac{\mu}{f}$ kann über die Güte von $\hat\mu$ Auskunft geben: gilt $r>1$,
+so hat es mehr Aktualisierungen als Zugriffe (Feeds) gegeben, und der berechnete Wert $\hat\mu$ weist eine gewisse Ungenauigkeit auf. Liegt die gesamte Historie der
+Akzualisierungen vor, so ist $\frac{X}{T}$ ein guter Schätzwert \cite{ChGM:2003:ChangeFrequency}. Da innerhalb eines Feeds mehrere Items zusammengefasst sind,
+ist die Wahrscheinlichkeit geringer, dass Aktualisierungen verloren gehen. Falls jedoch $\varDelta Z$ und $cpp$ sehr groß gewählt sind bei einer gleichzeitig
+geringen Anzahl von Subscribern im Netzwerk, können dennoch neue Ereignisse verloren gehen.
+
+\paragraph{Verbesserte Methode:}
+Um eine bessere Annäherung von $\hat\mu$ an $\mu$ zu erreichen, haben Cho und Garcia-Molina in \cite{ChGM:2003:ChangeFrequency} ein anderes Verfahren zu Bestimmung
+von Aktualisierungsraten entwickelt (entgegen der Berechnung bei Cho und Garcia-Molina haben wir die Aktualisierungsrate statt $\lambda$ mit $\mu$ bezeichnet, da
+$\lambda$ in unserem Kontext schon belegt ist). Dabei gehen sie von der Annahme bzw. Beobachtung aus, dass die Aktualisierungsrate von Web-Inhalten durch einen
+Poisson-Prozess bestimmt wird. Diese Beobachtung lässt sich auf die von uns betrachteten RSS-Feeds übertragen, da es sich bei diesen technisch gesehen ebenfalls
+um Web-Inhalte handelt. Eine genaue Herleitung und Beschreibung des Verfahrens geht über den Rahmen dieser Arbeit hinaus und findet sich
+in \cite{ChGM:2003:ChangeFrequency}.\\
+Innerhalb des Zeitintervalls $[t;t+1]$ wird $\mu$ geliefert durch den Erwartungswert
+\[E[X(t+1)-X(t)]=\sum^\infty_{k=0}k\frac{\mu^k e^{-\mu}}{k!}=\mu.\]
+Dann wird bei einer unvollständigen Historie der Aktualisierungen ein besserer Schätzwert geliefert durch:
+\[\hat\mu:=-log\left(\frac{\bar X-0.5}{n-0.5}\right)\]
+wobei $n$ die Anzahl der Zugriffe (also Feeds bzw. Ereignisse innerhalb eines Feeds) und $\bar X:=n-X$ die Anzahl der Zugriffe ohne Aktualisierungen ist.\\
+
+Ein noch besserer Schätzwert kann geliefert werden, falls der Zeitpunkt der letzten Aktualisierung bekannt ist. Dieser ist durch das Attribut $PubDate$ bei RSS-Feeds
+gegeben. Cho und Garcia-Molina beschreiben dafür in \cite{ChGM:2003:ChangeFrequency} folgenden Algorithmus.
+
+\begin{verbatim}
+Init() /* initialize variables */ 
+  N = 0; /* total number of accesses */ 
+  X = 0; /* number of detected changes */ 
+  T = 0; /* sum of the times from changes */ 
+
+Update(Ti, Ii) /* update variables */ 
+  N = N + 1; 
+  /* Has the element changed? */ 
+  If (Ti < Ii) then 
+  /* The element has changed. */ 
+  X = X + 1; 
+  T = T + Ti; 
+  else 
+  /* The element has not changed */ 
+  T = T + Ii; 
+
+Estimate() /* return the estimated lambda */ 
+  X´ = (X-1) - X/(N*log(1-X/N));
+  return X´/T;
+
+\end{verbatim} 

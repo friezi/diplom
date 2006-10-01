@@ -1,8 +1,8 @@
 TARGET = diplomarbeit
 
 MODULES = $(TARGET) einleitung publish_subscribe rss rss_mittels_verteiltem_pubsub adaptive_informationsverteilung das_verteilungsschema \
-	verteiltes_polling rolle_der_broker koordinierung_der_subscriber bestimmung_der_intervallspanne_deltai optimierungsziel_bevorzugte_polling_periode \
-	staukontrolle feeds_und_timer ausbalancierung_der_pollingperioden churn anhang glossar
+	verteiltes_polling rolle_der_broker koordinierung_der_subscriber bestimmung_der_intervallspanne_deltai heuristische_bestimmung_des_ttl \
+	optimierungsziel_bevorzugte_polling_periode staukontrolle feeds_und_timer ausbalancierung_der_pollingperioden churn anhang glossar
 
 FILES = $(MODULES:%=%.tex)
 

@@ -56,20 +56,11 @@ beruhende Datenstrukturen sind denkbar:
 \begin{verbatim}
 class RichRSSFeed extends RSSFeed{
 
-    RSSFeed feed;
-    RichInformation additional_information;
-
-}
-
-class RichInformation{
-
     long rtt;
 
 }
 
 \end{verbatim}
-
-Der Vorteil, den $rtt$ in eine eigene Klasse zu packen, liegt darin, dass die Klasse $Rich\-Information$ erweiterbar ist um eventuelle zusätzliche Informationen.\\
 
 Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time
 mitteilen kann, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
