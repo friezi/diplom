@@ -1,4 +1,3 @@
-set terminal aqua
 unset parametric
 set yrange [-12:200]
 set xlabel "Time/secs"
