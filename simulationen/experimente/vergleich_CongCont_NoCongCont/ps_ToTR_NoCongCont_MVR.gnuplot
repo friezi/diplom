@@ -3,6 +3,8 @@ unset parametric
 set yrange [0:350000]
 set xlabel "Time/secs"
 set ylabel "RSSFeed-Requests"
-set output 'ToTR_NoCongCont_MVR.ps'
 plot 'totalTemporaryRequests_NoCongCont_MeanValueRanges.gnuplotdata' w l
-
+load 'queue.gnuplot'
+replot queue
+set output 'ToTR_NoCongCont_MVR.ps'
+replot
