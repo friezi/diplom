@@ -11,7 +11,7 @@
 \usepackage{glossar}
 \usepackage{expdlist}
 %\usepackage{nomencl}
-\pagestyle{plain}
+\pagestyle{headings}
 \usepackage{color}
 \usepackage{keyval}
 %\usepackage{charter}
@@ -23,7 +23,7 @@
 
 \input{macros}
 
-\includeonly{einleitung,publish_subscribe,rss_mittels_verteiltem_pubsub,adaptive_informationsverteilung,anhang,glossar}
+\includeonly{einleitung,publish_subscribe,rss_mittels_verteiltem_pubsub,adaptive_informationsverteilung,experimente,anhang,glossar}
 
 \title{Adaptive Informationsverbreitung mittels RSS und Publish/Subscribe \\[2cm]\textnormal{Diplomarbeit}}
 \author{Friedemann Zintel}
@@ -55,8 +55,8 @@
 \chapter{Anpassung an das Übertragungsprotokoll TCP}
 \label{c:anpassung_an_tcp}
 \chapter{Implementierung der Simulationsumgebung}
-\chapter{Experimente und Auswertung}
-\label{c:experimente}
+\label{c:implementierung}
+\include{experimente}
 \section{Gesichtspunkte der Experimente}
 \chapter{Zusammenfassung und Ausblick}
 

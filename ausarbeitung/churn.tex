@@ -61,6 +61,7 @@ lokalen Broker verbunden sind. Diese Information kann der lokale Broker ohne Sch
 der Broker diesem den aktuellen Feed mitsamt des zwischengespeicherten $rtt$ übermitteln. Der neue Subscriber wählt nun wie bisher seinen $cpp$ auf Basis dieses
 $feed.rtt$. Dadurch steigen neue Subscriber bei der Messung der Roundtrip-Time bereits auf einem höheren Niveau ein, wovon wir uns eine Entlastung des RSS-Servers
 versprechen. Experimente und ihre Auswirkung zu diesem Punkt folgen in Kapitel \ref{c:experimente}.\\
+
 Um dieses Verfahren zu realisieren, müssen wir eine zusätzliche Datenstruktur und zusätzliche Methoden zu unseren schon bestehenden hinzufügen:
 
 \begin{verbatim}

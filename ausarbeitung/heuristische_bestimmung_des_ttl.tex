@@ -13,9 +13,10 @@ Verfahren vorstellen, welches von Cho und Garcia-Molina entwickelt wurde.
 $\hat\mu_r:=\frac{X}{T}$ liefert eine geschätzte Aktualisierungsrate der Feeds. Das Verhältnis zwischen der tatsächlichen Aktualisierungsrate $\mu$ und der
 Abtastrate $f$ (Anzahl der erhaltenen RSS-Feeds bzw. Ereignisse pro Zeiteinheit) $r:=\frac{\mu}{f}$ kann über die Güte von $\hat\mu$ Auskunft geben: gilt $r>1$,
 so hat es mehr Aktualisierungen als Zugriffe (Feeds) gegeben, und der berechnete Wert $\hat\mu$ weist eine gewisse Ungenauigkeit auf. Liegt die gesamte Historie der
-Akzualisierungen vor, so ist $\frac{X}{T}$ ein guter Schätzwert \cite{ChGM:2003:ChangeFrequency}. Da innerhalb eines Feeds mehrere Items zusammengefasst sind,
-ist die Wahrscheinlichkeit geringer, dass Aktualisierungen verloren gehen. Falls jedoch $\varDelta Z$ und $cpp$ sehr groß gewählt sind bei einer gleichzeitig
-geringen Anzahl von Subscribern im Netzwerk, können dennoch neue Ereignisse verloren gehen.
+Akzualisierungen vor, so ist $\frac{X}{T}$ ein guter Schätzwert \cite{ChGM:2003:ChangeFrequency}. Da innerhalb eines Feeds mehrere Ereignisse (Items)
+zusammengefasst sind, ist die Wahrscheinlichkeit geringer, dass Aktualisierungen verloren gehen, als wenn ein Feed nur ein Ereignis beinhalten würde.
+Falls jedoch $\varDelta Z$ und $cpp$ sehr groß gewählt sind bei einer gleichzeitig geringen Anzahl von Subscribern im Netzwerk, können neue Ereignisse
+verloren gehen.
 
 \paragraph{Verbesserte Methode:}
 Um eine bessere Annäherung von $\hat\mu$ an $\mu$ zu erreichen, haben Cho und Garcia-Molina in \cite{ChGM:2003:ChangeFrequency} ein anderes Verfahren zu Bestimmung
@@ -55,3 +56,7 @@ Estimate() /* return the estimated lambda */
   return X´/T;
 
 \end{verbatim} 
+
+Dabei dient {\ttfamily Init()} zur einmaligen Initialisierung der Variablen auf null. Bei jedem Zugriff auf ein Element (Erhalt eines Feeds in unserem Fall) wird
+{\ttfamily Update()} aufgerufen. {\ttfamily Ti} ist das Zeitintervall bis zur letzten Aktualisierung beim $i$ten Zugriff, {\ttfamily Ii} das Intervall zwischen
+den Zugriffen. 

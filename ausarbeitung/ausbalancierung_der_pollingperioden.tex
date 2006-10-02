@@ -65,6 +65,7 @@ class RichRSSFeed extends RSSFeed{
 Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time
 mitteilen kann, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
 Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen.\\
+
 Auch hierbei können gewisse Probleme und Seiteneffekte auftreten, die wir im Folgenden mitsamt Lösungen beschreiben.
 
 \paragraph{Lahmlegen des $RQT$:}
