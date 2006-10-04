@@ -4,3 +4,28 @@ In diesem Kapitel werden wir das Adaptionsverhalten der beschriebenen Verfahren 
 betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir bedienen uns dabei der in Kapitel \ref{c:implementierung} vorgestellten Simulationsumgebung. Da
 wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir ausschließlich das System durch Modifikation verschiedener Parameter bzw. Algorithmen
 ``in sich'' untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei zur Bestätigung der Ideen, die unsere Entwicklung der Verfahren motiviert haben.
+
+\section{Aufbau der Experimente:}
+Damit die Experimente untereinander vergleichbar sind, haben wir eine einheitliche Parameterwahl getroffen. Parameter wurden nur dann gezielt modifiziert,
+wenn dies für das jeweilige Experiment von entscheidender Bedeutung war.
+
+\paragraph{Topologien:}
+Die Simulationsumgebung besitzt eingebaute Topologien (z. B. $Topology\-One\-Sur\-roun\-ded$), welche gut für eine visuelle Kontrolle der Algorithmen geeignet
+sind, da sie von ihrer Struktur her einfach und übersichtlich aufgebaut sind. Um jedoch aussagekräftige Ergebnisse zu erhalten, die auch in Hinsicht auf
+Netzwerktopologien, so wie sie im Internet vorzufinden sind, als realistisch eingestuft werden können, müssen wir andere Topologien heranziehen. Wir bedienen uns
+Topologien, welche auf dem Transit-Stub-Modell \cite{Zegura1996} basieren. Dieses Modell spiegelt sehr gut reale Internetstrukturen wider. Bei diesem Modell
+besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ ``Stub-Domäne'' oder ``Transit-Domäne'' sind. Während der Datenverkehr nur dann durch eine
+Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht. Transit-Domänen
+dienen somit dazu, Stub-Domänen miteinander zu verbinden und leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie Backbones.\\
+
+Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier Verwendung
+fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche die physischen Verbindungen
+zwischen den Knoten darstellt und eine Toplayer-Topologie, welche das Overlay-Netzwerk repräsentiert. Bei allen Experimenten wurde eine Sublayer-Topologie
+bestehend aus 2000 Knoten verwendet. Das Overlay-Netzwerk bestimmt sich dann aus den Broker-Knoten (hier 200 Knoten), welche fest gewählt wurden, und den
+Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten bestimmt (also 900) und die zufällig den einzelnen Brokern zugewiesen wurden, jedoch so,
+dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
+zuständig sind.\\
+
+Da ein einziger Durchlauf eines Experimentes möglicherweise keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 Mal mit unterschiedlichen
+Seed-Werten (Ausgangswerte für Zufallsfunktion) durchgeführt. Für jeden gemessenen Wert wurden aus den verschiedenen Ergebnissen Mittelwerte und Konfidenzintervalle
+berechnet.
