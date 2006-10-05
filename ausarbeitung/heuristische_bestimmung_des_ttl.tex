@@ -9,7 +9,7 @@ Systems zwischengespeichert werden, damit er beim nächsten Eintritt in das Syste
 
 Zunächst beschreiben wir eine simple und intuitive Methode, welche jedoch starke Verzerrungen aufweisen kann. Im Anschluss daran werden wir ein verbessertes
 Verfahren vorstellen, welches von Cho und Garcia-Molina entwickelt wurde.
-\paragraph{IntuitiveMethode:}
+\paragraph{Intuitive Methode:}
 $\hat\mu_r:=\frac{X}{T}$ liefert eine geschätzte Aktualisierungsrate der Feeds. Das Verhältnis zwischen der tatsächlichen Aktualisierungsrate $\mu$ und der
 Abtastrate $f$ (Anzahl der erhaltenen RSS-Feeds bzw. Ereignisse pro Zeiteinheit) $r:=\frac{\mu}{f}$ kann über die Güte von $\hat\mu$ Auskunft geben: gilt $r>1$,
 so hat es mehr Aktualisierungen als Zugriffe (Feeds) gegeben, und der berechnete Wert $\hat\mu$ weist eine gewisse Ungenauigkeit auf. Liegt die gesamte Historie der
@@ -26,9 +26,13 @@ Poisson-Prozess bestimmt wird. Diese Beobachtung lässt sich auf die von uns betr
 um Web-Inhalte handelt. Eine genaue Herleitung und Beschreibung des Verfahrens geht über den Rahmen dieser Arbeit hinaus und findet sich
 in \cite{ChGM:2003:ChangeFrequency}.\\
 Innerhalb des Zeitintervalls $[t;t+1]$ wird $\mu$ geliefert durch den Erwartungswert
-\[E[X(t+1)-X(t)]=\sum^\infty_{k=0}k\frac{\mu^k e^{-\mu}}{k!}=\mu.\]
+\begin{equation}
+  E[X(t+1)-X(t)]=\sum^\infty_{k=0}k\frac{\mu^k e^{-\mu}}{k!}=\mu.
+\end{equation}
 Dann wird bei einer unvollständigen Historie der Aktualisierungen ein besserer Schätzwert geliefert durch:
-\[\hat\mu:=-log\left(\frac{\bar X-0.5}{n-0.5}\right)\]
+\begin{equation}
+  \hat\mu:=-log\left(\frac{\bar X-0.5}{n-0.5}\right)
+\end{equation}
 wobei $n$ die Anzahl der Zugriffe (also Feeds bzw. Ereignisse innerhalb eines Feeds) und $\bar X:=n-X$ die Anzahl der Zugriffe ohne Aktualisierungen ist.\\
 
 Ein noch besserer Schätzwert kann geliefert werden, falls der Zeitpunkt der letzten Aktualisierung bekannt ist. Dieser ist durch das Attribut $PubDate$ bei RSS-Feeds

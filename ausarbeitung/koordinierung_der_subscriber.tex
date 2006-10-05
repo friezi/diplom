@@ -9,30 +9,32 @@ Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten erfolgen
   \item Netzbelastung durch Abstimmungsnachrichten sollte gering gehalten werden
 \end{itemize} 
 Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt.
-\subsection{Der Grundlegende Algorithmus}
+\subsection{Die Grundidee}
 \label{cs:der_grundlegende_algorithmus}
 Es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
 $t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\varDelta Z$ wählt sich jeder
-Subscriber $i$ innerhalb des Zufallsintervalls $Z:=[t_x,t_x+\varDelta Z]$ einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh'', $ttr$ im allgemeinen), zu dem
-er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}). Im Folgenden nennen wir $t_x$ Einstiegspunkt und $\varDelta Z$ Zufallsspanne.
+Subscriber $i$ innerhalb des Intervalls $Z_i:=[t_{x_i},t_{x_i}+\varDelta Z_i]$\footnote{Die mit $i$ indizierten Variablen bezeichnen den jeweiligen Wert bezogen auf Subscriber $i$.
+Im allgemeinen Fall verwenden wir den Index nicht.} einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh''), zu dem
+er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}).
+Im Folgenden nennen wir $t_x$ Einstiegspunkt und $\varDelta Z$ Zufallsspanne.
 
-\begin{picturehere}{3}{2}{$ttr$}{Abb:determine_ttr}
+\begin{picturehere}{3}{2}{$ttr_i$}{Abb:determine_ttr}
  
 %\psset{xunit=1cm,yunit=1cm,runit=1cm}
 %\begin{picture}(1.5,-0.5)(7,1)
 \begin{picture}(7,1)(1.5,-1)
   \put(0,0){\vector(1,0){7}}
   \put(0,-0.2){\line(0,1){0.4}}
-  \put(0,-0.5){$t_0$}
+  \put(0,-0.5){$t_{0_i}$}
   \put(3,-0.2){\line(0,1){0.4}}
-  \put(3,-0.5){$t_x$}
+  \put(3,-0.5){$t_{x_i}$}
   \put(6,-0.2){\line(0,1){0.4}}
-  \put(6,-0.5){$t_x+\varDelta Z$}
-  \put(3,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta Z}$}
+  \put(6,-0.5){$t_{x_i}+\varDelta Z_i$}
+  \put(3,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta Z_i}$}
   \put(5,-0.1){\line(0,1){0.2}}
-  \put(4.5,0.2){$ttr$}
-  \put(0,0.6){$\overbrace{\hspace{5cm}}^{\varDelta ttr}$}
-  \put(0,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta ttl}$}
+  \put(4.5,0.2){$ttr_i$}
+  \put(0,0.6){$\overbrace{\hspace{5cm}}^{\varDelta ttr_i}$}
+  \put(0,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta ttl_i}$}
   \put(7.8,0){$time$}
 \end{picture}
 % \includegraphics{determine_ttr}
@@ -41,25 +43,27 @@ er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}
 
 Ist $ttr_i$ erreicht, so erfragt Subscriber $i$ den aktuellen Feed vom RSS-Server und setzt nun $ttr_i$ auf einen
 Zufallswert innerhalb des
-Zeitintervalls $Z:=[t_x,t_x+\varDelta Z]$, wobei $t_x$ ebenfalls neu gewählt wird.
-Erhält Subscriber $i$ vor dem Erreichen des Zeitpunktes $ttr_i$ einen Feed $feed_{new}$ von einem Broker zum 
-Zeitpunkt $t_f$ (sei $feed_{old}$ der bisher bei $i$ gespeicherte Feed), so geschieht folgendes:
+Zeitintervalls $Z_i:=[t_{x_i},t_{x_i}+\varDelta Z_i]$, wobei $t_x$ ebenfalls neu gewählt wird.
+Erhält Subscriber $i$ vor dem Erreichen des Zeitpunktes $ttr_i$ einen Feed $feed_{new_i}$ von einem Broker zum 
+Zeitpunkt $t_{f_i}$ (sei $feed_{old_i}$ der bisher bei $i$ gespeicherte Feed), so geschieht folgendes:
 \pagebreak[3]
 \begin{description}[\compact]
-  \item [Fall I:] $feed_{new}$ ist nicht aktueller als $feed_{old}$:
+  \item [Fall I:] $feed_{new_i}$ ist nicht aktueller als $feed_{old_i}$:
     \begin{description}[\breaklabel\compact]
       \item keine Änderungen
     \end{description}
-  \item[Fall II:] $feed_{new}$ ist aktueller als $feed_{old}$:
+  \item[Fall II:] $feed_{new_i}$ ist aktueller als $feed_{old_i}$:
     \begin{description}[\breaklabel\compact]
-      \item wähle $t_x$ neu mit $t_0\leq t_x$
+      \item wähle $t_{x_i}$ neu (beliebig) mit $t_{0_i}\leq t_{x_i}$
       \item  $ttr_i$ wird auf einen Zufallswert gesetzt innerhalb des Zeitintervalls\\
-        \mbox{$Z:=[t_x,t_x+\varDelta Z]$}
+        \mbox{$Z_i:=[t_{x_i},t_{x_i}+\varDelta Z_i]$}
     \end{description}
 \end{description}
 
-Bezeichne $\varDelta ttr_i$ die Zeitspanne zwischen $t_0$ und $ttr_i$ ($\varDelta ttr$ im allgemeinen), also gilt $ttr_i:=t_0+\varDelta ttr_i$.
-Die $ttr$s der verschiedenen Subscriber sollten bei der Wahl einer geeigneten Zufallsfunktion über $Z$ gleichmäßig
+Bezeichne $\varDelta ttr_i$ die Zeitspanne zwischen $t_{0_i}$ und $ttr_i$
+($\varDelta ttr$ im allgemeinen), also gilt $ttr_i:=t_{0_i}+\varDelta ttr_i$.
+Jeder Subscriber wählt also seinen Individuellen $trr$.
+Die $ttr$s der verschiedenen Subscriber im Netzwerk sollten bei der Wahl einer geeigneten Zufallsfunktion über $Z$ gleichmäßig
 verteilt sein. Durch die Wahl eines zufälligen Wertes innerhalb von $Z$ ist gewährleistet, dass nur in extremen Ausnahmefällen (theoretisch) 
 alle Klienten gleichzeitig den RSS-Server kontaktieren.  Natürlich kann es vorkommen, dass $ttr$s verschiedener
 Subscriber auf den gleichen Zeitpunkt fallen (je nach Größe der Zufallsspanne $\varDelta Z$ und der Anzahl der Klienten).
@@ -86,18 +90,24 @@ dass mindestens der Parameter $lastBuildDate$ vom Server bereitgestellt wird.
 (Beschreibung siehe Kapitel \ref{ch_rss} auf Seite \pageref{op_rss}). $nextBuild$ lässt sich
 aufgrund des letzten aktuellen Feeds wie folgt berechnen:
 \pagebreak[3]
-\[nextBuild:=t_0+\varDelta ttl\] mit \[\varDelta ttl:=\left\{\begin{array}{r@{\quad:\quad}l}
-    0 & falls\quad (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
-  \end{array}\right. \]
+\begin{equation}
+  nextBuild:=t_0+\varDelta ttl
+\end{equation}
+mit
+\begin{equation}
+  \varDelta ttl:=\left\{\begin{array}{r@{\quad:\quad}l}
+      0 & falls\quad (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
+    \end{array}\right.
+\end{equation}
 
-Alternativ könnte statt $lastBuildDate$ auch $pubDate$ zur Berechnung genommen werden.
+Alternativ könnte statt $lastBuildDate$ auch $pubDate$ zur Berechnung herangezogen werden.
 \subsubsection{Bestimmung von Time-To-Live}
 Um $ttl$ zu bestimmen, gibt es zwei Möglichkeiten:
 \begin{itemize}
-  \item {\bf Bereitstellung des $ttl$ durch den Informationsanbieter:}
+  \item {\bf Bereitstellung des Wertes $ttl$ durch den Informationsanbieter:}
     RSS 2.0\cite{RSSSpecWi2004} sieht ebenfalls den optionalen Parameter $ttl$ vor.
 
-  \item {\bf Bestimmung des $ttl$ durch den Klienten:}
+  \item {\bf Bestimmung des Wertes $ttl$ durch den Klienten:}
     Wird der Parameter $ttl$ vom Informationsanbieter nicht unterstützt, so kann $ttl$ heuristisch durch den Klienten bestimmt werden.
 \end{itemize}
 
@@ -109,8 +119,8 @@ Person vor, die regelmäßig jeden Tag ihr Tagebuch in einem Blog samt RSS-Feeds v
 leistungsfähiges Rechnersystem, welches bei einer großen und dauerhaften Anzahl von Webzugriffen schnell überlastet wird. Die Person steht jeden Tag um 8.00 Uhr auf,
 so dass sie um 9.00 Uhr die Einträge des vorherigen Tages bereit gestellt hat. Sie kann somit in den RSS-Feed einen $ttl$-Wert von 24 Stunden eintragen. So wie es
 aussieht, spielt Aktualität in diesem Fall keine große Rolle, so dass für die Interessenten ein relativ großer $\varDelta Z$ Wert festgelegt werden kann (z. B. 12
-Stunden). Ein RSS-Reader eines Interessenten braucht somit frühsten um 9.00 beim Anbieter nachzufragen und hat einen Spielraum von 12 Stunden. Mit dem von uns
-geplanten Pub/Sub-RSS-System reichen in diesem Falle schon sehr wenige Subscriber aus (vielleicht sogar nur einer), um den aktuellen Feed an die gesamte Fangemeinde
+Stunden). Ein RSS-Reader eines Interessenten braucht somit frühestens um 9.00 Uhr  beim Anbieter nachzufragen und hat einen Spielraum von 12 Stunden. Mit dem von uns
+geplanten Pub/Sub-RSS-System reichen in diesem Fall schon sehr wenige Subscriber aus (vielleicht sogar nur einer), um den aktuellen Feed an die gesamte Fangemeinde
 zu übermitteln. Betrachten wir nun einen anderen Fall: eine Nachrichtenagentur stellt rund um die Uhr die neuesten Schlagzeilen in einem RSS-Feed zur Verfügung. Es
 ist nicht absehbar, wann ein neues Weltereignis eintritt, so dass die Nachrichtenagentur nicht plant, den RSS-Feed mit dem Wert $ttl$ zu versorgen. Eine
 heuristische Bestimmung des $ttl$ durch den Klienten ist wahrscheinlich mit einer großen Varianz behaftet und dadurch sehr ungenau. Und dennoch ist der Spielraum
@@ -118,16 +128,21 @@ groß, was eine empirische Datenerhebung verdeutlicht.
 
 \importgnuplotps{RSS-Feed-Aktualisierung}{Abb:rss_aktualisierung}{rss_aktualisierung}
 
-Abbildung \ref{Abb:rss_aktualisierung} zeigt, wie oft und regelmäßig verschiedene Anbieter von RSS-Feeds (Spiegel, Heise, NY-Times, Slashdot, Sourceforge)
+Abbildung \ref{Abb:rss_aktualisierung} zeigt, wie oft und regelmäßig verschiedene Anbieter von RSS-Feeds (Spiegel, Heise, New-York-Times, Slashdot, Sourceforge)
 diese aktualisieren. Der gemessene Zeitraum erstreckt sich über
 24 Stunden, die Abtastrate betrug 60 Sekunden. Hierbei fällt auf, dass Spiegel und Heise in der Zeit zwischen ca. 0.00 und 5.00 Uhr keine Aktualisierungen
 vornehmen, wogegen zu den übrigen Zeiten die Aktualisierungsintervalle schwanken. Zur Nachtzeit würde es sich also anbieten, den $ttl$ zu setzten. Auch bei
-den NY-Times fällt ein Zeitraum auf, indem nicht aktualisiert wird. Die zeitliche Differenz zu den deutschen Betreibern lässt sich vermutlich durch eine
-Zeitverschiebung erklären. Bei den NY-Times fällt weiterhin auf, dass in der übrigen Zeit Aktualisierungen nur stündlich vorgenommen werden. Also auch hier ein
+den New-York-Times fällt ein Zeitraum auf, indem nicht aktualisiert wird. Die zeitliche Differenz zu den deutschen Betreibern lässt sich vermutlich durch eine
+Zeitverschiebung erklären. Bei den New-York-Times fällt weiterhin auf, dass in der übrigen Zeit Aktualisierungen nur stündlich vorgenommen werden. Also auch hier ein
 Fall für einen vom Anbieter vorgegebenen $ttl$. Ebenfalls lässt sich bei Slashdot und Sourceforge eine gewisse Linearität der Aktualisierungsintervalle 
 feststellen, wenn sie auch um einiges kürzer sind.
 
 
 \input{heuristische_bestimmung_des_ttl}
-\input{bestimmung_der_intervallspanne_deltai}
+\input{wahl_der_zufallsspanne}
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

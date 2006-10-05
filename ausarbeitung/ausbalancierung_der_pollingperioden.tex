@@ -2,44 +2,45 @@
 \label{cs:ausbalancierung_der_polling-perioden}
 Wie wir schon in Abschnitt \ref{cssp:ung_u_probl:dysbalance} auf Seite \pageref{cssp:ung_u_probl:dysbalance} beschrieben haben, kann es vorkommen, dass Subscriber
 aufgrund von Dysbalancen der Polling-Perioden im System ``ausgesperrt'' werden: Subscriber, deren Polling-Periode sehr niedrig ist, haben fast ausschließlichen
-Zugriff auf den Server, während die Polling-Perioden der übrigen Subscriber unaufhörlich in die Höhe schießen, da ihre Anfragen keinen Zugang zur Server-Queue
+Zugriff auf den Server, während sich die Polling-Perioden der übrigen Subscriber stetig vergrößern, da ihre Anfragen keinen Zugang zur Server-Queue
 finden. Um diesem Problem beizukommen, müssen bei Dysbalancen im System Subscriber mit niedrigen Polling-Perioden diese erhöhen, während Subscriber mit hohen
 Polling-Perioden Gelegenheit bekommen müssen, diese zu erniedrigen.\\
 
 Um dieses Ziel zu erreichen, verwenden wir folgendes Verfahren: speist ein Subscriber einen RSS-Feed in das Notifikationssystem ein (er sendet den Feed an den
 ihm zugewiesenen Broker), so übermittelt er als zusätzliches Attribut den von ihm gemessenen $rtt$. Erhält ein Subscriber einen RSS-Feed vom Notifikationssystem,
 so stellt sein neuer $rtt$-Wert den Mittelwert aus seinem eigenen $rtt$ und dem übermitteltem $rtt$ dar, also:
-\[rtt:=\frac{rtt+feed.rtt}{2}\]
+\begin{equation}
+  rtt:=\frac{rtt+feed.rtt}{2}
+\end{equation}
 Es handelt sich dabei um ein kooperatives Modell: die gegenseitige Unterstützung der Subscriber wird vorausgesetzt, ein gemeinsames Ziel verlangt die Einschränkung
-des einzelnen.\\
+des Einzelnen.\\
 
 \paragraph{Auswirkungen:}
-Das Verfahren führt dazu, dass Subscriber mit einer hohen Polling-Periode, die einen Feed mit einem niedrigen $rtt$ erhalten, ihre Polling-Periode senken,
+Das Verfahren führt dazu, dass Subscriber mit einer langen Polling-Periode, die einen Feed mit einem niedrigen $rtt$ erhalten, ihre Polling-Periode senken,
 allerdings nicht auf das Niveau des Subscribers, welcher den Feed ausgesandt hat. Somit wird eine zu schnelle Überlastung des Systems vermieden.
 Im Gegenzug wird ein Subscriber mit einer gesenkten Polling-Periode schneller in den Genuss einer Server-Antwort kommen, so dass er ebenfalls einen Feed mit
 seinem noch relativ hohen $rtt$ in das Notifikationssystem einspeisen kann. Das führt dazu, dass Subscriber mit einer niedrigen Polling-Periode diese bei Erhalt
 jenes Feeds erhöhen.\\
 
-Dies hat noch einen weiteren positiven Nebeneffekt: angenommen, alle Subscriber haben eine hohe Polling-Periode aufgrund einer länger anhaltenden Server-Überlastung
+Dies hat noch einen weiteren positiven Nebeneffekt: angenommen, alle Subscriber haben eine lange Polling-Periode aufgrund einer länger anhaltenden Server-Überlastung
 eingestellt. Kommt es zu einer plötzlichen Reaktionsfreudigkeit des Servers, so wird der erste Subscriber, der diese feststellt, nicht nur seine Polling-Periode
 entsprechend anpassen, sondern alle anderen Subscriber, die die Ansprechbarkeit des Servers nicht bemerkt haben, mitziehen. Ein plötzlicher übermäßiger Ansturm auf
 den Server sollte aber ausbleiben, da die übrigen Subscriber ihre Polling-Perioden nicht drastisch, sondern nur allmählich senken. Die Subscriber, welche ihre
-Polling-Periode drastisch gesenkt haben, werden gezwungen sein, ihre Polling-Periode wieder anzuheben. Um es bildlich auszudrücken: diejenigen Subscriber,
-welche das Ziel sehen (``Server reagiert schnell''), rennen los und rufen den anderen zu: ``Los, kommt mit!'', wogegen diese Antworten: ``Moment, wir können nicht so
-schnell!''. Dadurch erwarten wir eine homogenere Adaption der Polling-Perioden an die Server-Auslastung.\\
+Polling-Periode drastisch gesenkt haben, werden gezwungen sein, ihre Polling-Periode wieder anzuheben. Dadurch erwarten wir eine homogenere Adaption der
+Polling-Perioden an die Server-Auslastung.\\
 Bei einer plötzlichen Server-Überlastung wird das jeder Subscriber schnell mitbekommen, weswegen sich in diesem Fall nicht viel ändert.\\
 
-Dadurch, dass der $rtt$ und nicht der $cpp$ übermittelt wird, kann jeder Subscriber seinen eigenen $cpp$ entsprechend seinen Voreinstellungen ($ppp$) unabhängig
-der Voreinstellungen anderer Subscriber berechnen.\\
+Dadurch, dass der Wert $rtt$ und nicht der Wert $cpp$ übermittelt wird, kann jeder Subscriber seinen eigenen $cpp$-Wert entsprechend seiner Voreinstellungen
+($ppp$) unabhängig der Voreinstellungen anderer Subscriber berechnen.\\
 
-Die Wirksamkeit der ausbalancierenden Methode gegenüber der nicht-ausbalancierenden Methode wurde mit Hilfe der selbst entwickelten Simulationsumgebung gezeigt,
+Die Wirksamkeit der ausbalancierenden Methode gegenüber der nicht-ausbalancierenden Methode wird mit Hilfe der selbst entwickelten Simulationsumgebung gezeigt,
 die Ergebnisse sind in Kapitel \ref{c:experimente} zusammengetragen.\\
 
-Wollen wir kurz die Vorteile und möglichen Nachteile dieser Methode auflisten:
+Listen wir die Vorteile und möglichen Nachteile dieser Methode auf:
 \begin{itemize}
 \item Vorteile
   \begin{itemize}
-  \item Polling-Perioden werden Ausbalanciert
+  \item Polling-Perioden werden ausbalanciert
   \item Bei unbemerkter Veränderung der Serverbelastung werden Subscriber mitgezogen
   \item Ansturm auf Server wird vermieden
   \end{itemize}
@@ -62,16 +63,19 @@ class RichRSSFeed extends RSSFeed{
 
 \end{verbatim}
 
+\todo{KORREKTUR???}
+
 Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time
 mitteilen kann, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
 Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen.\\
 
 Auch hierbei können gewisse Probleme und Seiteneffekte auftreten, die wir im Folgenden mitsamt Lösungen beschreiben.
 
-\paragraph{Lahmlegen des $RQT$:}
-Erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein $RQT$ abgelaufen ist, so wird dieser immer wieder neu gesetzt, so dass
-eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt. Um hier Abhilfe zu schaffen,
-setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der anstehende Feed-Request früher ausgesendet werden würde. Ansonsten kommt der neue
+\paragraph{$RQT$ verhindert Anfragen:}
+Erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein $RQT$ abgelaufen ist, so wird der $RQT$ ständig neu gesetzt, so dass
+eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt. Der Subscriber nimmt an der Versorgung des Notifikationssystems mit RSS-Feeds
+nicht mehr aktiv Teil. Um hier Abhilfe zu schaffen, setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der anstehende Feed-Request früher
+ausgesendet werden würde. Ansonsten kommt der neue
 $cpp$ erst bei der nächsten Runde in Betracht.\\
 
 \paragraph{Beeinflussung des $cpp$:}
@@ -83,14 +87,15 @@ Der nach Abschluss der Messung ermittelte $rtt$ steht mit Sicherheit in
 keiner Beziehung zur eigentlichen Roundtrip-Time. Um diesem Phänomen vorzubeugen, müssen wir einen neuen Wert definieren, den $icpp$ (für initial-cpp), welcher als
 Berechnungsgrundlage für $rto$ und $rtt$ dienen soll und den $cpp$ in diesem Zusammenhang ersetzt. Bei jedem Setzen des $RQT$ wird $icpp$ auf
 $icpp:=cpp$ gesetzt. Während einer Messung der Roundtrip-Time kann nun der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
-Dies bedeutet aber auch, dass in diesem Falle die Übermittlung des $rtt$ eines anderen Subscribers keinen Einfluss mehr auf den empfangenden Subscriber hat.
-Ist der übermittelte $feed.rtt$ größer als der $rtt$ des Empfängers, so ist dies ein akzeptables Verhalten, denn der übermittelte
+Da nach Abschluss der Messung $rtt$ und somit $cpp$ neu berechnet werden, hat letztlich in diesem Fall die Übermittlung des $rtt$ eines anderen Subscribers
+keinen Einfluss mehr auf den $rtt$-Wert des empfangenden Subscribers.
+Ist der übermittelte $feed.rtt$ größer als der $rtt$-Wert des Empfängers, so ist dies ein akzeptables Verhalten, denn der übermittelte
 $feed.rtt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen Roundtrip-Time vorbei gehen. Der empfangende
-Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.rtt$ jedoch kleiner als der $rtt$ des Empfängers, so
-wäre eine Einflussnahme von Vorteil, da der $feed.rtt$ vermutlich aussagekräftiger ist. Denn entweder wurden weniger Retransmissionen benötigt, um diesen zu
-ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. In diesem Fall setzen wir $icpp:=cpp$ (da der $cpp$ schon aufgrund des
-$feed.rtt$ neu berechnet wurde). Die Berechnung des $rtt$ nach Abschluss der Messung beruht zwar auf einem falschen Wert, führt aber zu der Möglichkeit, den
-$ppp$ durch den $cpp$ anzunähern. Würden wir diese Modifikation vermeiden, hätte keine Ausbalancierung stattgefunden.\\
+Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.rtt$ jedoch kleiner als der $rtt$-Wert des Empfängers, so
+wäre eine Einflussnahme von Vorteil, da der Wert des $feed.rtt$ vermutlich aussagekräftiger ist. Denn entweder wurden weniger Retransmissionen benötigt, um diesen zu
+ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. In diesem Fall setzen wir $icpp:=cpp$ (da $cpp$ schon aufgrund des
+$feed.rtt$-Wertes neu berechnet wurde). Die Berechnung des $rtt$-Wertes nach Abschluss der Messung beruht zwar auf einem falschen Wert, führt aber zu der Möglichkeit, den
+$ppp$-Wert durch den $cpp$-Wert anzunähern. Würden wir diese Modifikation nicht vornehmen, hätte keine Ausbalancierung stattgefunden.\\
 
 Unsere Algorithmen müssen wir also wie folgt modifizieren und vervollständigen:
 
@@ -155,3 +160,8 @@ aktualisiere_RQT_durch_neuen_Serverfeed {
 }
 
 \end{verbatim}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

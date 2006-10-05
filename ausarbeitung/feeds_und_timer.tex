@@ -8,14 +8,14 @@ Bleibt zu bestimmen, wann und wie $RQT$ gesetzt wird. Erhält ein Subscriber eine
 gesendet werden soll. Dazu müssen wir einen erhaltenen Feed nach Aktualität und Herkunft unterscheiden. Erhält ein Subscriber einen neueren Feed von einem
 Broker oder von einem RSS-Server, so
 müssen $\varDelta Z$ und $t_x$, also $\varDelta ttr$, in Abhängigkeit von den enthaltenen Events entsprechend der in Abschnitt \ref{cs:der_grundlegende_algorithmus}
-beschriebenen Methode neu bestimmt werden: für jeden RSS-Server, auf den sich ein neues Event bezieht, müssen diese Werte
+beschriebenen Methode neu bestimmt werden: für jeden RSS-Server\todo{MEHRZAHL AUFLÖSEN;SIEHE KORREKTUR}, auf den sich ein neues Event bezieht, müssen diese Werte
 neu berechnet und der entsprechende $RQT$ neu gesetzt werden. Erhält ein Subscriber dagegen einen Feed von einem Broker ohne neue Informationen,
-so bleibt der laufende $RQT$ bestehen, denn dies ist genau der Fall, wo es in der Verantwortung des Subscribers liegt, in Kürze hinzukommende
-Ereignisse abzufangen. Bei Erhalt eines Feeds von einem RSS-Server ohne neue Informationen muss $RQT$
+so bleibt der laufende $RQT$ bestehen, denn dies ist genau jener Fall, in welchem es in der Verantwortung des Subscribers liegt, in Kürze hinzukommende
+Ereignisse zu entdecken. Bei Erhalt eines Feeds von einem RSS-Server ohne neue Informationen muss $RQT$
 neu gesetzt werden, denn es ist davon auszugehen, dass dem Feed ein Feed-Request aufgrund eines abgelaufenen $RQT$ vorausgegangen ist.
 Dabei wird das $RQT$-Intervall auf $cpp$ gesetzt, $\varDelta Z$ wird nicht neu berechnet und $t_x$ wird auf $t_x:=t_0+cpp$ gesetzt.\\
 
-Das ganze als algorithmisches Beispiel in an Java angelehnter Pseudonotation:
+Das ganze als algorithmisches Beispiel in einer an Java angelehnter Pseudonotation:
 
 \begin{verbatim}
 
@@ -54,3 +54,8 @@ aktualisiere_RQT_durch_neuen_Serverfeed {
 \end{verbatim}
 
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 
