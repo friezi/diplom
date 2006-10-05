@@ -31,10 +31,10 @@
 }%
 {%
         \end{pspicture}%
-        \caption{\picturehere@caption}%
-        \label{\picturehere@label}%
       \end{minipage}%
     \end{center}%
+    \caption{\picturehere@caption}%
+    \label{\picturehere@label}%
   \end{figure*}%
 }
 \makeatother
@@ -42,6 +42,12 @@
 \newcommand{\importgnuplotps}[3]{
   \begin{picturehere}{1}{10}{\mbox{#1}}{#2}
     \includegraphics[bb=530 310 730 600,scale=0.55,angle=-90]{#3}
+  \end{picturehere}
+}
+
+\newcommand{\importsmallgnuplotps}[3]{
+  \begin{picturehere}{1}{7}{\mbox{#1}}{#2}
+    \includegraphics[bb=530 310 730 600,scale=0.4,angle=-90]{#3}
   \end{picturehere}
 }
 

@@ -16,7 +16,7 @@ Netzwerktopologien, so wie sie im Internet vorzufinden sind, als realistisch ein
 Topologien, welche auf dem Transit-Stub-Modell \cite{Zegura1996} basieren. Dieses Modell spiegelt sehr gut reale Internetstrukturen wider. Bei diesem Modell
 besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ ``Stub-Domäne'' oder ``Transit-Domäne'' sind. Während der Datenverkehr nur dann durch eine
 Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht. Transit-Domänen
-dienen somit dazu, Stub-Domänen miteinander zu verbinden und leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie Backbones.\\
+dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie Backbones.\\
 
 Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier Verwendung
 fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche die physischen Verbindungen
@@ -28,4 +28,35 @@ zuständig sind.\\
 
 Da ein einziger Durchlauf eines Experimentes möglicherweise keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 Mal mit unterschiedlichen
 Seed-Werten (Ausgangswerte für Zufallsfunktion) durchgeführt. Für jeden gemessenen Wert wurden aus den verschiedenen Ergebnissen Mittelwerte und Konfidenzintervalle
-berechnet.
+berechnet. Bei jedem Durchlauf mit anderem Seed-Wert verändert sich das Overlay-Netzwerk geringfügig. (s. o.).
+
+\paragraph{Parameter:}
+\todo{folgt}
+
+
+\section{Legende der Diagramme}
+\todo{folgt}
+
+\section{Experimente -- optimale Polling-Periode}
+
+\subsection{Referenzverlauf}
+Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} zum Zwecke eines Referenzverlaufs den optimalen Kurvenverlauf, wobei alle in den vorherigen Kapiteln
+beschriebenen Verfahren zur Anwendung kommen.
+
+\importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{Referenzverlauf}
+
+Nach einem zunächst massiven Andrang von Feed-Requests auf den Server und dessen Überlastung, wird dieser Andrang gedrosselt, so dass der Füllgrad der Server-Queue
+kurzzeitig bis auf null abfällt. Nach ca. 500 Sekunden steigt die Zahl der Feed-Requests, bis sie ab ca. 1000 Sekunden konstant bleibt, so dass die Server-Queue
+größtenteils maximal gefüllt bleibt, ohne dass eine übermäßige Mehrbelastung durch abgewiesene Feed-Requests auftritt.
+
+\subsection{Keine Staukontrolle}
+Obwohl es keine großen Anstrengungen erfordert, sich zu überlegen, was passiert, wenn eine Staukontrolle seitens der Subscriber ausbleibt, wollen wir hier dennoch
+diese Auswirkungen der Vollständigkeit halber graphisch zeigen (Abbildung \ref{Abb:Ohne_Staukontrolle}).
+\importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
+
+\subsection{Keine Ausbalancierung der Polling-Perioden}
+Hier wollen wir untersuchen, was passiert, wenn die Ausbalancierung der Polling-Perioden (wie in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} beschrieben)
+ausbleibt.
+\importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
+\importsmallgnuplotps{Vergleich: Ausbalancierung -- keine Ausbalancierung}{Abb:Vgl_Ausb_KAusb}{vgl_ToTR_BalancingNoBalancing}
+
