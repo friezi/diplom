@@ -80,7 +80,7 @@ gnuplotdatafile.close()
 gnuplotcommandsfile = open(gnuplotcommandsfilename,'w')
 
 gnuplotcommandsfile.write("unset parametric\n")
-gnuplotcommandsfile.write("set xlabel \"time/hrs -- starttime: " + str(startinghour) + ":" + str(startingsecs) + "h\"\n")
+gnuplotcommandsfile.write("set xlabel \"time/hrs -- starttime (CEST): " + str(startinghour) + ":" + str(startingsecs) + "h\"\n")
 gnuplotcommandsfile.write("set ylabel \"events\"\n")
 gnuplotcommandsfile.write("plot '" + gnuplotdatafilename + "' w lp\n")
 
