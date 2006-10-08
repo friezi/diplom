@@ -13,8 +13,7 @@ so stellt sein neuer $rtt$-Wert den Mittelwert aus seinem eigenen $rtt$ und dem 
   rtt:=\frac{rtt+feed.rtt}{2}
 \end{equation}
 Es handelt sich dabei um ein kooperatives Modell: die gegenseitige Unterstützung der Subscriber wird vorausgesetzt, ein gemeinsames Ziel verlangt die Einschränkung
-des Einzelnen.\\
-
+des Einzelnen.
 \paragraph{Auswirkungen:}
 Das Verfahren führt dazu, dass Subscriber mit einer langen Polling-Periode, die einen Feed mit einem niedrigen $rtt$ erhalten, ihre Polling-Periode senken,
 allerdings nicht auf das Niveau des Subscribers, welcher den Feed ausgesandt hat. Somit wird eine zu schnelle Überlastung des Systems vermieden.
@@ -76,7 +75,7 @@ Erhält ein Subscriber immer neue Feeds über das Notifikationssystem, bevor sein 
 eine eigenmächtige Aussendung eines Feed-Requests durch den Subscriber ausbleibt. Der Subscriber nimmt an der Versorgung des Notifikationssystems mit RSS-Feeds
 nicht mehr aktiv Teil. Um hier Abhilfe zu schaffen, setzen wir den $RQT$ nur dann neu, wenn durch den neu gesetzten $RQT$ der anstehende Feed-Request früher
 ausgesendet werden würde. Ansonsten kommt der neue
-$cpp$ erst bei der nächsten Runde in Betracht.\\
+$cpp$ erst bei der nächsten Runde in Betracht.
 
 \paragraph{Beeinflussung des $cpp$:}
 Was soll passieren, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Retransmissionen auftraten und der Subscriber

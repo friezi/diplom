@@ -16,7 +16,7 @@ $t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\varDelta Z$ wählt sich jeder
 Subscriber $i$ innerhalb des Intervalls $Z_i:=[t_{x_i},t_{x_i}+\varDelta Z_i]$\footnote{Die mit $i$ indizierten Variablen bezeichnen den jeweiligen Wert bezogen auf Subscriber $i$.
 Im allgemeinen Fall verwenden wir den Index nicht.} einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh''), zu dem
 er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}).
-Im Folgenden nennen wir $t_x$ Einstiegspunkt und $\varDelta Z$ Zufallsspanne.
+Wir nennen $t_x$ Einstiegspunkt und $\varDelta Z$ Zufallsspanne.
 
 \begin{picturehere}{3}{2}{$ttr_i$}{Abb:determine_ttr}
  
@@ -61,7 +61,7 @@ Zeitpunkt $t_{f_i}$ (sei $feed_{old_i}$ der bisher bei $i$ gespeicherte Feed), s
 \end{description}
 
 Bezeichne $\varDelta ttr_i$ die Zeitspanne zwischen $t_{0_i}$ und $ttr_i$
-($\varDelta ttr$ im allgemeinen), also gilt $ttr_i:=t_{0_i}+\varDelta ttr_i$.
+($\varDelta ttr$ im allgemeinen), dann gilt $ttr_i:=t_{0_i}+\varDelta ttr_i$.
 Jeder Subscriber wählt also seinen Individuellen $trr$.
 Die $ttr$s der verschiedenen Subscriber im Netzwerk sollten bei der Wahl einer geeigneten Zufallsfunktion über $Z$ gleichmäßig
 verteilt sein. Durch die Wahl eines zufälligen Wertes innerhalb von $Z$ ist gewährleistet, dass nur in extremen Ausnahmefällen (theoretisch) 
@@ -77,11 +77,11 @@ solange physikalisches Netz und Brokernetz intakt sind.
 \subsection{Konkrete Anpassung an RSS -- Bestimmung relevanter Parameter}
 Im Folgenden betrachten wir, wie sich die relevanten Parameter in Zusammenhang mit RSS bestimmen lassen.
 \subsubsection{Bestimmung des Einstiegspunktes}
-Lässt sich der Zeitpunkt $nextBuild$ (Neue-Info-Punkt), zu dem der RSS-Server voraussichtlich einen neuen Feed
+Lässt sich der Zeitpunkt $nextBuild$, zu dem der RSS-Server voraussichtlich einen neuen Feed
 bereitstellen wird, innerhalb eines gewissen Toleranzbereiches genau bestimmen, dann können wir den Einstiegspunkt $t_x:=nextBuild$ setzen. Kann
 $nextBuild$ innerhalb des gewünschten Toleranzbereiches nicht genau bestimmt werden, kann es nötig sein $t_x:=t_0$ zu setzen. Unter welchen
 Umständen welche Variante vorzuziehen ist, werden wir später noch erörtern.
-\subsubsection{Bestimmung des Neue-Info-Punktes}
+\subsubsection{Bestimmungvon $nextBuild$}
 Um $nextBuild$ zu bestimmen, definieren wir zwei weitere Parameter: $ttl$ und $last\-Build\-Date$. $ttl$ steht für Time-To-Live und bezeichnet
 die Zeit, die ein Feed aktuell bleibt, bevor er Server-seitig aktualisiert wird. $lastBuildDate$ steht für den Zeitpunkt, zu dem ein
 Feed vom Server aktualisiert wurde.
@@ -116,10 +116,12 @@ ob und in welchen Fällen dies überhaupt sinnvoll ist. Informationen können vielf
 den Tag legen. Es hängt von der Vorhersagbarkeit des Auftretens neuer Daten und der zeitlichen Möglichkeit ab, diese Daten bereit zu stellen, mit welcher Güte
 der $ttl$ berechnet werden kann. Stellen wir uns eine
 Person vor, die regelmäßig jeden Tag ihr Tagebuch in einem Blog samt RSS-Feeds veröffentlicht. Sie besitzt ein nicht besonders
-leistungsfähiges Rechnersystem, welches bei einer großen und dauerhaften Anzahl von Webzugriffen schnell überlastet wird. Die Person steht jeden Tag um 8.00 Uhr auf,
+leistungsfähiges Rechnersystem, welches bei einer großen und dauerhaften Anzahl von Webzugriffen schnell überlastet wird. Die Person steht jeden Tag um 8.00 Uhr
+auf,
 so dass sie um 9.00 Uhr die Einträge des vorherigen Tages bereit gestellt hat. Sie kann somit in den RSS-Feed einen $ttl$-Wert von 24 Stunden eintragen. So wie es
 aussieht, spielt Aktualität in diesem Fall keine große Rolle, so dass für die Interessenten ein relativ großer $\varDelta Z$ Wert festgelegt werden kann (z. B. 12
-Stunden). Ein RSS-Reader eines Interessenten braucht somit frühestens um 9.00 Uhr  beim Anbieter nachzufragen und hat einen Spielraum von 12 Stunden. Mit dem von uns
+Stunden). Ein RSS-Reader eines Interessenten braucht somit frühestens um 9.00 Uhr  beim Anbieter nachzufragen und hat einen Spielraum von 12 Stunden. Mit dem von
+uns
 geplanten Pub/Sub-RSS-System reichen in diesem Fall schon sehr wenige Subscriber aus (vielleicht sogar nur einer), um den aktuellen Feed an die gesamte Fangemeinde
 zu übermitteln. Betrachten wir nun einen anderen Fall: eine Nachrichtenagentur stellt rund um die Uhr die neuesten Schlagzeilen in einem RSS-Feed zur Verfügung. Es
 ist nicht absehbar, wann ein neues Weltereignis eintritt, so dass die Nachrichtenagentur nicht plant, den RSS-Feed mit dem Wert $ttl$ zu versorgen. Eine
@@ -133,8 +135,8 @@ diese aktualisieren. Der gemessene Zeitraum erstreckt sich über
 24 Stunden, die Abtastrate betrug 60 Sekunden. Hierbei fällt auf, dass Spiegel und Heise in der Zeit zwischen ca. 0.00 und 5.00 Uhr keine Aktualisierungen
 vornehmen, wogegen zu den übrigen Zeiten die Aktualisierungsintervalle schwanken. Zur Nachtzeit würde es sich also anbieten, den $ttl$ zu setzten. Auch bei
 den New-York-Times fällt ein Zeitraum auf, indem nicht aktualisiert wird. Die zeitliche Differenz zu den deutschen Betreibern lässt sich vermutlich durch eine
-Zeitverschiebung erklären. Bei den New-York-Times fällt weiterhin auf, dass in der übrigen Zeit Aktualisierungen nur stündlich vorgenommen werden. Also auch hier ein
-Fall für einen vom Anbieter vorgegebenen $ttl$. Ebenfalls lässt sich bei Slashdot und Sourceforge eine gewisse Linearität der Aktualisierungsintervalle 
+Zeitverschiebung erklären. Bei den New-York-Times fällt weiterhin auf, dass in der übrigen Zeit Aktualisierungen nur stündlich vorgenommen werden. Also auch hier
+ein Fall für einen vom Anbieter vorgegebenen $ttl$. Ebenfalls lässt sich bei Slashdot und Sourceforge eine gewisse Linearität der Aktualisierungsintervalle 
 feststellen, wenn sie auch um einiges kürzer sind.
 
 

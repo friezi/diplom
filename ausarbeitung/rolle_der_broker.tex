@@ -7,7 +7,7 @@ unterschiedlicher Anbieter sein. Die einzelnen in den Feeds zusammengefassten Er
 Als Kriterien für neue Zusammenstellungen bieten sich die Aktualität der einzelnen Ereignisse sowie bestimmte Filterregeln an. Einzelne 
 Ereignisse, die den Broker bereits erreicht haben, brauchen nicht erneut weitergeleitet zu werden und finden daher nach unserem Konzept keinen
 Eingang in die neu zusammengestellten Feeds. Dadurch können Netzressourcen gespart werden. Voraussetzung dafür ist, dass der Broker einen Cache
-unterhält, in dem einige Ereignissen zwischengespeichert werden.\\
+unterhält, in dem einige Ereignisse zwischengespeichert werden.\\
 
 Filter können durch Subscriber definiert und bei Brokern
 hinterlegt werden. Aufgrund der Filterregeln können Ereignisse verschiedener
@@ -22,10 +22,11 @@ REBECA \cite{MuFiBu:2001:ArchFrameECommApp}), kombiniert werden.\\
 Um sich dem entsprechenden Broker bekannt zu machen und Filter zu hinterlegen, muss sich ein Subscriber bei diesem Broker mit einer speziellen
 Registrierungsnachricht registrieren.
 Ein Broker braucht nur an diejenigen Subscriber aktuelle Feeds zu übermitteln, welche auch tatsächlich online sind. Zusätzlich ist es also notwendig,
-dass ein Subscriber in regelmäßigen Zeitabständen den jeweiligen Broker über seinen Online-Status unterrichtet (nennen wir eine solche Nachrichten
-``KEEPALIVE''). Erhält ein Broker ein KEEPALIVE eines Subscribers, für den er den Zustand ``ist offline'' gespeichert hat, sollte er diesem eine
-Zusammenstellung der aktuellsten Ereignisse übermitteln. Denn kommt es aufgrund von Störungen im physischen Netzwerk oder aufgrund von Netzüberlastung
-zu verloren gegangenen KEEPALIVEs, so gilt der Subscriber für seinen Broker als ``offline'', dieser wird ihm daraufhin keine Feeds mehr übermitteln.
+dass ein Subscriber in regelmäßigen Zeitabständen den jeweiligen Broker über seinen Online-Status unterrichtet (nennen wir eine solche Nachrichte
+``KEEPALIVE-Nachricht''). Erhält ein Broker eine KEEPALIVE-Nachricht eines Subscribers, für den er den Zustand ``ist offline'' gespeichert hat,
+sollte er diesem eine Zusammenstellung der aktuellsten Ereignisse übermitteln. Denn kommt es aufgrund von Störungen im physischen Netzwerk oder
+aufgrund von Netzüberlastung zu verloren gegangenen KEEPALIVE-Nachrichten, so gilt der Subscriber für seinen Broker als ``offline'', dieser wird ihm
+daraufhin keine Feeds mehr übermitteln.
 Hat der Subscriber aufgrund von adaptiven Maßnahmen seine aktuelle Polling-Periode stark angehoben, so wird er zunächst keine weiteren Feeds beim
 entsprechenden RSS-Server selbständig erfragen, so dass ihm eventuell Informationen verloren gehen. Die Menge verloren gegangener Informationen
 kann geringer gehalten werden, wenn dem Subscriber die letzten Ereignisse bei Wiedereintritt in das Overlay-Netzwerk als Feed übermittelt werden.

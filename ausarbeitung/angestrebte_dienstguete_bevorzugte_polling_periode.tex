@@ -1,7 +1,7 @@
 \section{Angestrebte Dienstgüte: Bevorzugte Polling-Periode}
 Bei diesem Ziel gehen wir davon aus, dass jeder Klient spätestens nach einer von ihm festgelegten Zeitspanne (bevorzugte Polling-Periode) über neue Informationen
 benachrichtigt werden möchte. Es wird also eine bestimmte Aktualität der Informationen gewünscht. Sollte dieser Aktualitätsgrad aufgrund physikalischer Grenzen
-(Übertragungszeiten, Server-Kapazität) nicht erreicht werden können, so sollte der größtmögliche Aktualitätsgrad erreicht werden. Wir benötigen eine Metrik,
+(Übertragungs\-zei\-ten, Ser\-ver-Kapazität) nicht erreicht werden können, so sollte der größtmögliche Aktualitätsgrad erreicht werden. Wir benötigen eine Metrik,
 um die ``Quality of Service''(Dienstgüte) bestimmen zu können. Dafür definieren wir eine Bewertungsfunktion\todo{noch}\\
 
 Bei einigen Sorten von Informationen kann die Aktualität der Daten
@@ -29,7 +29,8 @@ Eine zu große Rate bzw. Frequenz der Anfragen kann also auch den Aktualitätsgrad
 
 Abbildung \ref{Abb:ZshgPollAkt} zeigt die Auswirkung der Polling-Rate (=1/Polling-Periode) auf den Aktualitätsgrad der Informationen\footnote{Die Grafik soll
 lediglich als schematische Illustration dienen, ein vermeintlicher exponentieller Zusammenhang wurde nicht beobachtet.}.
-Solch ein Zusammenhang wurde mit Hilfe der weiter unten beschriebenen Simulationsumgebung validiert.\\
+Solch ein Zusammenhang wurde mit Hilfe der weiter unten beschriebenen Simulationsumgebung validiert.
+
 \paragraph{Wahl der Zufallsspanne:}
 Es ist erforderlich, für die Berechnung von $\varDelta Z$ eine Größe heranzuziehen, welche sich den Gegebenheiten dynamisch anpasst.
 $ppp$ ist eine feste Größe, bzw.
@@ -39,10 +40,10 @@ ein Subscriber seine Anfrage an den RSS-Server stellen. Wie sich $cpp$ im Laufe 
 \ref{css:staukontrolle_pubsubrss} schildern.
 
 \paragraph{Initiale Belegung der aktuellen Polling-Periode:}
-Zunächst stellt sich die Frage, wie $cpp$ initial belegt werden soll, also bei Anmeldung des Subscribers am System bzw. beim Wechsel des Subscribers vom
-``Offline''- in den ``Online''-Zustand. Die Fragestellung nach einem initialen Timeout ist eine sehr grundsätzliche, die auch bei anderen Protokollfamilien
+Zunächst stellt sich die Frage, wie $cpp$ initial belegt werden soll, also bei Eintritt des Subscribers in das System.
+Die Fragestellung nach einem initialen Timeout ist eine sehr grundsätzliche, die auch bei anderen Protokollfamilien
 eine Rolle spielt (z. B. bei TCP, siehe auch \cite{18216}). Die Problematik ist hier die folgende:
-wählen wir eine sehr kurze Polling-Periode und registrieren sich gleichzeitig viele neue Subscriber im System, so kann es eventuell zur Überlastung
+wählen wir eine sehr kurze Polling-Periode und treten gleichzeitig viele neue Subscriber dem System bei, so kann es eventuell zur Überlastung
 des RSS-Servers kommen. Wählen wir eine lange Periode, so erhält der betreffende Subscriber einen neuen Feed möglicherweise erst sehr spät bzw. zu spät.
 Wir haben jedoch einen konkreten Richtwert, den $ppp$, und wir wählen initial $cpp:=ppp$.
 Es stellt sich die Frage, welcher alternative Wert angemessen wäre, da ``kurze Periode'' und ``lange Periode'' relative
@@ -62,6 +63,7 @@ erfüllt ist. Es bedarf einer Staukontrolle, die die Auslastung des Servers besti
 \input{feeds_und_timer}
 \input{ausbalancierung_der_pollingperioden}
 \input{churn}
+
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
