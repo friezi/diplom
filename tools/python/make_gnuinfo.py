@@ -9,6 +9,8 @@ import sys
 xmlpattern = compile("^.*\.xml")
 extractpattern = compile("^.*\+(.*)\+s(.*),_(.*),_(.*),_(.*),_(.*),_(.*),_(.*),_(.*),_(.*)e.*")
 intpattern = compile("^(.*)\..*")
+datafilesuffix = ""
+gnuplotfilesuffix = "_rss.gnuplot"
 
 def parsecmdl():
     
@@ -48,8 +50,8 @@ def extractInfo(ts_file):
 (options,args) = parsecmdl()
 
 files = listdir(options.dir)
-gnuplotdatafilename = options.dir + "/" + options.dir + "_rss.gnuplotdata"
-gnuplotcommandsfilename = options.dir + "/" + options.dir + "_rss.gnuplot"
+gnuplotdatafilename = options.dir + "/" + options.dir + datafilesuffix
+gnuplotcommandsfilename = options.dir + "/" + options.dir + gnuplotfilesuffix
 
 """ insert all events """
 maxevent = 0
