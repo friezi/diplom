@@ -97,11 +97,19 @@ public class ConfidenceIntervalCalculator {
 
 		String line = null;
 		while ( (line = scanner.readLine()) != null ) {
-			
-			if (line.equals(""))
+
+			if ( line.equals("") )
 				continue;
 
-			String scenario = dirname + "/" + line;
+			String entry = line.trim();
+
+			if ( entry.equals("") )
+				continue;
+
+			if ( entry.startsWith("#") )
+				continue;
+
+			String scenario = dirname + "/" + entry;
 
 			Properties properties = new Properties();
 
@@ -210,7 +218,7 @@ public class ConfidenceIntervalCalculator {
 			TDistribution tDistribution = DistributionFactory.newInstance().createTDistribution(it.stat.getN() - 1);
 			double confidenceInterval = tDistribution.inverseCumulativeProbability(1d - alpha / 2d) * it.stat.getStandardDeviation()
 					/ Math.sqrt(it.stat.getN());
-			
+
 			ci_output.write(String.valueOf(it.time) + " " + String.format(Locale.US, "% 9.9f", confidenceInterval) + "\n");
 			mv_output.write(String.valueOf(it.time) + " " + String.format(Locale.US, "% 9.9f", it.stat.getMean()) + "\n");
 			mvr_output.write(String.valueOf(it.time) + " " + String.format(Locale.US, "% 9.9f", it.stat.getMean() - confidenceInterval) + "\n");
