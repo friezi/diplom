@@ -5,9 +5,9 @@
 Hier finden sich die Herleitungen zu den Formeln zur Berechnung der mittleren Roundtrip-Times.
 \subsection*{Mittlere Roundtrip-Time bei exponentieller Steigerung des $rto$}
 
-Bei der Berechnung der mittleren Roundtrip-Time müssen wir zunächst die möglichen Zeitdifferenzen zwischen den Retransmissionen und Erhalt des Feeds aufsummieren.
-$T_1$ bis $T_4$ in der Abbildung \ref{Abb:exp_steigerung_rto} sind als Beispiele die Zeitpunkte der einzelnen Transmissionen bzw. Retransmissionen,
-$t_f$ ist der Zeitpunkt, zu dem der Feed den Subscriber erreicht. $i$ ist dabei die Anzahl der Retransmissionen (einschliesslich der ersten Transmission
+Bei der Berechnung der mittleren Roundtrip-Time müssen wir zunächst die möglichen Zeitdifferenzen zwischen den Wiederholungen und Erhalt des Feeds aufsummieren.
+$T_1$ bis $T_4$ in der Abbildung \ref{Abb:exp_steigerung_rto} sind als Beispiele die Zeitpunkte der einzelnen Aussendungen bzw. Wiederholungen,
+$t_f$ ist der Zeitpunkt, zu dem der Feed den Subscriber erreicht. $i$ ist dabei die Anzahl der Wiederholungen (einschliesslich der ersten Aussendung
 eines Feed-Requests).
 
 \begin{picturehere}{3}{4.5}{\mbox{exp. Steigerung des $rto$}}{Abb:exp_steigerung_rto}
@@ -54,7 +54,7 @@ Um den Mittelwert zu erhalten, müssen wir durch $i$ teilen:
 
 \subsection*{Mittlere Roundtrip-Time bei polynomieller Steigerung des $rto$}
 Analog zur Herleitung der mittleren Roundtrip-Time bei exponentieller Steigerung des $rto$ sind die Zeitdifferenzen wie in Abbildung \ref{Abb:poly_steigerung_rto}
-dargestellt. Die Koeffizienten sind nun $i\dots 2$ (da bei der ersten Transmission der $rto$ auf $rto:=2\cdot cpp$ gesetzt wird).
+dargestellt. Die Koeffizienten sind nun $i\dots 2$ (da bei der ersten Aussendung der $rto$ auf $rto:=2\cdot cpp$ gesetzt wird).
 \begin{picturehere}{3}{4.5}{\mbox{polyn. Steigerung des $rto$}}{Abb:poly_steigerung_rto}
  
 \begin{picture}(7,1)(1.5,-2.5)
@@ -114,3 +114,8 @@ Als Mittelwert ergibt sich nun:
 \end{equation}
 
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

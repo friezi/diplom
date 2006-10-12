@@ -54,22 +54,24 @@ Churn-Rate.
 \subsubsection{Churn-Kompensation bei \pubsubrss}
 Um die negativen Auswirkungen von Churn bei \pubsubrss zu reduzieren, muss also die Mehrbelastung des Servers durch neu hinzugekommene Subscriber so weit wie möglich
 vermieden werden. Dabei hilft uns folgende Idee: tritt ein Subscriber dem System bei, so existieren eventuell schon genügend Subscriber, welche einen
-aussagekräftigen $rtt$ und $cpp$ berechnet haben. der neu hinzugekommene Subscriber kann sich also an diesen Richtwerten orientieren. Es wäre mit einigem Aufwand
+aussagekräftigen $artt$ und $cpp$ berechnet haben. der neu hinzugekommene Subscriber kann sich also an diesen Richtwerten orientieren. Es wäre mit einigem Aufwand
 verbunden, die Anzahl der Subscriber im gesamten Netzwerk zu bestimmen. Es reicht jedoch aus, die Anzahl der Subscriber heranzuziehen, welche mit dem gleichen
 lokalen Broker verbunden sind. Diese Information kann der lokale Broker ohne Schwierigkeiten liefern. Da den Broker nur $RichRSSFeeds$ passieren (siehe Abschnitt
-\ref{cs:ausbalancierung_der_polling-perioden}), kann dieser den entahltenen $feed.rtt$ zwischenspeichern. Betritt nun ein neuer Subscriber das System, so kann
-der Broker diesem den aktuellen Feed mitsamt des zwischengespeicherten $rtt$ übermitteln. Der neue Subscriber wählt nun wie bisher seinen $cpp$ auf Basis dieses
-$feed.rtt$. Dadurch steigen neue Subscriber bei der Messung der Roundtrip-Time bereits auf einem höheren Niveau ein, wovon wir uns eine Entlastung des RSS-Servers
+\ref{cs:ausbalancierung_der_polling-perioden}), kann dieser den enthaltenen Wert des $feed.artt$ zwischenspeichern. Betritt nun ein neuer Subscriber das System, so kann
+der Broker diesem den aktuellen Feed mitsamt des zwischengespeicherten $artt$-Wertes übermitteln. Der neue Subscriber wählt nun wie bisher seinen $cpp$ auf Basis dieses
+$feed.artt$-Wertes. Dadurch steigen neue Subscriber bei der Messung der Roundtrip-Time bereits mit einer höheren $cpp$ ein, wovon wir uns eine Entlastung des RSS-Servers
 versprechen. Experimente und ihre Auswirkung zu diesem Punkt folgen in Kapitel \ref{c:experimente}.\\
 
 Um dieses Verfahren zu realisieren, müssen wir eine zusätzliche Datenstruktur und zusätzliche Methoden zu unseren schon bestehenden hinzufügen:
 
-\begin{verbatim}
+
+\lstset{language=Java}
+\begin{lstlisting}
 
 public class InitialBrokerRSSFeed extends RSSFeed {
 
         zahl_lokaler_subscriber;
-        rtt;
+        artt;
 
 }
 
@@ -78,11 +80,11 @@ speichere_initiale_borkerinformationen(InitialBrokerRSSFeed feed) {
         if ( feed.zahl_lokaler_subscriber < 2 )
           return;
 
-        if ( feed.rtt < 1 )
+        if ( feed.artt < 1 )
           return;
 
-        setze_rtt(feed.rtt);
-        setze_cpp(rtt);
+        setze_artt(feed.artt);
+        setze_cpp(artt);
         setze_icpp(cpp);
 
         aktualisiere_RQT_durch_initialen_brokerfeed();
@@ -96,5 +98,5 @@ aktualisiere_RQT_durch_initialen_brokerfeed() {
 
 }
 
-\end{verbatim}
+\end{lstlisting}
 

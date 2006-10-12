@@ -19,7 +19,7 @@ Problemstellung unter Berücksichtigung der gegebenen Umstände zurecht geschnitte
 \label{css:tcp}
 TCP (Transmission Control Protocol) ist ein verbindungsorientiertes Über\-tra\-gungs\-pro\-to\-koll. Es kontrolliert die Datenübertragung zwischen Sender und
 Empfänger der Endknoten. Dabei wird gewährleistet, dass jedes der einzelnen Datenpakete (die einen Datenstrom formen) den Empfänger erreicht
-und die Ordnung der Pakete
+und dass die Ordnung der Pakete
 innerhalb des Datenstroms bestehen bleibt. Bei Datenstau handelt es sich um Verlust von Datenpaketen. Falls es zu Datenstau kommt, so tritt dieser immer an
 Verbindungsknoten (einschließlich des Empfangsknotens) auf und kann durch verschiedene Ursachen auf dem Weg zwischen Sender und Empfänger hervorgerufen werden:
 \begin{description}
@@ -78,7 +78,7 @@ $Acks$ können die Geschwindigkeit des Datenflusses steuern, doch was geschieht, 
 beispielsweise bei voll ausgenutzter Bandbreite plötzlich zwei Datenströme dieselbe Leitung teilen, kommt es bei gleichbleibender Datentransferrate mit Sicherheit zu
 Paketverlusten und somit zu
 ausbleibenden $acks$. Der Sender muss einen Timer unterhalten, bei dessen Ablauf das zuletzt gesendete Datenpaket erneut versendet wird (im Folgenden als
-Retransmission \todo{anderen Begriff wählen: z. B. Wiederholungen}bezeichnet). Paketverlust kann auch
+``Wiederholung'' bezeichnet). Paketverlust kann auch
 durch Beschädigung der Daten während der Übermittlung auftreten. Nach van Jacobson \cite{jacobson88congestion} liegt die Wahrscheinlichkeit dafür aber weit
 unter 1\%. Daher lassen Timeouts bei gut eingestellten Timern mit sicherer Gewissheit auf Paketverluste schließen \footnote{Zur Problematik
 bei Timern siehe \ref{css:timer}}. Diese Timeouts werden pro Verbindung dynamisch berechnet; im Folgenden bezeichnet $rto$ das ``retransmission timeout''-Intervall,
@@ -97,7 +97,7 @@ $\alpha$ ist ein ebenfalls empirisch ermittelter Glättungsfaktor (``smoothing fa
 $1.3 \sim 2$ \cite{18216}.\\
 Laut van Jacobson \cite{jacobson88congestion} liegt hierin folgende Problematik: $\beta$ kann sich höchstens an eine bis zu 30\% gesteigerte Last anpassen. Aber die
 Varianz des Wertes $rtt$ steigert sich rapide mit ansteigender Last. Bei
-Laststeigerung über die 30\%-Marke hinaus kommt es zu verspäteten $acks$. Der jeweilige abgelaufene Timer bewirkt eine Retransmission des entsprechenden
+Laststeigerung über die 30\%-Marke hinaus kommt es zu verspäteten $acks$. Der jeweilige abgelaufene Timer bewirkt eine Wiederholung des entsprechenden
 Datenpaketes, was zu unnötiger Mehrarbeit des Netzwerkes und zu Bandbreitenverschwendung führt. Daher wird $\beta$ ebenfalls dynamisch berechnet.
 Eine Berechnungsmethode findet sich in \cite{jacobson88congestion}.
 
@@ -122,7 +122,7 @@ Dieser Algorithmus trägt zur Stauvermeidung (``congestion avoidance'') bei und b
 
 \paragraph{Karn's clamped retransmit backoff:}
 \label{csp:karns_algorithmus}
-Sequenznummern ermöglichen die Zuordnung eines $acks$ zu dem entsprechenden Datenpaket. Kommt es aufgrund von Timeouts zu Retransmissionen
+Sequenznummern ermöglichen die Zuordnung eines $acks$ zu dem entsprechenden Datenpaket. Kommt es aufgrund von Timeouts zu Wiederholungen
 desselben Datenpaketes, so tritt ein Problem auf, welches Karn und Partridge in \cite{Karn1991} als ``retransmission ambiguity'' bezeichnen:
 es kann nicht festgestellt werden, auf welche Aussendung desselben Datenpaketes sich das $ack$ bezieht. Damit ist nicht klar, anhand welches Paketes
 sich der $rtt$ bestimmen soll, er wird in jedem Falle nicht verlässlich sein. Verschiedene Protokollimplementationen behandeln dieses Problem
@@ -136,21 +136,21 @@ ein: der $srtt$ sinkt auf ein sehr niedriges Niveau, obwohl sich in diesem Falle
 
 Wird die am kürzesten zurückliegende Aussendung herangezogen, so ist die Wahrscheinlichkeit laut Karn sehr groß, dass die Zeitfolge zwischen dieser Sendung und dem
 ankommenden $ack$ sehr kurz ist, obwohl sich das $ack$ auf eine weiter zurückliegende Sendung bezieht. Dies führt zu einer drastischen Reduzierung des $srtt$,
-was überflüssige Retransmissionen und damit eine zusätzliche Verschwendung der Bandbreite zur Folge hat \cite{Karn1991,Jain1986}. Andere Implementationen
-lassen die $rtt$ bei Retransmissionen außer acht. Dies geht gut, solange der $rto$ nicht schneller ansteigt, als der Algorithmus sich adaptieren kann. Ist $\beta$
-gut gewählt, so ist die Möglichkeit dafür sehr gering. Tritt dieser Fall dennoch ein, so kommt es (wie im letztgenannten Fall) zu überflüssigen Retransmissionen.\\
+was überflüssige Wiederholungen und damit eine zusätzliche Verschwendung der Bandbreite zur Folge hat \cite{Karn1991,Jain1986}. Andere Implementationen
+lassen die $rtt$ bei Wiederholungen außer acht. Dies geht gut, solange der $rto$ nicht schneller ansteigt, als der Algorithmus sich adaptieren kann. Ist $\beta$
+gut gewählt, so ist die Möglichkeit dafür sehr gering. Tritt dieser Fall dennoch ein, so kommt es (wie im letztgenannten Fall) zu überflüssigen Wiederholungen.\\
 
 Um diesem Problem zu begegnen, schlägt Karn folgenden Algorithmus vor \cite{Karn1991}:\\
 Grundsätzlich wird der $rto$ nach einem Timeout vergrößert (``back-off'').
-Erreicht ein $ack$ den Sender nach einer Retransmission eines Datenpaketes, so wird keine Neuberechnung des $rtt$ und $srtt$ vorgenommen. Dafür wird der neu
-ermittelte (``backed-off'') $rto$ als Grundlage für die nächste Retransmission bzw. für die Aussendung des nächsten Datenpaketes herangezogen. Nur wenn ein $ack$
-den Sender ohne vorausgehende Retransmission erreicht, wird der $rto$ mit Hilfe des nun neu berechneten $srtt$ ermittelt.\\
-Die Wahl des neuen $rto$ im Falle einer Retransmission muss laut Karn so erfolgen, dass der $rto$ größer ist als die tatsächliche Roundtrip-Time. Typischerweise
+Erreicht ein $ack$ den Sender nach einer Wiederholung eines Datenpaketes, so wird keine Neuberechnung des $rtt$ und $srtt$ vorgenommen. Dafür wird der neu
+ermittelte (``backed-off'') $rto$ als Grundlage für die nächste Wiederholung bzw. für die Aussendung des nächsten Datenpaketes herangezogen. Nur wenn ein $ack$
+den Sender ohne vorausgehende Wiederholung erreicht, wird der $rto$ mit Hilfe des nun neu berechneten $srtt$ ermittelt.\\
+Die Wahl des neuen $rto$ im Falle einer Wiederholung muss laut Karn so erfolgen, dass der $rto$ größer ist als die tatsächliche Roundtrip-Time. Typischerweise
 geschieht die Steigerung des $rto$ exponentiell (entsprechend des ``exponential retransmit timer backoff'', s. o.).
 
 \paragraph{fast retransmit:}
 Erreichen den Sender vier identische $acks$ in Folge, so wird der Sender das vom Empfänger erwartete Datenpaket sofort aussenden, ohne auf das
-Ablaufen des Retransmissionstimers zu warten. ``Slow-start'' wird so lange ausgesetzt, bis ein anderes, nicht zu den vorherigen identisches $ack$ den Sender
+Ablaufen des Retransmission-Timers zu warten. ``Slow-start'' wird so lange ausgesetzt, bis ein anderes, nicht zu den vorherigen identisches $ack$ den Sender
 erreicht  (\cite{RFC2581}). Die identischen $acks$ lassen sowohl darauf schließen, dass ein Datenpaket verloren gegangen ist, als auch, dass andere Datenpakete den
 Empfänger höchstwahrscheinlich erreichen, da die identischen $acks$ sonst ausgeblieben wären. Die den identischen $acks$ zugrundeliegenden Datenpakete beeinflussen
 das Datenaufkommen nicht mehr, da diese schon die Empfänger-Queue erreicht haben. Daher geht man davon aus, dass das erneute, schnelle Senden des fehlenden
@@ -335,26 +335,11 @@ Timer $RQT$ (für ``Request-Timer'') eingerichtet werden, nach dessen Ablauf der 
 Timer $RT$ (für ``Retransmission-Timer'') eingerichtet werden, nach dessen Ablauf der Feed-Request erneut ausgesandt wird. Die Unterscheidung der beiden Timer
 ist rein konzeptioneller Natur, in der Praxis können wir sagen: $RT:=RQT$, der $RQT$ wird dann je nach Situation unterschiedlich gesetzt. Um eine klarere
 Differenzierung vorzunehmen, werden wir trotzdem dort zwischen den Begriffen $RQT$ und $RT$ unterscheiden, wo es der Deutlichkeit halber angebracht erscheint.
-Mitbestimmend für den $RQT$ ist der $cpp$, mitbestimmend für den $RT$ der $rto$. $cpp$ wird ebenfalls je nach Situation unterschiedlich berechnet.\\
+Mitbestimmend für den $RQT$ ist der $cpp$, mitbestimmend für den $RT$ der $rto$. $cpp$ wird ebenfalls je nach Situation unterschiedlich berechnet.
 
-Eine untere Schranke für den Wert $cpp$ soll $ppp$ bilden. Da jeder Subscriber $ppp$ individuell festlegen kann, ist es nicht notwendig,
-$cpp$ kleiner als $ppp$ zu wählen.
-Das heißt nicht, dass ein Subscriber frühestens nach Ablauf der Zeit $ppp$ einen neuen Feed bekommt: existieren im gleichen Netzwerk andere Subscriber, die einen
-niedrigeren $ppp$ eingestellt haben, so kann jener Subscriber davon profitieren, da ihm dann ebenfalls neu auftretende Feeds nach kürzerer Zeit zugestellt werden.
-Möchte ein Subscriber sicher gehen, dass ein bestimmter Aktualitätsgrad der Feeds erreicht wird, so muss er den $ppp$ entsprechend setzen.\\
-
-Wir wollen ebenfalls eine obere Schranke für den Wert $cpp$, den $mpp$ (für maximale Polling-Periode), definieren. Dieser vermeidet, dass bei ungünstigen
-Konstellationen der $cpp$ zu groß wird (z. B. wenn jeder Feed-Request eines Subscribers vom RSS-Server verworfen wird, obwohl der Server nicht stark
-überlastet ist). Dieser sollte abhängig vom jeweiligen Overlay-Netzwerk bestimmt werden.\\
-
-Der $rtt$ kann nur gemessen werden, wenn ein Subscriber einen RSS-Feed von einem RSS-Server zugesandt bekommt. Grundsätzlich dient der Wert $rtt$ als
-Bezugspunkt für $cpp$. Bei jeder Änderung von $rtt$ berechnet sich $cpp$ wie
-folgt:
-\begin{equation}
-  cpp:=min\{mpp,max\{rtt,ppp\}\}
-\end{equation}
-Bei Einstieg des Subscribers in das System wird (s. o.) $rtt:=ppp$ gesetzt. Erhält ein Subscriber einen RSS-Feed vom RSS-Server, so wird,
-falls der $RT$ bisher noch nicht abgelaufen ist, $rtt$ auf die gemessene Roundtrip-Time gesetzt.
+\paragraph{Berechnung von $rto$ und $rtt$:}
+Der $rtt$ kann nur gemessen werden, wenn ein Subscriber einen RSS-Feed von einem RSS-Server zugesandt bekommt. Das setzt voraus, dass zuvor eine Anfrage an den
+RSS-Server gestellt und dabei der $RT$ gesetzt wurde.
 Bestimmend für den $RT$ ist der $rto$, welcher initial und bei Erhalt eines vom RSS-Server direkt versendeten Feeds auf $rto:=cpp$ gesetzt wird.
 Bei jeder Aussendung eines Feed-Requests wird
 zunächst der $rto$ verdoppelt und $RT$ neu gesetzt. Dies bedeutet exponentielles Wachstum des $rto$. Damit das System skalierbar ist und die Adaption auch bei
@@ -367,39 +352,61 @@ Muss es allerdings zu mehrfachen Versuchen kommen, eine Verbindung aufzubauen, s
 Die Notwendigkeit mehrfacher Versuche lässt auf eine Überlastung des Servers schließen, so dass der $cpp$-Wert entsprechend angepasst werden muss. Daher soll
 $rtt$ nicht die eigentliche Roundtrip-Time bezeichnen, sondern in $rtt$ müssen die mehrfachen Verbindungsversuche mit einfließen. Bezeichne $t_{V_1}$ den Zeitpunkt
 des ersten Verbindungsversuches und $t_B$ den Zeitpunkt des ersten auftretenden Datenbytes, so bestimmt sich $rtt$ wie folgt:
-
 \begin{equation}
-rtt:=t_B - t_{V_1}
+rtt:=t_B - t_{V_1}.
 \end{equation}
 
-Hierbei kann $rtt$ möglicherweise sehr große Beträge annehmen. 
+Experimente haben gezeigt, dass der so berechnete Wert $rtt$ für die Berechnung von $cpp$ nicht ausreicht, um eine gute Adaption an die Serverbelastung zu bewirken.
+Daher definieren wir einen weiteren Wert
+(eine skalierte Version des $rtt$-Wertes), den $artt$ (``adjusted roundtrip-time''), mit
+\begin{equation}
+artt:=sf(i)\cdot rtt.
+\end{equation}
 
-Hier kann man eine Analogie zum Konzept der PI-Reglern herstellen (obwohl es nur Parallelen in den Grundideen gibt): während man den bereits berechneten $cpp$
-als proportionalen Anteil in der Berechnung auffassen kann, gibt es eine Parallele zwischen der Anpassung des $rto$ und dem integrativen Anteil beim PI-Regler,
-da die Anpassung des $rto$ die zeitliche Dauer der Server-Antwort berücksichtigt.\\
+Dabei ist $sf()$ die Skalierungsfunktion und $i$ die Anzahl der ausgesendeten Anfragen bzw. die Anzahl der Verbindungsversuche bis zu einer erfolgreichen Verbindung.
+Experimente mit Hilfe der entwickelten Simulationsumgebung haben gezeigt, dass eine quadratische Skalierungsfunktion ein
+besseres Adaptionsverhalten als eine lineare Skalierung ermöglicht. Bei starker Serverbelastung hingegen sind Nebenwirkungen durch die quadratische Skalierung
+geringer als bei einer exponentiellen Skalierung. Dabei muss man berücksichtigen, dass die Berechnung des $rtt$-Wertes sowieso schon auf exponentieller Basis geschieht, da der für
+Wiederholungen relevante $rto$-Wert exponentiell gesteigert wird. Wir definieren also
+\begin{equation}
+sf(x):=x^2.
+\end{equation}
 
+Hier kann man eine Analogie zum Konzept der PI-Reglern herstellen (obwohl es nur Parallelen in den Grundideen gibt): während man den $rtt$-Wert
+als proportionalen Anteil in der Berechnung auffassen kann, entspricht die Skalierungsfunktion $sf()$ dem integrativen Anteil beim PI-Regler,
+da diese die zeitliche Dauer der Server-Antwort berücksichtigt.\\
+
+Bei Eintritt des Subscribers in das System wird $artt:=ppp$ gesetzt. 
+
+\paragraph{Berechnung von $cpp$:}
+Grundsätzlich dient der Wert $artt$ als Bezugspunkt für $cpp$.
+Eine untere Schranke für den Wert $cpp$ soll $ppp$ bilden. Da jeder Subscriber $ppp$ individuell festlegen kann, ist es nicht notwendig,
+$cpp$ kleiner als $ppp$ zu wählen.
+Das heißt nicht, dass ein Subscriber frühestens nach Ablauf der Zeit $ppp$ einen neuen Feed bekommt: existieren im gleichen Netzwerk andere Subscriber, die einen
+niedrigeren $ppp$ eingestellt haben, so kann jener Subscriber davon profitieren, da ihm dann ebenfalls neu auftretende Feeds nach kürzerer Zeit zugestellt werden.
+Möchte ein Subscriber sicher gehen, dass ein bestimmter Aktualitätsgrad der Feeds erreicht wird, so muss er den $ppp$ entsprechend setzen.\\
+
+Wir wollen ebenfalls eine obere Schranke für den Wert $cpp$, den $mpp$ (für maximale Polling-Periode), definieren. Dieser vermeidet, dass bei ungünstigen
+Konstellationen der $cpp$ zu groß wird (z. B. wenn jeder Feed-Request eines Subscribers vom RSS-Server verworfen wird, obwohl der Server nicht stark
+überlastet ist). Dieser sollte abhängig vom jeweiligen Overlay-Netzwerk bestimmt werden.\\
+
+Bei jeder Änderung von $artt$ berechnet sich $cpp$ wie
+folgt:
+\begin{equation}
+  cpp:=min\{mpp,max\{artt,ppp\}\}.
+\end{equation}
 Ein Varianzfaktor wird hierbei nicht hinzugezogen. Berechnungen auf dieser Grundlage
 lieferten in der Simulation gute Ergebnisse. Eine Optimierung wäre eventuell möglich, wenn man einen Varianzfaktor entsprechend der $rto$-Berechnung bei
 TCP hinzuzieht. Dies soll aber nicht Gegenstand dieser Arbeit sein und bleibt offen für weitere Forschungen.
-Neuberechnungen von $cpp$ und $rtt$ finden zunächst nur dann statt, wenn ein Subscriber einen RSS-Feed von einem RSS-Server erhält.
-Weitere Verbesserungen werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} betrachten.\\
+Neuberechnungen von $cpp$ und $artt$ finden zunächst nur dann statt, wenn ein Subscriber einen RSS-Feed von einem RSS-Server erhält.
+Weitere Verbesserungen werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} betrachten.
 
 \paragraph{Ungenauigkeiten und Probleme:}
-Wie oben angedeutet, entspricht der gemessene $rtt$, auch wenn der $RT$ noch nicht abgelaufen ist, nicht immer der tatsächlichen Roundtrip-Time.
-Denn denkbar ist folgendes
-Szenario: aufgrund abgelaufener Retransmissionstimer hat ein Subscriber einige Feed-Requests mehrfach ausgesandt. Diese sind aber nicht verloren gegangen, sondern
-befinden sich in der Queue des RSS-Servers, welcher einer zeitgerechten Antwort nicht nachkommen kann. Der erste vom Server ausgesandte Feed dient als
-Berechnungsgrundlage für den $rtt$ des Subscribers, welcher nach kurzer Zeit (nach Ablauf von $RQT$) eine neue (erste) Anfrage stellt. Sendet ihm nun der RSS-Server
-einen Feed aufgrund eines noch in der Queue befindlichen Feed-Requests, so interpretiert der Subscriber jenen als Antwort auf seine letzte Anfrage, obwohl er sich
-noch auf die vorherige Anfrageserie bezieht. In diesem Falle ist der $rtt$ falsch. Dieses Problem ließe sich nur beheben, wenn die Feeds den Feed-Requests
-eindeutig zuordenbar wären (z. B. durch Sequenz- und Retransmissions-Sequenznummern). Da unser Ansatz dies nicht zulässt, müssen wir diese eventuelle Ungenauigkeit
-leider in Kauf nehmen.\todo{siehe Korrektur}\\
-
 Ein Problem ist denkbar, welches sich auch in der Simulation gezeigt hat: einige wenige Subscriber, welche Anfragen mit einer hohen Frequenz aussenden (also
 bei einer sehr kleinen Polling-Periode), können die übrigen Subscriber ``aussperren''. Die Subscriber, welche eine kürzere Polling-Periode berechnet haben, können
 diese halten, da ihre Anfragen (bedingt durch deren Menge) eine größere Chance haben, in der Server-Queue zu landen. Die Queue wird unter diesen wenigen
 Subscribern aufgeteilt. Somit erhalten sie die Feeds als Antwort auch mit einer höheren Frequenz vom Server. Dabei muss man bedenken,
-dass sich die Anfragen mehrfacher Retransmissionen in der Server-Queue befinden können. Diese werden
+dass sich die Anfragen mehrfacher Wiederholungen in der Server-Queue befinden können. Diese werden
 nach und nach bearbeitet, Feeds werden an den jeweiligen Subscriber geschickt. Eine eventuelle Messung der Roundtrip-time wird dadurch verfälscht, so dass der
 Subscriber (in der Annahme, der Server kann der Beantwortung einer Anfrage schnell nachkommen) seinen $cpp$ konstant halten kann. Die Polling-Perioden der
 übrigen Subscriber wachsen dagegen drastisch. Denn gerade durch den Umstand, dass ihre
@@ -411,12 +418,12 @@ Verlassen nun die Subscriber mit einer kurzen Polling-Periode das Netz, so steht
 zunächst fast still, da die restlichen Subscriber Anfragen erst nach einer großen Zeitdifferenz erneut aussenden. Wie man dieser Dysbalance entgegenwirken kann,
 werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} darstellen.\\
 
-Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt (im obigen Absatz bereits angesprochen) ist die Berechnung des Wertes $rtt$,
+Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt (im obigen Absatz bereits angesprochen) ist die Berechnung des Wertes $artt$,
 falls $RT$ noch nicht abgelaufen ist. In diesem Fall wird bei unserer Berechnung
-der $rtt$ direkt auf die gemessene Roundtrip-Time gesetzt, während bei TCP diese nur zum Teil (unter zusätzlicher Zuhilfenahme des Glät\-tungs\-fak\-tors $\alpha$,
+der $artt$ direkt auf die gemessene Roundtrip-Time gesetzt, während bei TCP diese nur zum Teil (unter zusätzlicher Zuhilfenahme des Glät\-tungs\-fak\-tors $\alpha$,
 siehe Abschnitt \ref{cssp:tcp_rtt}, Seite \pageref{cssp:tcp_rtt}) in die Berechnung eingeht. Diese direkte Rück\-setzung könnte zu einem starken Schwingungsverhalten der
 Server-Belastung und somit der Polling-Perioden im System führen. Allerdings ist eine schnelle Reaktion des Systems auf eine
-verbesserte Server-Reaktionsfähigkeit erwünscht, und in der Mehrheit der Fälle werden nicht alle Subscriber gleichzeitig den Wert $rtt$ auf diese Weise ermitteln.
+verbesserte Server-Reaktionsfähigkeit erwünscht, und in der Mehrheit der Fälle werden nicht alle Subscriber gleichzeitig den Wert $artt$ auf diese Weise ermitteln.
 Beobachtungen zeigen jedoch, dass es bei einer plötzlichen Erreichbarkeit des Servers tatsächlich zu einem Ansturm
 auf diesen kommen kann. Wir werden aber
 dieses Phänomen in Zusammenhang mit der vorgestellten Technik in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} eindämmen können. 

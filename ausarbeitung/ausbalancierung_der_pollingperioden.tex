@@ -7,18 +7,18 @@ finden. Um diesem Problem beizukommen, müssen bei Dysbalancen im System Subscrib
 Polling-Perioden Gelegenheit bekommen müssen, diese zu erniedrigen.\\
 
 Um dieses Ziel zu erreichen, verwenden wir folgendes Verfahren: speist ein Subscriber einen RSS-Feed in das Notifikationssystem ein (er sendet den Feed an den
-ihm zugewiesenen Broker), so übermittelt er als zusätzliches Attribut den von ihm gemessenen $rtt$. Erhält ein Subscriber einen RSS-Feed vom Notifikationssystem,
-so stellt sein neuer $rtt$-Wert den Mittelwert aus seinem eigenen $rtt$ und dem übermitteltem $rtt$ dar, also:
+ihm zugewiesenen Broker), so übermittelt er als zusätzliches Attribut den von ihm gemessenen $artt$. Erhält ein Subscriber einen RSS-Feed vom Notifikationssystem,
+so stellt sein neuer $artt$-Wert den Mittelwert aus seinem eigenen $artt$ und dem übermitteltem $artt$ (im Folgenden nennen wir ihn $feed.artt$) dar, also:
 \begin{equation}
-  rtt:=\frac{rtt+feed.rtt}{2}
+  artt:=\frac{artt+feed.artt}{2}
 \end{equation}
 Es handelt sich dabei um ein kooperatives Modell: die gegenseitige Unterstützung der Subscriber wird vorausgesetzt, ein gemeinsames Ziel verlangt die Einschränkung
 des Einzelnen.
 \paragraph{Auswirkungen:}
-Das Verfahren führt dazu, dass Subscriber mit einer langen Polling-Periode, die einen Feed mit einem niedrigen $rtt$ erhalten, ihre Polling-Periode senken,
+Das Verfahren führt dazu, dass Subscriber mit einer langen Polling-Periode, die einen Feed mit einem niedrigen $artt$ erhalten, ihre Polling-Periode senken,
 allerdings nicht auf das Niveau des Subscribers, welcher den Feed ausgesandt hat. Somit wird eine zu schnelle Überlastung des Systems vermieden.
 Im Gegenzug wird ein Subscriber mit einer gesenkten Polling-Periode schneller in den Genuss einer Server-Antwort kommen, so dass er ebenfalls einen Feed mit
-seinem noch relativ hohen $rtt$ in das Notifikationssystem einspeisen kann. Das führt dazu, dass Subscriber mit einer niedrigen Polling-Periode diese bei Erhalt
+seinem noch relativ hohen $artt$ in das Notifikationssystem einspeisen kann. Das führt dazu, dass Subscriber mit einer niedrigen Polling-Periode diese bei Erhalt
 jenes Feeds erhöhen.\\
 
 Dies hat noch einen weiteren positiven Nebeneffekt: angenommen, alle Subscriber haben eine lange Polling-Periode aufgrund einer länger anhaltenden Server-Überlastung
@@ -29,7 +29,7 @@ Polling-Periode drastisch gesenkt haben, werden gezwungen sein, ihre Polling-Per
 Polling-Perioden an die Server-Auslastung.\\
 Bei einer plötzlichen Server-Überlastung wird das jeder Subscriber schnell mitbekommen, weswegen sich in diesem Fall nicht viel ändert.\\
 
-Dadurch, dass der Wert $rtt$ und nicht der Wert $cpp$ übermittelt wird, kann jeder Subscriber seinen eigenen $cpp$-Wert entsprechend seiner Voreinstellungen
+Dadurch, dass der Wert $artt$ und nicht der Wert $cpp$ übermittelt wird, kann jeder Subscriber seinen eigenen $cpp$-Wert entsprechend seiner Voreinstellungen
 ($ppp$) unabhängig der Voreinstellungen anderer Subscriber berechnen.\\
 
 Die Wirksamkeit der ausbalancierenden Methode gegenüber der nicht-ausbalancierenden Methode wird mit Hilfe der selbst entwickelten Simulationsumgebung gezeigt,
@@ -50,13 +50,13 @@ Listen wir die Vorteile und möglichen Nachteile dieser Methode auf:
   \end{itemize}
 \end{itemize}
 
-Das Verfahren erfordert auf der Ebene des Notifikationssystems eine neue Datenstruktur, um den neu hinzugekommenen Wert $rtt$ aufzunehmen. Folgende auf Java-Syntax
-beruhende Datenstrukturen sind denkbar:
+Das Verfahren erfordert auf der Ebene des Notifikationssystems eine neue Datenstruktur, um den neu hinzugekommenen Wert $artt$ aufzunehmen. Folgende auf Java-Syntax
+beruhende Datenstruktur ist denkbar:
 
 \begin{verbatim}
 class RichRSSFeed extends RSSFeed{
 
-    long rtt;
+    long artt;
 
 }
 
@@ -65,7 +65,7 @@ class RichRSSFeed extends RSSFeed{
 \todo{KORREKTUR???}
 
 Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time
-mitteilen kann, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt werden.
+mitteilen kann, muss nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt und $artt$ neu berechnet werden.
 Wir müssen außerdem unsere Methoden zur Aktualisierung des $RQT$ anpassen.\\
 
 Auch hierbei können gewisse Probleme und Seiteneffekte auftreten, die wir im Folgenden mitsamt Lösungen beschreiben.
@@ -78,43 +78,48 @@ ausgesendet werden würde. Ansonsten kommt der neue
 $cpp$ erst bei der nächsten Runde in Betracht.
 
 \paragraph{Beeinflussung des $cpp$:}
-Was soll passieren, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Retransmissionen auftraten und der Subscriber
-sich bei laufendem $RT$ gerade in der Messung der Roundtrip-Time befindet? Die Messung und die Retransmissionen sollten weiter laufen. Nach dem bisherigen
-Konzept dient als
-Berechnungsgrundlage für den $rtt$ nun jedoch der neue $cpp$ (ermittelt durch den im Feed enthaltenen $rtt$; im Folgenden nennen wir ihn $feed.rtt$).
-Der nach Abschluss der Messung ermittelte $rtt$ steht mit Sicherheit in
-keiner Beziehung zur eigentlichen Roundtrip-Time. Um diesem Phänomen vorzubeugen, müssen wir einen neuen Wert definieren, den $icpp$ (für initial-cpp), welcher als
-Berechnungsgrundlage für $rto$ und $rtt$ dienen soll und den $cpp$ in diesem Zusammenhang ersetzt. Bei jedem Setzen des $RQT$ wird $icpp$ auf
-$icpp:=cpp$ gesetzt. Während einer Messung der Roundtrip-Time kann nun der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
-Da nach Abschluss der Messung $rtt$ und somit $cpp$ neu berechnet werden, hat letztlich in diesem Fall die Übermittlung des $rtt$ eines anderen Subscribers
-keinen Einfluss mehr auf den $rtt$-Wert des empfangenden Subscribers.
-Ist der übermittelte $feed.rtt$ größer als der $rtt$-Wert des Empfängers, so ist dies ein akzeptables Verhalten, denn der übermittelte
-$feed.rtt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen Roundtrip-Time vorbei gehen. Der empfangende
-Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.rtt$ jedoch kleiner als der $rtt$-Wert des Empfängers, so
-wäre eine Einflussnahme von Vorteil, da der Wert des $feed.rtt$ vermutlich aussagekräftiger ist. Denn entweder wurden weniger Retransmissionen benötigt, um diesen zu
-ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. In diesem Fall setzen wir $icpp:=cpp$ (da $cpp$ schon aufgrund des
-$feed.rtt$-Wertes neu berechnet wurde). Die Berechnung des $rtt$-Wertes nach Abschluss der Messung beruht zwar auf einem falschen Wert, führt aber zu der Möglichkeit, den
-$ppp$-Wert durch den $cpp$-Wert anzunähern. Würden wir diese Modifikation nicht vornehmen, hätte keine Ausbalancierung stattgefunden.\\
+Was soll passieren, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Wiederholungen auftraten und der Subscriber
+sich bei laufendem $RT$ gerade in der Messung der Roundtrip-Time befindet? Die Messung und die Wiederholungen sollten natürlich weiter laufen.
+Nach unserem bisherigen Konzept hat der übermittelte $feed.artt$ keinen Einfluss auf die zeitliche Abfolge wiederholter Anfragen.
+Ist der Wert des übermittelten $feed.artt$ größer als der $artt$-Wert des Empfängers zu Beginn der Messung, so ist dies ein akzeptables Verhalten,
+denn der Wert des übermittelten $feed.artt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen Roundtrip-Time
+vorbei gehen. Der empfangende
+Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.artt$ jedoch kleiner als der $artt$-Wert des Empfängers
+zu Beginn der Messung, so wäre eine Einflussnahme von Vorteil, da der Wert des $feed.artt$ vermutlich aussagekräftiger ist. Denn entweder wurden weniger
+Wiederholungen benötigt, um diesen zu
+ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. Um dieses Verhalten zu ermöglichen, müssen wir einen neuen Wert definieren,
+den $icpp$ (für initial-cpp), welcher als
+Berechnungsgrundlage für $rto$ dienen soll und den $cpp$ in diesem Zusammenhang ersetzt. Bei jedem Setzen des $RQT$ wird $icpp$ auf
+$icpp:=cpp$ gesetzt. Die Berechnung von $rto$ erfolgt dann nach jeder Aussendung einer Anfrage wie folgt:
+\begin{equation}
+rto:=2^i\cdot icpp
+\end{equation}
+Hierbei ist $i$ ebenfalls die Anzahl der Anfragen bzw. Verbindungsversuche.\\
+
+Während einer Messung der Roundtrip-Time kann der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
+Da nach Abschluss der Messung $artt$ und somit $cpp$ neu berechnet werden, hat letztlich in diesem Fall die Übermittlung des $artt$ eines anderen Subscribers
+keinen Einfluss auf den $artt$-Wert des empfangenden Subscribers. Im dem Fall jedoch, dass $feed.artt$ kleiner als der $artt$-Wert zu Beginn der Messung ist
+(gilt dann, wenn $cpp<icpp$, da $cpp$ schon aufgrund des $feed.artt$-Wertes neu berechnet wurde), setzen wir $icpp:=cpp$.
+Würden wir diese Modifikation nicht vornehmen, hätte in diesem Fall keine Ausbalancierung stattgefunden.\\
 
 Unsere Algorithmen müssen wir also wie folgt modifizieren und vervollständigen:
 
-\lstset{language=Java}
+\lstset{language=Java,emph={setze_icpp,berechne_mittleren_artt},emphstyle=\underbar}
 \begin{lstlisting}
 
-berechne_mittleren_rtt(Feed feed){
+berechne_mittleren_artt(Feed feed){
 
-    alter_rtt = rtt;
-    setze_rtt((feed.rtt + rtt) / 2);
-    setze_cpp(rtt);
+    setze_artt((feed.artt + artt) / 2);
+    setze_cpp(artt);
 
-    if ( feed.rtt < alter_rtt )
+    if ( cpp < icpp )
       setze_icpp(cpp);
 
 }
 
 aktualisiere_RQT_durch_alten_Brokerfeed {
 
-    berechne_mittleren_rtt(feed);
+    berechne_mittleren_artt(feed);
 
     if ( RT_läuft_nicht ){
 
@@ -128,7 +133,7 @@ aktualisiere_RQT_durch_alten_Brokerfeed {
 
 aktualisiere_RQT_durch_neuen_Brokerfeed {
 
-    berechne_mittleren_rtt(feed);
+    berechne_mittleren_artt(feed);
 
     berechne_delta_ttr(cpp);
     if ( delta_ttr < RQT.Zeitdifferenz_bis_ablauf )
@@ -139,7 +144,8 @@ aktualisiere_RQT_durch_neuen_Brokerfeed {
 aktualisiere_RQT_durch_alten_Serverfeed {
 
     berechne_rtt();
-    setze_cpp(rtt);
+    berechne_artt();
+    setze_cpp(artt);
     setze_icpp(cpp);
     stoppe_RT();
     setze_rto_zurück();
@@ -150,7 +156,8 @@ aktualisiere_RQT_durch_alten_Serverfeed {
 aktualisiere_RQT_durch_neuen_Serverfeed {
 
     berechne_rtt();
-    setze_cpp(rtt);
+    berechne_artt();
+    setze_cpp(artt);
     setze_icpp(cpp);
     stoppe_RT();
     setze_rto_zurück();
