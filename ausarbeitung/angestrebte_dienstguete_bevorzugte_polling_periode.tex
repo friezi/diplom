@@ -1,8 +1,19 @@
 \section{Angestrebte Dienstgüte: Bevorzugte Polling-Periode}
-Bei diesem Ziel gehen wir davon aus, dass jeder Klient spätestens nach einer von ihm festgelegten Zeitspanne (bevorzugte Polling-Periode) über neue Informationen
+Bei diesem Ziel gehen wir davon aus, dass jeder Klient spätestens nach einer von ihm festgelegten Zeitspanne $ppp$ (``preferred polling-period'',bevorzugte Polling-Periode)
+über neue Informationen
 benachrichtigt werden möchte. Es wird also eine bestimmte Aktualität der Informationen gewünscht. Sollte dieser Aktualitätsgrad aufgrund physikalischer Grenzen
 (Übertragungs\-zei\-ten, Ser\-ver-Kapazität) nicht erreicht werden können, so sollte der größtmögliche Aktualitätsgrad erreicht werden. Wir benötigen eine Metrik,
-um die ``Quality of Service''(Dienstgüte) bestimmen zu können. Dafür definieren wir eine Bewertungsfunktion\todo{noch}\\
+um die ``Quality of Service''(QoS,Dienstgüte) bestimmen zu können. Mit ihrer Hilfe ist für einen Benutzer nachvollziehbar, welche eventuellen Verbesserungen
+ihm ein neues Verfahren gegenüber dem bisherigen bietet. Dafür definieren wir eine Bewertungsfunktion. Bei vielen Optimierungsproblemen ist es nötig,
+eine zu minimierende Bewertungsfunktion zu wählen (Bsp. Suche nach kürzesten Wegen in einem Graphen). Obwohl uns in unserem Fall die Bewertungsfunktion
+nicht dabei hilft, eine Optimierung durchzuführen, werden wir uns dennoch danach richten. Da der Aktualitätsgrad eine zu maximierende Funktion wäre, wählen
+wir den Verzögerungsgrad ($Vg$) der RSS-Feeds:
+\begin{equation}
+Vg:=\frac{\varDelta pubDate\cdot 100}{ppp}
+\end{equation}
+
+Dabei ist $\varDelta pubDate$ die Zeitspanne vom aktuellen Zeitpunkt bis zum am weitesten zurückliegenden Ereignis innerhalb des letzten RSS-Feeds. Die
+zeitliche Verzögerung eines RSS-Feeds wird also in Abhängigkeit von der bevorzugten Polling-Periode in Prozent angegeben.\\
 
 Bei einigen Sorten von Informationen kann die Aktualität der Daten
 für den Interessenten von entscheidender Relevanz sein, wie z. B. bei aktuellen Börsennachrichten, wo es für den Interessenten darauf ankommt, möglichst schnell
@@ -11,17 +22,18 @@ einem Push-basierten Ansatz erreichen zu können, ist relativ simpel. Bei Änderun
 alle Interessenten. Nun hängt der Aktualitätsgrad nur von der Übertragungsgeschwindigkeit der Nachrichten im Netzwerk ab. Wir betrachten aber ein Pull-basiertes
 System, bei dem erst auf Anfrage der Klienten die angeforderte Information übersendet wird. Der Interessent hat grundsätzlich keinen Überblick darüber, wann neue
 Informationen beim Anbieter vorliegen. Um den gewünschten Aktualitätsgrad einer Information zu erreichen, muss ein Klient also spätestens nach Ablauf der von ihm
-bevorzugten Polling-Periode $ppp$ (preferred polling-period) den Server kontaktieren. Der Wert $ppp$ kann von jedem Klienten individuell eingestellt werden.
+bevorzugten Polling-Periode $ppp$ den Server kontaktieren. Der Wert $ppp$ kann von jedem Klienten individuell eingestellt werden.
 Bei einer großen Anzahl von Klienten im Netzwerk kann dies aber einen
-nachteiligen Effekt haben (siehe Abschnitt \ref{vs_ziele}). Steigt die Füllgröße der Server-Queue, so steigt auch dessen Antwortzeit bezüglich eines Klienten.
+nachteiligen Effekt haben (siehe Abschnitt \ref{vs_ziele}). Steigt die Füllgröße der Server-Queue, so vergrößert sich auch die Antwortzeit des Servers bezüglich
+eines Klienten.
 Die Füllgröße der Server-Queue kann nur dann im Mittel konstant gehalten werden, wenn das mittlere Intervall der Ankunftszeiten der Klientenanfragen die mittlere
 Bearbeitungszeit pro Anfrage nicht übersteigt (zu Queueing-Systemen siehe \cite{Kleinrock:Th1975}). Wenn $\lambda$ die mittlere Ankunftsrate der Anfragen ist und
 $\bar x$ die mittlere Bearbeitungszeit pro Anfrage, so definieren wir $\rho:=\lambda\bar x$ (utilization factor). Damit die Auslastung der Server-Queue stabil
 ist, muss gelten $0\leq\rho<1$ (wir haben es
 nach Kleinrock \cite{Kleinrock:Th1975} im allgemeinen mit einem G/G/1-System zu tun, was ein Ein-Server-System bezeichnet, bei dem weder über die mittlere
-Ankunftszeit noch über die mittlere Bearbeitungszeit der Anfragen genaue Aussagen getroffen werden können). Ist die Kapazitätsgrenze der Server-Queue erreicht,
+Ankunftsrate noch über die mittlere Bearbeitungszeit der Anfragen genaue Aussagen getroffen werden können). Ist die Kapazitätsgrenze der Server-Queue erreicht,
 werden darüber hinaus ankommende Anfragen verworfen. Aber auch diese Nachrichten kosten zunächst ein gewisses Maß an Bearbeitungszeit und Netzwerkkapazitäten.
-Eine zu große Rate bzw. Frequenz der Anfragen kann also auch den Aktualitätsgrad der Informationen senken.\\
+Eine zu hohe Rate bzw. Frequenz der Anfragen kann also auch den Aktualitätsgrad der Informationen senken.\\
 
 \begin{picturehere}{1}{7}{\mbox{Zusammenhang Polling-Rate -- Aktualitätsgrad}}{Abb:ZshgPollAkt}
  \includegraphics[bb=100 0 200 250,scale=0.9]{Zusammenhang_Pollingrate_Aktualitaetsgrad}

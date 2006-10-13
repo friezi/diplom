@@ -225,7 +225,7 @@ Ein PID-Regler ist ein allgemeiner Reglertyp, der häufig für Regelungen Verwendu
 Ein P-Regler sorgt dafür, dass (im stationären Zustand) ein dem Eingangssignal proportionales Ausgangssignal geliefert wird (unter Zuhilfenahme eines
 Verstärkungsfaktors). Ein I-Regler summiert die Regeldifferenz über einen gewissen Zeitraum und führt damit eine Integration aus. Je länger eine Regeldifferenz
 besteht, desto größer wird die Stellgröße. Ein D-Regler reagiert nur auf die Änderungsgeschwindigkeit der Regeldifferenz. Er liefert einen entsprechend starken,
-kurzen positiven Impuls \todo{soll weg:(ein reiner D-Regler hat in der Praxis keine Bedeutung)}.
+kurzen positiven Impuls.
 
 Die allgemeine mathematische Gleichung für einen PID-Regler lautet wie folgt
 (siehe \cite{WBuettner1991}):
@@ -250,7 +250,7 @@ Störgröße lediglich in ihrer Wirksamkeit gemindert werden kann. Eine vollständig
 Verstellung des Stellgliedes vorzunehmen \cite{Bernstein1998}. Mit einem I-Regler kann man die Regelabweichung sehr genau unterbinden, jedoch arbeitet dieser
 relativ langsam und neigt zu Schwingungen. Die Vorteile beider Reglertypen vereint der PI-Regler. Reine D-Regler finden in der Praxis keine Verwendung, da sie bei
 stabiler Regelgröße nicht in den Regelvorgang eingreifen können. Die Kombination mit einem P-Regler (also ein PD-Regler) bewirkt ein schnelleres Anspringen der
-Regelung bei plötzlicher Regelabweichung im Vergleich zu einem reinen P-Regler.\\
+Regelung bei plötzlicher Regelabweichung im Vergleich zu einem reinen P-Regler.
 
 \paragraph{Bezug zur Zielsetzung:}
 Wir können die Erfüllung der Ungleichung $0\leq\rho<1$ durch einen Regelkreis beschreiben. Die zu regelnde Größe ist dabei $\rho$. Die Stellgröße
@@ -301,14 +301,13 @@ Im Folgenden soll der Wert $rtt$ den Näherungswert an die Roundtrip-Time bezeich
 zu berechnen. Mit Hilfe von $rtt$ können wir dann $rto$ und $cpp$ ermitteln.\\
 
 Der konzeptionelle Unterschied zwischen $rto$ und $cpp$ ist folgender: während der $cpp$ zur Berechnung des $\varDelta ttr$ bei erfolgreicher Anfrage
-(also nach Erhalt eines RSS-Feeds) dient, \todo{dient,dient}dient der $rto$ zur Berechnung des $\varDelta ttr$ bei nicht erfolgreicher Anfrage, also nach Ablauf des
+(also nach Erhalt eines RSS-Feeds) beiträgt, dient der $rto$ zur Berechnung des $\varDelta ttr$ bei nicht erfolgreicher Anfrage, also nach Ablauf des
 ``Retransmission-Timers'' ohne Erhalt eines
 RSS-Feeds. Ob wir diese Werte separat berechnen, oder ob wir einen funktionalen Zusammenhang zwischen diesen Werten herstellen, werden wir im Folgenden erörtern.
 
 Bei TCP gibt es ebenfalls eine funktionale Unterscheidung zwischen $srtt$ und $rto$,
-wobei der $cpp$ hier für den $srtt$ bei TCP steht. Im Unterschied zu TCP reicht bei uns der Wert $cpp$ als Timeout \todo{siehe Korrektur}für die nächste Anfrage
-jedoch nicht aus, da es in unserem Fall
-nicht um einen Datenstrom \todo{ANPASSUNG AN TCP}und somit nicht um die Aussendung des nächsten Datenpaketes geht. In unserem Fall muss die Zeit
+wobei der $cpp$ hier für den $srtt$ bei TCP steht. Im Unterschied zu TCP bilden die verschiedenen Anfragen jedoch keinen Datenstrom. Der Wert $cpp$
+reicht als Timeout-Intervall für die nächste Anfrage nicht aus. In unserem Fall muss die Zeit
 bis zum Aussenden der nächsten Anfrage $\varDelta ttr$, die sich mit Hilfe von $cpp$ berechnet, ermittelt werden.\\
 
 Beim Anpassen des $cpp$ müssen wir berücksichtigen, dass grundsätzlich nicht ein Subscriber alleine für eine Überlastung verantwortlich ist, sondern in den
@@ -364,10 +363,10 @@ artt:=sf(i)\cdot rtt.
 \end{equation}
 
 Dabei ist $sf()$ die Skalierungsfunktion und $i$ die Anzahl der ausgesendeten Anfragen bzw. die Anzahl der Verbindungsversuche bis zu einer erfolgreichen Verbindung.
-Experimente mit Hilfe der entwickelten Simulationsumgebung haben gezeigt, dass eine quadratische Skalierungsfunktion ein
-besseres Adaptionsverhalten als eine lineare Skalierung ermöglicht. Bei starker Serverbelastung hingegen sind Nebenwirkungen durch die quadratische Skalierung
+Experimente mit Hilfe der entwickelten Simulationsumgebung haben gezeigt, dass eine polynomielle Skalierungsfunktion (quadratisch) ein
+besseres Adaptionsverhalten als eine lineare Skalierung ermöglicht. Bei starker Serverbelastung hingegen sind Nebenwirkungen durch die polynomielle Skalierung
 geringer als bei einer exponentiellen Skalierung. Dabei muss man berücksichtigen, dass die Berechnung des $rtt$-Wertes sowieso schon auf exponentieller Basis geschieht, da der für
-Wiederholungen relevante $rto$-Wert exponentiell gesteigert wird. Wir definieren also
+Wiederholungen relevante $rto$-Wert exponentiell gesteigert wird. Wir definieren also \todo{exponentiell}
 \begin{equation}
 sf(x):=x^2.
 \end{equation}
