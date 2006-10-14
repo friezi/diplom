@@ -49,7 +49,8 @@ mem = ""
     
 dir = options.dir
 execdir = os.path.dirname( sys.argv[0] )
-seedsfile = dir + "/" + options.seedsfile
+seedsfile = dir + '/' + options.seedsfile
+seedfile = dir + '/' + seedfile
 
 if options.mail != None:
     mail = 'true'
@@ -118,5 +119,5 @@ try:
         os.remove( mailfile )
         
 except IOError:
-    print 'file "' + seedsfile + '" not found'
+    sys.stdout.write('file "' + seedsfile + '" not found\n')
     sys.exit( 1 )
