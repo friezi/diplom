@@ -49,7 +49,7 @@ mem = ""
     
 dir = options.dir
 execdir = os.path.dirname( sys.argv[0] )
-seedsfile = options.seedsfile
+seedsfile = dir + "/" + options.seedsfile
 
 if options.mail != None:
     mail = 'true'
