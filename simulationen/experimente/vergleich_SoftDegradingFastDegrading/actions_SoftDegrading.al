@@ -1,5 +1,6 @@
 0 : startGnuplotRecording
 1 : setServiceTimeFactor(50)
+1 : subscribersJoin(1000)
 3500 : setServiceTimeFactor(48)
 3540 : setServiceTimeFactor(47)
 3580 : setServiceTimeFactor(46)
