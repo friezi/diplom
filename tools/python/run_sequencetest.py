@@ -119,5 +119,5 @@ try:
         os.remove( mailfile )
         
 except IOError:
-    sys.stdout.write('file "' + seedsfile + '" not found\n')
+    sys.stderr.write('file "' + seedsfile + '" not found\n')
     sys.exit( 1 )
