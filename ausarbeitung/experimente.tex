@@ -29,20 +29,49 @@ zuständig sind.\\
 
 Da ein einziger Durchlauf eines Experimentes möglicherweise keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 Mal mit unterschiedlichen
 Seed-Werten (Ausgangswerte für Zufallsfunktion) durchgeführt. Für jeden gemessenen Wert wurden aus den verschiedenen Ergebnissen Mittelwerte und Konfidenzintervalle
-berechnet. Bei jedem Durchlauf mit anderem Seed-Wert verändert sich das Overlay-Netzwerk geringfügig. (s. o.).
-
+berechnet. Bei jedem Durchlauf mit anderem Seed-Wert verändert sich das Overlay-Netzwerk geringfügig (s. o.).
 \paragraph{Parameter:}
-\todo{folgt}
+Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
+angegebenen Parameter als Standardwerte gesetzt.
 
+\begin{table}
+\begin{center}
+  \begin{tabular}{|rlr|}
+    \hline
+    Parameter&Wert&Beschreibung\\
+    \hline\hline
+    &&\\
+    engineTimerPeriod & 5 & Laufzeitfaktor für Nachrichtengeschwindigkeiten\\
+    gnuplotTimeStepSecs & 5 & Abtastrate für gemessene Werte in Sekunden\\
+    &&\\
+    maxFeedEvents & 5 & max. Anzahl von Events innerhalb eines Feeds\\
+    maxSubscriberEvents & 10 & Anzahl Events, die ein Subscriber vorhält\\
+    &&\\
+    maxPollingPeriod & 910800 & $mpp$\\
+    preferredPollingPeriod & 1 & $ppp$\\ 
+    &&\\
+    ttl & 5 & $ttl$ pro Feed\\
+    &&\\
+    serverQueueSize & 40 & Größe der Server-Queue\\
+    &&\\
+    rssFeedMsgRT & 70 & Basislaufzeit f. RSS-Feeds\\
+    rssFeedRequestMsgRT & 50 & Basislaufzeit f. Feed-Requests\\
+    &&\\
+    \hline
+  \end{tabular}
+\end{center}
+\caption{Standardparameter}
+\label{Tab:Standardparameter}
+\end{table}
 
-\section{Legende der Diagramme}
-\todo{folgt}
+Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$. Wir haben bewusst relativ hohe
+Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen.
 
 \section{Experimente -- optimale Polling-Periode}
 
 \subsection{Referenzverlauf}
-Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} zum Zwecke eines Referenzverlaufs den optimalen Kurvenverlauf, wobei alle in den vorherigen Kapiteln
-beschriebenen Verfahren zur Anwendung kommen.
+Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} zum Zwecke einer Referenz den optimalen Kurvenverlauf, wobei alle in den vorherigen Kapiteln
+beschriebenen Verfahren zur Anwendung kamen (eine Legende zu den Diagrammen findet sich im Anhang auf Seite \pageref{legende}).
 
 \importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{Referenzverlauf}
 
@@ -61,3 +90,8 @@ ausbleibt.
 \importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
 \importsmallgnuplotps{Vergleich: Ausbalancierung -- keine Ausbalancierung}{Abb:Vgl_Ausb_KAusb}{vgl_ToTR_BalancingNoBalancing}
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

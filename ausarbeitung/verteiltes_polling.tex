@@ -35,9 +35,10 @@ einen Klienten über einen Broker, so besitzt der Klient diesen neuen Feed bereit
 Die einfachste Lösung wäre, einen dedizierten Publisher zu bestimmen, welcher als alleiniger Klient das Polling übernimmt. Alle weiteren Klienten
 würden die Feeds über das Broker-Netzwerk erhalten. Vorteil wäre, daß es relativ wenig
 Anfragen an den RSS-Server gäbe. Die Nachteile überwiegen jedoch: in Abhängigkeit von der Netzstruktur kann es zu langen Übertragungszeiten der Feeds für einzelne
-oder mehrere Subscriber kommen. Wir müssten eine geringere Aktualität der Daten \todo{in Kauf} nehmen. Zudem hätten \todo{}wir das Problem des
-\glqq Single Point of Failure\grqq: fällt der dedizierte Publisher aus, kann die Verbreitung der Feeds zunächst nicht mehr erfolgen.
-Erst, nachdem das Netzwerk den Ausfall registriert hat und entsprechende Gegenmaßnahmen eingeleitet hat (z. B. Bestimmung eines neuen dedizierten
+oder mehrere Subscriber kommen. Dabei müsste eine geringere Aktualität der
+Daten in Kauf genommen werden. Zudem ergäbe sich das Problem des \glqq Single
+Point of Failure\grqq: fällt der dedizierte Publisher aus, kann die Verbreitung der Feeds zunächst nicht mehr erfolgen.
+Erst, nachdem das Netzwerk den Ausfall registriert und entsprechende Gegenmaßnahmen eingeleitet hat (z. B. Bestimmung eines neuen dedizierten
 Publishers), kann es zu einer weiteren Verbreitung der Feeds kommen. Darüber hinaus könnten die Klienten nicht von verteiltem Polling profitieren.
 \subsubsection*{Ansatz: Mehrere Publisher}
 Daher favorisieren wir eine Lösung, bei der zu gegebener Zeit nur eine gewisse Auswahl der Klienten gleichzeitig Anfragen an den RSS-Server senden.
@@ -45,3 +46,8 @@ Es muss also zu einer Abstimmung bzw. Koordinierung der Klienten untereinander k
 dass Ausfälle von Publishern im Netz nicht zu Datenverlust führen sollen; d. h. jeder Subscriber sollte die Informationen bzw. Feeds, die er zu erhalten wünscht,
 auch dann erhalten, wenn die für das Polling vorgesehenen Klienten ausfallen.
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

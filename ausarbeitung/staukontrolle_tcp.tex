@@ -1,0 +1,153 @@
+\section{Staukontrolle bei TCP}
+\label{staukontrolle_tcp}
+Seitdem Computer-Netzwerke explosionsartig an Größe und Komplexität zugenommen haben, hat sich ein Problem verstärkt bemerkbar gemacht: Datenstau.
+Van Jacobson et. al. \cite{jacobson88congestion} schildern die Beobachtung, dass Mitte der 1980er Jahre Internet-Gateways 10\% der
+ankommenden Pakete aufgrund von Pufferüberläufen verwarfen. Laut seiner Aussage lag dabei das Problem nicht in den Protokollspezifikationen selbst, sondern
+hauptsächlich in deren Implementierungen. TCP ist ein verbindungsorientiertes Über\-tra\-gungs\-pro\-to\-koll, mit dessen Hilfe der Großteil
+des Netzwerkverkehrs vonstatten geht. Im Laufe der Zeit wurden in TCP Mechanismen eingebaut und verbessert, um Datenstau festzustellen und soweit wie möglich
+zu vermeiden. TCP kontrolliert die Datenübertragung zwischen Sender und
+Empfänger der Endknoten. Dabei wird gewährleistet, dass jedes der einzelnen Datenpakete (die einen Datenstrom formen) den Empfänger erreicht
+und dass die Ordnung der Pakete
+innerhalb des Datenstroms bestehen bleibt. Bei Datenstau handelt es sich um Verlust von Datenpaketen. Falls es zu Datenstau kommt, so tritt dieser immer an
+Verbindungsknoten (einschließlich des Empfangsknotens) auf und kann durch verschiedene Ursachen auf dem Weg zwischen Sender und Empfänger hervorgerufen werden:
+\begin{description}
+  \item [Bandbreiten:]
+    Unterschiedliche Bandbreiten auf dem Weg zwischen Sender und Empfänger beeinflussen die Übertragungsgeschwindigkeit einer Verbindung
+    nachteilig in der
+    Form, dass die ``langsamste'' Leitung (also die mit der geringsten Bandbreite) die
+    Gesamt-Übertragungsgeschwindigkeit vorgibt. Trifft eine schnelle Leitung auf eine langsame Leitung, so können die an der langsamen Leitung ankommenden
+    Pakete nicht schnell genug weitergeleitet werden. An diesem Knoten kommt es zum Pufferüberlauf, Datenpakete gehen verloren.
+  \item [Anzahl der Verbindungen:]
+    An einem Knotenpunkt können mehrere Verbindungen zusammen kommen, die den Gesamt-Datenfluss an diesem Punkt erhöhen. Auch hier kann es zum Pufferüberlauf
+    kommen, so dass Datenpakete verloren gehen.
+\end{description}
+Damit jedes ausgesandte Paket den Empfänger erreicht, werden in TCP Bestätigungs-Nachrichten (Acknowledgements, im Folgenden kurz $acks$ genannt) versandt.
+Erhält der Sender für ein gesendetes TCP-Datenpaket kein $ack$, so wird er das Datenpaket erneut senden. Ein wichtiger Bestandteil eines Datenpaketes ist
+die Sequenznummer \cite{RFC2581}. Anhand der Sequenznummer kann ein $ack$ eindeutig einem versendeten Datenpaket zugeordnet werden. Innerhalb des $acks$ vermerkt
+der Empfänger ebenfalls, welches Datenpaket er als nächstes erwartet \cite{RFC793}.
+Um eine Staukontrolle zu erreichen wurden einige Algorithmen in TCP integriert (siehe \cite{jacobson88congestion}, wir halten uns dabei an die englischen
+Bezeichnungen):
+\begin{itemize}
+  \item slow-start
+  \item roundtrip-time variance estimation
+  \item exponential retransmit timer backoff
+  \item more aggressive receiver ack policy
+  \item dynamic window sizing on congestion
+  \item Karn's clamped retransmit backoff
+  \item fast retransmit
+\end{itemize}
+
+Dabei soll erreicht werden, dass die maximal mögliche Bandbreite (begrenzt durch die minimale Bandbreite (``bottleneck'') auf dem Verbindungsweg, s. o.) voll
+ausgenutzt wird, ohne
+dass Pakete verloren gehen; es darf also kein Paket in das Netzwerk eingespeist werden, bevor ein altes Paket entfernt wurde (die Verbindung befindet sich dann im
+``Equilibrium'', der Paketfluss ist ``conservative'' \cite{jacobson88congestion}). Im Folgenden wollen wir die wichtigsten der oben genannten Algorithmen
+vorstellen. Eine genaue Herleitung und Analyse der Algorithmen geht jedoch über den Rahmen dieser Arbeit hinaus.
+Wir verweisen auf die entsprechenden Quellen in den Literaturangaben.
+
+\paragraph{more aggressive receiver ack policy:}
+\footnote{Hier ist in \cite{jacobson88congestion} nicht eindeutig feststellbar,  worauf sich van Jacobson genau bezieht, da er diese Bezeichnung im weiteren Text
+nicht mehr verwendet. Es erschien sinnvoll, die folgende im o. g. Text zu findende Erklärung diesem Thema zuzuordnen.}TCP
+ist ``self-clocking'': da $acks$ erst nach Erhalt der entsprechenden Datenpakete versendet werden können, bestimmt die Rate der ankommenden $acks$ die
+Rate, mit der weitere Datenpakete ausgesendet werden sollen. Die Senderate passt sich somit automatisch der Bandbreite an.
+
+\paragraph{slow-start:}
+Durch das ``self-clocking'' tritt nur beim Start des Datentransfers ein Problem auf, da
+hier zunächst eine feste Rate gewählt werden muss. Diese wird zu Beginn relativ niedrig gewählt, bzw. ein Staufenster ``congestion window'' ($cngw$) 
+bestimmt die Anzahl der Pakete pro Sendevorgang. Bei Start des Transfers oder nach Paketverlust wird die Größe des Staufenster auf 1 gesetzt.
+Für jedes $ack$ wird das Staufenster um den Betrag 1 erhöht. Begrenzt wird dessen Größe durch das ``advertised receiver window'',
+welches vom Empfänger festgelegt wird und angibt, wieviele Bytes maximal als nächstes übersendet werden sollen. Die Zunahme der Größe $w$ des
+Staufensters geschieht in der Zeit
+$rtt\cdot log_2w$, wobei $rtt$ die ``roundtrip-time'' des letzten versendeten Datenpaketes ist (Zeit zwischen Versenden eines Datenpaketes und Erhalt des
+entsprechenden $acks$). Siehe dazu \cite{jacobson88congestion,RFC2581}. 
+
+\paragraph{roundtrip-time variance estimation:}
+\label{cssp:tcp_rtt}
+$Acks$ können die Geschwindigkeit des Datenflusses steuern, doch was geschieht, wenn $acks$ aufgrund verloren gegangener Pakete ausbleiben? Müssen sich
+beispielsweise bei voll ausgenutzter Bandbreite plötzlich zwei Datenströme dieselbe Leitung teilen, kommt es bei gleichbleibender Datentransferrate mit Sicherheit zu
+Paketverlusten und somit zu
+ausbleibenden $acks$. Der Sender muss einen Timer unterhalten, bei dessen Ablauf das zuletzt gesendete Datenpaket erneut versendet wird (im Folgenden als
+``Wiederholung'' bezeichnet). Paketverlust kann auch
+durch Beschädigung der Daten während der Übermittlung auftreten. Nach van Jacobson \cite{jacobson88congestion} liegt die Wahrscheinlichkeit dafür aber weit
+unter 1\%. Daher lassen Timeouts bei gut eingestellten Timern mit sicherer Gewissheit auf Paketverluste schließen \footnote{Zur Problematik
+bei Timern siehe \ref{css:timer}}. Diese Timeouts werden pro Verbindung dynamisch berechnet; im Folgenden bezeichnet $rto$ das ``retransmission timeout''-Intervall,
+also die Zeitdifferenz bis zum nächsten Aussenden eines Datenpaketes. Entsprechend der TCP-Spezifikation
+berechnet sich dieser Wert wie folgt \cite{18216}:
+\begin{equation}
+  rto=min\{UBound, max\{LBound, \beta \cdot srtt\}\}
+\end{equation}
+$\beta$ ist dabei ein empirisch ermittelter Varianz-Faktor, $UBound$ und $LBound$ sind untere und
+obere Schranke für den $rto$, $srtt$ ist die ``smoothed roundtrip time'' und
+wird wie folgt ermittelt:
+\begin{equation}
+  srtt= \alpha \cdot  srtt+ (1 - \alpha) \cdot  rtt
+\end{equation} 
+$\alpha$ ist ein ebenfalls empirisch ermittelter Glättungsfaktor (``smoothing factor''). Empfohlene Werte sind für $\alpha:$ $0.8 \sim 0.9$ und für $\beta:$
+$1.3 \sim 2$ \cite{18216}.\\
+Laut van Jacobson \cite{jacobson88congestion} liegt hierin folgende Problematik: $\beta$ kann sich höchstens an eine bis zu 30\% gesteigerte Last anpassen. Aber die
+Varianz des Wertes $rtt$ steigert sich rapide mit ansteigender Last. Bei
+Laststeigerung über die 30\%-Marke hinaus kommt es zu verspäteten $acks$. Der jeweilige abgelaufene Timer bewirkt eine Wiederholung des entsprechenden
+Datenpaketes, was zu unnötiger Mehrarbeit des Netzwerkes und zu Bandbreitenverschwendung führt. Daher wird $\beta$ ebenfalls dynamisch berechnet.
+Eine Berechnungsmethode findet sich in \cite{jacobson88congestion}.
+
+\paragraph{exponential retransmit timer backoff:}
+Um den Datenstau durch mehrfach ausgesandte Pakete nicht noch zu vermehren, muss sich der $rto$ stetig vergrößern.
+Van Jacobson \cite{jacobson88congestion} stellt heraus, dass nur exponentielles Wachstum des $rto$ Erfolg verspricht.
+Daher wird nach jedem erneuten Aussenden eines nicht bestätigten Datenpaketes der $rto$ verdoppelt.
+
+\paragraph{dynamic window sizing on congestion:}
+Ein Vergrößern des $rto$ verhindert nur einen zusätzlichen Datenstau durch erneut ausgesandte Datenpakete. Damit auch die im Anschluss daran neu
+ausgesandten Pakete nicht wieder zum Anstieg des Datenstaus führen, wird ebenfalls die Größe der Staufenster $cwnd$ halbiert (exponentielle Abnahme).
+Ausbleibende oder verzögerte $acks$ geben nur Auskunft über auftretenden Datenstau. Sie können nicht anzeigen, ob die volle Bandbreite einer Verbindung auch wirklich
+ausgenutzt wird. Daher sollte die Größe der Staufenster nach einem bestimmten Schema angehoben werden. Die Anpassung von $cwnd$ geschieht nach folgendem Prinzip:
+\begin{itemize}
+  \item Nach jedem Timeout wird $cwnd$ halbiert.
+  \item Nach jedem $ack$ für neue Daten wird $cwnd$ um $1/cwnd$ erhöht.
+  \item Beim Senden wird das Minimum an Daten von $cwnd$ und dem ``receivers advertised window'' gesendet.
+\end{itemize}
+
+Dieser Algorithmus trägt zur Stauvermeidung (``congestion avoidance'') bei und besteht parallel zum ``slow-start''-Algorithmus. Van Jacobson gibt in
+\cite{jacobson88congestion} ein Auswahlkriterium an, nachdem zustandsabhängig zwischen beiden Algorithmen ausgewählt wird.
+
+\paragraph{Karn's clamped retransmit backoff:}
+\label{csp:karns_algorithmus}
+Sequenznummern ermöglichen die Zuordnung eines $acks$ zu dem entsprechenden Datenpaket. Kommt es aufgrund von Timeouts zu Wiederholungen
+desselben Datenpaketes, so tritt ein Problem auf, welches Karn und Partridge in \cite{Karn1991} als ``retransmission ambiguity'' bezeichnen:
+es kann nicht festgestellt werden, auf welche Aussendung desselben Datenpaketes sich das $ack$ bezieht. Damit ist nicht klar, anhand welches Paketes
+sich der $rtt$ bestimmen soll, er wird in jedem Falle nicht verlässlich sein. Verschiedene Protokollimplementationen behandeln dieses Problem
+auf unterschiedliche Weise: teils wird die am längsten zurückliegende Aussendung als Grundlage zur Berechnung herangezogen, teils die am kürzesten zurückliegende
+Aussendung.\\
+
+Wird die am längsten zurückliegende Aussendung  gewählt, so können der $rtt$, damit der $srtt$ und letztlich der $rto$ unverhältnismäßig in die Höhe schießen.
+In vielen Fällen ist die nachteilige Wirkung nicht besonders groß, da aufgrund des Datenstaus eine Drosselung der Datentransferrate erwünscht ist.
+Kommt es aufgrund anderer Ursachen zu Paketverlusten (z. B. bei verlustreichen Leitungen durch Störsignale), so tritt das Gegenteil des gewünschten Verhaltens
+ein: der $srtt$ sinkt auf ein sehr niedriges Niveau, obwohl sich in diesem Falle die Datentransferrate erhöhen sollte.\\
+
+Wird die am kürzesten zurückliegende Aussendung herangezogen, so ist die Wahrscheinlichkeit laut Karn sehr groß, dass die Zeitfolge zwischen dieser Sendung und dem
+ankommenden $ack$ sehr kurz ist, obwohl sich das $ack$ auf eine weiter zurückliegende Sendung bezieht. Dies führt zu einer drastischen Reduzierung des $srtt$,
+was überflüssige Wiederholungen und damit eine zusätzliche Verschwendung der Bandbreite zur Folge hat \cite{Karn1991,Jain1986}. Andere Implementationen
+lassen den $rtt$ bei Wiederholungen außer acht. Dies geht gut, solange der $rto$ nicht schneller ansteigt, als der Algorithmus sich adaptieren kann. Ist $\beta$
+gut gewählt, so ist die Möglichkeit dafür sehr gering. Tritt dieser Fall dennoch ein, so kommt es (wie im letztgenannten Fall) zu überflüssigen Wiederholungen.\\
+
+Um diesem Problem zu begegnen, schlägt Karn folgenden Algorithmus vor \cite{Karn1991}:\\
+Grundsätzlich wird der $rto$ nach einem Timeout vergrößert (``back-off'').
+Erreicht ein $ack$ den Sender nach einer Wiederholung eines Datenpaketes, so wird keine Neuberechnung des $rtt$ und $srtt$ vorgenommen. Dafür wird der neu
+ermittelte (``backed-off'') $rto$ als Grundlage für die nächste Wiederholung bzw. für die Aussendung des nächsten Datenpaketes herangezogen. Nur wenn ein $ack$
+den Sender ohne vorausgehende Wiederholung erreicht, wird der $rto$ mit Hilfe des nun neu berechneten $srtt$ ermittelt.\\
+Die Wahl des neuen $rto$ im Falle einer Wiederholung muss laut Karn so erfolgen, dass der $rto$ größer ist als die tatsächliche roundtrip-time. Typischerweise
+geschieht die Steigerung des $rto$ exponentiell (entsprechend des ``exponential retransmit timer backoff'', s. o.).
+
+\paragraph{fast retransmit:}
+Erreichen den Sender vier identische $acks$ in Folge, so wird der Sender das vom Empfänger erwartete Datenpaket sofort aussenden, ohne auf das
+Ablaufen des Retransmission-Timers zu warten. ``Slow-start'' wird so lange ausgesetzt, bis ein anderes, nicht zu den vorherigen identisches $ack$ den Sender
+erreicht  (\cite{RFC2581}). Die identischen $acks$ lassen sowohl darauf schließen, dass ein Datenpaket verloren gegangen ist, als auch, dass andere Datenpakete den
+Empfänger höchstwahrscheinlich erreichen, da die identischen $acks$ sonst ausgeblieben wären. Die den identischen $acks$ zugrundeliegenden Datenpakete beeinflussen
+das Datenaufkommen nicht mehr, da diese schon die Empfänger-Queue erreicht haben. Daher geht man davon aus, dass das erneute, schnelle Senden des fehlenden
+Datenpaketes das Netz nicht wesentlich im Negativen beeinflusst. ``Fast retransmit'' sollte, muss aber nicht, von einer konkreten TCP-Implementation unterstützt
+werden.\\
+
+Zusätzliche Erweiterungen zum TCP in Hinsicht auf hohe Performanz finden sich in \cite{jacobson93tcp}.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

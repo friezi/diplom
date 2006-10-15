@@ -34,7 +34,7 @@ schnell in einen solchen wieder zurückzuführen.
 \paragraph{Auswirkungen von Churn auf \pubsubrss:}
 Verlassen einzelne Broker das Netzwerk, so kann man sich sehr leicht vorstellen, welche Auswirkungen das auf das Gesamtsystem hat: da das Brokersystem in einer
 baumartigen Struktur aufgebaut ist, bedeutet der Verlust einzelner Broker ein Auseinanderfallen des Baumes in mehrere unabhängige Teilbäume. Während das Erfragen
-von RSS-Feeds durch Subscriber und das Messen der Roundtrip-Times weiterhin vonstatten gehen kann, können zwischen den Teilbäumen keine Nachrichten mehr
+von RSS-Feeds durch Subscriber und das Messen der roundtrip-times weiterhin vonstatten gehen kann, können zwischen den Teilbäumen keine Nachrichten mehr
 ausgetauscht werden. Je größer also der Zerfall ist, desto geringer wird der Aktualitätsgrad der RSS-Feeds sein und desto länger dauert eine Anpassung der
 Polling-Perioden der Subscriber an eine veränderte Server-Belastung, da eine Ausbalancierung der Polling-Perioden in immer geringerem Maße erfolgen wird.\\
 Welche Knoten in einem Netzwerk die Rolle der Broker übernehmen, bleibt zunächst offen. Ob Broker das System benutzergesteuert verlassen können, hängt ganz von der
@@ -46,7 +46,7 @@ Erreichbarkeit einzelner Daten (Feeds).\\
 Verlassen Subscriber das System, so hat das weniger Feed-Requests pro Zeiteinheit zur Folge, woraufhin die übrigen
 Subscriber ihre Polling-Perioden erniedrigen werden. Dies ist kein nachteiliger Effekt.\\
 Beim Eintreten von Subscribern in das System stellen diese zunächst ihren
-$cpp$ auf den von ihnen gewählten $ppp$ ein. Erst im Laufe der Messung der Roundtrip-Times werden diese Subscriber ihren $cpp$ erhöhen. Bei einer hohen Anzahl von
+$cpp$ auf den von ihnen gewählten $ppp$ ein. Erst im Laufe der Messung der roundtrip-times werden diese Subscriber ihren $cpp$ erhöhen. Bei einer hohen Anzahl von
 pro Zeiteinheit neu in das System hinzukommenden Subscribern gibt es also eine erhöhte Rate an Feed-Requests. Dies bedeutet eine Mehrbelastung des jeweiligen
 RSS-Servers. Egal, wie gut die Anpassung an die Server-Belastung von statten geht: die Mehrbelastung ist in diesem Fall einzig und allein abhängig von der
 Churn-Rate.
@@ -59,7 +59,7 @@ verbunden, die Anzahl der Subscriber im gesamten Netzwerk zu bestimmen. Es reich
 lokalen Broker verbunden sind. Diese Information kann der lokale Broker ohne Schwierigkeiten liefern. Da nur $RichRSSFeeds$ einen Broker passieren (siehe Abschnitt
 \ref{cs:ausbalancierung_der_polling-perioden}), kann dieser den enthaltenen Wert des $feed.artt$ zwischenspeichern. Betritt ein neuer Subscriber das System, so
 kann der Broker diesem den aktuellen Feed mitsamt des zwischengespeicherten $artt$-Wertes übermitteln. Der neue Subscriber wählt nun wie bisher seinen $cpp$ auf
-Basis dieses $feed.artt$-Wertes. Dadurch steigen neue Subscriber bei der Messung der Roundtrip-Time bereits mit einer höheren $cpp$ ein, wovon wir uns eine
+Basis dieses $feed.artt$-Wertes. Dadurch steigen neue Subscriber bei der Messung der roundtrip-time bereits mit einer höheren $cpp$ ein, wovon wir uns eine
 Entlastung des RSS-Servers versprechen. Experimente zu diesem Punkt folgen in Kapitel \ref{c:experimente}.\\
 
 Um dieses Verfahren zu realisieren, müssen wir eine zusätzliche Datenstruktur und zusätzliche Methoden zu unseren schon bestehenden hinzufügen:

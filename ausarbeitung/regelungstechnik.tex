@@ -1,0 +1,78 @@
+\section{Regelkreise}
+\label{regelungstechnik}
+Auf dem Gebiet der Regelungstechnik beschäftigt man sich damit, wie eine Größe einen bestimmten vorgegebenen Wert erreichen und halten kann. Bei einer Regelung
+finden Kontrollmechanismen
+Anwendung, um Wertabweichungen festzustellen und auszugleichen.\\
+
+Die Aufgabe einer Regelung besteht darin, bestimmte Größen (Temperatur, Spannung, etc.) auf einen
+vorgeschriebenen Wert zu bringen und diesen entgegen allen Störeinflüssen konstant zu halten (\cite{Bernstein1998}). Bei der Regelung unterscheidet man zwischen
+verschiedenen Größen, die zusammen einen Regelkreis bilden: 
+\begin{description}
+  \item [Regelgröße $x$] oder auch der Istwert: Größe, welche konstant gehalten werden soll und zu diesem Zweck erfasst wird
+  \item [Führungsgröße $w$] oder auch Sollwert: vorgegebener Wert, auf den die Regelgröße eingestellt werden soll
+  \item [Störgröße $z:$] Größe, die die Regelgröße in unerwünschter Weise beeinflusst
+  \item [Regeldifferenz $x_d:$] Differenz zwischen Führungs- und Regelgröße $x_d=w-x$
+  \item [Stellgröße $y:$] Größe, durch welche die Regelgröße in erwünschter Weise beeinflusst wird
+\end{description}
+
+\begin{picturehere}{1}{4}{Regelkreis}{Abb:Regelkreis}
+ \includegraphics[bb=180 0 682 141,scale=0.75]{Regelkreis}
+\end{picturehere}
+
+%\includegraphics[scale=0.75]{Regelkreis.pstex}
+
+Bild \ref{Abb:Regelkreis} zeigt das vereinfachte Schema eines Regelkreises. Die Regelung basiert auf Rückkopplung. Bewirkt der Einfluss der Störgröße eine
+Abweichung der Regelgröße von der Führungsgröße, so ergibt die Regeldifferenz über einen Regler eine Stellgröße, die entgegengesetzt zur Störgröße auf die
+Regelgröße einwirkt. Ziel dabei ist es, die Regeldifferenz auf Null zu bringen.\\
+Die Wahl eines geeigneten Reglers hängt stark von der Regelstrecke ab. Die Regelstrecke bezeichnet die zu regelnde Anlage oder den zu regelnden Prozess. Wichtig zu
+wissen ist, wie die Regelstrecke auf Änderung der Einflussgrößen reagiert. Nach \cite{Bernstein1998} kann man die Regelstrecken grob durch folgende Merkmale 
+unterscheiden:
+\begin{itemize}
+  \item Regelstrecken mit und ohne Ausgleich
+  \item Regelstrecken mit und ohne Totzeiten bzw. Zeitgliedern
+  \item lineare oder nichtlineare Regelstrecken
+\end{itemize}
+
+Bei Regelstrecken mit Ausgleich erreicht die Ausgangs- bzw. Regelgröße nach einer gewissen Zeit einen stabilen Zustand (Bsp. Raumtemperatur). Existiert kein
+stabiler Zustand (Regelstrecke ohne Ausgleich), so ändert sich bei konstanter Eingangs- bzw. Stellgröße die Regelgröße mit
+konstanter Geschwindigkeit oder Beschleunigung (Bsp. Füllen eines Wasserbehälters). Totzeit bezeichnet eine Zeitverzögerung, bis sich die Änderung der Stellgröße
+auf die Regelgröße bemerkbar macht. Bei linearen Regelstrecken folgt die Regelgröße der Stellgröße proportional.
+
+Meist liegt eine Kombination dieser Eigenschaften vor. Um die Stellgröße entsprechend der Regeldifferenz anzupassen, wird ein Regler benötigt.
+
+\paragraph{PID-Regler:}
+Ein PID-Regler ist ein allgemeiner Reglertyp, der häufig für Regelungen Verwendung findet. Er ist eine Kombination aus einem P-, einem I- und einem D-Regler.
+Ein P-Regler sorgt dafür, dass (im stationären Zustand) ein dem Eingangssignal proportionales Ausgangssignal geliefert wird (unter Zuhilfenahme eines
+Verstärkungsfaktors). Ein I-Regler summiert die Regeldifferenz über einen gewissen Zeitraum und führt damit eine Integration aus. Je länger eine Regeldifferenz
+besteht, desto größer wird die Stellgröße. Ein D-Regler reagiert nur auf die Änderungsgeschwindigkeit der Regeldifferenz. Er liefert einen entsprechend starken,
+kurzen, positiven Impuls.
+
+Die allgemeine mathematische Gleichung für einen PID-Regler lautet wie folgt
+(siehe \cite{WBuettner1991}):
+\begin{equation}
+  u(t)=K_R\left[\quad e(t) \quad + \quad
+    \frac{1}{T_I}\int\limits_{0}^{t}e(\tau)d\tau \quad + \quad
+    T_D\frac{de(t)}{dt} \quad \right]
+\end{equation}
+
+Die einzelnen Größen sind:
+\begin{description}
+  \item [$u(t)$] Stellgröße
+  \item [$e(t)$] Regeldifferenz
+  \item [$K_R$] Verstärkungsfaktor
+  \item [$T_I$] Integrationskonstante
+  \item [$T_D$] Differentiationskonstante
+\end{description}
+
+Es werden nicht für alle Regelungen alle Anteile benötigt. Durch Weglassen der entsprechenden Anteile erhält man die Regler P, PI bzw. PD. Reine P-Regler finden
+nur Verwendung bei Regelstrecken linearen Verlaufs. Doch selbst hier zeigt sich, dass bei Regelabweichungen, die durch eine Störgröße hervorgerufen werden, die
+Störgröße lediglich in ihrer Wirksamkeit gemindert werden kann. Eine vollständige Beseitigung tritt nicht ein, da die Regelabweichung selbst notwendig ist, um eine
+Verstellung des Stellgliedes vorzunehmen \cite{Bernstein1998}. Mit einem I-Regler kann man die Regelabweichung sehr genau unterbinden, jedoch arbeitet dieser
+relativ langsam und neigt zu Schwingungen. Die Vorteile beider Reglertypen vereint der PI-Regler. Reine D-Regler finden in der Praxis keine Verwendung, da sie bei
+stabiler Regelgröße nicht in den Regelvorgang eingreifen können. Die Kombination mit einem P-Regler (also ein PD-Regler) bewirkt ein schnelleres Anspringen der
+Regelung bei plötzlicher Regelabweichung im Vergleich zu einem reinen P-Regler.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

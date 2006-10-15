@@ -10,4 +10,20 @@ der sich im Netz befindlichen Nachrichten, da überflüssige Übermittlungen der Fe
 bedeuten, dass der Aktualitätsgrad der Feeds abnimmt, da die maximale zeitliche Differenz zwischen Aktualisierung eines Feeds auf Server-Seite
 und dessen Übermittlung an den Subscriber größer wird.\\
 Es hängt also stark vom Interesse der Klienten bzw. von der angestrebten Dienstgüte ab, nach welchen Kriterien $\Delta Z$
-angepasst werden soll. Da sich die Anzahl der Subscriber während der Laufzeit des Systems stark ändern kann, muss sich $\Delta Z$ eventuell adaptierend verhalten.
+angepasst werden soll. Da sich die Anzahl der Subscriber während der Laufzeit
+des Systems stark ändern kann, muss sich $\Delta Z$ eventuell adaptierend verhalten.\\
+
+Wir definieren zwei unterschiedliche Ziele, nach denen die Dienstgüte bestimt werden soll:
+\begin{description}
+\item [Geringe Netzbelastung:] Der RSS-Server soll so wenig wie möglich durch Anfragen belastet werden und überflüssiger Datenverkehr sollte weitesgehend vermieden werden.
+\item [Bevorzugte Polling-Periode:] Dem Wunsch eines Klienten, den neuesten RSS-Feed nach spätestens einer von ihm vorgegebenen
+        Zeitspanne zu erhalten, soll entsprochen werden.
+\end{description}
+
+Sicherlich kann auch ein Kompromiss zwischen diesen unterschiedlichen Zielen angestrebt werden.
+Um diese Arbeit in einem angemessenen Rahmen zu halten, konzentrieren wir uns jedoch ausschließlich auf das Ziel der ``bevorzugten Polling-Periode''.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

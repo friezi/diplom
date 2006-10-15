@@ -29,7 +29,7 @@ Polling-Periode drastisch gesenkt haben, werden gezwungen sein, ihre Polling-Per
 Polling-Perioden an die Server-Auslastung.\\
 Bei einer plötzlichen Server-Überlastung wird das jeder Subscriber schnell mitbekommen, weswegen sich in diesem Fall nicht viel ändert.\\
 
-Dadurch, dass der Wert $artt$ und nicht der Wert $cpp$ übermittelt wird, kann jeder Subscriber seinen eigenen $cpp$-Wert entsprechend seiner Voreinstellungen
+Dadurch, dass der Wert $artt$ und nicht der Wert $cpp$ übermittelt wird, kann jeder Subscriber seinen individuellen $cpp$-Wert entsprechend seiner Voreinstellungen
 ($ppp$) unabhängig der Voreinstellungen anderer Subscriber berechnen.\\
 
 Die Wirksamkeit der ausbalancierenden Methode gegenüber der nicht-ausbalancierenden Methode wird mit Hilfe der selbst entwickelten Simulationsumgebung gezeigt,
@@ -62,7 +62,7 @@ class RichRSSFeed extends RSSFeed{
 
 \end{verbatim}
 
-Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen Roundtrip-Time
+Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen roundtrip-time
 mitteilen kann, müssen nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt und $artt$ neu berechnet werden.
 Dafür ist es notwendig, die Methoden zur Aktualisierung des $RQT$ anzupassen.\\
 
@@ -77,12 +77,12 @@ $cpp$ erst bei der nächsten Runde in Betracht.
 
 \paragraph{Beeinflussung des $cpp$:}
 Was soll passieren, wenn ein Subscriber einen Feed über das Notifikationssystem erhält, während schon mehrfache Wiederholungen auftraten und der Subscriber
-sich bei laufendem $RT$ gerade in der Messung der Roundtrip-Time befindet? Die Messung und die Wiederholungen sollten natürlich weiter laufen.
+sich bei laufendem $RT$ gerade in der Messung der roundtrip-time befindet? Die Messung und die Wiederholungen sollten natürlich weiter laufen.
 Nach unserem bisherigen Konzept hat der übermittelte $feed.artt$ keinen Einfluss auf die zeitliche Abfolge wiederholter Anfragen.
 Ist der Wert des übermittelten $feed.artt$ größer als der $artt$-Wert des Empfängers zu Beginn der Messung, so ist dies ein akzeptables Verhalten,
-denn der Wert des übermittelten $feed.artt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen Roundtrip-Time
+denn der Wert des übermittelten $feed.artt$ könnte aufgrund verloren gegangener Feed-Requests bestimmt worden sein und an der tatsächlichen roundtrip-time
 vorbei gehen. Der empfangende
-Subscriber hat noch die Möglichkeit, eine aussagekräftigere Roundtrip-Time zu bestimmen. Ist $feed.artt$ jedoch kleiner als der $artt$-Wert des Empfängers
+Subscriber hat noch die Möglichkeit, eine aussagekräftigere roundtrip-time zu bestimmen. Ist $feed.artt$ jedoch kleiner als der $artt$-Wert des Empfängers
 zu Beginn der Messung, so wäre eine Einflussnahme von Vorteil, da der Wert des $feed.artt$ vermutlich aussagekräftiger ist. Denn entweder wurden weniger
 Wiederholungen benötigt, um diesen zu
 ermitteln, oder die Abtastrate (sprich die Rate der Feed-Requests) war höher. Um dieses Verhalten zu ermöglichen, müssen wir einen neuen Wert definieren,
@@ -94,13 +94,14 @@ rto:=2^i\cdot icpp
 \end{equation}
 Hierbei ist $i$ ebenfalls die Anzahl der Anfragen bzw. Verbindungsversuche.\\
 
-Während einer Messung der Roundtrip-Time kann der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
+Während einer Messung der roundtrip-time kann der $cpp$ modifiziert werden, ohne dass dies einen Einfluss auf den $rto$ hat.
 Da nach Abschluss der Messung $artt$ und somit $cpp$ neu berechnet werden, hat letztlich in diesem Fall die Übermittlung des $artt$ eines anderen Subscribers
 keinen Einfluss auf den $artt$-Wert des empfangenden Subscribers. Im dem Fall jedoch, dass $feed.artt$ kleiner als der $artt$-Wert zu Beginn der Messung ist
 (gilt dann, wenn $cpp<icpp$, da $cpp$ schon aufgrund des $feed.artt$-Wertes neu berechnet wurde), setzen wir $icpp:=cpp$.
 Würden wir diese Modifikation nicht vornehmen, hätte in diesem Fall keine Ausbalancierung stattgefunden.\\
 
-Unsere Algorithmen müssen wir also wie folgt modifizieren und vervollständigen:
+Unsere Algorithmen müssen wir also wie folgt modifizieren und vervollständigen\footnote{Die Unterstriche kennzeichnen die neu hinzugekommenen Funktionen bzw.
+Aufrufe.}:
 
 \lstset{language=Java,emph={setze_icpp,berechne_mittleren_artt},emphstyle=\underbar}
 \begin{lstlisting}
