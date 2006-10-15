@@ -4,8 +4,16 @@
 
 for dir in $*
 do
-	cd $dir
-	rm -f *.gnuplotdata queue*.*gnuplot markers*.gnuplot *.bak *.log *.tgz
-	cd ..
+	pushd $dir
+	for gnuplotdata in *.gnuplotdata
+	do
+		rm -f ${gnuplotdata}
+	done
+	rm -f queue*.*gnuplot
+	rm -f markers*.gnuplot
+	rm -f *.bak
+	rm -f *.log
+	rm -f *.tgz
+	popd
 done
 
