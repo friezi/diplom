@@ -1,7 +1,7 @@
 \subsubsection{Heuristische Bestimmung von Time-To-Live}
 Hierzu gibt es verschiedene Verfahren. Um $ttl$
 berechnen zu können, muss zunächst die Rate geschätzt werden, mit der Feeds Server-seitig aktualisiert werden. Dafür misst ein Subscriber innerhalb eines
-Zeitintervalles $T$ die Anzahl $X$ der aufgetretenen Aktualisierungen eines Feeds. Eine Aktualisierung wird dann festgestellt, wenn ein Subscriber eine neuen Feed
+Zeitintervalles $T$ die Anzahl $X$ der aufgetretenen Aktualisierungen eines Feeds. Eine Aktualisierung wird dann festgestellt, wenn ein Subscriber einen neuen Feed
 erhält. Dabei kann das Attribut $PubDate$ der einzelnen Ereignisse (Items) eines RSS-Feeds herangezogen werden, um eine feinere Bestimmung der Aktualisierungen
 vorzunehmen. Jedes neue Event steht dabei für eine Aktualisierung. Bei Eintritt eines Subscribers in das Netzwerk sollte der $ttl$ zunächst auf $0$ gesetzt werden,
 er wird dann während der Zeit, die sich ein Subscriber aktiv im Overlay-Netzwerk befindet, angepasst. Natürlich kann der errechnet Wert bei Verlassen des
@@ -13,7 +13,7 @@ Verfahren vorstellen, welches von Cho und Garcia-Molina entwickelt wurde.
 $\hat\mu_r:=\frac{X}{T}$ liefert eine geschätzte Aktualisierungsrate der Feeds. Das Verhältnis zwischen der tatsächlichen Aktualisierungsrate $\mu$ und der
 Abtastrate $f$ (Anzahl der erhaltenen RSS-Feeds bzw. Ereignisse pro Zeiteinheit) $r:=\frac{\mu}{f}$ kann über die Güte von $\hat\mu$ Auskunft geben: gilt $r>1$,
 so hat es mehr Aktualisierungen als Zugriffe (Feeds) gegeben, und der berechnete Wert $\hat\mu$ weist eine gewisse Ungenauigkeit auf. Liegt die gesamte Historie der
-Akzualisierungen vor, so ist $\frac{X}{T}$ ein guter Schätzwert \cite{ChGM:2003:ChangeFrequency}. Da innerhalb eines Feeds mehrere Ereignisse (Items)
+Aktualisierungen vor, so ist $\frac{X}{T}$ ein guter Schätzwert \cite{ChGM:2003:ChangeFrequency}. Da innerhalb eines Feeds mehrere Ereignisse (Items)
 zusammengefasst sind, ist die Wahrscheinlichkeit geringer, dass Aktualisierungen verloren gehen, als wenn ein Feed nur ein Ereignis beinhalten würde.
 Falls jedoch $\varDelta Z$ und $cpp$ sehr groß gewählt sind bei einer gleichzeitig geringen Anzahl von Subscribern im Netzwerk, können neue Ereignisse
 verloren gehen.

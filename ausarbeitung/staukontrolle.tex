@@ -1,6 +1,6 @@
 \subsection{Staukontrolle}
 Seitdem Computer-Netzwerke explosionsartig an Größe und Komplexität zugenommen haben, hat sich ein Problem verstärkt bemerkbar gemacht: Datenstau.
-Van Jacobson et. al. \cite{jacobson88congestion} schildern die Beobachtung, dass in der Zeit Mitte der 1980er Jahre Internet-Gateways 10\% der
+Van Jacobson et. al. \cite{jacobson88congestion} schildern die Beobachtung, dass Mitte der 1980er Jahre Internet-Gateways 10\% der
 ankommenden Pakete aufgrund von Pufferüberläufen verwarfen. Laut seiner Aussage lag dabei das Problem nicht in den Protokollspezifikationen selbst, sondern
 hauptsächlich in deren Implementierungen. TCP (Transmission Control Protocol) ist ein verbindungsorientiertes Transportprotokoll, mit dessen Hilfe der Großteil
 des Netzwerkverkehrs vonstatten geht. Im Laufe der Zeit wurden in TCP Mechanismen eingebaut und verbessert, um Datenstau festzustellen und soweit wie möglich
@@ -137,7 +137,7 @@ ein: der $srtt$ sinkt auf ein sehr niedriges Niveau, obwohl sich in diesem Falle
 Wird die am kürzesten zurückliegende Aussendung herangezogen, so ist die Wahrscheinlichkeit laut Karn sehr groß, dass die Zeitfolge zwischen dieser Sendung und dem
 ankommenden $ack$ sehr kurz ist, obwohl sich das $ack$ auf eine weiter zurückliegende Sendung bezieht. Dies führt zu einer drastischen Reduzierung des $srtt$,
 was überflüssige Wiederholungen und damit eine zusätzliche Verschwendung der Bandbreite zur Folge hat \cite{Karn1991,Jain1986}. Andere Implementationen
-lassen die $rtt$ bei Wiederholungen außer acht. Dies geht gut, solange der $rto$ nicht schneller ansteigt, als der Algorithmus sich adaptieren kann. Ist $\beta$
+lassen den $rtt$ bei Wiederholungen außer acht. Dies geht gut, solange der $rto$ nicht schneller ansteigt, als der Algorithmus sich adaptieren kann. Ist $\beta$
 gut gewählt, so ist die Möglichkeit dafür sehr gering. Tritt dieser Fall dennoch ein, so kommt es (wie im letztgenannten Fall) zu überflüssigen Wiederholungen.\\
 
 Um diesem Problem zu begegnen, schlägt Karn folgenden Algorithmus vor \cite{Karn1991}:\\
@@ -154,7 +154,7 @@ Ablaufen des Retransmission-Timers zu warten. ``Slow-start'' wird so lange ausge
 erreicht  (\cite{RFC2581}). Die identischen $acks$ lassen sowohl darauf schließen, dass ein Datenpaket verloren gegangen ist, als auch, dass andere Datenpakete den
 Empfänger höchstwahrscheinlich erreichen, da die identischen $acks$ sonst ausgeblieben wären. Die den identischen $acks$ zugrundeliegenden Datenpakete beeinflussen
 das Datenaufkommen nicht mehr, da diese schon die Empfänger-Queue erreicht haben. Daher geht man davon aus, dass das erneute, schnelle Senden des fehlenden
-Datenpaketes das Netz nicht wesentlich im Negativen beeinflusst. ``Fast retransmit'' sollte, muss aber nicht von einer konkreten TCP-Implementation unterstützt
+Datenpaketes das Netz nicht wesentlich im Negativen beeinflusst. ``Fast retransmit'' sollte, muss aber nicht, von einer konkreten TCP-Implementation unterstützt
 werden.\\
 
 Zusätzliche Erweiterungen zum TCP in Hinsicht auf hohe Performanz finden sich in \cite{jacobson93tcp}.
@@ -169,14 +169,14 @@ befinden sich die kommunizierenden Parteien (RSS-Server, Subscriber) ebenfalls a
 Antwort (die Übermittlung des RSS-Feeds) länger auf sich warten lassen, als unter geringerer Last. Die Roundtrip-Time zwischen Anfrage und dem vom RSS-Server
 übermittelten Feed (entsprechend einem $ack$) lässt in gewissem Rahmen auf die Auslastung des Servers schließen. Auch in unserem Fall kann die Antwortzeit durch
 eine starke Netzbelastung und dadurch verursachte
-lange Übertragungszeiten negativ beeinflusst sein. Dies würde eventuell unser Ergebnis verfälschen, da wir nur an der Höhe der Serverlast interessiert sind,
-die Netzbelastung spielt für uns keine Rolle. Um Teillösungen zu finden, wollen wir aber zunächst von den Nachrichtenlaufzeiten abstrahieren. Auch in unserem
+lange Übertragungszeiten negativ beeinflusst sein. Dies würde eventuell unser Ergebnis verfälschen, da wir nur an der Höhe der Serverlast interessiert sind.
+Die Netzbelastung spielt für uns keine Rolle. Um Teillösungen zu finden, wollen wir aber zunächst von den Nachrichtenlaufzeiten abstrahieren. Auch in unserem
 Fall muss der Subscriber, sollte die Server-Antwort ausbleiben, seine Anfrage erneut senden. Allerdings geschieht die Übermittlung eines RSS-Feeds per HTTP, welches
 sich TCP als Übertragungsprotokoll bedient. TCP übernimmt die Steuerung des Datenflusses, weshalb wir uns um die wiederholte Aussendung von Datenpaketen
 nicht zu kümmern brauchen. In folgenden Fällen ist jedoch das erneute Aussenden von Anfragen bzw. das Herstellen einer neuen TCP-Verbindung notwendig:
 \begin{itemize}
 \item nach einem Timeout wird die Verbindung unterbrochen, falls keine Reaktion vom Server erfolgt (Überlastung)
-\item Verbindung kommt aufgrund einer Server-Überlastung gar nicht zustande (Anfrage findet keinen Eingang in die Server-Queue)
+\item Die Verbindung kommt aufgrund einer Server-Überlastung gar nicht zustande (Anfrage findet keinen Eingang in die Server-Queue)
 \end{itemize}
 Für diese Fälle sollte der Subscriber ebenfalls einen Timer mitlaufen lassen. Der $rto$ bezeichnet hierbei das Zeitintervall bis zu einem erneuten
 Verbindungsaufbau. Wie bei TCP sollte sich der $rto$ stetig vergrößern, um der Serverbelastung entgegenzuwirken.\\
@@ -225,7 +225,7 @@ Ein PID-Regler ist ein allgemeiner Reglertyp, der häufig für Regelungen Verwendu
 Ein P-Regler sorgt dafür, dass (im stationären Zustand) ein dem Eingangssignal proportionales Ausgangssignal geliefert wird (unter Zuhilfenahme eines
 Verstärkungsfaktors). Ein I-Regler summiert die Regeldifferenz über einen gewissen Zeitraum und führt damit eine Integration aus. Je länger eine Regeldifferenz
 besteht, desto größer wird die Stellgröße. Ein D-Regler reagiert nur auf die Änderungsgeschwindigkeit der Regeldifferenz. Er liefert einen entsprechend starken,
-kurzen positiven Impuls.
+kurzen, positiven Impuls.
 
 Die allgemeine mathematische Gleichung für einen PID-Regler lautet wie folgt
 (siehe \cite{WBuettner1991}):
@@ -270,7 +270,7 @@ Anteil des Reglers). Eine konstante Abtastrate wäre wünschenswert, damit ein Reg
 Zeitpunkt die gleiche Reaktionszeit zeigen kann. Falls wir nur mit den regulären Anfragen nach RSS-Feeds zur Bestimmung der Server-Antwort arbeiten,
 bewirkt eine Drosselung des $cpp$ ebenfalls eine Drosselung der Abtastrate.
 Man könnte die Reaktionszeit des Servers anders ermitteln, z. B. durch konstantes Anpingen (z. B. mit Hilfe des Kommandos ``ping'').
-Dies hätte jedoch u. a. zur Folge, dass dadurch bei einer großen Anzahl Klienten im Overlay-Netzwerk ebenfalls
+Dies hätte jedoch u. a. zur Folge, dass dadurch bei einer großen Anzahl von Klienten im Overlay-Netzwerk ebenfalls
 eine Server-Überlastung erreicht werden könnte. Die Beobachtung der zu regelnden Größe würde diese also gleichzeitig beeinflussen. Außerdem erreicht ein Ping
 nicht die Anwendungsschicht des Servers, eine Überlastung auf dieser Ebene bleibt eventuell unbemerkt. Des Weiteren kann es vorkommen,
 dass eine Anfrage eines Klienten bei voller Queue vom Server verworfen wird. Eine Server-seitige Antwort wird in diesem Fall ausbleiben. Nach einem
@@ -291,17 +291,17 @@ Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer her
 \label{css:staukontrolle_pubsubrss}
 Wir fassen kurz zusammenfassen, welche primären Ziele und damit verbundenen sekundären Ziele wir verfolgen: grundsätzlich geht es um die Bestimmung des Wertes
 $ttr$ eines Subscribers (siehe Abschnitt \ref{cs:der_grundlegende_algorithmus}).
-Zur Erinnerung: $ttr$ bezeichnet ``Time-To-Refresh'', also den konkreten Zeitpunkt, zu dem die nächste Anfrage an den jeweiligen RSS-Server
+Zur Erinnerung: $ttr$ bezeichnet ``time-to-refresh'', also den konkreten Zeitpunkt, zu dem die nächste Anfrage an den jeweiligen RSS-Server
 gestellt werden soll. Um $ttr$ zu bestimmen benötigen wir $\varDelta ttr$. Ein wichtiger Parameter zur Bestimmung von $\varDelta ttr$ ist der $cpp$. Um einer
 längerfristigen
 Überlastung des RSS-Servers entgegenzuwirken, muss der $cpp$ eines Subscribers entsprechend der Serverbelastung angepasst werden.
 Wir müssen also ein Maß für die Serverbelastung bestimmen, was auch bei uns die ``Roundtrip-Time'' sein soll, also die Zeit, die zwischen Aussendung
 einer Anfrage und dem Erhalt des entsprechenden Feeds vergeht. Die Roundtrip-Time ist jedoch nicht immer eindeutig zu bestimmen.
-Im Folgenden soll der Wert $rtt$ den Näherungswert an die Roundtrip-Time bezeichnen, den es gilt
-zu berechnen. Mit Hilfe von $rtt$ können wir dann $rto$ und $cpp$ ermitteln.\\
+Im Folgenden soll der Wert $rtt$ den Näherungswert an die Roundtrip-Time bezeichnen, den es zu berechnen gilt.
+Mit Hilfe von $rtt$ können wir dann $rto$ und $cpp$ ermitteln.\\
 
 Der konzeptionelle Unterschied zwischen $rto$ und $cpp$ ist folgender: während der $cpp$ zur Berechnung des $\varDelta ttr$ bei erfolgreicher Anfrage
-(also nach Erhalt eines RSS-Feeds) beiträgt, dient der $rto$ zur Berechnung des $\varDelta ttr$ bei nicht erfolgreicher Anfrage, also nach Ablauf des
+(also nach Erhalt eines RSS-Feeds) beiträgt, dient der $rto$ zur Berechnung des $\varDelta ttr$ bei erfolgloser Anfrage, also nach Ablauf des
 ``Retransmission-Timers'' ohne Erhalt eines
 RSS-Feeds. Ob wir diese Werte separat berechnen, oder ob wir einen funktionalen Zusammenhang zwischen diesen Werten herstellen, werden wir im Folgenden erörtern.
 
@@ -310,22 +310,23 @@ wobei der $cpp$ hier für den $srtt$ bei TCP steht. Im Unterschied zu TCP bilden 
 reicht als Timeout-Intervall für die nächste Anfrage nicht aus. In unserem Fall muss die Zeit
 bis zum Aussenden der nächsten Anfrage $\varDelta ttr$, die sich mit Hilfe von $cpp$ berechnet, ermittelt werden.\\
 
-Beim Anpassen des $cpp$ müssen wir berücksichtigen, dass grundsätzlich nicht ein Subscriber alleine für eine Überlastung verantwortlich ist, sondern in den
+Beim Anpassen des $cpp$ muss berücksichtigt werden, dass grundsätzlich nicht ein Subscriber alleine für eine Überlastung verantwortlich ist, sondern in den
 meisten Fällen eine Menge von Subscribern, die gemeinsam auf den gleichen RSS-Server zugreifen. Eine Senkung des $cpp$ kann also eine drastische Wirkung haben,
-da je nach Verfahren diese Maßnahme eventuell jeder beteiligte Subscriber ergreift.\\
+da je nach Verfahren eventuell jeder beteiligte Subscriber diese Maßnahme ergreift.\\
 
-Zur Berechnung des $rtt$ müssen wir die RSS-Feeds nach ihrem Ursprung unterscheiden: Feeds, die ein Subscriber von einem Broker erhält, müssen anders behandelt
+Zur Berechnung des $rtt$ müssen die RSS-Feeds nach ihrem Ursprung unterschieden werden: Feeds, die ein Subscriber von einem Broker erhält, müssen anders behandelt
 werden als Feeds, die von einem RSS-Server ausgesandt werden. Für die Berechnung des $rtt$ spielen nur diese Feeds eine Rolle, da nur diese Auskunft über eine
 eventuelle Server-Belastung geben können.\\
 
-Wir haben uns in den vorhergehenden Abschnitten mögliche Techniken zur Staukontrolle und -vermeidung bei TCP und bei der Regelungstechnik angesehen
-und dabei festgestellt, dass die dort beschriebenen Lösungsansätze nur bedingt auf unser Problem anwendbar sind.
+In den vorhergehenden Abschnitten wurden mögliche Techniken zur Staukontrolle und -vermeidung bei TCP und bei der Regelungstechnik vorgestellt,
+und wir haben dabei festgestellt, dass die dort beschriebenen Lösungsansätze nur bedingt auf unser Problem anwendbar sind.
 Im Folgenden wollen wir eine Lösung aufgrund einer problemorientierten Sichtweise konzipieren und dort Bezüge zu den beiden anderen Konzepten herstellen,
 wo es angebracht erscheint.\\
 
-Wie schon erwähnt übernimmt bei einer Anfrage an einen RSS-Server die TCP-Schicht die  Datenfluss- und Staukontrolle, so dass wir uns an dieser Stelle
-nicht um wiederholte Aussendungen von Anfragen zu kümmern brauchen. Wird die Verbindung jedoch unterbrochen bzw. kommt sie gar nicht zustande, so muss die
-Klienten-Software den Verbindungsaufbau nach einer gewissen Zeit wiederholen. Die Zeit, die in diesem Fall bis zum nächsten Verbindungsaufbau vergehen soll,
+Wie schon erwähnt übernimmt bei einer Anfrage an einen RSS-Server die TCP-Schicht die  Datenfluss- und Staukontrolle, so dass sich die Anwendungssoftware an
+dieser Stelle nicht um wiederholte Aussendungen von Anfragen zu kümmern braucht. Wird eine TCP-Verbindung jedoch unterbrochen bzw.
+kommt sie gar nicht zustande, so muss die
+Anwendungssoftware den Verbindungsaufbau nach einer gewissen Zeit wiederholen. Die Zeit, die in diesem Fall bis zum nächsten Verbindungsaufbau vergehen soll,
 wird durch $rto$ bestimmt. Das Problem der ``retransmission-ambiguity'' (siehe \ref{csp:karns_algorithmus}) kann nicht eintreten. Soll ein Verbindungsaufbau zu
 einem RSS-Server geschehen, so sprechen wir im Folgenden der Einfachheit halber von der Aussendung eines ``Feed-Requests''.\\
 Erhält ein Subscriber
@@ -365,8 +366,8 @@ artt:=sf(i)\cdot rtt.
 Dabei ist $sf()$ die Skalierungsfunktion und $i$ die Anzahl der ausgesendeten Anfragen bzw. die Anzahl der Verbindungsversuche bis zu einer erfolgreichen Verbindung.
 Experimente mit Hilfe der entwickelten Simulationsumgebung haben gezeigt, dass eine polynomielle Skalierungsfunktion (quadratisch) ein
 besseres Adaptionsverhalten als eine lineare Skalierung ermöglicht. Bei starker Serverbelastung hingegen sind Nebenwirkungen durch die polynomielle Skalierung
-geringer als bei einer exponentiellen Skalierung. Dabei muss man berücksichtigen, dass die Berechnung des $rtt$-Wertes sowieso schon auf exponentieller Basis geschieht, da der für
-Wiederholungen relevante $rto$-Wert exponentiell gesteigert wird. Wir definieren also \todo{exponentiell}
+geringer als bei einer exponentiellen Skalierung. Dabei muss man berücksichtigen, dass die Berechnung des $rtt$-Wertes sowieso schon auf exponentieller Basis
+geschieht, da der für Wiederholungen relevante $rto$-Wert exponentiell gesteigert wird. Wir definieren also \todo{exponentiell}
 \begin{equation}
 sf(x):=x^2.
 \end{equation}

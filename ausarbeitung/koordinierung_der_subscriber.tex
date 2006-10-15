@@ -3,18 +3,24 @@
 Um das Netz nicht noch zusätzlich zu belasten, sollte die Netzbelastung, die durch eventuelle Abstimmungsnachrichten entsteht, minimal sein.
 Die Konzeption eines Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
 \begin{itemize}
+\item{geforderte Ziele}
+  \begin{itemize}
   \item Polling durch mehrere bzw. wechselnde Klienten
-  \item Anfragen an den RSS-Server sollten nicht gleichzeitig für alle Klienten geschehen 
   \item Ausfall von Klienten im Overlay-Netzwerk soll Informationsverteilung nicht blockieren
+\end{itemize}
+\item angestrebte Ziele
+\begin{itemize}
+  \item Anfragen an den RSS-Server sollten nicht gleichzeitig für alle Klienten geschehen 
   \item Netzbelastung durch Abstimmungsnachrichten sollte gering gehalten werden
+\end{itemize}
 \end{itemize} 
 Im Folgenden beschreiben wir einen Algorithmus bzw. eine Technik, die unsere bisher gestellten Anforderungen erfüllt.
 \subsection{Die Grundidee}
 \label{cs:der_grundlegende_algorithmus}
 Es sei $t_0$ immer der aktuelle Zeitpunkt. Ausgehend von einem beliebigen Zeitpunkt
 $t_x$ mit $t_0\leq t_x$ und einer Intervallspanne $\varDelta Z$ wählt sich jeder
-Subscriber $i$ innerhalb des Intervalls $Z_i:=[t_{x_i},t_{x_i}+\varDelta Z_i]$\footnote{Die mit $i$ indizierten Variablen bezeichnen den jeweiligen Wert bezogen auf Subscriber $i$.
-Im allgemeinen Fall verwenden wir den Index nicht.} einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh''), zu dem
+Subscriber $i$ innerhalb des Intervalls $Z_i:=[t_{x_i},t_{x_i}+\varDelta Z_i]$\footnote{Die mit $i$ indizierten Variablen bezeichnen den jeweiligen Wert bezogen
+auf Subscriber $i$. Im allgemeinen Fall verwenden wir den Index nicht.} einen zufälligen Zeitpunkt $ttr_i$ (``time to tefresh''), zu dem
 er den aktuellen Feed vom RSS-Server erfragt (siehe Abb. \ref{Abb:determine_ttr}).
 Wir nennen $t_x$ Einstiegspunkt und $\varDelta Z$ Zufallsspanne.
 
@@ -111,7 +117,7 @@ Um $ttl$ zu bestimmen, gibt es zwei Möglichkeiten:
     Wird der Parameter $ttl$ vom Informationsanbieter nicht unterstützt, so kann $ttl$ heuristisch durch den Klienten bestimmt werden.
 \end{itemize}
 
-Wie wir sehen, sind $ttl$ und $nextBuild$ eng miteinander verknüpft. Wollen wir $ttl$ und damit $nextBuild$ ermitteln können, stellt sich zunächst die Frage,
+Wie wir sehen, sind $ttl$ und $nextBuild$ eng miteinander verknüpft. Wollen wir $ttl$ und damit $nextBuild$ ermitteln, stellt sich zunächst die Frage,
 ob und in welchen Fällen dies überhaupt sinnvoll ist. Informationen können vielfältiger Art sein, Informationsanbieter können ganz unterschiedliche Gewohnheiten an
 den Tag legen. Es hängt von der Vorhersagbarkeit des Auftretens neuer Daten und der zeitlichen Möglichkeit ab, diese Daten bereit zu stellen, mit welcher Güte
 der $ttl$ berechnet werden kann. Stellen wir uns eine
@@ -135,8 +141,8 @@ diese aktualisieren. Der gemessene Zeitraum erstreckt sich über
 24 Stunden, die Abtastrate betrug 60 Sekunden. Hierbei fällt auf, dass Spiegel und Heise in der Zeit zwischen ca. 0.00 und 5.00 Uhr keine Aktualisierungen
 vornehmen, wogegen zu den übrigen Zeiten die Aktualisierungsintervalle schwanken. Zur Nachtzeit würde es sich also anbieten, den $ttl$ zu setzten. Auch bei
 den New-York-Times fällt ein Zeitraum auf, indem nicht aktualisiert wird. Die zeitliche Differenz zu den deutschen Betreibern lässt sich vermutlich durch eine
-Zeitverschiebung erklären. Bei den New-York-Times fällt weiterhin auf, dass in der übrigen Zeit Aktualisierungen nur stündlich vorgenommen werden. Also auch hier
-ein Fall für einen vom Anbieter vorgegebenen $ttl$. Ebenfalls lässt sich bei Slashdot und Sourceforge eine gewisse Linearität der Aktualisierungsintervalle 
+Zeitverschiebung erklären. Bei den New-York-Times fällt weiterhin auf, dass in der übrigen Zeit Aktualisierungen nur stündlich vorgenommen werden. Auch dies ist
+ein Fall für einen vom Anbieter vorgegebenen $ttl$-Wert. Ebenfalls lässt sich bei Slashdot und Sourceforge eine gewisse Linearität der Aktualisierungsintervalle 
 feststellen, wenn sie auch um einiges kürzer sind.
 
 
