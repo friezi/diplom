@@ -17,6 +17,7 @@ $(TARGET).dvi: $(FILES)
 	latex $(TARGET)
 	makeindex -g -s glossar.ist -o $(TARGET).gls $(TARGET).glo
 	latex $(TARGET)
+	latex $(TARGET)
 
 pdf:	$(TARGET).pdf
 

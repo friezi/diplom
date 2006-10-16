@@ -127,10 +127,10 @@ eines Diagramms ist dabei nicht ganz unproblematisch, da die Füllgröße der Queue
 während sich die Anzahl der abgewiesenen Nachrichten über einen Zeitraum von einem Zeitpunkt in der
 Vergangenheit bis zum aktuellen Zeitpunkt erstreckt. Da die Nachrichten in der Simulation aber sequenziell bearbeitet werden,
 kummulieren sich die abgewiesenen Nachrichten
-(Kurve über der Queue steigt) bis der Server eine nächste Antwort aussendet (Kurve über der Queue bricht ab). dadurch kann das
-Verhältnis ziwschen mittlerer Ankunftsrate der Anfragen und mittlerer Bearbeitungszeit gut nachvollzogen werden.\\
+(Kurve über der Queue steigt), bis der Server eine nächste Antwort aussendet (Kurve über der Queue bricht ab). Dadurch kann das
+Verhältnis zwischen mittlerer Ankunftsrate der Anfragen und mittlerer Bearbeitungszeit gut nachvollzogen werden.\\
 Im Bereich ``$<$Aktionsbereich$>$'' werden Aktionen angezeigt, die während der Simulation aufgetreten sind. Tabelle \ref{Tab:Aktionssymbole}
-gibt eine Übersicht über die den Symbolen zugeordneten Aktionen mitsamt Beispielparametern.
+gibt eine Übersicht über die den Symbolen zugeordneten Aktionen mitsamt Beispielparametern.\\
 \begin{table}
   \begin{center}
     \begin{tabular}{|rl|}
@@ -157,6 +157,9 @@ gibt eine Übersicht über die den Symbolen zugeordneten Aktionen mitsamt Beispiel
   \caption{Aktionssymbole}
   \label{Tab:Aktionssymbole}
 \end{table}
+
+Kurven zeigen berechnete Mittelwerte und 95\%-Konfidenzintervalle um diese Mittelwerte. Die Mittelwerte bestimmen den Kurvenverlauf,
+die Konfidenzintervalle die Strichstärke der Kurve. So kann leicht die Präzision der errechneten Mittelwerte nachvollzogen werden.
 
 %%% Local Variables: 
 %%% mode: latex

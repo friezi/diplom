@@ -27,9 +27,10 @@ Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten besti
 dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
 zuständig sind.\\
 
-Da ein einziger Durchlauf eines Experimentes möglicherweise keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 Mal mit unterschiedlichen
-Seed-Werten (Ausgangswerte für Zufallsfunktion) durchgeführt. Für jeden gemessenen Wert wurden aus den verschiedenen Ergebnissen Mittelwerte und Konfidenzintervalle
-berechnet. Bei jedem Durchlauf mit anderem Seed-Wert verändert sich das Overlay-Netzwerk geringfügig (s. o.).
+Da ein einziger Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
+Zufallswerten durchgeführt. Für jeden
+gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle
+berechnet. Bei jedem Durchlauf mit anderen Zufallswerten verändert sich das Overlay-Netzwerk geringfügig (s. o.).
 \paragraph{Parameter:}
 Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
 angegebenen Parameter als Standardwerte gesetzt.
@@ -65,19 +66,22 @@ angegebenen Parameter als Standardwerte gesetzt.
 \end{table}
 
 Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$. Wir haben bewusst relativ hohe
-Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen.
+Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Hohe Nachrichtenlaufzeiten können bewirken,
+dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfragen wiederholen. Dies führt zunächst zu einer Mehrbelastung
+des Servers. Auch wenn in der Realität dauerhaft solch hohen Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
+Adaptionsalgorithmen unter Extrembedingungen testen.\\
 
-\section{Experimente -- optimale Polling-Periode}
+\section{Experimente -- bevorzugte Polling-Periode}
+Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Eine Legende zu den
+Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 
-\subsection{Referenzverlauf}
-Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} zum Zwecke einer Referenz den optimalen Kurvenverlauf, wobei alle in den vorherigen Kapiteln
-beschriebenen Verfahren zur Anwendung kamen (eine Legende zu den Diagrammen findet sich im Anhang auf Seite \pageref{legende}).
+\subsection{Beispiel und Referenz}
+Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis eines Experiments, welches gleichzeitig als Referenz
+für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kamen. Von den Standardparametern
+wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1..1000$ Sekunden dem Overlay-Netzwerk bei.
+Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$), ist hierbei 1.
 
 \importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{Referenzverlauf}
-
-Nach einem zunächst massiven Andrang von Feed-Requests auf den Server und dessen Überlastung, wird dieser Andrang gedrosselt, so dass der Füllgrad der Server-Queue
-kurzzeitig bis auf null abfällt. Nach ca. 500 Sekunden steigt die Zahl der Feed-Requests, bis sie ab ca. 1000 Sekunden konstant bleibt, so dass die Server-Queue
-größtenteils maximal gefüllt bleibt, ohne dass eine übermäßige Mehrbelastung durch abgewiesene Feed-Requests auftritt.
 
 \subsection{Keine Staukontrolle}
 Obwohl es keine großen Anstrengungen erfordert, sich zu überlegen, was passiert, wenn eine Staukontrolle seitens der Subscriber ausbleibt, wollen wir hier dennoch
