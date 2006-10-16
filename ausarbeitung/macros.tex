@@ -39,12 +39,14 @@
 }
 \makeatother
 
+%parameters: Bezeichnung, Referenz, ps-Datei
 \newcommand{\importgnuplotps}[3]{
   \begin{picturehere}{1}{10}{\mbox{#1}}{#2}
     \includegraphics[bb=530 310 730 600,scale=0.55,angle=-90]{#3}
   \end{picturehere}
 }
 
+%parameters: Bezeichnung, Referenz, ps-Datei
 \newcommand{\importsmallgnuplotps}[3]{
   \begin{picturehere}{1}{7}{\mbox{#1}}{#2}
     \includegraphics[bb=530 310 730 600,scale=0.4,angle=-90]{#3}

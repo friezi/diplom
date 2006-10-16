@@ -79,9 +79,26 @@ Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis eines Experiments, welches gleichzeitig als Referenz
 für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kamen. Von den Standardparametern
 wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1..1000$ Sekunden dem Overlay-Netzwerk bei.
-Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$), ist hierbei 1.
+Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$), ist hierbei 1.\\
 
-\importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{Referenzverlauf}
+\importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
+
+Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
+pegelt sich die Kurve jedoch auf Grenze die Server-Queue ein, so dass der RSS-Server an seiner Belastungsgrenze arbeitet.\\
+
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden}{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
+
+Abbildung \ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Entwicklung der Mittelwerte der Polling-Perioden aller Subscriber.\\
+
+\importsmallgnuplotps{Nachrichtenverzögerung}{Abb:Referenzverlauf_Nachrichtenverzoegerung}{avgMsgDelayRatio_Referenzverlauf_MeanValueRanges}
+
+Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt die den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Gütefunktion
+$Vg$.\\
+
+\importsmallgnuplotps{Prozentsatz der gesparten Nachrichten}{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten}{relReOmRatio_Referenzverlauf_MeanValueRanges}
+
+Abbildung \ref{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten} zeigt den prozentualen Anteil der gesparten Nachrichten im Gegensatz zu einem System ohne
+Verteilung der Feeds über ein Notifikationssystem.
 
 \subsection{Keine Staukontrolle}
 Obwohl es keine großen Anstrengungen erfordert, sich zu überlegen, was passiert, wenn eine Staukontrolle seitens der Subscriber ausbleibt, wollen wir hier dennoch
@@ -89,8 +106,17 @@ diese Auswirkungen der Vollständigkeit halber graphisch zeigen (Abbildung \ref{A
 \importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
 
 \subsection{Keine Ausbalancierung der Polling-Perioden}
-Hier wollen wir untersuchen, was passiert, wenn die Ausbalancierung der Polling-Perioden (wie in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} beschrieben)
-ausbleibt.
+Hier wollen wir untersuchen, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
+zum Effekt des ``Aussperrens'' kommt (siehe Abschnitt \ref{cs:ausbalancierung_der_polling-perioden}). Um den Effekt zu maximieren, haben wir bei diesem Experiment
+auf ein allmähliches Beitreten der Subscriber zum Overlay-Netzwerk verzichtet. Alle Subscriber treten gleichzeitig zu Beginn der Simulation dem Overlay-Netzwerk
+bei. Kommt es zum ``Aussperren'', so sollte dieser Effekt anhand der Anzahl der Anfragen an den RSS-Server deutlich sichtbar sein, denn alle ausgesperrten Subscriber
+werden aufgrund ausbleibender Antworten ihre Anfragen wiederholen. Dies muss nahezu gleichzeitig geschehen, da alle Subscriber zur selben Zeit dem Netzwerk
+beigetreten sind und ihre $RT$s daher annähernd zu gleichen Zeit ablaufen werden. Die Mittelwerte der Polling-Perioden aller Subscriber sollten sich
+kontinuierlich erhöhen. Denn nur eine geringe Zahl der Subscriber hat Zugriff auf den Server und kann ihre Polling-Perioden konstant niedrig halten. Die übrigen
+Subscriber werden ihre Polling-Perioden erhöhen.\\
+
+
+
 \importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
 \importsmallgnuplotps{Vergleich: Ausbalancierung -- keine Ausbalancierung}{Abb:Vgl_Ausb_KAusb}{vgl_ToTR_BalancingNoBalancing}
 
