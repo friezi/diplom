@@ -3,18 +3,7 @@
 Bei diesem Ziel gehen wir davon aus, dass jeder Klient spätestens nach einer von ihm festgelegten Zeitspanne $ppp$ (``preferred polling-period'',
 bevorzugte Polling-Periode) über neue Informationen
 benachrichtigt werden möchte. Es wird also eine bestimmte Aktualität der Informationen gewünscht. Sollte dieser Aktualitätsgrad aufgrund physikalischer Grenzen
-(Übertragungs\-zei\-ten, Ser\-ver-Kapazität) nicht erreicht werden können, so sollte der größtmögliche Aktualitätsgrad erreicht werden. Wir benötigen eine Metrik,
-um die ``Quality of Service''(QoS,Dienstgüte) bestimmen zu können. Mit ihrer Hilfe ist für einen Benutzer nachvollziehbar, welche eventuellen Verbesserungen
-ihm ein neues Verfahren gegenüber dem bisherigen bietet. Dafür definieren wir eine Bewertungsfunktion. Bei vielen Optimierungsproblemen ist es nötig,
-eine zu minimierende Bewertungsfunktion zu wählen (Bsp. Suche nach kürzesten Wegen in einem Graphen). Obwohl uns in unserem Fall die Bewertungsfunktion
-nicht dabei hilft, eine Optimierung durchzuführen, werden wir uns dennoch danach richten. Da der Aktualitätsgrad eine zu maximierende Funktion wäre, wählen
-wir den Verzögerungsgrad ($Vg$) der RSS-Feeds:
-\begin{equation}
-Vg:=\frac{\varDelta pubDate\cdot 100}{ppp}
-\end{equation}
-
-Dabei ist $\varDelta pubDate$ die Zeitspanne vom aktuellen Zeitpunkt bis zum am weitesten zurückliegenden Ereignis innerhalb des letzten RSS-Feeds. Die
-zeitliche Verzögerung eines RSS-Feeds wird also in Abhängigkeit von der bevorzugten Polling-Periode in Prozent angegeben.\\
+(Übertragungs\-zei\-ten, Ser\-ver-Kapazität) nicht erreicht werden können, so sollte der größtmögliche Aktualitätsgrad erreicht werden.\\
 
 Bei einigen Sorten von Informationen kann die Aktualität der Daten
 für den Interessenten von entscheidender Relevanz sein, wie z. B. bei aktuellen Börsennachrichten, wo es für den Interessenten darauf ankommt, möglichst schnell
@@ -43,6 +32,33 @@ Eine zu hohe Rate bzw. Frequenz der Anfragen kann also auch den Aktualitätsgrad 
 Abbildung \ref{Abb:ZshgPollAkt} zeigt die Auswirkung der Polling-Rate (=1/Polling-Periode) auf den Aktualitätsgrad der Informationen\footnote{Die Grafik soll
 lediglich als schematische Illustration dienen, ein vermeintlicher exponentieller Zusammenhang wurde nicht beobachtet.}.
 Solch ein Zusammenhang wurde mit Hilfe der weiter unten beschriebenen Simulationsumgebung validiert.
+
+\paragraph{Dienstgüte:}
+Wir benötigen eine Metrik,
+um die Dienstgüte (``Quality of Service'', QoS) bestimmen zu können. Mit ihrer Hilfe ist für einen Benutzer nachvollziehbar, welche eventuellen Verbesserungen
+ihm ein neues Verfahren gegenüber dem bisherigen bietet. Dafür definieren wir zwei Funktionen: $\Gamma_V$ gibt Aufschluss über den Verzögerungsgrad
+der RSS-Feeds, $\Gamma_A$ gibt Aufschluss über den Aktualitätsgrad der RSS-Feeds.\\
+
+Die zeitliche Verzögerung eines RSS-Feeds wird in Abhängigkeit von der bevorzugten Polling-Periode in Prozent angegeben. $\Gamma_V$ ist also dann größer 0,
+wenn ein Feed einen Benutzer nicht innerhalb der gewünschten Zeit erreicht. $\Gamma_V$ bestimmt sich durch
+\begin{equation}
+  \Gamma_V:=\begin{cases}
+    0& \text{wenn $(\varDelta pubDate-ppp) < 0$},\\
+    \frac{100\cdot(\varDelta pubDate-ppp)}{ppp} & \text{sonst}.
+  \end{cases}
+\end{equation}
+
+Dabei ist $\varDelta pubDate$ die Zeitspanne vom aktuellen Zeitpunkt bis zum am weitesten zurückliegenden Ereignis innerhalb des letzten RSS-Feeds.\\
+
+$\Gamma_A$ bestimmt sich durch
+\begin{equation}
+  \Gamma_A:=\begin{cases}
+    100& \text{wenn $(\varDelta pubDate-ppp) < 0$},\\
+    \frac{100\cdot ppp}{\varDelta pubDate}& \text{sonst}.
+  \end{cases}
+\end{equation}
+
+Beispielsweise bedeutet ein Aktualitätsgrad eines Feeds von 50\%, dass der Feed erst nach der Zeit $2\cdot ppp$ einen Subscriber erreicht hat.
 
 \paragraph{Wahl der Zufallsspanne:}
 Es ist erforderlich, für die Berechnung von $\varDelta Z$ eine Größe heranzuziehen, welche sich den Gegebenheiten dynamisch anpasst.

@@ -86,14 +86,19 @@ Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serv
 Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
 pegelt sich die Kurve jedoch auf Grenze die Server-Queue ein, so dass der RSS-Server an seiner Belastungsgrenze arbeitet.\\
 
-\importsmallgnuplotps{Mittelwerte der Polling-Perioden}{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Referenz)}{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
 
 Abbildung \ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Entwicklung der Mittelwerte der Polling-Perioden aller Subscriber.\\
 
-\importsmallgnuplotps{Nachrichtenverzögerung}{Abb:Referenzverlauf_Nachrichtenverzoegerung}{avgMsgDelayRatio_Referenzverlauf_MeanValueRanges}
+\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Nachrichtenverzoegerung}{avgMsgDelayRatio_Referenzverlauf_MeanValueRanges}
 
-Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt die den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Gütefunktion
-$Vg$.\\
+Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
+$\Gamma_V$.\\
+
+\importsmallgnuplotps{Aktualitätsgrad $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Aktualitaetsgrad}{avgUptodateRatio_Referenzverlauf_MeanValueRanges}
+
+Abbildung \ref{Abb:Referenzverlauf_Aktualitaetsgrad} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
+$\Gamma_A$.\\
 
 \importsmallgnuplotps{Prozentsatz der gesparten Nachrichten}{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten}{relReOmRatio_Referenzverlauf_MeanValueRanges}
 
@@ -104,6 +109,8 @@ Verteilung der Feeds über ein Notifikationssystem.
 Obwohl es keine großen Anstrengungen erfordert, sich zu überlegen, was passiert, wenn eine Staukontrolle seitens der Subscriber ausbleibt, wollen wir hier dennoch
 diese Auswirkungen der Vollständigkeit halber graphisch zeigen (Abbildung \ref{Abb:Ohne_Staukontrolle}).
 \importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
+\importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}{avgUptodateRatio_NoCongCont_MeanValueRanges}
+\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
 
 \subsection{Keine Ausbalancierung der Polling-Perioden}
 Hier wollen wir untersuchen, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
