@@ -29,9 +29,8 @@ dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten 
 zuständig sind.\\
 
 Da ein einziger Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
-Zufallswerten durchgeführt. Für jeden
-gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle
-berechnet. \todo{Zeit}Bei jedem Durchlauf mit anderen Zufallswerten verändert sich das Overlay-Netzwerk geringfügig (s. o.).
+Zufallswerten durchgeführt. Dadurch hat sich bei jedem Durchlauf das Overlay-Netzwerk geringfügig verändert (s. o.). Für jeden
+gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle berechnet.
 \paragraph{Parameter:}
 Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
 angegebenen Parameter als Standardwerte gesetzt.
@@ -86,7 +85,7 @@ Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serv
 
 Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
 pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, so dass der RSS-Server an seiner Belastungsgrenze arbeitet.\\
-
+\todo{Auswertung}
 \importsmallgnuplotps{Mittelwerte der Polling-Perioden (Referenz)}{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
 
 Abbildung \ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Entwicklung der Mittelwerte der Polling-Perioden aller Subscriber.\\
@@ -107,6 +106,7 @@ Abbildung \ref{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten} zeigt 
 Verteilung der Feeds über ein Notifikationssystem.
 
 \subsection{Keine Staukontrolle}
+\todo{Auswertung}
 Obwohl es keine großen Anstrengungen erfordert, sich zu überlegen, was passiert, wenn eine Staukontrolle seitens der Subscriber ausbleibt, wollen wir hier dennoch
 diese Auswirkungen der Vollständigkeit halber graphisch zeigen (Abbildung \ref{Abb:Ohne_Staukontrolle}).
 \importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
@@ -126,7 +126,14 @@ Subscriber werden ihre Polling-Perioden erhöhen.\\
 
 
 \importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
-\importsmallgnuplotps{Vergleich: Ausbalancierung -- keine Ausbalancierung}{Abb:Vgl_Ausb_KAusb}{vgl_ToTR_BalancingNoBalancing}
+\importsmallgnuplotps{Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
+
+\subsection{Churn-Kompensation}
+\label{exp:churn_kompensation}
+\todo{Auswertung}
+
+\importsmallgnuplotps{ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation400_80_900_MVR}
+\importsmallgnuplotps{mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation400_80_900_MVR}
 
 
 %%% Local Variables: 

@@ -41,26 +41,28 @@ Welche Knoten in einem Netzwerk die Rolle der Broker übernehmen, bleibt zunächst
 jeweiligen Umsetzung des Systems ab. Denkbar sind beispielsweise dedizierte Knoten, welche dauerhaft online sind und kaum Ausfallerscheinungen aufweisen. Deshalb
 wollen wir hier auf eine mögliche Kompensation von Churn bei Brokern nicht eingehen.\\
 
-Da in \pubsubrss Subscriber nicht direkt miteinander kommunizieren, hat Churn keinerlei Auswirkung auf die Übertragungsgeschwindigkeit von Daten noch auf die
+Da in \pubsubrss Klienten nicht direkt miteinander kommunizieren, hat Churn weder Auswirkung auf die Übertragungsgeschwindigkeit von Daten noch auf die
 Erreichbarkeit einzelner Daten (Feeds).\\
 Verlassen Subscriber das System, so hat das weniger Feed-Requests pro Zeiteinheit zur Folge, woraufhin die übrigen
 Subscriber ihre Polling-Perioden erniedrigen werden. Dies ist kein nachteiliger Effekt.\\
 Beim Eintreten von Subscribern in das System stellen diese zunächst ihren
 $cpp$ auf den von ihnen gewählten $ppp$ ein. Erst im Laufe der Messung der roundtrip-times werden diese Subscriber ihren $cpp$ erhöhen. Bei einer hohen Anzahl von
-neu in das System hinzukommenden Subscribern pro Zeiteinheit gibt es also eine erhöhte Rate an Feed-Requests. Dies bedeutet eine Mehrbelastung des jeweiligen
-RSS-Servers. Egal, wie gut die Anpassung an die Server-Belastung vonstatten geht: die Mehrbelastung \todo{}ist in diesem Fall einzig und allein abhängig von der
-Churn-Rate.
+neu in das System hinzukommenden Subscribern pro Zeiteinheit gibt es also eine erhöhte Rate an Feed-Requests. Dies bedeutet bei einer konstanten Churn-Rate eine
+konstante Mehrbelastung des jeweiligen
+RSS-Servers. Wir vermuten, dass, unabhängig davon, wie gut die Anpassung an die Server-Belastung vonstatten geht, die Mehrbelastung in diesem Fall mit der
+bisherigen Methode schlecht kompensiert werden kann (siehe Abschnitt \ref{exp:churn_kompensation}).
 
 \subsubsection{Churn-Kompensation bei \pubsubrss}
 Um die negativen Auswirkungen von Churn bei \pubsubrss zu reduzieren, muss die Mehrbelastung des Servers durch neu hinzugekommene Subscriber so weit wie möglich
 vermieden werden. Dabei hilft uns folgende Idee: tritt ein Subscriber dem System bei, so existieren eventuell schon genügend Subscriber, welche einen
-aussagekräftigen $artt$ und $cpp$ berechnet haben. Der neu hinzugekommene Subscriber kann sich an diesen Richtwerten orientieren. Es wäre mit einigem Aufwand
+aussagekräftigen $artt$ und $cpp$ berechnet haben. Der neu hinzugekommene Subscriber kann sich an diesen Richtwerten orientieren und muss seinen
+individuellen $cpp$ nicht mit Hilfe seines $ppp$ als Ausgangswert berechnen. Es wäre mit einigem Aufwand
 verbunden, die Anzahl der Subscriber im gesamten Netzwerk zu bestimmen. Es reicht jedoch aus, die Anzahl der Subscriber heranzuziehen, welche mit dem gleichen
 lokalen Broker verbunden sind. Diese Information kann der lokale Broker ohne Schwierigkeiten liefern. Da nur $RichRSSFeeds$ einen Broker passieren (siehe Abschnitt
 \ref{cs:ausbalancierung_der_polling-perioden}), kann dieser den enthaltenen $feed.artt$ eines Feeds zwischenspeichern. Betritt ein neuer Subscriber das System, so
 kann der Broker diesem den aktuellen Feed mitsamt des zwischengespeicherten $artt$-Wertes übermitteln. Der neue Subscriber wählt nun wie bisher seinen $cpp$ auf
-Basis dieses $feed.artt$-Wertes. Dadurch steigen neue Subscriber bei der Messung der roundtrip-time bereits mit einer höheren $cpp$ ein, wovon wir uns eine
-Entlastung des RSS-Servers versprechen. Experimente zu diesem Punkt folgen in Kapitel \ref{c:experimente}.\\
+Basis dieses $feed.artt$s. Dadurch steigen neue Subscriber bei der Messung der roundtrip-time bereits mit einer höheren $cpp$ ein, wovon wir uns eine
+Entlastung des RSS-Servers versprechen (siehe Abschnitt \ref{exp:churn_kompensation}).\\
 
 Um dieses Verfahren zu realisieren, müssen wir eine zusätzliche Datenstruktur und weitere Methoden zu unseren schon bestehenden hinzufügen:
 

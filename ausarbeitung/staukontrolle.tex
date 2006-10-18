@@ -140,16 +140,16 @@ Experimente haben gezeigt, dass der so berechnete Wert $rtt$ für die Berechnung 
 Daher definieren wir einen weiteren Wert
 (eine skalierte Version des $rtt$-Wertes), den $artt$ (``adjusted roundtrip-time''), mit
 \begin{equation}
-artt:=sf(i)\cdot rtt.
+artt:=\text{sf}(i)\cdot rtt.
 \end{equation}
 
-Dabei ist $sf()$ die Skalierungsfunktion und $i$ die Anzahl der ausgesendeten Anfragen bzw. die Anzahl der Verbindungsversuche bis zu einer erfolgreichen Verbindung.
+Dabei ist $\text{sf}()$ die Skalierungsfunktion und $i$ die Anzahl der ausgesendeten Anfragen bzw. die Anzahl der Verbindungsversuche bis zu einer erfolgreichen Verbindung.
 Experimente mit Hilfe der entwickelten Simulationsumgebung haben gezeigt, dass eine exponentielle Skalierungsfunktion ein
 besseres Adaptionsverhalten als eine polynomielle Skalierungsfunktion ermöglicht. Dabei muss man bedenken, dass die Berechnung des $rtt$-Wertes sowieso
 schon auf exponentieller Basis
 geschieht, da der für Wiederholungen relevante $rto$-Wert exponentiell gesteigert wird. Wir definieren also
 \begin{equation}
-sf(x):=2^{x-1}.
+\text{sf}(x):=2^{x-1}.
 \end{equation}
 
 Hier kann man eine Analogie zum Konzept der PI-Reglern herstellen (obwohl es nur Parallelen in den Grundideen gibt): während man den $rtt$-Wert
@@ -189,10 +189,8 @@ Weitere Verbesserungen werden wir in Abschnitt \ref{cs:ausbalancierung_der_polli
 Ein Problem ist denkbar, welches sich auch in der Simulation gezeigt hat: einige wenige Subscriber, welche Anfragen mit einer hohen Frequenz aussenden (also
 bei einer sehr kleinen Polling-Periode), können die übrigen Subscriber ``aussperren''. Die Subscriber, welche eine kürzere Polling-Periode berechnet haben, können
 diese halten, da ihre Anfragen (bedingt durch deren Menge) eine größere Chance haben, in der Server-Queue zu landen. Die Queue wird unter diesen wenigen
-Subscribern aufgeteilt. Somit erhalten sie die Feeds als Antwort auch mit einer höheren Frequenz vom Server. Dabei muss man bedenken,
-dass sich die Anfragen mehrfacher Wiederholungen in der Server-Queue befinden können. Diese werden
-nach und nach bearbeitet, Feeds werden an den jeweiligen Subscriber geschickt. Eine eventuelle Messung der roundtrip-time \todo{}wird dadurch verfälscht, so dass der
-Subscriber (in der Annahme, der Server kann der Beantwortung einer Anfrage schnell nachkommen) seinen $cpp$ konstant halten kann. Die Polling-Perioden der
+Subscribern aufgeteilt. Somit erhalten sie die Feeds auch mit einer höheren Frequenz vom Server. Kann der Server der Beantwortung einer Anfrage schnell nachkommen,
+so kann der empfangende Subscriber seinen $cpp$ konstant halten. Die Polling-Perioden der
 übrigen Subscriber wachsen dagegen drastisch. Denn gerade durch den Umstand, dass ihre
 Anfragen seltener in der Server-Queue landen, werden sie durch die daraufhin verzögerten (oder ausbleibenden) Antworten ihre Polling-Perioden vergrößern.
 Dieser Rückkopplungseffekt führt dazu, dass ihre Polling-Perioden dauerhaft große Werte aufweisen und für diese Subscriber kaum Chancen bestehen,

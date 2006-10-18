@@ -1,6 +1,55 @@
 \chapter{Anhang}
 \label{anhang}
 \addcontentsline{toc}{section}{Herleitungen}
+
+\addcontentsline{toc}{section}{Legende der Diagramme}
+\section*{Legende der Diagramme}
+\label{legende}
+Wir werden ausschließlich Diagramme erläutern, welche den Grad der Server-Belastung darstellen. Das sind jene Diagramme, in denen
+die Füllhöhe der Server-Queue und die Anzahl der abgewiesenen Feed-Requests pro Zeiteinheit dargestellt sind.\\
+
+\importgnuplotps{Legende der Diagramme}{Abb:Legende_Diagramme}{legende}
+
+Auf der y-Achse (siehe Abbildung \ref{Abb:Legende_Diagramme}) wird die Anzahl der Anfragen an einen RSS-Server dargestellt.
+Unterhalb der Queue (``$<$Anfragen in der Queue$>$'') ist die Füllgröße der Queue zu diesem Zeitpunkt zu sehen.
+Oberhalb der Queue (``$<$Verworfene Anfragen$>$'') ist die Anzahl der abgewiesenen Nachrichten zu sehen. Die Darstellung beider Größen innerhalb
+eines Diagramms ist dabei nicht ganz unproblematisch, da die Füllgröße der Queue einen Zustand zum aktuellen Zeitpunkt repräsentiert,
+während sich die Anzahl der abgewiesenen Nachrichten über einen Zeitraum von einem Zeitpunkt in der
+Vergangenheit bis zum aktuellen Zeitpunkt erstreckt. Da die Nachrichten in der Simulation aber sequenziell bearbeitet werden,
+kummulieren sich die abgewiesenen Nachrichten
+(Kurve über der Queue steigt), bis der Server eine nächste Antwort aussendet (Kurve über der Queue bricht ab). Dadurch kann das
+Verhältnis zwischen mittlerer Ankunftsrate der Anfragen und mittlerer Bearbeitungszeit gut nachvollzogen werden.\\
+Im Bereich ``$<$Aktionsbereich$>$'' werden Aktionen angezeigt, die während der Simulation aufgetreten sind. Tabelle \ref{Tab:Aktionssymbole}
+gibt eine Übersicht über die den Symbolen zugeordneten Aktionen mitsamt Beispielparametern.\\
+\begin{table}
+  \begin{center}
+    \begin{tabular}{|rl|}
+      \hline
+      Aktionssymbol & Aktion \\
+      \hline\hline
+      &\\
+      ST(1) & setze ServiceTimeFactor auf 1\\
+      JB & Begin der Beitrittsphase: Subscriber beginnen,\\
+      & dem Netzwerk beizutreten\\
+      JE & Ende der Beitrittsphase\\
+      CB(80,100) & Beginn der Churn-Phase: 80\% der Subscriber\\
+      & werden innerhalb von 100 Sekunden ausgetauscht\\
+      CE & Ende der Churnphase\\
+      BS(50) & 50\% der Subscriber sind blockiert\\
+      US & Subscriber sind nicht mehr blockiert\\
+      SL(50) & 50\% der Subscriber verlassen das System\\
+      SJ & Subscriber, die das System zuvor verlassen haben,\\
+      & treten dem System wieder bei\\
+      &\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Aktionssymbole}
+  \label{Tab:Aktionssymbole}
+\end{table}
+
+Die Kurven zeigen berechnete Mittelwerte und 95\%-Konfidenzintervalle um diese Mittelwerte. Die Mittelwerte bestimmen den Kurvenverlauf,
+die Konfidenzintervalle die Strichstärke der Kurve. So kann die Präzision der errechneten Mittelwerte leicht nachvollzogen werden.
 \section*{Herleitungen}
 Hier finden sich die Herleitungen zu den Formeln zur Berechnung der mittleren roundtrip-times.
 \subsection*{Mittlere roundtrip-time bei exponentieller Steigerung des $rto$}
@@ -112,54 +161,6 @@ Als Mittelwert ergibt sich nun:
 \begin{equation}
   =cpp\left(\frac{(i-1)(2i+2)}{6}\right)+\varDelta t.
 \end{equation}
-
-\addcontentsline{toc}{section}{Legende der Diagramme}
-\section*{Legende der Diagramme}
-\label{legende}
-Hier findet sich eine Legende zur Erklärung der Diagramme.
-
-\importgnuplotps{Legende der Diagramme}{Abb:Legende_Diagramme}{legende}
-
-Auf der y-Achse wird die Anzahl der Anfragen an einen RSS-Server dargestellt. Unterhalb der Queue (``$<$Anfragen in der Queue$>$'') ist die Füllgröße
-der Queue zu diesem Zeitpunkt zu sehen.
-Oberhalb der Queue (``$<$Verworfene Anfragen$>$'') ist die Anzahl der abgewiesenen Nachrichten zu sehen. Die Darstellung beider Größen innerhalb
-eines Diagramms ist dabei nicht ganz unproblematisch, da die Füllgröße der Queue einen Zustand zum aktuellen Zeitpunkt repräsentiert,
-während sich die Anzahl der abgewiesenen Nachrichten über einen Zeitraum von einem Zeitpunkt in der
-Vergangenheit bis zum aktuellen Zeitpunkt erstreckt. Da die Nachrichten in der Simulation aber sequenziell bearbeitet werden,
-kummulieren sich die abgewiesenen Nachrichten
-(Kurve über der Queue steigt), bis der Server eine nächste Antwort aussendet (Kurve über der Queue bricht ab). Dadurch kann das
-Verhältnis zwischen mittlerer Ankunftsrate der Anfragen und mittlerer Bearbeitungszeit gut nachvollzogen werden.\\
-Im Bereich ``$<$Aktionsbereich$>$'' werden Aktionen angezeigt, die während der Simulation aufgetreten sind. Tabelle \ref{Tab:Aktionssymbole}
-gibt eine Übersicht über die den Symbolen zugeordneten Aktionen mitsamt Beispielparametern.\\
-\begin{table}
-  \begin{center}
-    \begin{tabular}{|rl|}
-      \hline
-      Aktionssymbol & Aktion \\
-      \hline\hline
-      &\\
-      ST(1) & setze ServiceTimeFactor auf 1\\
-      JB & Begin der Beitrittsphase: Subscriber beginnen,\\
-      & dem Netzwerk beizutreten\\
-      JE & Ende der Beitrittsphase\\
-      CB(80,100) & Beginn der Churn-Phase: 80\% der Subscriber\\
-      & werden innerhalb von 100 Sekunden ausgetauscht\\
-      CE & Ende der Churnphase\\
-      BS(50) & 50\% der Subscriber sind blockiert\\
-      US & Subscriber sind nicht mehr blockiert\\
-      SL(50) & 50\% der Subscriber verlassen das System\\
-      SJ & Subscriber, die das System zuvor verlassen haben,\\
-      & treten dem System wieder bei\\
-      &\\
-      \hline
-    \end{tabular}
-  \end{center}
-  \caption{Aktionssymbole}
-  \label{Tab:Aktionssymbole}
-\end{table}
-
-Kurven zeigen berechnete Mittelwerte und 95\%-Konfidenzintervalle um diese Mittelwerte. Die Mittelwerte bestimmen den Kurvenverlauf,
-die Konfidenzintervalle die Strichstärke der Kurve. So kann die Präzision der errechneten Mittelwerte leicht nachvollzogen werden.
 
 %%% Local Variables: 
 %%% mode: latex
