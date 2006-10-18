@@ -3,7 +3,7 @@
 In diesem Kapitel werden wir das Adaptionsverhalten der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte der Verfahren genauer
 betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir bedienen uns dabei der in Kapitel \ref{c:implementierung} vorgestellten Simulationsumgebung. Da
 wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir ausschließlich das System durch Modifikation verschiedener Parameter bzw. Algorithmen
-``in sich'' untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Bestätigung der getroffenen Annahmen, die die Entwicklung unserer
+``in sich'' untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Überprüfung der getroffenen Annahmen, die die Entwicklung unserer
 Verfahren motiviert haben.
 
 \section{Aufbau der Experimente:}
@@ -23,14 +23,15 @@ Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell 
 fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche die physischen Verbindungen
 zwischen den Knoten darstellt und eine Toplayer-Topologie, welche das Overlay-Netzwerk repräsentiert. Bei allen Experimenten wurde eine Sublayer-Topologie
 bestehend aus 2000 Knoten verwendet. Das Overlay-Netzwerk bestimmt sich dann aus den Broker-Knoten (hier 200 Knoten), welche fest gewählt wurden, und den
-Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten bestimmt (also 900) und die zufällig den einzelnen Brokern zugewiesen wurden, jedoch so,
+Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten bestimmt (also 900) und die zufällig den einzelnen Brokern zugewiesen wurden.
+Dies geschieht jedoch so,
 dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
 zuständig sind.\\
 
 Da ein einziger Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
 Zufallswerten durchgeführt. Für jeden
 gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle
-berechnet. Bei jedem Durchlauf mit anderen Zufallswerten verändert sich das Overlay-Netzwerk geringfügig (s. o.).
+berechnet. \todo{Zeit}Bei jedem Durchlauf mit anderen Zufallswerten verändert sich das Overlay-Netzwerk geringfügig (s. o.).
 \paragraph{Parameter:}
 Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
 angegebenen Parameter als Standardwerte gesetzt.
@@ -68,7 +69,7 @@ angegebenen Parameter als Standardwerte gesetzt.
 Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$. Wir haben bewusst relativ hohe
 Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Hohe Nachrichtenlaufzeiten können bewirken,
 dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfragen wiederholen. Dies führt zunächst zu einer Mehrbelastung
-des Servers. Auch wenn in der Realität dauerhaft solch hohen Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
+des Servers. Auch wenn in der Realität dauerhaft solch hohe Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
 Adaptionsalgorithmen unter Extrembedingungen testen.\\
 
 \section{Experimente -- bevorzugte Polling-Periode}
@@ -84,7 +85,7 @@ Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serv
 \importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
 Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
-pegelt sich die Kurve jedoch auf Grenze die Server-Queue ein, so dass der RSS-Server an seiner Belastungsgrenze arbeitet.\\
+pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, so dass der RSS-Server an seiner Belastungsgrenze arbeitet.\\
 
 \importsmallgnuplotps{Mittelwerte der Polling-Perioden (Referenz)}{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
 
@@ -113,12 +114,12 @@ diese Auswirkungen der Vollständigkeit halber graphisch zeigen (Abbildung \ref{A
 \importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
 
 \subsection{Keine Ausbalancierung der Polling-Perioden}
-Hier wollen wir untersuchen, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
+In diesem Experiment wollen wir untersuchen, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
 zum Effekt des ``Aussperrens'' kommt (siehe Abschnitt \ref{cs:ausbalancierung_der_polling-perioden}). Um den Effekt zu maximieren, haben wir bei diesem Experiment
 auf ein allmähliches Beitreten der Subscriber zum Overlay-Netzwerk verzichtet. Alle Subscriber treten gleichzeitig zu Beginn der Simulation dem Overlay-Netzwerk
 bei. Kommt es zum ``Aussperren'', so sollte dieser Effekt anhand der Anzahl der Anfragen an den RSS-Server deutlich sichtbar sein, denn alle ausgesperrten Subscriber
 werden aufgrund ausbleibender Antworten ihre Anfragen wiederholen. Dies muss nahezu gleichzeitig geschehen, da alle Subscriber zur selben Zeit dem Netzwerk
-beigetreten sind und ihre $RT$s daher annähernd zu gleichen Zeit ablaufen werden. Die Mittelwerte der Polling-Perioden aller Subscriber sollten sich
+beigetreten sind und ihre $RT$s daher annähernd zur gleichen Zeit ablaufen werden. Die Mittelwerte der Polling-Perioden aller Subscriber sollten sich
 kontinuierlich erhöhen. Denn nur eine geringe Zahl der Subscriber hat Zugriff auf den Server und kann ihre Polling-Perioden konstant niedrig halten. Die übrigen
 Subscriber werden ihre Polling-Perioden erhöhen.\\
 
