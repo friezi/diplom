@@ -1,0 +1,42 @@
+\section{Timer}
+\label{css:timer}
+Ein wichtiger Bestandteil der im weiteren Verlauf der Arbeit vorgestellten Verfahren sind Timer. Daher stellen wir
+zunächst dar, was unter dem Begriff ``Timer'' zu verstehen ist und welche Problematiken sich im Umgang mit Timern ergeben.\\
+
+Bei der Kommunikation zwischen Computern werden Informationen im allgemeinen in einzelne Datenpakete eingeteilt und zwischen
+den beteiligten Computern ausgetauscht. Ein Timer ist ein Mechanismus, um in Computer-Kommunikationsnetzen Fehler erkennen zu können \cite{18216},
+welche bei der Kommunikation zwischen Computern auftreten. Diese Fehler können im einzelnen Verluste von Datenpaketen, das Zusammenbrechen
+von Kommunikationskanälen oder indirekt eine Verstümmelung der übetragenen Informationen bezeichnen. Dabei arbeitet ein Timer wie eine Alarm-Uhr:
+nach einer vordefinierten Zeit läuft der Timer ab. In der Annahme, dass ein bestimmtes Ereignis innerhalb dieser
+vordefinierten Zeit zu geschehen hat (im Regelfall eine Antwort des Kommunikationspartners), deutet ein abgelaufener Timer auf
+einen aufgetretenen Fehler hin. Hierbei ergeben sich erste Probleme: ist die Zeitspanne bis zum Ablauf eines Timers zu lang,
+so wird ein eventuell aufgetretener Fehler zu spät erkannt. Ist die Zeitspanne dagegen zu kurz, so kann dies einen falschen Alarm zur Folge haben.
+Um ein optimales Leistungsverhalten zu erzielen, wird ein Gleichgewicht zwischen diesen gegensätzlichen Zielen angestrebt.\\
+
+Verschiedene Timer werden bei Kommunikationsprotokollen (Bsp. TCP, siehe Abschnitt \ref{staukontrolle_tcp}) verwendet, um verschiedenartige
+Formen der Kommunikationsstörung zu erkennen. So sorgt ein ``retransmission-timer'' für das wiederholte Aussenden von eventuell verloren gegangenen
+Datenpaketen. Dagegen gibt ein ``death-timer'' Auskunft über den Zusammenbruch einer Datenverbindung \cite{18216}. Die Zeitspannen
+(``Timeout-Intervalle'') werden dabei je nach Timer unterschiedlich gesetzt. Um ein Gleichgewicht zwischen der Reduzierung falscher Alarme
+und der rechtzeitigen Erkennung aufgetretener Störungen zu erreichen, werden die Timeout-Intervalle meistens dynamisch und situationsabhängig
+bestimmt. Folgende Situationen können nach Zhang \cite{18216} beispielsweise für das Ablaufen von retransmission-timern ursächlich sein:
+\begin{enumerate}
+\item Ein Datenpaket hat den den Sender noch nicht verlassen (aufgrund eines beispielsweise blockierten Netzwerks), befindet sich aber bereits
+  in einer tieferen Anwendungsschicht.
+\item Das Timeout-Intervall ist kürzer als die Zeit bis zu einer positiven Antwort vom Empfänger.
+\item Ein Datenpaket hat den Empfänger erreicht, die Bestätigungsnachricht ging jedoch verloren.
+\item \label{En:Congestion} Ein Datenpaket wurde an einem Vermittlungsknoten (Gateway) aufgrund von Datenstau verworfen.
+\item \label{En:Channelerror}Ein Datenpaket wurde augrund eines Fehlers im Übertragungskanal verworfen.
+\item Das Netzwerk wurde partitioniert oder der Empfänger-Knoten ist ausgefallen.
+\end{enumerate}
+
+Nur bei Punkt \ref{En:Channelerror} ist ein unmittelbares und wiederholtes Aussenden notwendig. Punkt \ref{En:Congestion} erfordert zwar
+auch ein wiederholtes Aussenden eines Datenpakets, das Setzen des retransmission-timers muss aber mit Bedacht geschehen,
+um den ursächlichen Datenstau nicht noch zu vergrößern. Zhang beschreibt in \cite{18216} die Problematik bei dynamischer Bestimmung der
+Timeout-Intervalle. Techniken zur dynamischen Bestimmung von Timeout-Intervallen werden wir in Abschnitt \ref{staukontrolle_tcp} vorstellen.
+
+
+ 
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

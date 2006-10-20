@@ -1,0 +1,116 @@
+\section*{Herleitungen}
+Hier finden sich die Herleitungen zu den Formeln zur Berechnung der mittleren roundtrip-times.
+\subsection*{Mittlere roundtrip-time bei exponentieller Steigerung des $rto$}
+
+Bei der Berechnung der mittleren roundtrip-time müssen wir zunächst die möglichen Zeitdifferenzen zwischen den Wiederholungen und Erhalt des Feeds aufsummieren.
+$T_1$ bis $T_4$ in der Abbildung \ref{Abb:exp_steigerung_rto} sind als Beispiele die Zeitpunkte der einzelnen Aussendungen bzw. Wiederholungen,
+$t_f$ ist der Zeitpunkt, zu dem der Feed den Subscriber erreicht. $i$ ist dabei die Anzahl der Wiederholungen (einschliesslich der ersten Aussendung
+eines Feed-Requests).
+
+\begin{picturehere}{3}{4.5}{\mbox{exp. Steigerung des $rto$}}{Abb:exp_steigerung_rto}
+ 
+\begin{picture}(7,1)(1.5,-2.5)
+  \put(0,0){\vector(1,0){9}}
+  \put(0,-0.2){\line(0,1){0.4}}
+  \put(0,-0.5){$T_1$}
+  \put(1,-0.2){\line(0,1){0.4}}
+  \put(1,-0.5){$T_2$}
+  \put(3,-0.2){\line(0,1){0.4}}
+  \put(3,-0.5){$T_3$}
+  \put(7,-0.2){\line(0,1){0.4}}
+  \put(7,-0.5){$T_4$}
+  \put(8,-0.2){\line(0,1){0.4}}
+  \put(8,-0.5){$t_f$}
+  \put(7,0.3){$\overbrace{\hspace{1cm}}^{\varDelta t}$}
+  \put(3,-0.65){$\underbrace{\hspace{5cm}}_{cpp\cdot 2^{i-1}+\varDelta t}$}
+  \put(1,0.9){$\overbrace{\hspace{7cm}}^{cpp\cdot 2^{i-2}+cpp\cdot 2^{i-1}+\varDelta t}$}
+  \put(0,-1.25){$\underbrace{\hspace{8cm}}_{cpp\cdot 2^{i-3}+cpp\cdot 2^{i-2}+cpp\cdot 2^{i-1}+\varDelta t}$}
+  \put(9.8,0){$time$}
+\end{picture}
+\end{picturehere}
+
+Wir erhalten folgende Summe:
+\begin{equation}
+  [\varDelta t]+[\varDelta t+cpp\cdot 2^{i-1}]+[\varDelta t+cpp\cdot 2^{i-1}+cpp\cdot 2^{i-2}]+\dots+[\varDelta t+cpp\cdot 2^{i-1}+\dots+cpp\cdot 2^1]
+\end{equation}
+\begin{equation}
+  =i\cdot \varDelta t+(i-1)\cdot cpp\cdot 2^{i-1}+(i-2)\cdot cpp\cdot 2^{(i-2)}+\dots+1\cdot cpp\cdot 2^1
+\end{equation}
+\begin{equation}
+  =i\cdot \varDelta t+cpp\sum^{i-1}_{k=1}2^kk.
+\end{equation}
+
+Um den Mittelwert zu erhalten, müssen wir durch $i$ teilen:
+
+\begin{equation}
+  \frac{i\cdot \varDelta t+cpp\sum^{i-1}_{k=1}2^kk}{i}
+\end{equation}
+\begin{equation}
+  =\frac{cpp\sum^{i-1}_{k=1}2^kk}{i}+\varDelta t.
+\end{equation}
+
+\subsection*{Mittlere roundtrip-time bei polynomieller Steigerung des $rto$}
+Analog zur Herleitung der mittleren roundtrip-time bei exponentieller Steigerung des $rto$ sind die Zeitdifferenzen wie in Abbildung \ref{Abb:poly_steigerung_rto}
+dargestellt. Die Koeffizienten sind nun $i\dots 2$ (da bei der ersten Aussendung der $rto$ auf $rto:=2\cdot cpp$ gesetzt wird).
+\begin{picturehere}{3}{4.5}{\mbox{polyn. Steigerung des $rto$}}{Abb:poly_steigerung_rto}
+ 
+\begin{picture}(7,1)(1.5,-2.5)
+  \put(0,0){\vector(1,0){9}}
+  \put(0,-0.2){\line(0,1){0.4}}
+  \put(0,-0.5){$T_1$}
+  \put(1,-0.2){\line(0,1){0.4}}
+  \put(1,-0.5){$T_2$}
+  \put(3,-0.2){\line(0,1){0.4}}
+  \put(3,-0.5){$T_3$}
+  \put(6,-0.2){\line(0,1){0.4}}
+  \put(6,-0.5){$T_4$}
+  \put(8,-0.2){\line(0,1){0.4}}
+  \put(8,-0.5){$t_f$}
+  \put(6,0.3){$\overbrace{\hspace{2cm}}^{\varDelta t}$}
+  \put(3,-0.65){$\underbrace{\hspace{5cm}}_{i\cdot cpp+\varDelta t}$}
+  \put(1,0.9){$\overbrace{\hspace{7cm}}^{(i-1)\cdot cpp+i\cdot cpp+\varDelta t}$}
+  \put(0,-1.25){$\underbrace{\hspace{8cm}}_{(i-2)\cdot cpp+(i-1)\cdot cpp+i\cdot cpp+\varDelta t}$}
+  \put(9.8,0){$time$}
+\end{picture}
+\end{picturehere}
+
+Die Berechnung der Summe ist wie folgt. Dabei greifen wir auf die Gleichungen
+\begin{equation}
+  \sum^n_{i=1}i=\frac{n(n+1)}{2}
+\end{equation}
+und
+\begin{equation}
+  \sum^n_{i=1}i^2=\frac{n(n+1)(2n+1)}{6}
+\end{equation}
+zurück:
+\begin{equation}
+  [\varDelta t]+[\varDelta t+i\cdot cpp]+[\varDelta t+i\cdot cpp+(i-1)\cdot cpp]+\dots+[\varDelta t+i\cdot cpp+\dots+2\cdot cpp]
+\end{equation}
+\begin{equation}
+  =i\cdot \varDelta t+cpp\sum^{i-1}_{k=1}k(k+1)
+\end{equation}
+\begin{equation}
+  =i\cdot \varDelta t+cpp\left(\sum^{i-1}_{k=1}k^2+\sum^{i-1}_{k=1}k\right)
+\end{equation}
+\begin{equation}
+  =i\cdot \varDelta t+cpp\left(\frac{(i-1)i(2(i-1)+1)}{6}+\frac{(i-1)i}{2}\right)
+\end{equation}
+\begin{equation}
+  =i\cdot \varDelta t+cpp\left(\frac{i(i-1)(2i-1)+3i(i-1)}{6}\right)
+\end{equation}
+\begin{equation}
+  =i\cdot \varDelta t+cpp\left(\frac{i(i-1)(2i+2)}{6}\right).
+\end{equation}
+
+Als Mittelwert ergibt sich nun:
+\begin{equation}
+  \frac{i\cdot \varDelta t+cpp\left(\frac{i(i-1)(2i+2)}{6}\right)}{i}
+\end{equation}
+\begin{equation}
+  =cpp\left(\frac{(i-1)(2i+2)}{6}\right)+\varDelta t.
+\end{equation}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

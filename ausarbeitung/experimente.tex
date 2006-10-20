@@ -121,11 +121,13 @@ Man kann sich leicht überlegen, welche Folgen eine fehlende Staukontrolle seiten
 haben wir ebenfalls untersucht. In Abbildung \ref{Abb:Ohne_Staukontrolle} ist zu sehen, dass die Serverbelastung wie erwartet stetig zunimmt.
 
 \importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
-\importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}{avgUptodateRatio_NoCongCont_MeanValueRanges}
-\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
+\importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}
+{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}{avgUptodateRatio_NoCongCont_MeanValueRanges}
+\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}
+{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
 
-Ebenfalls nimmt der Grad der Nachrichtenverzögerung stetig zu (siehe Abbildung\ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
-wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung\ref{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}).
+Ebenfalls nimmt der Grad der Nachrichtenverzögerung stetig zu (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
+wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}).
 \newpage
 
 \subsection{Keine Ausbalancierung der Polling-Perioden}
@@ -138,14 +140,47 @@ Netzwerk beigetreten sind und ihre $RT$s daher annähernd zur gleichen Zeit ablau
 kontinuierlich erhöhen. Denn nur eine geringe Zahl der Subscriber hat Zugriff auf den Server und kann ihre Polling-Perioden konstant niedrig halten. Die übrigen
 Subscriber werden ihre Polling-Perioden erhöhen.\\
 Diese Effekte sind im Graphen in Abbildung \ref{Abb:Keine_Ausbalancierung} gut nachvollziehbar. Die auftretenden Spitzen zeigen, dass zu dieser Zeit sehr viele
-Subscriber gleichzeitig Feed-Requests aussenden. Die $RT$s laufen also gleichzeitig ab. Die Zeitdifferenzen nehmen exponentiell zu, dies entspricht der
-exponentiellen Zunahme der $rto$s. Nach jeder Spitze drosseln die nicht ausgesperrten Subscriber ebenfalls ihren $cpp$ und steigern diesen daraufhin allmählich.
-
+Subscriber gleichzeitig Feed-Requests aussenden. Dies kann nur eine Ursache in gleichzeitig ablaufenden $RT$s haben. Die Zeitdifferenzen nehmen exponentiell zu.
+Dies entspricht der exponentiellen Zunahme der $rto$s. Nach jeder auftretenden Spitze ist die Queue kaum gefüllt, ihr Füllgrad steigt jedoch daraufhin wieder.
+Erklären lässt sich dies folgendermaßen: die nicht ausgesperrten Subscriber müssen ihren $cpp$ ebenfalls drosseln (entsprechend den ausgesperrten Subscribern) und
+können diesen daraufhin jedoch allmählich wieder steigern.\\
+Schaut man sich die Entwicklung der mittleren Polling-Perioden ($cpp$) in Abbildung
+\ref{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden} an, so erkennt man (neben der stetigen Steigerung der Polling-Perioden) eine unmittelbare
+Korrelation mit den auftretenden Spitzen im Graphen der Abbildung \ref{Abb:Keine_Ausbalancierung}. Tatsächlich steigern also größtenteils die ausgesperrten
+Subscriber ihre Polling-Perioden. Sie erhalten keine Möglichkeit, diese zu senken. Auch die Standardabweichung der Mittelwerte der Polling-Perioden (Abbildung
+\ref{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) unterstützen die These des ``Aussperrens''. Die Graphik zeigt,
+dass die Polling-Perioden der verschiedenen Subscriber stark von einander abweichen. Um auch die Größe der Mittelwerte zu berücksichtigen,
+haben wir in Abbildung \ref{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden} noch den normierten Wert der
+Standardabweichung (bezogen auf den Mittelwert), den Variationskoeffizienten, dargestellt.\\
+Zum Vergleich haben wir in Abbildung \ref{Abb:Ausbalancierung} den graphischen Verlauf der Serverbelastung mit Ausbalancierung bei ansonsten gleicher
+Parameterwahl dargestellt. Bei Vergleich der Mittelwerte fällt auf, dass sich in beiden Fällen (nach völlig unterschiedlichem Verlauf)
+die Mittelwerte bei ca. 100 000 Sekunden bewegen. Jedoch habe sich die Mittelwerte bei dem ausbalancierten Verfahren nach unten hin eingepegelt (Abbildung
+\ref{Abb:Ausbalancierung_Mittelwerte_der_Polling-Perioden}), während die Mittelwerte beim nicht-ausbalancierten Verfahren weiterhin stetig steigen
+(Abbildung \ref{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden}).
+Ein großer Unterschied zwischen beiden Verfahren ist bei dem Vergleich der Standardabweichungen zu erkennen: beim nicht-ausbalancierten Verfahren
+(Abbildung \ref{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) hat bei ende der Simulation die Standardabweichung
+den Wert 180 000 erreicht und ist weiter steigend; beim ausbalancierten Verfahren (Abbildung
+\ref{Abb:Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) hat sich die Standardabweichung nach unten hin
+auf ca. den Wert 100 000 eingepegelt. Der Variationskoeffizient des ausbalancierten Verfahrens
+(Abbildung \ref{Abb:Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}) pegelt sich ebenfalls auf einem niedrigeren Wert ein,
+als der Variationskoeffizient des nicht-ausbalancierten Verfahrens
+(Abbildung \ref{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}) .
 
 \importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Keine Ausbalancierung)}
+{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_NoBalancing_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (K. Ausbalancierung)}
+{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_NoBalancing_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (K. Ausbalancierung)}
+{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_NoBalancing_MeanValueRanges}
 \importsmallgnuplotps{Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Ausbalancierung)}
+{Abb:Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Balancing_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (Ausbalancierung)}
+{Abb:Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_Balancing_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (Ausbalancierung)}
+{Abb:Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_Balancing_MeanValueRanges}
 
-\newpage
 \subsection{Churn-Kompensation}
 \label{exp:churn_kompensation}
 \todo{Auswertung}

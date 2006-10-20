@@ -1,6 +1,6 @@
 TARGET = diplomarbeit
 
-MODULES = $(TARGET) einleitung grundlagen publish_subscribe rss staukontrolle_tcp regelungstechnik rss_mittels_verteiltem_pubsub \
+MODULES = $(TARGET) einleitung grundlagen publish_subscribe rss timer staukontrolle_tcp regelungstechnik rss_mittels_verteiltem_pubsub \
 	adaptive_informationsverteilung das_verteilungsschema \
 	verteiltes_polling rolle_der_broker koordinierung_der_subscriber wahl_der_zufallsspanne heuristische_bestimmung_des_ttl \
 	angestrebte_dienstguete_bevorzugte_polling_periode staukontrolle feeds_und_timer ausbalancierung_der_pollingperioden churn experimente anhang glossar
