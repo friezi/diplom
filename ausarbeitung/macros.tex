@@ -37,6 +37,23 @@
     \label{\picturehere@label}%
   \end{figure*}%
 }
+\newenvironment{picturenothere}[4]%
+{%
+ \setkeys{picturehere}{caption = #3, label = #4}
+  \begin{figure*}%
+    \begin{center}%
+      \begin{minipage}[b]{.3\linewidth}%
+        \psset{xunit=1cm,yunit=1cm,runit=1cm}%
+        \begin{pspicture}(#1,#2)%
+}%
+{%
+        \end{pspicture}%
+      \end{minipage}%
+    \end{center}%
+    \caption{\picturehere@caption}%
+    \label{\picturehere@label}%
+  \end{figure*}%
+}
 \makeatother
 
 %parameters: Bezeichnung, Referenz, ps-Datei
@@ -48,9 +65,9 @@
 
 %parameters: Bezeichnung, Referenz, ps-Datei
 \newcommand{\importsmallgnuplotps}[3]{
-  \begin{picturehere}{1}{7}{\mbox{#1}}{#2}
+  \begin{picturenothere}{1}{7}{\mbox{#1}}{#2}
     \includegraphics[bb=530 310 730 600,scale=0.4,angle=-90]{#3}
-  \end{picturehere}
+  \end{picturenothere}
 }
 
 \newcommand{\pubsubrss}{Pub/Sub-RSS }

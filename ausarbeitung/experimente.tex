@@ -2,7 +2,7 @@
 \label{c:experimente}
 In diesem Kapitel werden wir das Adaptionsverhalten der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte der Verfahren genauer
 betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir bedienen uns dabei der in Kapitel \ref{c:implementierung} vorgestellten Simulationsumgebung. Da
-wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir ausschließlich das System durch Modifikation verschiedener Parameter bzw. Algorithmen
+wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir das System durch Modifikation verschiedener Parameter bzw. Algorithmen ausschließlich
 ``in sich'' untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Überprüfung der getroffenen Annahmen, die die Entwicklung unserer
 Verfahren motiviert haben.
 
@@ -19,8 +19,9 @@ besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ ``Stub-Domäne'' 
 Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht. Transit-Domänen
 dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie Backbones.\\
 
-Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier Verwendung
-fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche die physischen Verbindungen
+Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier
+Verwendung fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche
+die physischen Verbindungen
 zwischen den Knoten darstellt und eine Toplayer-Topologie, welche das Overlay-Netzwerk repräsentiert. Bei allen Experimenten wurde eine Sublayer-Topologie
 bestehend aus 2000 Knoten verwendet. Das Overlay-Netzwerk bestimmt sich dann aus den Broker-Knoten (hier 200 Knoten), welche fest gewählt wurden, und den
 Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten bestimmt (also 900) und die zufällig den einzelnen Brokern zugewiesen wurden.
@@ -71,6 +72,8 @@ dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfrag
 des Servers. Auch wenn in der Realität dauerhaft solch hohe Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
 Adaptionsalgorithmen unter Extrembedingungen testen.\\
 
+Die Zeitdauer bei jeder Messung betrug 6000 Sekunden.
+
 \section{Experimente -- bevorzugte Polling-Periode}
 Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Eine Legende zu den
 Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
@@ -83,51 +86,66 @@ Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serv
 
 \importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
-Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
-pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, so dass der RSS-Server an seiner Belastungsgrenze arbeitet.\\
-\todo{Auswertung}
+Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die obere Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
+pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, was bedeutet dass der RSS-Server an seiner Belastungsgrenze arbeitet
+und die mittlere Ankunftsrate der Anfragen in etwa gleich der mittleren Bearbeitungszeit der Anfragen ist.\\
 \importsmallgnuplotps{Mittelwerte der Polling-Perioden (Referenz)}{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
-
-Abbildung \ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Entwicklung der Mittelwerte der Polling-Perioden aller Subscriber.\\
-
 \importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Nachrichtenverzoegerung}{avgMsgDelayRatio_Referenzverlauf_MeanValueRanges}
-
-Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
-$\Gamma_V$.\\
-
 \importsmallgnuplotps{Aktualitätsgrad $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Aktualitaetsgrad}{avgUptodateRatio_Referenzverlauf_MeanValueRanges}
-
-Abbildung \ref{Abb:Referenzverlauf_Aktualitaetsgrad} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
-$\Gamma_A$.\\
-
 \importsmallgnuplotps{Prozentsatz der gesparten Nachrichten}{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten}{relReOmRatio_Referenzverlauf_MeanValueRanges}
 
+Abbildung \ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Entwicklung der Mittelwerte der Polling-Perioden aller Subscriber. Nach einem Anstieg
+bis ca. zum Zeitpunkt 3000 Sekunden zirkulieren die mittleren Polling-Perioden um einen gedachten Mittelwert von ca. 50 000 Sekunden.\\
+
+Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
+$\Gamma_V$. Auffällig ist, dass direkt nach Abschluss der Beitrittsphase die Nachrichtenverzögerung am niedrigsten ist (bis auf die
+Anfangsphase). Vergleicht man mit Abbildung \ref{Abb:Referenzverlauf}, so ist zu erkennen, dass die Anpassung der Polling-Perioden fast
+zeitgleich abgeschlossen ist und der Server zu diesem Zeitpunkt optimal ausgelastet ist.
+
+Die Entwicklung korreliert ebenfalls mit dem Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
+$\Gamma_A$ (siehe Abbildung \ref{Abb:Referenzverlauf_Aktualitaetsgrad}). Die anfängliche Spitze im Graphen der Abbildung
+\ref{Abb:Referenzverlauf_Aktualitaetsgrad} ist dadurch zu erklären, dass sich zunächst wenige Subscriber im Netzwerk befinden und der
+Server in diesem Zeitbereich noch wenig belastet ist. Daher können die Nachrichten schnell durch das Notifikationssystem
+übermittelt werden. Ein Zusammenhang zwischen Serverbelastung, Nachrichtenverzögerung und
+Aktualitätsgrad ist also deutlich zu erkennen. \\
+
 Abbildung \ref{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten} zeigt den prozentualen Anteil der gesparten Nachrichten im Gegensatz zu einem System ohne
-Verteilung der Feeds über ein Notifikationssystem.
+Verteilung der Feeds über ein Notifikationssystem. Grundsätzlich gilt: je geringer die Rate der Anfragen und je größer die Serverbelastung, desto höher ist
+der prozentuale Anteil gesparter Nachrichten. Denn in diesen Fällen erhält ein Subscriber einen Feed eher über das Notifikationssystem als direkt vom
+RSS-Server. Im Graph in Abbildung \ref{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten} ist zu sehen, dass nach Abschluss der Beitrittsphase
+zum Zeitpunkt 1000 der Anteil an gesparten Nachrichten wieder leicht sinkt. Diese Abnahme hat ihre Ursache in der geringeren Serverbelastung als im davor
+liegenden Zeitraum.
 
 \subsection{Keine Staukontrolle}
-\todo{Auswertung}
-Obwohl es keine großen Anstrengungen erfordert, sich zu überlegen, was passiert, wenn eine Staukontrolle seitens der Subscriber ausbleibt, wollen wir hier dennoch
-diese Auswirkungen der Vollständigkeit halber graphisch zeigen (Abbildung \ref{Abb:Ohne_Staukontrolle}).
+Man kann sich leicht überlegen, welche Folgen eine fehlende Staukontrolle seitens der Subscriber hat. Die Auswirkungen einer fehlenden Staukontrolle
+haben wir ebenfalls untersucht. In Abbildung \ref{Abb:Ohne_Staukontrolle} ist zu sehen, dass die Serverbelastung wie erwartet stetig zunimmt.
+
 \importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
 \importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}{avgUptodateRatio_NoCongCont_MeanValueRanges}
 \importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
+
+Ebenfalls nimmt der Grad der Nachrichtenverzögerung stetig zu (siehe Abbildung\ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
+wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung\ref{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}).
+\newpage
 
 \subsection{Keine Ausbalancierung der Polling-Perioden}
 In diesem Experiment wollen wir untersuchen, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
 zum Effekt des ``Aussperrens'' kommt (siehe Abschnitt \ref{cs:ausbalancierung_der_polling-perioden}). Um den Effekt zu maximieren, haben wir bei diesem Experiment
 auf ein allmähliches Beitreten der Subscriber zum Overlay-Netzwerk verzichtet. Alle Subscriber treten gleichzeitig zu Beginn der Simulation dem Overlay-Netzwerk
-bei. Kommt es zum ``Aussperren'', so sollte dieser Effekt anhand der Anzahl der Anfragen an den RSS-Server deutlich sichtbar sein, denn alle ausgesperrten Subscriber
-werden aufgrund ausbleibender Antworten ihre Anfragen wiederholen. Dies muss nahezu gleichzeitig geschehen, da alle Subscriber zur selben Zeit dem Netzwerk
-beigetreten sind und ihre $RT$s daher annähernd zur gleichen Zeit ablaufen werden. Die Mittelwerte der Polling-Perioden aller Subscriber sollten sich
+bei. Kommt es zum ``Aussperren'', so sollte dieser Effekt anhand der Anzahl der Anfragen an den RSS-Server deutlich sichtbar sein, denn alle ausgesperrten
+Subscriber werden aufgrund ausbleibender Antworten ihre Anfragen wiederholen. Dies muss nahezu gleichzeitig geschehen, da alle Subscriber zur selben Zeit dem
+Netzwerk beigetreten sind und ihre $RT$s daher annähernd zur gleichen Zeit ablaufen werden. Die Mittelwerte der Polling-Perioden aller Subscriber sollten sich
 kontinuierlich erhöhen. Denn nur eine geringe Zahl der Subscriber hat Zugriff auf den Server und kann ihre Polling-Perioden konstant niedrig halten. Die übrigen
 Subscriber werden ihre Polling-Perioden erhöhen.\\
-
+Diese Effekte sind im Graphen in Abbildung \ref{Abb:Keine_Ausbalancierung} gut nachvollziehbar. Die auftretenden Spitzen zeigen, dass zu dieser Zeit sehr viele
+Subscriber gleichzeitig Feed-Requests aussenden. Die $RT$s laufen also gleichzeitig ab. Die Zeitdifferenzen nehmen exponentiell zu, dies entspricht der
+exponentiellen Zunahme der $rto$s. Nach jeder Spitze drosseln die nicht ausgesperrten Subscriber ebenfalls ihren $cpp$ und steigern diesen daraufhin allmählich.
 
 
 \importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
 \importsmallgnuplotps{Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
 
+\newpage
 \subsection{Churn-Kompensation}
 \label{exp:churn_kompensation}
 \todo{Auswertung}
