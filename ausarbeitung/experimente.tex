@@ -90,7 +90,8 @@ Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serv
 Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die obere Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
 pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, was bedeutet dass der RSS-Server an seiner Belastungsgrenze arbeitet
 und die mittlere Ankunftsrate der Anfragen in etwa gleich der mittleren Bearbeitungszeit der Anfragen ist.\\
-\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Referenz)}{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Referenz)}
+{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
 \importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Nachrichtenverzoegerung}{avgMsgDelayRatio_Referenzverlauf_MeanValueRanges}
 \importsmallgnuplotps{Aktualitätsgrad $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Aktualitaetsgrad}{avgUptodateRatio_Referenzverlauf_MeanValueRanges}
 \importsmallgnuplotps{Prozentsatz der gesparten Nachrichten}{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten}{relReOmRatio_Referenzverlauf_MeanValueRanges}
@@ -117,9 +118,12 @@ RSS-Server. Im Graph in Abbildung \ref{Abb:Referenzverlauf_Prozentsatz_der_gespa
 zum Zeitpunkt 1000 der Anteil an gesparten Nachrichten wieder leicht sinkt. Diese Abnahme hat ihre Ursache in der geringeren Serverbelastung als im davor
 liegenden Zeitraum.
 
-\subsection{Keine Staukontrolle}
+\subsection{Staukontrolle}
+Der graphischen Verlauf der Serverbelastung mit Staukontrolle ist dem Referenzgraphen in Abbildung \ref{Abb:Referenzverlauf} zu entnehmen.\\
+
 Man kann sich leicht überlegen, welche Folgen eine fehlende Staukontrolle seitens der Subscriber hat. Die Auswirkungen einer fehlenden Staukontrolle
-haben wir ebenfalls untersucht. In Abbildung \ref{Abb:Ohne_Staukontrolle} ist zu sehen, dass die Serverbelastung wie erwartet stetig zunimmt.
+auf die Serverbelastung haben wir ebenfalls untersucht. In Abbildung \ref{Abb:Ohne_Staukontrolle} ist zu sehen,
+dass die Serverbelastung wie erwartet stetig zunimmt.
 
 \importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
 \importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}
@@ -127,11 +131,11 @@ haben wir ebenfalls untersucht. In Abbildung \ref{Abb:Ohne_Staukontrolle} ist zu
 \importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}
 {Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
 
-Ebenfalls nimmt der Grad der Nachrichtenverzögerung stetig zu (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
+Der Grad der Nachrichtenverzögerung nimmt ebenfalls stetig zu (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
 wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}).
 \newpage
 
-\subsection{Keine Ausbalancierung der Polling-Perioden}
+\subsection{Ausbalancierung}
 
 \importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
 \importsmallgnuplotps{Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
