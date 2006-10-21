@@ -55,7 +55,7 @@ nicht die Anwendungsschicht des Servers, eine Überlastung auf dieser Ebene bleib
 dass eine Anfrage eines Klienten bei voller Queue vom Server verworfen wird. Eine Server-seitige Antwort wird in diesem Fall ausbleiben. Nach einem
 Timeout muss also der Klient seine Anfrage erneut stellen. Ist dieses Timeout konstant und relativ klein, so kann dies ebenfalls zu einer Mehrbelastung des Servers
 führen. Hierbei kommt das für den Regler erforderliche Ereignis (Server-Antwort) gar nicht zustande, somit kann eine Regelung über den Regler gar nicht in der
-gewünschten Weise stattfinden. Das Indiz für eine gesteigerte Server-Belastung ist hier also eine Negativ-Nachricht: das Ausbleiben der Server-Antwort. Um die
+gewünschten Weise stattfinden. Das Indiz für eine gesteigerte Serverbelastung ist hier also eine Negativ-Nachricht: das Ausbleiben der Server-Antwort. Um die
 Mehrbelastung des Servers in diesem Fall einzudämmen, können wir die Timeouts und somit die $ccp$ je nach Zeitdauer vergrößern (integrativer Anteil,
 vgl. Abschnitt \ref{staukontrolle_tcp}).\\
 
@@ -92,7 +92,7 @@ da je nach Verfahren eventuell jeder beteiligte Subscriber diese Maßnahme ergrei
 
 Zur Berechnung des $rtt$ müssen die RSS-Feeds nach ihrem Ursprung unterschieden werden: Feeds, die ein Subscriber von einem Broker erhält, müssen anders behandelt
 werden als Feeds, die von einem RSS-Server ausgesandt werden. Für die Berechnung des $rtt$ spielen nur diese Feeds eine Rolle, da nur diese Auskunft über eine
-eventuelle Server-Belastung geben können.\\
+eventuelle Serverbelastung geben können.\\
 
 In den vorhergehenden Abschnitten wurden mögliche Techniken zur Staukontrolle und -vermeidung bei TCP und bei der Regelungstechnik vorgestellt,
 und wir haben dabei festgestellt, dass die dort beschriebenen Lösungsansätze nur bedingt auf unser Problem anwendbar sind.
@@ -200,7 +200,7 @@ Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt
 falls $RT$ noch nicht abgelaufen ist. In diesem Fall wird bei unserer Berechnung
 der $artt$ direkt auf die gemessene roundtrip-time gesetzt, während bei TCP diese nur zum Teil (unter zusätzlicher Zuhilfenahme des Glät\-tungs\-fak\-tors $\alpha$,
 siehe Abschnitt \ref{cssp:tcp_rtt}, Seite \pageref{cssp:tcp_rtt}) in die Berechnung eingeht. Diese direkte Rück\-setzung könnte zu einem starken Schwingungsverhalten der
-Server-Belastung und somit der Polling-Perioden im System führen. Allerdings ist eine schnelle Reaktion des Systems auf eine
+Serverbelastung und somit der Polling-Perioden im System führen. Allerdings ist eine schnelle Reaktion des Systems auf eine
 verbesserte Server-Reaktionsfähigkeit erwünscht, und in der Mehrheit der Fälle werden nicht alle Subscriber gleichzeitig den Wert $artt$ auf diese Weise ermitteln.
 Beobachtungen zeigen jedoch, dass es bei einer plötzlichen Erreichbarkeit des Servers tatsächlich zu einem Ansturm
 auf diesen kommen kann. Wir werden aber

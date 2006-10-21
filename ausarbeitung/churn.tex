@@ -36,7 +36,7 @@ Verlassen einzelne Broker das Netzwerk, so kann man sich sehr leicht vorstellen,
 baumartigen Struktur aufgebaut ist, bedeutet der Verlust einzelner Broker ein Auseinanderfallen des Baumes in mehrere unabhängige Teilbäume. Während das Erfragen
 von RSS-Feeds durch Subscriber und das Messen der roundtrip-times weiterhin vonstatten gehen kann, können zwischen den Teilbäumen keine Nachrichten mehr
 ausgetauscht werden. Je größer also der Zerfall ist, desto geringer wird der Aktualitätsgrad der RSS-Feeds sein und desto länger dauert eine Anpassung der
-Polling-Perioden der Subscriber an eine veränderte Server-Belastung, da eine Ausbalancierung der Polling-Perioden in immer geringerem Maße erfolgen wird.\\
+Polling-Perioden der Subscriber an eine veränderte Serverbelastung, da eine Ausbalancierung der Polling-Perioden in immer geringerem Maße erfolgen wird.\\
 Welche Knoten in einem Netzwerk die Rolle der Broker übernehmen, bleibt zunächst offen. Ob Broker das System benutzergesteuert verlassen können, hängt ganz von der
 jeweiligen Umsetzung des Systems ab. Denkbar sind beispielsweise dedizierte Knoten, welche dauerhaft online sind und kaum Ausfallerscheinungen aufweisen. Deshalb
 wollen wir hier auf eine mögliche Kompensation von Churn bei Brokern nicht eingehen.\\
@@ -49,7 +49,7 @@ Beim Eintreten von Subscribern in das System stellen diese zunächst ihren
 $cpp$ auf den von ihnen gewählten $ppp$ ein. Erst im Laufe der Messung der roundtrip-times werden diese Subscriber ihren $cpp$ erhöhen. Bei einer hohen Anzahl von
 neu in das System hinzukommenden Subscribern pro Zeiteinheit gibt es also eine erhöhte Rate an Feed-Requests. Dies bedeutet bei einer konstanten Churn-Rate eine
 konstante Mehrbelastung des jeweiligen
-RSS-Servers. Wir vermuten, dass, unabhängig davon, wie gut die Anpassung an die Server-Belastung vonstatten geht, die Mehrbelastung in diesem Fall mit der
+RSS-Servers. Wir vermuten, dass, unabhängig davon, wie gut die Anpassung an die Serverbelastung vonstatten geht, die Mehrbelastung in diesem Fall mit der
 bisherigen Methode schlecht kompensiert werden kann (siehe Abschnitt \ref{exp:churn_kompensation}).
 
 \subsubsection{Churn-Kompensation bei \pubsubrss}
@@ -102,3 +102,8 @@ aktualisiere_RQT_durch_initialen_brokerfeed() {
 
 \end{lstlisting}
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

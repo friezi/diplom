@@ -10,32 +10,6 @@ Verfahren motiviert haben.
 Damit die Experimente untereinander vergleichbar sind, haben wir eine einheitliche Parameterwahl getroffen. Parameter wurden nur dann gezielt modifiziert,
 wenn dies für das jeweilige Experiment von entscheidender Bedeutung war.
 
-\paragraph{Topologien:}
-Die Simulationsumgebung besitzt eingebaute Topologien (z. B. $Topology\-One\-Sur\-roun\-ded$), welche gut für eine visuelle Kontrolle der Algorithmen geeignet
-sind, da sie von ihrer Struktur her einfach und übersichtlich aufgebaut sind. Um jedoch aussagekräftige Ergebnisse zu erhalten, die auch in Hinsicht auf
-Netzwerktopologien, so wie sie im Internet vorzufinden sind, als realistisch eingestuft werden können, müssen wir andere Topologien heranziehen. Wir bedienen uns
-Topologien, welche auf dem Transit-Stub-Modell \cite{Zegura1996} basieren. Dieses Modell spiegelt sehr gut reale Internetstrukturen wider. Bei diesem Modell
-besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ ``Stub-Domäne'' oder ``Transit-Domäne'' sind. Während der Datenverkehr nur dann durch eine
-Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht. Transit-Domänen
-dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie Backbones.\\
-
-Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier
-Verwendung fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche
-die physischen Verbindungen
-zwischen den Knoten darstellt und eine Toplayer-Topologie, welche das Overlay-Netzwerk repräsentiert. Bei allen Experimenten wurde eine Sublayer-Topologie
-bestehend aus 2000 Knoten verwendet. Das Overlay-Netzwerk bestimmt sich dann aus den Broker-Knoten (hier 200 Knoten), welche fest gewählt wurden, und den
-Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten bestimmt (also 900) und die zufällig den einzelnen Brokern zugewiesen wurden.
-Dies geschieht jedoch so,
-dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
-zuständig sind.\\
-
-Da ein einziger Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
-Zufallswerten durchgeführt. Dadurch hat sich bei jedem Durchlauf das Overlay-Netzwerk geringfügig verändert (s. o.). Für jeden
-gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle berechnet.
-\paragraph{Parameter:}
-Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
-angegebenen Parameter als Standardwerte gesetzt.
-
 \begin{table}
 \begin{center}
   \begin{tabular}{|rlr|}
@@ -66,6 +40,33 @@ angegebenen Parameter als Standardwerte gesetzt.
 \label{Tab:Standardparameter}
 \end{table}
 
+\paragraph{Topologien:}
+Die Simulationsumgebung besitzt eingebaute Topologien (z. B. $Topology\-One\-Sur\-roun\-ded$), welche gut für eine visuelle Kontrolle der Algorithmen geeignet
+sind, da sie von ihrer Struktur her einfach und übersichtlich aufgebaut sind. Um jedoch aussagekräftige Ergebnisse zu erhalten, die auch in Hinsicht auf
+Netzwerktopologien, so wie sie im Internet vorzufinden sind, als realistisch eingestuft werden können, müssen wir andere Topologien heranziehen. Wir bedienen uns
+Topologien, welche auf dem Transit-Stub-Modell \cite{Zegura1996} basieren. Dieses Modell spiegelt sehr gut reale Internetstrukturen wider. Bei diesem Modell
+besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ ``Stub-Domäne'' oder ``Transit-Domäne'' sind. Während der Datenverkehr nur dann durch eine
+Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht. Transit-Domänen
+dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie Backbones.\\
+
+Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier
+Verwendung fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche
+die physischen Verbindungen
+zwischen den Knoten darstellt und eine Toplayer-Topologie, welche das Overlay-Netzwerk repräsentiert. Bei allen Experimenten wurde eine Sublayer-Topologie
+bestehend aus 2000 Knoten verwendet. Das Overlay-Netzwerk bestimmt sich dann aus den Broker-Knoten (hier 200 Knoten), welche fest gewählt wurden, und den
+Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten bestimmt (also 900) und die zufällig den einzelnen Brokern zugewiesen wurden.
+Dies geschieht jedoch so,
+dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
+zuständig sind.\\
+
+Da ein einziger Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
+Zufallswerten durchgeführt. Dadurch hat sich bei jedem Durchlauf das Overlay-Netzwerk geringfügig verändert (s. o.). Für jeden
+gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle berechnet.
+
+\paragraph{Parameter:}
+Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
+angegebenen Parameter als Standardwerte gesetzt.
+
 Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$. Wir haben bewusst relativ hohe
 Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Hohe Nachrichtenlaufzeiten können bewirken,
 dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfragen wiederholen. Dies führt zunächst zu einer Mehrbelastung
@@ -79,12 +80,12 @@ Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestre
 Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 
 \subsection{Beispiel und Referenz}
+\importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
+
 Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis eines Experiments, welches gleichzeitig als Referenz
 für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kamen. Von den Standardparametern
 wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1..1000$ Sekunden dem Overlay-Netzwerk bei.
 Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$), ist hierbei 1.\\
-
-\importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
 Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die obere Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
 pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, was bedeutet dass der RSS-Server an seiner Belastungsgrenze arbeitet
@@ -131,6 +132,22 @@ wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:O
 \newpage
 
 \subsection{Keine Ausbalancierung der Polling-Perioden}
+
+\importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
+\importsmallgnuplotps{Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Keine Ausbalancierung)}
+{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_NoBalancing_MeanValueRanges}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Ausbalancierung)}
+{Abb:Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Balancing_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (K. Ausbalancierung)}
+{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_NoBalancing_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (Ausbalancierung)}
+{Abb:Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_Balancing_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (K. Ausbalancierung)}
+{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_NoBalancing_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (Ausbalancierung)}
+{Abb:Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_Balancing_MeanValueRanges}
+
 In diesem Experiment wollen wir untersuchen, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
 zum Effekt des ``Aussperrens'' kommt (siehe Abschnitt \ref{cs:ausbalancierung_der_polling-perioden}). Um den Effekt zu maximieren, haben wir bei diesem Experiment
 auf ein allmähliches Beitreten der Subscriber zum Overlay-Netzwerk verzichtet. Alle Subscriber treten gleichzeitig zu Beginn der Simulation dem Overlay-Netzwerk
@@ -150,43 +167,77 @@ Korrelation mit den auftretenden Spitzen im Graphen der Abbildung \ref{Abb:Keine
 Subscriber ihre Polling-Perioden. Sie erhalten keine Möglichkeit, diese zu senken. Auch die Standardabweichung der Mittelwerte der Polling-Perioden (Abbildung
 \ref{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) unterstützen die These des ``Aussperrens''. Die Graphik zeigt,
 dass die Polling-Perioden der verschiedenen Subscriber stark von einander abweichen. Um auch die Größe der Mittelwerte zu berücksichtigen,
-haben wir in Abbildung \ref{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden} noch den normierten Wert der
-Standardabweichung (bezogen auf den Mittelwert), den Variationskoeffizienten, dargestellt.\\
+haben wir in Abbildung \ref{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden} den normierten Wert der
+Standardabweichung (Standardabweichung geteilt durch den Mittelwert), den Variationskoeffizienten, dargestellt.\\
 Zum Vergleich haben wir in Abbildung \ref{Abb:Ausbalancierung} den graphischen Verlauf der Serverbelastung mit Ausbalancierung bei ansonsten gleicher
-Parameterwahl dargestellt. Bei Vergleich der Mittelwerte fällt auf, dass sich in beiden Fällen (nach völlig unterschiedlichem Verlauf)
-die Mittelwerte bei ca. 100 000 Sekunden bewegen. Jedoch habe sich die Mittelwerte bei dem ausbalancierten Verfahren nach unten hin eingepegelt (Abbildung
+Parameterwahl dargestellt. Bei Vergleich der Graphen der Mittelwerte beider
+Verfahren fällt auf, dass sich die Mittelwerte in beiden Fällen (nach völlig unterschiedlichem Verlauf)
+etwa bei 100.000 Sekunden bewegen. Jedoch haben sich die Mittelwerte bei dem ausbalancierten Verfahren nach unten hin eingepegelt (Abbildung
 \ref{Abb:Ausbalancierung_Mittelwerte_der_Polling-Perioden}), während die Mittelwerte beim nicht-ausbalancierten Verfahren weiterhin stetig steigen
 (Abbildung \ref{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden}).
 Ein großer Unterschied zwischen beiden Verfahren ist bei dem Vergleich der Standardabweichungen zu erkennen: beim nicht-ausbalancierten Verfahren
-(Abbildung \ref{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) hat bei ende der Simulation die Standardabweichung
-den Wert 180 000 erreicht und ist weiter steigend; beim ausbalancierten Verfahren (Abbildung
+(Abbildung \ref{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) hat zum Ende der Simulation die Standardabweichung
+den Wert 180.000 erreicht und ist weiter steigend; beim ausbalancierten Verfahren (Abbildung
 \ref{Abb:Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) hat sich die Standardabweichung nach unten hin
-auf ca. den Wert 100 000 eingepegelt. Der Variationskoeffizient des ausbalancierten Verfahrens
+auf ca. den Wert 100.000 eingepegelt. Der Variationskoeffizient des ausbalancierten Verfahrens
 (Abbildung \ref{Abb:Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}) pegelt sich ebenfalls auf einem niedrigeren Wert ein,
 als der Variationskoeffizient des nicht-ausbalancierten Verfahrens
 (Abbildung \ref{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}) .
 
-\importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
-\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Keine Ausbalancierung)}
-{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_NoBalancing_MeanValueRanges}
-\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (K. Ausbalancierung)}
-{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_NoBalancing_MeanValueRanges}
-\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (K. Ausbalancierung)}
-{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_NoBalancing_MeanValueRanges}
-\importsmallgnuplotps{Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
-\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Ausbalancierung)}
-{Abb:Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Balancing_MeanValueRanges}
-\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (Ausbalancierung)}
-{Abb:Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_Balancing_MeanValueRanges}
-\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (Ausbalancierung)}
-{Abb:Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_Balancing_MeanValueRanges}
-
 \subsection{Churn-Kompensation}
 \label{exp:churn_kompensation}
-\todo{Auswertung}
 
-\importsmallgnuplotps{ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation400_80_900_MVR}
-\importsmallgnuplotps{mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation400_80_900_MVR}
+\importsmallgnuplotps{Ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation400_80_900_MVR}
+\importsmallgnuplotps{Mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation400_80_900_MVR}
+
+Mit Hilfe dieses Experiments soll der Einflusses von Churn auf die Serverbelastung sowohl mit als auch ohne Churn-Kompensation ermittelt werden.
+Je stärker die schon bestehende Serverbelastung bzw. je weniger leistungsfähig ein Server ist, desto größer ist der Einfluss von Churn.
+Damit der Einfluss von Churn auf die Serverbelastung deutlich sichtbar wird, wurde in diesem Experiment ein $serviceTimeFactor$ von 400 gewählt.
+Churn beginnt beim Zeitpunkt 3000 und endet beim Zeitpunkt 5000. Dabei sind nach 900 Sekunden 80\% der Klienten ausgetauscht.
+Abbildung \ref{Abb:ohne_Churn-Kompensation} zeigt den Einfluss von Churn auf die Serverbelastung ohne Churn-Kompensation. Zu erkennen ist eine starke
+und stetig ansteigende Serverbelastung. Nur ab etwa dem Zeitpunkt 4600 Sekunden fällt die Kurve wieder leicht ab. Nach Beendigung der Churnphase
+pegelt sich die Kurve langsam wieder in Richtung Server-Queue ein. Dagegen zeigt der Graph mit Churn-Kompensation in
+Abbildung \ref{Abb:mit_Churn-Kompensation} eine weit geringere Serverbelastung und ein besseres Adaptionverhalten, obwohl auch hier der Einfluss
+von Churn nicht ganz vermeidbar ist. Es fällt weiterhin auf, dass durch die Churn-Kompensation schon in der Beitrittsphase (0..1000 Sekunden)
+ein besseres Adaptionsverhalten erreicht wird.\\
+
+Auf die Entwicklung der Serverbelastung bei Wahl der Standard-Parameter hat Churn keinen nennenswerten Einfluss (hier nicht dargestellt).
+
+\importsmallgnuplotps{Exponentielle Skalierungsfunktion}{Abb:Exponentielle_Skalierungsfunktion}{ToTR_ExponentialArttFactor_serviceTimeFactor400_MVR}
+\importsmallgnuplotps{Polynomielle Skalierungsfunktion}{Abb:Polynomielle_Skalierungsfunktion}{ToTR_QuadraticArttFactor_serviceTimeFactor400_MVR}
+
+\subsection{Bestimmung des $artt$ -- Skalierungsfunktion für den $rtt$}
+\label{exp:skalierung}
+
+Bei diesem Experiment soll die Adaptionsgüte der Polling-Perioden anhand der Serverbelastung bei unterschiedlicher Wahl der Skalierungsfunktion
+sf() (siehe Abschnitt \ref{css:staukontrolle_pubsubrss}) ermittelt werden. Wir beschränken uns dabei auf den Vergleich exponentieller und
+polynomieller Funktionen. Auch hier haben wir einen $serviceTimeFactor$ von 400 gewählt, um Unterschiede in der Entwicklung deutlicher sichtbar
+zu machen. Abbildung \ref{Abb:Exponentielle_Skalierungsfunktion} zeigt den Verlauf der Serverbelastung bei Wahl der
+Skalierungsfunktion $\text{sf}(x):=2^{x-1}$. In Abbildung \ref{Abb:Polynomielle_Skalierungsfunktion} ist der Verlauf der Serverbelastung bei
+$\text{sf}(x):=x^2$ zu sehen. Unterschiede im Verlauf sind zwar sichtbar, der Vorteil der exponentiellen Skalierungsfunktion ist aber
+relativ klein.
+
+\subsection{Reaktion auf plötzliche Veränderung}
+\importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
+Dieses Experiment dient zur Untersuchung, wie das System auf plötzliche Veränderungen der Netzwerkgröße (Anzahl der Klienten im System)
+reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und dass es dabei nicht zu Seiteneffekten
+(wie z. B. ein starkes Schwingungsverhalten) kommt. Für diesen Zweck verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
+2000 das Overlay-Netzwerk. Zum Zeitpunkt 4000 tritt die gleiche Anzahl an Klienten dem Netzwerk wieder bei. Abbildung
+\ref{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse} zeigt den graphischen Verlauf. Es ist zu erkennen, dass das Verlassen der Klienten
+nur eine kurzzeitige Senkung des Füllgrades der Server-Queue bewirkt. Der Pegel steigt anschliessend wieder bis zur oberen Grenze.
+Der Beitritt der Klienten zum System bewirkt zwar eine kurzzeitige starke Mehrbelastung des Servers, das System kann diese Mehrbelastung jedoch
+relativ schnell ausgleichen.
+
+\importsmallgnuplotps{Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
+\importsmallgnuplotps{Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
+
+\subsection{Steigerung des $rto$}
+Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
+nach sich zieht.
+Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 Sekunden wird dieser auf 400 hochgesetzt, so dass der Server
+nur noch stark zeitverzögert antworten kann. Abbildung \ref{Abb:Exponentielle_Steigerung_des_rto} zeigt die Adaptionsgüte bei exponentieller Steigerung,
+Abbildung \ref{Abb:Polynomielle_Steigerung_des_rto} die Adaptionsgüte bei polynomieller Steigerung des $rto$. Hier ist ein deutlich besserer
+Verlauf der Adaption bei exponentieller Steigerung zu sehen.
 
 
 %%% Local Variables: 
