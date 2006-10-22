@@ -80,29 +80,42 @@ Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestre
 Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 
 \subsection{Beispiel und Referenz}
-\importsmallgnuplotps{Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
+\importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
 Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis eines Experiments, welches gleichzeitig als Referenz
-für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kamen. Von den Standardparametern
+für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kamen. Dargestellt ist
+die Enwicklung der Serverbelastung anhand der eingegangenen Feed-Requests. Von den Standardparametern
 wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1..1000$ Sekunden dem Overlay-Netzwerk bei.
 Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$), ist hierbei 1.\\
 
 Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die obere Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
 pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, was bedeutet dass der RSS-Server an seiner Belastungsgrenze arbeitet
 und die mittlere Ankunftsrate der Anfragen in etwa gleich der mittleren Bearbeitungszeit der Anfragen ist.\\
-\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Referenz)}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden ($cpp$): Referenz}
 {Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Referenzverlauf_MeanValueRanges}
-\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Nachrichtenverzoegerung}{avgMsgDelayRatio_Referenzverlauf_MeanValueRanges}
-\importsmallgnuplotps{Aktualitätsgrad $\Gamma_V$ (Referenz)}{Abb:Referenzverlauf_Aktualitaetsgrad}{avgUptodateRatio_Referenzverlauf_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Referenz}
+{Abb:Standardabweichung_Referenzverlauf_Mittelwerte_der_Polling-Perioden}{stdDevCPP_Referenzverlauf_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Referenz}
+{Abb:Variationskoeffizient_Referenzverlauf_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_Referenzverlauf_MeanValueRanges}
+\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$: Referenz}{Abb:Referenzverlauf_Nachrichtenverzoegerung}{avgMsgDelayRatio_Referenzverlauf_MeanValueRanges}
+\importsmallgnuplotps{Aktualitätsgrad $\Gamma_V$: Referenz}{Abb:Referenzverlauf_Aktualitaetsgrad}{avgUptodateRatio_Referenzverlauf_MeanValueRanges}
 \importsmallgnuplotps{Prozentsatz der gesparten Nachrichten}{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten}{relReOmRatio_Referenzverlauf_MeanValueRanges}
 
 Abbildung \ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Entwicklung der Mittelwerte der Polling-Perioden aller Subscriber. Nach einem Anstieg
-bis ca. zum Zeitpunkt 3000 Sekunden zirkulieren die mittleren Polling-Perioden um einen gedachten Mittelwert von ca. 50 000 Sekunden.\\
+bis ca. zum Zeitpunkt 3000 Sekunden zirkulieren die mittleren Polling-Perioden um einen gedachten Mittelwert von ca. 50.000 Sekunden.\\
+
+Abbildung \ref{Abb:Standardabweichung_Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Standardabweichung von den Mittelwerten der Polling-Perioden.
+Mit Zunahme der Mittelwerte nimmt also auch in gleichem Maße die Streuung zu. Bemerkenswert ist, dass trotz immer noch starker Schwankungen der Mittelwerte
+und einer großen Streuung die Serverbelastung stabil bleibt (siehe Abbildung \ref{Abb:Referenzverlauf}). Um auch die Größe der Mittelwerte zu berücksichtigen,
+haben wir in Abbildung \ref{Abb:Variationskoeffizient_Referenzverlauf_Mittelwerte_der_Polling-Perioden} den normierten Wert der
+Standardabweichung, den Variationskoeffizienten, (Standardabweichung geteilt durch den Mittelwert) dargestellt. Der Einfluss der Größe eines Mittelwertes 
+auf die Streuung wird hierbei unterbunden. Es zeigt sich, dass der Variationskoeffizient nach einer gewissen Zeit relativ stabil bleibt und
+mit der Serverbelastung korreliert.\\
 
 Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
 $\Gamma_V$. Auffällig ist, dass direkt nach Abschluss der Beitrittsphase die Nachrichtenverzögerung am niedrigsten ist (bis auf die
 Anfangsphase). Vergleicht man mit Abbildung \ref{Abb:Referenzverlauf}, so ist zu erkennen, dass die Anpassung der Polling-Perioden fast
-zeitgleich abgeschlossen ist und der Server zu diesem Zeitpunkt optimal ausgelastet ist.
+zeitgleich abgeschlossen ist und der Server zu diesem Zeitpunkt optimal ausgelastet ist.\\
 
 Die Entwicklung korreliert ebenfalls mit dem Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
 $\Gamma_A$ (siehe Abbildung \ref{Abb:Referenzverlauf_Aktualitaetsgrad}). Die anfängliche Spitze im Graphen der Abbildung
@@ -125,7 +138,7 @@ Man kann sich leicht überlegen, welche Folgen eine fehlende Staukontrolle seiten
 auf die Serverbelastung haben wir ebenfalls untersucht. In Abbildung \ref{Abb:Ohne_Staukontrolle} ist zu sehen,
 dass die Serverbelastung wie erwartet stetig zunimmt.
 
-\importsmallgnuplotps{Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
+\importsmallgnuplotps{Serverbelastung: Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
 \importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}
 {Abb:Ohne_Staukontrolle_Aktualitaetsgrad}{avgUptodateRatio_NoCongCont_MeanValueRanges}
 \importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}
@@ -137,19 +150,19 @@ wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:O
 
 \subsection{Ausbalancierung}
 
-\importsmallgnuplotps{Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
-\importsmallgnuplotps{Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
-\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Keine Ausbalancierung)}
+\importsmallgnuplotps{Serverbelastung: Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
+\importsmallgnuplotps{Serverbelastung: Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden ($cpp$): keine Ausbalancierung}
 {Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_NoBalancing_MeanValueRanges}
-\importsmallgnuplotps{Mittelwerte der Polling-Perioden (Ausbalancierung)}
+\importsmallgnuplotps{Mittelwerte der Polling-Perioden ($cpp$): Ausbalancierung}
 {Abb:Ausbalancierung_Mittelwerte_der_Polling-Perioden}{meanValueCPP_Balancing_MeanValueRanges}
-\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (K. Ausbalancierung)}
+\importsmallgnuplotps{Standardabweichung: Mittelwerte $cpp$: k. Ausbalancierung}
 {Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_NoBalancing_MeanValueRanges}
-\importsmallgnuplotps{Standardabweichung: Mittelwerte d. Poll.-Per. (Ausbalancierung)}
+\importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Ausbalancierung}
 {Abb:Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}{stdDevCPP_Balancing_MeanValueRanges}
-\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (K. Ausbalancierung)}
+\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: k. Ausbalancierung}
 {Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_NoBalancing_MeanValueRanges}
-\importsmallgnuplotps{Variationskoeffizient: Mittelwerte Poll.-Per. (Ausbalancierung)}
+\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Ausbalancierung}
 {Abb:Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_Balancing_MeanValueRanges}
 
 In diesem Experiment wollen wir untersuchen, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
@@ -168,12 +181,11 @@ können diesen daraufhin jedoch allmählich wieder steigern.\\
 Schaut man sich die Entwicklung der mittleren Polling-Perioden ($cpp$) in Abbildung
 \ref{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden} an, so erkennt man (neben der stetigen Steigerung der Polling-Perioden) eine unmittelbare
 Korrelation mit den auftretenden Spitzen im Graphen der Abbildung \ref{Abb:Keine_Ausbalancierung}. Tatsächlich steigern also größtenteils die ausgesperrten
-Subscriber ihre Polling-Perioden. Sie erhalten keine Möglichkeit, diese zu senken. Auch die Standardabweichung der Mittelwerte der Polling-Perioden (Abbildung
+Subscriber ihre Polling-Perioden. Sie erhalten keine Möglichkeit, diese zu senken. Auch die Standardabweichung von den Mittelwerten der Polling-Perioden (Abbildung
 \ref{Abb:Keine_Ausbalancierung_Standardabweichung_der_Mittelwerte_der_Polling-Perioden}) unterstützen die These des ``Aussperrens''. Die Graphik zeigt,
-dass die Polling-Perioden der verschiedenen Subscriber stark von einander abweichen. Um auch die Größe der Mittelwerte zu berücksichtigen,
-haben wir in Abbildung \ref{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden} den normierten Wert der
-Standardabweichung (Standardabweichung geteilt durch den Mittelwert), den Variationskoeffizienten, dargestellt.\\
-Zum Vergleich haben wir in Abbildung \ref{Abb:Ausbalancierung} den graphischen Verlauf der Serverbelastung mit Ausbalancierung bei ansonsten gleicher
+dass die Polling-Perioden der verschiedenen Subscriber stark von einander abweichen. Abbildung
+\ref{Abb:Keine_Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden} zeigt den Variationskoeffizienten.\\
+Als Vergleichsgraphen haben wir in Abbildung \ref{Abb:Ausbalancierung} den graphischen Verlauf der Serverbelastung mit Ausbalancierung bei ansonsten gleicher
 Parameterwahl dargestellt. Bei Vergleich der Graphen der Mittelwerte beider
 Verfahren fällt auf, dass sich die Mittelwerte in beiden Fällen (nach völlig unterschiedlichem Verlauf)
 etwa bei 100.000 Sekunden bewegen. Jedoch haben sich die Mittelwerte bei dem ausbalancierten Verfahren nach unten hin eingepegelt (Abbildung
@@ -191,11 +203,15 @@ als der Variationskoeffizient des nicht-ausbalancierten Verfahrens
 \subsection{Churn-Kompensation}
 \label{exp:churn_kompensation}
 
-\importsmallgnuplotps{Ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation400_80_900_MVR}
-\importsmallgnuplotps{Mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation400_80_900_MVR}
+\suppressfloats
 
-\importsmallgnuplotps{Exponentielle Skalierungsfunktion}{Abb:Exponentielle_Skalierungsfunktion}{ToTR_ExponentialArttFactor_serviceTimeFactor400_MVR}
-\importsmallgnuplotps{Polynomielle Skalierungsfunktion}{Abb:Polynomielle_Skalierungsfunktion}{ToTR_QuadraticArttFactor_serviceTimeFactor400_MVR}
+\importsmallgnuplotps{Serverbelastung: Ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation400_80_900_MVR}
+\importsmallgnuplotps{Serverbelastung: Mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation400_80_900_MVR}
+
+\importsmallgnuplotps{Serverbelastung: Exponentielle Skalierungsfunktion}
+{Abb:Exponentielle_Skalierungsfunktion}{ToTR_ExponentialArttFactor_serviceTimeFactor400_MVR}
+\importsmallgnuplotps{Serverbelastung: Polynomielle Skalierungsfunktion}
+{Abb:Polynomielle_Skalierungsfunktion}{ToTR_QuadraticArttFactor_serviceTimeFactor400_MVR}
 
 Mit Hilfe dieses Experiments soll der Einflusses von Churn auf die Serverbelastung sowohl mit als auch ohne Churn-Kompensation ermittelt werden.
 Je stärker die schon bestehende Serverbelastung bzw. je weniger leistungsfähig ein Server ist, desto größer ist der Einfluss von Churn.
@@ -247,10 +263,33 @@ nur noch stark zeitverzögert antworten kann. Abbildung \ref{Abb:Exponentielle_St
 Abbildung \ref{Abb:Polynomielle_Steigerung_des_rto} die Adaptionsgüte bei polynomieller Steigerung des $rto$. Hier ist ein deutlich besserer
 Verlauf der Adaption bei exponentieller Steigerung zu sehen.
 
-\importsmallgnuplotps{Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
-\importsmallgnuplotps{Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
+\importsmallgnuplotps{Serverbelastung: Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
+\importsmallgnuplotps{Serverbelastung: Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
 
+\importsmallgnuplotps{Serverbelastung: Queuegröße 3000}{Abb:Queuegroesse_3000}{ToTR_q3000_MVR}
+\importsmallgnuplotps{Mittelwerte $cpp$: Queuegröße 3000}{Abb:Mittelwerte_Queuegroesse_3000}{meanValueCPP_queue3000_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Queuegröße 3000}{Abb:Standardabweichung_Mittelwerte_Queuegroesse_3000}{stdDevCPP_queue3000_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Queuegröße 3000}{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}{coeffVarCPP_queue3000_MeanValueRanges}
 
+\subsection{Queuegrößen}
+Bisher haben wir eine im Verhältnis zu Anzahl der Klienten sehr kleine Queuegröße für die Server-Queue gewählt. In diesem Experiment wollen wir
+untersuchen, wie sich eine große Queue auf das Adaptionsverhalten auswirkt. Dafür haben wir eine Queue gewählt, welche 3000 Feed-Requests
+aufnehmen kann, also mehr, als sich Klienten im Netzwerk befinden. Ist die Queue groß genug, so sollten nur wenige oder gar keine Feed-Requests
+verworfen werden, da die Klienten genug Spielraum haben, um ihre Polling-Perioden anzupassen. Es ist zu erwarten, dass die Polling-Perioden
+im weiteren Verlauf nur geringen Schwankungen unterliegen, da nur verworfene Feed-Requests zu zufälligen und unverhältnismäßig großen
+Steigerungen führen. Weiterhin sollten die Differenzen der Polling-Perioden zwischen den verschiedenen Klienten relativ gering sein,
+da die Bedingungen für alle Subscriber gleich sind und es nicht zu zufälligen Steigerungen kommen kann. Abbildung \ref{Abb:Queuegroesse_3000}
+zeigt die Entwicklung der Adaption. Es treten keine verworfenen Feed-Requests auf. Nach einer gewissen Zeit (etwa 5000 Sekunden) hat sich die
+Kurve auf einem festen Wert (1500) eingepegelt. Das bedeutet, dass ab diesem Zeitpunkt ein ausgewogenes Verhältnis zwischen
+mittlerer Ankunftsrate der Feed-requests und mittlerer Bearbeitungszeit erreicht ist. Abbildung \ref{Abb:Mittelwerte_Queuegroesse_3000}
+zeigt die Entwicklung der Mittelwerte der Polling-Perioden. Hier ist zu sehen, dass sich die Mittelwerte entsprechend unseren Erwartungen
+auf einem Wert (etwa 2000) einpegeln und keinen weiteren Schwankungen unterliegen. Die Abbildungen
+\ref{Abb:Standardabweichung_Mittelwerte_Queuegroesse_3000} und \ref{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}
+machen deutlich, dass die Abweichungen von den Mittelwerten relativ gering sind. Besonders im Vergleich mit den Referenzgraphen (Abbildungen
+\ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden}, \ref{Abb:Standardabweichung_Referenzverlauf_Mittelwerte_der_Polling-Perioden}
+und \ref{Abb:Variationskoeffizient_Referenzverlauf_Mittelwerte_der_Polling-Perioden}) zeigt sich, dass bei der Wahl einer großen Queue
+(bei ansonsten gleicher Parameterwahl) die Mittelwerte und die Streuungen viel geringere Werte annehmen und es somit zu einer
+homogeneren Verteilung der Mittelwerte auf die verschiedenen Klienten kommt.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
