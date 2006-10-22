@@ -194,9 +194,18 @@ als der Variationskoeffizient des nicht-ausbalancierten Verfahrens
 \importsmallgnuplotps{Ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation400_80_900_MVR}
 \importsmallgnuplotps{Mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation400_80_900_MVR}
 
+\importsmallgnuplotps{Exponentielle Skalierungsfunktion}{Abb:Exponentielle_Skalierungsfunktion}{ToTR_ExponentialArttFactor_serviceTimeFactor400_MVR}
+\importsmallgnuplotps{Polynomielle Skalierungsfunktion}{Abb:Polynomielle_Skalierungsfunktion}{ToTR_QuadraticArttFactor_serviceTimeFactor400_MVR}
+
 Mit Hilfe dieses Experiments soll der Einflusses von Churn auf die Serverbelastung sowohl mit als auch ohne Churn-Kompensation ermittelt werden.
 Je stärker die schon bestehende Serverbelastung bzw. je weniger leistungsfähig ein Server ist, desto größer ist der Einfluss von Churn.
-Damit der Einfluss von Churn auf die Serverbelastung deutlich sichtbar wird, wurde in diesem Experiment ein $serviceTimeFactor$ von 400 gewählt.
+Damit der Einfluss von Churn auf die Serverbelastung deutlich hervor tritt, wurde in diesem Experiment ein $serviceTimeFactor$ von 400 gewählt.
+Die Nachrichtenlaufzeit ist von entscheidender Bedeutung für die Churn-Kompensation: ist sie zu hoch, dann benötigt die Übermittlung des
+$InitialBrokerRSSFeed$ zu viel Zeit, so dass ein Subscriber schon den RSS-Server kontaktiert. Da die Werte für die Nachrichtenlaufzeiten
+unserer Standard-Parameter sehr groß sind, haben wir für dieses Experiment folgende Nachrichtenlaufzeiten gewählt:
+$rss\-Feed\-Msg\-RT:=7$ und $rss\-Feed\-Request\-Msg\-RT:=5$. Auch diese Werte sind im Vergleich zu in der Realität auftretenden Werten immer noch sehr hoch gewählt.
+Allerdings wollen wir das System unter möglichst schlechten Bedingungen testen. Bei geringeren Übertragungsgeschwindigkeiten verbessert sich
+die Auswirkung der Churn-Kompensation.\\
 Churn beginnt beim Zeitpunkt 3000 und endet beim Zeitpunkt 5000. Dabei sind nach 900 Sekunden 80\% der Klienten ausgetauscht.
 Abbildung \ref{Abb:ohne_Churn-Kompensation} zeigt den Einfluss von Churn auf die Serverbelastung ohne Churn-Kompensation. Zu erkennen ist eine starke
 und stetig ansteigende Serverbelastung. Nur ab etwa dem Zeitpunkt 4600 Sekunden fällt die Kurve wieder leicht ab. Nach Beendigung der Churnphase
@@ -207,9 +216,6 @@ ein besseres Adaptionsverhalten erreicht wird.\\
 
 Auf die Entwicklung der Serverbelastung bei Wahl der Standard-Parameter hat Churn keinen nennenswerten Einfluss (hier nicht dargestellt).
 
-\importsmallgnuplotps{Exponentielle Skalierungsfunktion}{Abb:Exponentielle_Skalierungsfunktion}{ToTR_ExponentialArttFactor_serviceTimeFactor400_MVR}
-\importsmallgnuplotps{Polynomielle Skalierungsfunktion}{Abb:Polynomielle_Skalierungsfunktion}{ToTR_QuadraticArttFactor_serviceTimeFactor400_MVR}
-
 \subsection{Bestimmung des $artt$ -- Skalierungsfunktion für den $rtt$}
 \label{exp:skalierung}
 
@@ -218,11 +224,10 @@ sf() (siehe Abschnitt \ref{css:staukontrolle_pubsubrss}) ermittelt werden. Wir b
 polynomieller Funktionen. Auch hier haben wir einen $serviceTimeFactor$ von 400 gewählt, um Unterschiede in der Entwicklung deutlicher sichtbar
 zu machen. Abbildung \ref{Abb:Exponentielle_Skalierungsfunktion} zeigt den Verlauf der Serverbelastung bei Wahl der
 Skalierungsfunktion $\text{sf}(x):=2^{x-1}$. In Abbildung \ref{Abb:Polynomielle_Skalierungsfunktion} ist der Verlauf der Serverbelastung bei
-$\text{sf}(x):=x^2$ zu sehen. Unterschiede im Verlauf sind zwar sichtbar, der Vorteil der exponentiellen Skalierungsfunktion ist aber
+$\text{sf}(x):=x^2$ zu sehen. Unterschiede im Verlauf sind zwar sichtbar, der Vorteil der exponentiellen Skalierungsfunktion ist jedoch
 relativ klein.
 
 \subsection{Reaktion auf plötzliche Veränderung}
-\importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
 Dieses Experiment dient zur Untersuchung, wie das System auf plötzliche Veränderungen der Netzwerkgröße (Anzahl der Klienten im System)
 reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und dass es dabei nicht zu Seiteneffekten
 (wie z. B. ein starkes Schwingungsverhalten) kommt. Für diesen Zweck verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
@@ -232,16 +237,18 @@ nur eine kurzzeitige Senkung des Füllgrades der Server-Queue bewirkt. Der Pegel 
 Der Beitritt der Klienten zum System bewirkt zwar eine kurzzeitige starke Mehrbelastung des Servers, das System kann diese Mehrbelastung jedoch
 relativ schnell ausgleichen.
 
-\importsmallgnuplotps{Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
-\importsmallgnuplotps{Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
-
+\newpage
 \subsection{Steigerung des $rto$}
+\importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
 Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
 nach sich zieht.
 Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 Sekunden wird dieser auf 400 hochgesetzt, so dass der Server
 nur noch stark zeitverzögert antworten kann. Abbildung \ref{Abb:Exponentielle_Steigerung_des_rto} zeigt die Adaptionsgüte bei exponentieller Steigerung,
 Abbildung \ref{Abb:Polynomielle_Steigerung_des_rto} die Adaptionsgüte bei polynomieller Steigerung des $rto$. Hier ist ein deutlich besserer
 Verlauf der Adaption bei exponentieller Steigerung zu sehen.
+
+\importsmallgnuplotps{Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
+\importsmallgnuplotps{Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
 
 
 %%% Local Variables: 
