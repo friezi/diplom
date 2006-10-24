@@ -10,36 +10,6 @@ Verfahren motiviert haben.
 Damit die Experimente untereinander vergleichbar sind, haben wir eine einheitliche Parameterwahl getroffen. Parameter wurden nur dann gezielt modifiziert,
 wenn dies für das jeweilige Experiment von entscheidender Bedeutung war.
 
-\begin{table}
-\begin{center}
-  \begin{tabular}{|rlr|}
-    \hline
-    Parameter&Wert&Beschreibung\\
-    \hline\hline
-    &&\\
-    engineTimerPeriod & 5 & Laufzeitfaktor für Nachrichtengeschwindigkeiten\\
-    gnuplotTimeStepSecs & 5 & Abtastrate für gemessene Werte in Sekunden\\
-    &&\\
-    maxFeedEvents & 5 & max. Anzahl von Events innerhalb eines Feeds\\
-    maxSubscriberEvents & 10 & Anzahl Events, die ein Subscriber vorhält\\
-    &&\\
-    maxPollingPeriod & 910800 & $mpp$\\
-    preferredPollingPeriod & 1 & $ppp$\\ 
-    &&\\
-    ttl & 5 & $ttl$ pro Feed\\
-    &&\\
-    serverQueueSize & 40 & Größe der Server-Queue\\
-    &&\\
-    rssFeedMsgRT & 70 & Basislaufzeit f. RSS-Feeds\\
-    rssFeedRequestMsgRT & 50 & Basislaufzeit f. Feed-Requests\\
-    &&\\
-    \hline
-  \end{tabular}
-\end{center}
-\caption{Standardparameter}
-\label{Tab:Standardparameter}
-\end{table}
-
 \paragraph{Topologien:}
 Die Simulationsumgebung besitzt eingebaute Topologien (z. B. $Topology\-One\-Sur\-roun\-ded$), welche gut für eine visuelle Kontrolle der Algorithmen geeignet
 sind, da sie von ihrer Struktur her einfach und übersichtlich aufgebaut sind. Um jedoch aussagekräftige Ergebnisse zu erhalten, die auch in Hinsicht auf
@@ -66,6 +36,38 @@ gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle
 \paragraph{Parameter:}
 Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
 angegebenen Parameter als Standardwerte gesetzt.
+
+\begin{table*}
+\begin{center}
+  \begin{tabular}{|rlr|}
+    \hline
+    Parameter&Wert&Beschreibung\\
+    \hline\hline
+    &&\\
+    engineTimerPeriod & 5 & Laufzeitfaktor für Nachrichtengeschwindigkeiten\\
+    gnuplotTimeStepSecs & 5 & Abtastrate für gemessene Werte in Sekunden\\
+    &&\\
+    maxFeedEvents & 5 & max. Anzahl von Events innerhalb eines Feeds\\
+    maxSubscriberEvents & 10 & Anzahl Events, die ein Subscriber vorhält\\
+    &&\\
+    maxPollingPeriod & 910800 & $mpp$\\
+    preferredPollingPeriod & 1 & $ppp$\\ 
+    &&\\
+    ttl & 5 & $ttl$ pro Feed\\
+    &&\\
+    serverQueueSize & 40 & Größe der Server-Queue\\
+    processingTimeFeedRequest & 350 & Bearbeitungszeit einer Anfrage (Millisek.)\\
+    processingTimeUnrepliedRequest & 43 & Verzögerungszeit bei abgewiesenen Anfragen\\
+    &&\\
+    rssFeedMsgRT & 70 & Basislaufzeit f. RSS-Feeds\\
+    rssFeedRequestMsgRT & 50 & Basislaufzeit f. Feed-Requests\\
+    &&\\
+    \hline
+  \end{tabular}
+\end{center}
+\caption{Standardparameter}
+\label{Tab:Standardparameter}
+\end{table*}
 
 Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$. Wir haben bewusst relativ hohe
 Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Hohe Nachrichtenlaufzeiten können bewirken,
@@ -146,7 +148,6 @@ dass die Serverbelastung wie erwartet stetig zunimmt.
 
 Der Grad der Nachrichtenverzögerung nimmt ebenfalls stetig zu (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
 wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}).
-\newpage
 
 \subsection{Ausbalancierung}
 
@@ -205,8 +206,8 @@ als der Variationskoeffizient des nicht-ausbalancierten Verfahrens
 
 \suppressfloats
 
-\importsmallgnuplotps{Serverbelastung: Ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation400_80_900_MVR}
-\importsmallgnuplotps{Serverbelastung: Mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation400_80_900_MVR}
+\importsmallgnuplotps{Serverbelastung: Ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation50_80_900_MVR}
+\importsmallgnuplotps{Serverbelastung: Mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation50_80_900_MVR}
 
 \importsmallgnuplotps{Serverbelastung: Exponentielle Skalierungsfunktion}
 {Abb:Exponentielle_Skalierungsfunktion}{ToTR_ExponentialArttFactor_serviceTimeFactor400_MVR}
@@ -215,13 +216,13 @@ als der Variationskoeffizient des nicht-ausbalancierten Verfahrens
 
 Mit Hilfe dieses Experiments soll der Einflusses von Churn auf die Serverbelastung sowohl mit als auch ohne Churn-Kompensation ermittelt werden.
 Je stärker die schon bestehende Serverbelastung bzw. je weniger leistungsfähig ein Server ist, desto größer ist der Einfluss von Churn.
-Damit der Einfluss von Churn auf die Serverbelastung deutlich hervor tritt, wurde in diesem Experiment ein $serviceTimeFactor$ von 400 gewählt.
+Damit der Einfluss von Churn auf die Serverbelastung deutlich hervor tritt, wurde in diesem Experiment ein $serviceTimeFactor$ von 50 gewählt.
 Die Nachrichtenlaufzeit ist von entscheidender Bedeutung für die Churn-Kompensation: ist sie zu hoch, dann benötigt die Übermittlung des
-$InitialBrokerRSSFeed$ zu viel Zeit, so dass ein Subscriber schon den RSS-Server kontaktiert. Da die Werte für die Nachrichtenlaufzeiten
-unserer Standard-Parameter sehr groß sind, haben wir für dieses Experiment folgende Nachrichtenlaufzeiten gewählt:
-$rss\-Feed\-Msg\-RT:=7$ und $rss\-Feed\-Request\-Msg\-RT:=5$. Auch diese Werte sind im Vergleich zu in der Realität auftretenden Werten immer noch sehr hoch gewählt.
-Allerdings wollen wir das System unter möglichst schlechten Bedingungen testen. Bei geringeren Übertragungsgeschwindigkeiten verbessert sich
-die Auswirkung der Churn-Kompensation.\\
+$InitialBrokerRSSFeed$ sehr viel Zeit, so dass ein Subscriber zwischenzeitlich bereits den RSS-Server kontaktiert.
+Die gewählten Werte für Nachrichtenlaufzeiten sind im Vergleich zu in der Realität auftretenden Werten sehr hoch gewählt.
+Allerdings wollen wir das System unter möglichst ungünstigen Bedingungen testen. Bei geringeren Übertragungsgeschwindigkeiten verbessert sich
+die Auswirkung der Churn-Kompensation. Die hier dargestellten Werte sind Extremwerte und sollten unter realen Bedingungen weit besser ausfallen.\\
+
 Churn beginnt beim Zeitpunkt 3000 und endet beim Zeitpunkt 5000. Dabei sind nach 900 Sekunden 80\% der Klienten ausgetauscht.
 Abbildung \ref{Abb:ohne_Churn-Kompensation} zeigt den Einfluss von Churn auf die Serverbelastung ohne Churn-Kompensation. Zu erkennen ist eine starke
 und stetig ansteigende Serverbelastung. Nur ab etwa dem Zeitpunkt 4600 Sekunden fällt die Kurve wieder leicht ab. Nach Beendigung der Churnphase
@@ -243,7 +244,7 @@ Skalierungsfunktion $\text{sf}(x):=2^{x-1}$. In Abbildung \ref{Abb:Polynomielle_
 $\text{sf}(x):=x^2$ zu sehen. Unterschiede im Verlauf sind zwar sichtbar, der Vorteil der exponentiellen Skalierungsfunktion ist jedoch
 relativ klein.
 
-\subsection{Reaktion auf plötzliche Veränderung}
+\subsection{Reaktion auf Netzwerkveränderung}
 Dieses Experiment dient zur Untersuchung, wie das System auf plötzliche Veränderungen der Netzwerkgröße (Anzahl der Klienten im System)
 reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und dass es dabei nicht zu Seiteneffekten
 (wie z. B. ein starkes Schwingungsverhalten) kommt. Für diesen Zweck verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
@@ -290,6 +291,14 @@ machen deutlich, dass die Abweichungen von den Mittelwerten relativ gering sind.
 und \ref{Abb:Variationskoeffizient_Referenzverlauf_Mittelwerte_der_Polling-Perioden}) zeigt sich, dass bei der Wahl einer großen Queue
 (bei ansonsten gleicher Parameterwahl) die Mittelwerte und die Streuungen viel geringere Werte annehmen und es somit zu einer
 homogeneren Verteilung der Mittelwerte auf die verschiedenen Klienten kommt.
+
+\subsection{Kurzzeitige Belastungsänderung}
+\importsmallgnuplotps{Serverbelastung: kurzzeitige Überbelastung}{Abb:kurzzeitige_Ueberbelastung}{ToTR_SuddenIncreaseDecrease40_MVR}
+Die Frage, wie das System auf kurzzeitige Veränderungen der Server-Reaktionsfähigkeit reagiert, soll hier untersucht werden. Ist ein Server für einen
+kurzen Zeitraum nicht in der Lage, Anfragen in angemessener Zeit zu bearbeiten, so wäre es nicht wünschenswert, wenn das System (bzw. die Klienten)
+mit einer starken und länger andauernden Reaktion überreagiert. Abbildung \ref{Abb:kurzzeitige_Ueberbelastung} zeigt die Reaktion des Systems
+auf eine 50-fach verminderte Reaktionsfähigkeit des Servers ($serviceTimeFactor=50$). Wie zu sehen ist, ändert sich der Verlauf der Kurve nur ganz geringfügig.
+
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
