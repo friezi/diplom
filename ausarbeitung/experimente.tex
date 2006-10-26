@@ -11,7 +11,8 @@ Damit die Experimente untereinander vergleichbar sind, haben wir eine einheitlic
 wenn dies für das jeweilige Experiment von entscheidender Bedeutung war.
 
 \paragraph{Topologien:}
-Die Simulationsumgebung besitzt eingebaute Topologien (z. B. $Topology\-One\-Sur\-roun\-ded$), welche gut für eine visuelle Kontrolle der Algorithmen geeignet
+Die Simulationsumgebung besitzt eingebaute Topologien (z. B. $Topology\-One\-Sur\-roun\-ded$, siehe Kapitel \ref{c:implementierung}),
+welche gut für eine visuelle Kontrolle der Algorithmen geeignet
 sind, da sie von ihrer Struktur her einfach und übersichtlich aufgebaut sind. Um jedoch aussagekräftige Ergebnisse zu erhalten, die auch in Hinsicht auf
 Netzwerktopologien, so wie sie im Internet vorzufinden sind, als realistisch eingestuft werden können, müssen wir andere Topologien heranziehen. Wir bedienen uns
 Topologien, welche auf dem Transit-Stub-Modell \cite{Zegura1996} basieren. Dieses Modell spiegelt sehr gut reale Internetstrukturen wider. Bei diesem Modell
@@ -29,7 +30,7 @@ Dies geschieht jedoch so,
 dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
 zuständig sind.\\
 
-Da ein einziger Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
+Da ein einzelner Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
 Zufallswerten durchgeführt. Dadurch hat sich bei jedem Durchlauf das Overlay-Netzwerk geringfügig verändert (s. o.). Für jeden
 gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle berechnet.
 
@@ -69,7 +70,8 @@ angegebenen Parameter als Standardwerte gesetzt.
 \label{Tab:Standardparameter}
 \end{table*}
 
-Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$. Wir haben bewusst relativ hohe
+Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$ (bezogen auf den Nachrichtentyp,
+siehe Tabelle \ref{Tab:Standardparameter}). Wir haben bewusst relativ hohe
 Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Hohe Nachrichtenlaufzeiten können bewirken,
 dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfragen wiederholen. Dies führt zunächst zu einer Mehrbelastung
 des Servers. Auch wenn in der Realität dauerhaft solch hohe Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
@@ -88,7 +90,8 @@ Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis 
 für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kamen. Dargestellt ist
 die Enwicklung der Serverbelastung anhand der eingegangenen Feed-Requests. Von den Standardparametern
 wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1..1000$ Sekunden dem Overlay-Netzwerk bei.
-Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$), ist hierbei 1.\\
+Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$, siehe Kapitel \ref{c:implementierung}),
+ist hierbei 1.\\
 
 Es ist zu erkennen, dass die Kurve bis zum Ende der Beitrittsphase leicht über die obere Grenze der Server-Queue steigt. Nach Abschluss der Beitrittsphase
 pegelt sich die Kurve jedoch auf die obere Grenze der Server-Queue ein, was bedeutet dass der RSS-Server an seiner Belastungsgrenze arbeitet
@@ -292,13 +295,51 @@ und \ref{Abb:Variationskoeffizient_Referenzverlauf_Mittelwerte_der_Polling-Perio
 (bei ansonsten gleicher Parameterwahl) die Mittelwerte und die Streuungen viel geringere Werte annehmen und es somit zu einer
 homogeneren Verteilung der Mittelwerte auf die verschiedenen Klienten kommt.
 
-\subsection{Kurzzeitige Belastungsänderung}
+\subsection{Reaktion auf Belastungsänderung}
+Hier soll untersucht werden, wie das System auf Änderungen des Belastungsgrades eines Servers reagiert. Dabei bestehen je nach Dauer der
+Belastungsänderung unterschiedliche Anforderungen an das System.
+
+\importsmallgnuplotps{Serverbelastung: langzeitige Überbelastung}{Abb:langzeitige_Ueberbelastung}{ToTR_FastIncreasing_MVR}
+\importsmallgnuplotps{Serverbelastung: langzeitige Belastungsminderung}{Abb:langzeitige_Belastungsminderung}{ToTR_FastDegrading_MVR}
 \importsmallgnuplotps{Serverbelastung: kurzzeitige Überbelastung}{Abb:kurzzeitige_Ueberbelastung}{ToTR_SuddenIncreaseDecrease40_MVR}
-Die Frage, wie das System auf kurzzeitige Veränderungen der Server-Reaktionsfähigkeit reagiert, soll hier untersucht werden. Ist ein Server für einen
+\importsmallgnuplotps{Serverbelastung: kurzzeitige Belastungsminderung}{Abb:kurzzeitige_Belastungsminderung}{ToTR_SuddenDecreaseIncrease40_MVR}
+\paragraph{Langzeitige Belastungssänderungen}
+Bei einer langzeitigen Belastungsänderung eines Servers fordern wir vom System (bzw. von den Klienten) eine möglichst rasche Adaption an die
+neuen Bedingungen. Abbildung \ref{Abb:langzeitige_Ueberbelastung} zeigt den Verlauf der Adaption bei einer 50-fachen Steigerung der
+Serverbelastung ($serviceTimeFactor=50$).
+Zu erkennen ist ein logarithmischer Verlauf der Kurve, welcher unseren Erwartungen entspricht, da sowohl die Steigerung des $rto$ als auch
+die Skalierungsfunktion $\text{sf}()$ exponentiell gewählt sind (Abbildung \ref{Abb:Exponentielle_Steigerung_des_rto} des vorigen Abschnitts
+zeigt den Verlauf bei einer 400-fach gesteigerten Serverbelastung). Den umgekehrten Fall (Wechsel von 50-facher auf Standard-Serverbelastung)
+spiegelt Abbildung \ref{Abb:langzeitige_Belastungsminderung} wider. Hier ist ein exponentieller Verlauf der Kurve zu erkennen.
+
+\paragraph{Kurzzeitige Belastungsänderungen}
+Ist ein Server für einen
 kurzen Zeitraum nicht in der Lage, Anfragen in angemessener Zeit zu bearbeiten, so wäre es nicht wünschenswert, wenn das System (bzw. die Klienten)
 mit einer starken und länger andauernden Reaktion überreagiert. Abbildung \ref{Abb:kurzzeitige_Ueberbelastung} zeigt die Reaktion des Systems
-auf eine 50-fach verminderte Reaktionsfähigkeit des Servers ($serviceTimeFactor=50$). Wie zu sehen ist, ändert sich der Verlauf der Kurve nur ganz geringfügig.
+auf eine 50-fach gesteigerte Serverbelastung. Wie zu sehen ist, ändert sich der Verlauf der Kurve nur ganz geringfügig. Abbildung
+\ref{Abb:kurzzeitige_Belastungsminderung} zeigt auch hier den umgekehrten Fall (obwohl kurzzeitige Belastungsminderungen in der Realität
+eher weniger wahrscheinlich sind).
 
+\importsmallgnuplotps{Serverbelastung: allmähliche Überbelastung}{Abb:allmaehliche_Ueberbelastung}{ToTR_SoftIncreasing_MVR}
+\importsmallgnuplotps{Serverbelastung: allmähliche Minderbelastung}{Abb:allmaehliche_Minderbelastung}{ToTR_SoftDegrading_MVR}
+
+\importsmallgnuplotps{Serverbelastung: $mpp=3600$}{Abb:mpp_3600}{ToTR_mpp3600_serviceTimeFactor50_MVR}
+\importsmallgnuplotps{Serverbelastung: $mpp=910800$}{Abb:mpp_910800}{ToTR_mpp910800_serviceTimeFactor50_MVR}
+
+\paragraph{Allmähliche Belastungsänderungen}
+Bei einer allmählichen Belastungsänderung fordern wir, dass sich das System so schnell an den veränderten Belastungsgrad anpasst, dass
+eine zusätzliche Mehr- bzw. Minderbelasung ausbleibt. Abbildungen \ref{Abb:allmaehliche_Ueberbelastung} und
+\ref{Abb:allmaehliche_Minderbelastung} zeigen als Beispiele die Graphen der Adaptionsverläufe bei allmählicher Mehr- bzw. Minderbelastung
+bei einer graduellen Steigerung des $serviceTimeFactors$ um den Wert 1 alle 40 Sekunden. Je kleiner die graduelle Steigerung
+bzw. je größer das Zeitintervall zwischen den graduellen Änderungen, desto homogener und unauffälliger ist die Adaption. 
+
+\subsection{Größe des $mpp$}
+Damit die Polling-Perioden nicht in unermessliche Höhen schießen (beispielsweise aufgrund von Fehlfunktionen), haben wir den $mpp$
+definiert. Dieser sollte groß genug gewählt werden, so dass eine Adaption unter jeden Umständen vollständig ist. Wie sich ein zu
+gering gewählter $mpp$ auf das Adaptionsverhalten auswirkt, sehen wir exemplarisch in Abbildung \ref{Abb:mpp_3600} bei einem
+$mpp$ von 3600 und einem $serviceTimeFactor$ von 50. Den Verlauf der Adaption bei $mpp=910800$ unter ansonsten gleichen Bedingungen ist in Abbildung
+\ref{Abb:mpp_910800} zu sehen. Bei $mpp=3600$ wird eine vollständige Adaption verhindert, da der $cpp$ eines Klienten nicht groß genug
+gewählt werden kann.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
