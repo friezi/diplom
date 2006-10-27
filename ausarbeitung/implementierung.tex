@@ -1,0 +1,44 @@
+\chapter{Implementierung der Simulationsumgebung}
+\label{c:implementierung}
+Um die vorgestellten Verfahren und Algorithmen testen zu können, wurde eine eigene Simulationsumgebung erstellt. Diese bietet die Möglichkeit,
+Parameter zu variieren und Teilverfahren ein- oder auszublenden oder durch alternative Verfahren zu ersetzen. Es lässt sich mit verschiedenen
+Netzwerk-Topologien arbeiten, um die Algorithmen in unterschiedlichen Szenarien testen zu können. Dabei besteht die Möglicheit, das Verhalten
+der Algorithmen visuell mitzuverfolgen,
+Auskünfte über die Zustände beteiligter Einheiten einzuholen und statistische Werte zu ermitteln und zwecks einer späteren Auswertung
+über einen selbst definierten Zeitraum mitzuschneiden. Darüber hinaus können Ereignisse definiert werden, welche zu selbst gewählten Zeitpunkten
+eintreten und in der Realität vorkommende Ereignisse widerspiegeln sollen.\\
+
+Ursprünglich diente das Simulationsframework {\texttt msgnet} von Robert Schiele \cite{MSGNET} als Basis für die hier vorgestellte Implementierung.
+Daher steht der gesamte Code unter der GPL. Im Zuge der Entwicklung wurden aber ganze Teile des Quellcodes stark modifiziert oder ausgetauscht, um den 
+hier gestellten Anforderungen zu genügen.\\
+
+Die Simulationsumgebung wurde in der Programmiersprache Java implementiert. Die zentralen Komponenten in der Implementierung wurden dabei
+so konzipiert, dass sie beliebig erweitert und mit einander kombiniert werden können.
+
+\subsection{Simulationsumgebung}
+Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsumgebung vor. Wir beschränken uns dabei auf die zum Verständnis für uns
+am wichtigsten erscheinenden Komponenten. Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
+agierenden Einheiten vermittelt, ist die sogenannte ``Engine'', repräsentiert durch die Klasse {\texttt Engine}. Selbständig agierende Einheiten können
+Aktionen ausführen oder Ereignisse hervorrufen. Sie repräsentieren beispielsweise Knoten in einem Netzwerk und werden durch die Klasse {\texttt Node}
+implementiert. Komponenten der Klasse {\texttt Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten, welche mit Hilfe der Klasse
+{\texttt Message} umgesetzt sind, zuschicken. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
+{\texttt send()} der Klasse {\texttt Message} abgeschickt. Jede Nachricht landet in einer Warteschlange der Klasse {\texttt Engine}. Die Engine sorgt dafür,
+dass Knoten die ihnen zugedachten Nachrichten erhalten, indem sie die einzelnen Nachrichten der Warteschlange entnimmt und bei dem adressierten Knoten
+die Methode {\texttt receive()} aufruft. Dieser kann die Nachricht nun verarbeiten. Den Nachrichten werden außerdem Laufzeiten zugewiesen, so dass eine
+Nachricht erst nach Ablauf dieser Laufzeit den Adressaten erreicht.\\
+Es gibt verschiedene Ansätze, eine Engine zu implementieren. Bei einer Realzeit-Simulation läuft die Zeit kontinuierlich weiter. Dabei sind die Knoten einzelne
+Prozesse. Die Engine, selbst ein eigenständiger Prozess, braucht nicht auf die Beendigung der Verarbeitung der Nachrichten bei den einzelnen Knoten zu warten,
+sondern kann die Methode {\texttt receive()} der verschiedenen Empfangsknoten parallel aufrufen. Für visuelle Demonstrationen des entsprechenden Systems
+ist so eine Umsetzung geeignet, jedoch nicht für den Zweck, wissenschaftlich aussagekräftige Ergebnisse zu erhalten, da eine Realzeit-Simulation stark
+von der Rechengeschwindigkeit des benutzten Computersystems und seiner temporären Gegebenheiten abhängig ist. Daher ist es damit nicht möglich, reproduzierbare
+und einheitliche Ergebnisse zu erhalten. Zu diesem Zweck bedient man sich einer (zeit-)diskreten Ereignissimulation (siehe \cite{Perros2003:CST,Muell2004:Sim}).
+Die Simulation verläuft dabei nicht zeitgesteuert sondern ereignisgesteuert. Jedem Ereignis wird ein Ausführungstermin zugeordnet. Die Ereignisse werden in einer
+nach ihrem Ausführungstermin geordneten Prioritätswarteschlange gesammelt. Bei jeder Entnahme eines Ereignisses aus der Prioritätswarteschlange wird die
+aktuelle Zeit auf die Ausführungszeit gesetzt.\\
+Mit der hier vorgestellten Simulationsumgebung kann sowohl eine Realzeit-Simulation als auch eine zeitdiskrete Ereignissimulation durchgeführt werden. Jedes
+Ereignis wird in Form der Klasse {\texttt Message} dargestellt und ist entweder vom Typ der Subklasse {\texttt Internal\-Message} für nicht
+zeitverzögerte Ereignisse oder vom Typ der Subklasse {\texttt Transfer\-Message} für zeitverzögerte Ereignisse bzw. Nachrichten zwischen verschiedenen Knoten.
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 
