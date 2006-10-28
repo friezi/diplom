@@ -12,10 +12,11 @@ Ursprünglich diente das Simulationsframework {\texttt msgnet} von Robert Schiele
 Daher steht der gesamte Code unter der GPL. Im Zuge der Entwicklung wurden aber ganze Teile des Quellcodes stark modifiziert oder ausgetauscht, um den 
 hier gestellten Anforderungen zu genügen.\\
 
-Die Simulationsumgebung wurde in der Programmiersprache Java implementiert. Die zentralen Komponenten in der Implementierung wurden dabei
+Die Simulationsumgebung wurde in der Programmiersprache Java implementiert. Die zu testenden Komponenten in der Implementierung wurden dabei
 so konzipiert, dass sie beliebig erweitert und mit einander kombiniert werden können.
 
-\subsection{Simulationsumgebung}
+\section{Simulationsumgebung}
+
 Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsumgebung vor. Wir beschränken uns dabei auf die zum Verständnis für uns
 am wichtigsten erscheinenden Komponenten. Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
 agierenden Einheiten vermittelt, ist die sogenannte ``Engine'', repräsentiert durch die Klasse {\texttt Engine}. Selbständig agierende Einheiten können
@@ -26,8 +27,10 @@ implementiert. Komponenten der Klasse {\texttt Node} können miteinander kommuniz
 dass Knoten die ihnen zugedachten Nachrichten erhalten, indem sie die einzelnen Nachrichten der Warteschlange entnimmt und bei dem adressierten Knoten
 die Methode {\texttt receive()} aufruft. Dieser kann die Nachricht nun verarbeiten. Den Nachrichten werden außerdem Laufzeiten zugewiesen, so dass eine
 Nachricht erst nach Ablauf dieser Laufzeit den Adressaten erreicht.\\
-Es gibt verschiedene Ansätze, eine Engine zu implementieren. Bei einer Realzeit-Simulation läuft die Zeit kontinuierlich weiter. Dabei sind die Knoten einzelne
-Prozesse. Die Engine, selbst ein eigenständiger Prozess, braucht nicht auf die Beendigung der Verarbeitung der Nachrichten bei den einzelnen Knoten zu warten,
+
+Es gibt verschiedene Ansätze, eine Engine zu implementieren. Bei einer
+Realzeit-Si\-mu\-la\-tion läuft die Zeit kontinuierlich weiter. Dabei können die Nachrichten-verarbeitenden Methoden eines Knoten als einzelne Prozesse
+realisiert werden. Die Engine, selbst ein eigenständiger Prozess, braucht nicht auf die Beendigung der Verarbeitung der Nachrichten zu warten,
 sondern kann die Methode {\texttt receive()} der verschiedenen Empfangsknoten parallel aufrufen. Für visuelle Demonstrationen des entsprechenden Systems
 ist so eine Umsetzung geeignet, jedoch nicht für den Zweck, wissenschaftlich aussagekräftige Ergebnisse zu erhalten, da eine Realzeit-Simulation stark
 von der Rechengeschwindigkeit des benutzten Computersystems und seiner temporären Gegebenheiten abhängig ist. Daher ist es damit nicht möglich, reproduzierbare
@@ -37,7 +40,30 @@ nach ihrem Ausführungstermin geordneten Prioritätswarteschlange gesammelt. Bei j
 aktuelle Zeit auf die Ausführungszeit gesetzt.\\
 Mit der hier vorgestellten Simulationsumgebung kann sowohl eine Realzeit-Simulation als auch eine zeitdiskrete Ereignissimulation durchgeführt werden. Jedes
 Ereignis wird in Form der Klasse {\texttt Message} dargestellt und ist entweder vom Typ der Subklasse {\texttt Internal\-Message} für nicht
-zeitverzögerte Ereignisse oder vom Typ der Subklasse {\texttt Transfer\-Message} für zeitverzögerte Ereignisse bzw. Nachrichten zwischen verschiedenen Knoten.
+zeitverzögerte Ereignisse oder vom Typ der Subklasse {\texttt Transfer\-Message} für zeitverzögerte Ereignisse bzw. Nachrichten zwischen verschiedenen Knoten.\\
+
+Um das Systemverhalten auch optisch mitverfolgen zu können, kann optional eine graphische Benutzeroberfläche gestartet werden, in der das gesamte
+Netzwerk in verschiedenen Ebenen (physikalisches Netz, Overlay-Netzwerk) und der Kommunikationsfluss dargestellt sind. Zusätzlich können statistische
+Werte des Gesamtsystems und der einzelnen Knoten sowie erhaltene RSS-Feeds abgefragt werden.\\
+
+\begin{picturenothere}{1}{17}{\mbox{Simulationsumgebung: UML-Klassendiagramm}}{Abb:UML:Simulationsumgebung}
+ \includegraphics[bb=200 0 544 504 ,scale=0.9]{simulationsumgebung}
+\end{picturenothere}
+
+Abbildung \ref{Abb:UML:Simulationsumgebung} zeigt die zentralen Einheiten der Simulationsumgebung und ihre Beziehungen untereinander
+in einem UML-Klassendiagramm (UML2). Es werden in der Darstellung
+nur die wichtigsten Methoden und Attribute aufgelistet. Eine vollständige Referenz findet sich in der generierten Quelltext-Dokumentation.
+Einige Beziehungen zu noch nicht aufgeführten Klassen werden in den nachfolgenden Grafiken veranschaulicht.\\
+
+Die Klasse {\texttt Simulation} richtet die gesamte Simulationsumgebung ein: Parameter werden eingelesen, eine Topologie mit allen dazu gehörigen Knoten wird
+erzeugt und die Engine wird gestartet. Diese übernimmt nun die Kontrolle, setzt den Zeitzähler auf null und richtet die entsprechende Simulationstask und einige
+weitere notwendige Handler ein (evtl. {\texttt Gui} und {\texttt ActionHandler}, s. u.). Nachfolgend werden wir nur die Funktionsweise der Klasse
+{\texttt DiscreteEngineTask} betrachten. Zentraler Teil ist die die Prioritätswarteschlange {\texttt messagequeue}, in der alle Ereignisse gespeichert werden.
+Soll die optionale graphische Benutzeroberfläche (Klasse {\texttt Gui}) nicht gestartet werden, so beginnt die Engine mit der Initialisierung aller
+selbständig agierenden Knoten und der anschliessenden Abarbeitung der {\texttt messagequeue} in einer Schleife. Dabei wird das erste Ereignis {\texttt message}
+der Warteschlange entnommen und die aktuelle Zeit auf {\texttt message.getArrivalTime()} gesetzt. Nun erfolgt der Aufruf der Methode {\texttt receive()}
+des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.
+
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
