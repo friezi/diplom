@@ -8,7 +8,7 @@ Auskünfte über die Zustände beteiligter Einheiten einzuholen und statistische We
 über einen selbst definierten Zeitraum mitzuschneiden. Darüber hinaus können Ereignisse definiert werden, welche zu selbst gewählten Zeitpunkten
 eintreten und in der Realität vorkommende Ereignisse widerspiegeln sollen.\\
 
-Ursprünglich diente das Simulationsframework {\texttt msgnet} von Robert Schiele \cite{MSGNET} als Basis für die hier vorgestellte Implementierung.
+Ursprünglich diente das Simulationsframework \texttt{msgnet} von Robert Schiele \cite{MSGNET} als Basis für die hier vorgestellte Implementierung.
 Daher steht der gesamte Code unter der GPL. Im Zuge der Entwicklung wurden aber ganze Teile des Quellcodes stark modifiziert oder ausgetauscht, um den 
 hier gestellten Anforderungen zu genügen.\\
 
@@ -19,19 +19,19 @@ so konzipiert, dass sie beliebig erweitert und mit einander kombiniert werden kö
 
 Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsumgebung vor. Wir beschränken uns dabei auf die zum Verständnis für uns
 am wichtigsten erscheinenden Komponenten. Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
-agierenden Einheiten vermittelt, ist die sogenannte ``Engine'', repräsentiert durch die Klasse {\texttt Engine}. Selbständig agierende Einheiten können
-Aktionen ausführen oder Ereignisse hervorrufen. Sie repräsentieren beispielsweise Knoten in einem Netzwerk und werden durch die Klasse {\texttt Node}
-implementiert. Komponenten der Klasse {\texttt Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten, welche mit Hilfe der Klasse
-{\texttt Message} umgesetzt sind, zuschicken. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
-{\texttt send()} der Klasse {\texttt Message} abgeschickt. Jede Nachricht landet in einer Warteschlange der Klasse {\texttt Engine}. Die Engine sorgt dafür,
+agierenden Einheiten vermittelt, ist die sogenannte ``Engine'', repräsentiert durch die Klasse \texttt{Engine}. Selbständig agierende Einheiten können
+Aktionen ausführen oder Ereignisse hervorrufen. Sie repräsentieren beispielsweise Knoten in einem Netzwerk und werden durch die Klasse \texttt{Node}
+implementiert. Komponenten der Klasse \texttt{Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten, welche mit Hilfe der Klasse
+\texttt{Message} umgesetzt sind, zuschicken. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
+\texttt{send()} der Klasse \texttt{Message} abgeschickt. Jede Nachricht landet in einer Warteschlange der Klasse \texttt{Engine}. Die Engine sorgt dafür,
 dass Knoten die ihnen zugedachten Nachrichten erhalten, indem sie die einzelnen Nachrichten der Warteschlange entnimmt und bei dem adressierten Knoten
-die Methode {\texttt receive()} aufruft. Dieser kann die Nachricht nun verarbeiten. Den Nachrichten werden außerdem Laufzeiten zugewiesen, so dass eine
+die Methode \texttt{receive()} aufruft. Dieser kann die Nachricht nun verarbeiten. Den Nachrichten werden außerdem Laufzeiten zugewiesen, so dass eine
 Nachricht erst nach Ablauf dieser Laufzeit den Adressaten erreicht.\\
 
 Es gibt verschiedene Ansätze, eine Engine zu implementieren. Bei einer
 Realzeit-Si\-mu\-la\-tion läuft die Zeit kontinuierlich weiter. Dabei können die Nachrichten-verarbeitenden Methoden eines Knoten als einzelne Prozesse
 realisiert werden. Die Engine, selbst ein eigenständiger Prozess, braucht nicht auf die Beendigung der Verarbeitung der Nachrichten zu warten,
-sondern kann die Methode {\texttt receive()} der verschiedenen Empfangsknoten parallel aufrufen. Für visuelle Demonstrationen des entsprechenden Systems
+sondern kann die Methode \texttt{receive()} der verschiedenen Empfangsknoten parallel aufrufen. Für visuelle Demonstrationen des entsprechenden Systems
 ist so eine Umsetzung geeignet, jedoch nicht für den Zweck, wissenschaftlich aussagekräftige Ergebnisse zu erhalten, da eine Realzeit-Simulation stark
 von der Rechengeschwindigkeit des benutzten Computersystems und seiner temporären Gegebenheiten abhängig ist. Daher ist es damit nicht möglich, reproduzierbare
 und einheitliche Ergebnisse zu erhalten. Zu diesem Zweck bedient man sich einer (zeit-)diskreten Ereignissimulation (siehe \cite{Perros2003:CST,Muell2004:Sim}).
@@ -39,12 +39,12 @@ Die Simulation verläuft dabei nicht zeitgesteuert sondern ereignisgesteuert. Jed
 nach ihrem Ausführungstermin geordneten Prioritätswarteschlange gesammelt. Bei jeder Entnahme eines Ereignisses aus der Prioritätswarteschlange wird die
 aktuelle Zeit auf die Ausführungszeit gesetzt.\\
 Mit der hier vorgestellten Simulationsumgebung kann sowohl eine Realzeit-Simulation als auch eine zeitdiskrete Ereignissimulation durchgeführt werden. Jedes
-Ereignis wird in Form der Klasse {\texttt Message} dargestellt und ist entweder vom Typ der Subklasse {\texttt Internal\-Message} für nicht
-zeitverzögerte Ereignisse oder vom Typ der Subklasse {\texttt Transfer\-Message} für zeitverzögerte Ereignisse bzw. Nachrichten zwischen verschiedenen Knoten.\\
+Ereignis wird in Form der Klasse \texttt{Message} dargestellt und ist entweder vom Typ der Subklasse \texttt{Internal\-Message} für nicht
+zeitverzögerte Ereignisse oder vom Typ der Subklasse \texttt{Transfer\-Message} für zeitverzögerte Ereignisse bzw. Nachrichten zwischen verschiedenen Knoten.\\
 
-Um das Systemverhalten auch optisch mitverfolgen zu können, kann optional eine graphische Benutzeroberfläche gestartet werden, in der das gesamte
-Netzwerk in verschiedenen Ebenen (physikalisches Netz, Overlay-Netzwerk) und der Kommunikationsfluss dargestellt sind. Zusätzlich können statistische
-Werte des Gesamtsystems und der einzelnen Knoten sowie erhaltene RSS-Feeds abgefragt werden.\\
+Um das Systemverhalten auch optisch mitverfolgen zu können, kann optional eine graphische Benutzeroberfläche gestartet werden, in der die verschiedenen Ebenen
+(physisches Ebene, Overlay-Ebene) des gesamten Netzwerks und der Kommunikationsfluss dargestellt sind. Zusätzlich können erhaltene
+RSS-Feeds sowie statistische Werte des Gesamtsystems und der einzelnen Knoten abgefragt werden.\\
 
 \begin{picturenothere}{1}{17}{\mbox{Simulationsumgebung: UML-Klassendiagramm}}{Abb:UML:Simulationsumgebung}
  \includegraphics[bb=200 0 544 504 ,scale=0.9]{simulationsumgebung}
@@ -55,14 +55,56 @@ in einem UML-Klassendiagramm (UML2). Es werden in der Darstellung
 nur die wichtigsten Methoden und Attribute aufgelistet. Eine vollständige Referenz findet sich in der generierten Quelltext-Dokumentation.
 Einige Beziehungen zu noch nicht aufgeführten Klassen werden in den nachfolgenden Grafiken veranschaulicht.\\
 
-Die Klasse {\texttt Simulation} richtet die gesamte Simulationsumgebung ein: Parameter werden eingelesen, eine Topologie mit allen dazu gehörigen Knoten wird
+Die Klasse \texttt{Simulation} richtet die gesamte Simulationsumgebung ein: Parameter werden eingelesen, eine Topologie mit allen dazu gehörigen Knoten wird
 erzeugt und die Engine wird gestartet. Diese übernimmt nun die Kontrolle, setzt den Zeitzähler auf null und richtet die entsprechende Simulationstask und einige
-weitere notwendige Handler ein (evtl. {\texttt Gui} und {\texttt ActionHandler}, s. u.). Nachfolgend werden wir nur die Funktionsweise der Klasse
-{\texttt DiscreteEngineTask} betrachten. Zentraler Teil ist die die Prioritätswarteschlange {\texttt messagequeue}, in der alle Ereignisse gespeichert werden.
-Soll die optionale graphische Benutzeroberfläche (Klasse {\texttt Gui}) nicht gestartet werden, so beginnt die Engine mit der Initialisierung aller
-selbständig agierenden Knoten und der anschliessenden Abarbeitung der {\texttt messagequeue} in einer Schleife. Dabei wird das erste Ereignis {\texttt message}
-der Warteschlange entnommen und die aktuelle Zeit auf {\texttt message.getArrivalTime()} gesetzt. Nun erfolgt der Aufruf der Methode {\texttt receive()}
-des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.
+weitere notwendige Handler ein (evtl. \texttt{Gui} und \texttt{ActionHandler}, s. u.). Nachfolgend werden wir nur die Funktionsweise der Klasse
+\texttt{DiscreteEngineTask} betrachten. Zentraler Teil ist die die Prioritätswarteschlange \texttt{messagequeue}, in der alle Ereignisse gespeichert werden.
+Soll die optionale graphische Benutzeroberfläche (Klasse \texttt{Gui}) nicht gestartet werden, so beginnt die Engine mit der Initialisierung aller
+selbständig agierenden Knoten und der anschliessenden Abarbeitung der \texttt{messagequeue} in einer Schleife. Dabei wird das erste Ereignis \texttt{message}
+der Warteschlange entnommen und die aktuelle Zeit auf \texttt{message.getArrivalTime()} gesetzt. Nun erfolgt der Aufruf der Methode \texttt{receiveMessage()}
+des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.\\
+
+\begin{picturenothere}{10}{5}{Beispiel einer Szenariodatei}{Abb:Szenario-Datei}
+  \put(2,1.5){\oval(10,4)}
+  \put(-1.5,0){\parbox[b]{15cm}{
+      \texttt{TopologyClass=BRITETopology\\
+        BRITESublayerFile=1000\_nodes.brite\\
+        BRITEBrokernetFile=100\_nodes.brite\\
+        BrokerClass=AdjustingEventBroker\\
+        PubSubClass=CongestionControlEventPubSub\\
+        RSSServerClass=QueueingRSSServer\\
+        RSSFeedClass=ColorEventFeed}
+      
+    }}
+\end{picturenothere}
+
+\begin{picturenothere}{1}{20}{\mbox{Topologien, Knoten und Feeds: UML-Klassendiagramme}}{Abb:UML:Topologien_und_Knoten}
+ \includegraphics[bb=130 0 544 504 ,scale=0.9]{topology_und_nodes}
+\end{picturenothere}
+
+\begin{picturenothere}{1}{21}{\mbox{Knoten: UML-Klassendiagramme}}{Abb:UML:Knoten}
+ \includegraphics[bb=145 0 544 504 ,scale=0.8]{nodes}
+\end{picturenothere}
+
+Abbildung \ref{Abb:UML:Topologien_und_Knoten} zeigt die Beziehung zwischen den Klassen \texttt{Topology} und \texttt{Node}. Eine Instanz der Klasse
+\texttt{Topology} muss bei der Erzeugung der Netzwerkstruktur die vom Anwender gewünschten Subklassen der Klasse \texttt{Node} berücksichtigen.
+Dies geschieht über eine Factory der Klasse \texttt{RPSFactory}. Auch RSSFeeds können unterschiedlichen Typs sein. Als Basisklasse dient
+\texttt{RSSFeed}. Die graphische Darstellung eines RSSFeeds erfolgt mittels der Methode \texttt{represent()} der Klasse \texttt{RSSFeedRepresentation}.
+Aus welchen Bausteinen ein Szenario bestehen soll, wird in einer Szenariodatei spezifiziert. Ein Beispiel einer Szenariodatei zeigt Abbildung
+\ref{Abb:Szenario-Datei}.\\
+
+\section{Publisher, Broker und Server}
+Abbildung \ref{Abb:UML:Knoten} zeigt die verschiedenen Knotenklassen und ihre Beziehungen zueinander. Hauptkomponenten der Simulationsumgebung
+sind die Klassen \texttt{PubSubNode}, \texttt{BrokerNode} und \texttt{RSSServerNode}. Sie repräsentieren die Einheiten Publisher/Subscriber bzw.
+Broker bzw. RSSServer. Diese Klassen sind abstrakt und stellen nur eine Grundfunktionalität (wie z. B. eine Differenzierung der Nachrichten 
+in \texttt{InternalMessage} und \texttt{Transfer\-Message} und eine eventuelle Weiterleitung von Nachrichten) und die wichtigsten Attribute zur Verfügung.
+Funktionalitäten, welche von anderen Klassen (wie z. B. \texttt{Engine} oder \texttt{Gui}) aus zugreifbar sein sollen, sind als Methoden in den
+Interfaces \texttt{PubSubType}, \texttt{RSSServerType} und \texttt{BrokerType} deklariert. Erst die spezielleren Klassen \texttt{PubSub} bzw.
+\texttt{Broker} können Nachrichten gezielt bearbeiten, übernehmen die Kommunikation mit anderen Knoten und richten die relevanten Timer ein
+(Klasse \texttt{AbstractTimer} mit Hilfe von \texttt{AbstractTimerFactory}, in den Diagrammen nicht dargestellt). Die Klassen \texttt{Event\-PubSub}
+und \texttt{AdjustingEventPubSub} können RSSFeeds verarbeiten, welche aus mehreren Einträgen (Events) bestehen. Ein RSS-Server produziert nur ganz
+allgemeine Instanzen der Klasse \texttt{RSSFeed} mittels der Klasse \texttt{RSSFeedFactory}. Über eine Realisierung des Interfaces
+\texttt{RSSEventFeedFactory} (hier nicht dargestellt) können allerdings spezielle Feeds der Klasse \texttt{EventFeed} erzeugt werden.
 
 %%% Local Variables: 
 %%% mode: latex
