@@ -55,7 +55,8 @@ in einem UML-Klassendiagramm (UML2). Es werden in der Darstellung
 nur die wichtigsten Methoden und Attribute aufgelistet. Eine vollständige Referenz findet sich in der generierten Quelltext-Dokumentation.
 Einige Beziehungen zu noch nicht aufgeführten Klassen werden in den nachfolgenden Grafiken veranschaulicht.\\
 
-Die Klasse \texttt{Simulation} richtet die gesamte Simulationsumgebung ein: Parameter werden eingelesen, eine Topologie mit allen dazu gehörigen Knoten wird
+Die Klasse \texttt{Simulation} enthält die \texttt{main()}-Methode und richtet
+die gesamte Simulationsumgebung ein: Parameter werden eingelesen, eine Topologie mit allen dazu gehörigen Knoten wird
 erzeugt und die Engine wird gestartet. Diese übernimmt nun die Kontrolle, setzt den Zeitzähler auf null und richtet die entsprechende Simulationstask und einige
 weitere notwendige Handler ein (evtl. \texttt{Gui} und \texttt{ActionHandler}, s. u.). Nachfolgend werden wir nur die Funktionsweise der Klasse
 \texttt{DiscreteEngineTask} betrachten. Zentraler Teil ist die die Prioritätswarteschlange \texttt{messagequeue}, in der alle Ereignisse gespeichert werden.
@@ -79,11 +80,11 @@ des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.\\
 \end{picturenothere}
 
 \begin{picturenothere}{1}{20}{\mbox{Topologien, Knoten und Feeds: UML-Klassendiagramme}}{Abb:UML:Topologien_und_Knoten}
- \includegraphics[bb=130 0 544 504 ,scale=0.9]{topology_und_nodes}
+  \includegraphics[bb=130 0 544 504 ,scale=0.9]{topology_und_nodes}
 \end{picturenothere}
 
-\begin{picturenothere}{1}{21}{\mbox{Knoten: UML-Klassendiagramme}}{Abb:UML:Knoten}
- \includegraphics[bb=145 0 544 504 ,scale=0.8]{nodes}
+\begin{picturenothere}{1}{21}{\mbox{Knoten und Feeds: UML-Klassendiagramme}}{Abb:UML:Knoten}
+  \includegraphics[bb=145 0 544 504 ,scale=0.8]{nodes}
 \end{picturenothere}
 
 Abbildung \ref{Abb:UML:Topologien_und_Knoten} zeigt die Beziehung zwischen den Klassen \texttt{Topology} und \texttt{Node}. Eine Instanz der Klasse
@@ -102,9 +103,90 @@ Funktionalitäten, welche von anderen Klassen (wie z. B. \texttt{Engine} oder \te
 Interfaces \texttt{PubSubType}, \texttt{RSSServerType} und \texttt{BrokerType} deklariert. Erst die spezielleren Klassen \texttt{PubSub} bzw.
 \texttt{Broker} können Nachrichten gezielt bearbeiten, übernehmen die Kommunikation mit anderen Knoten und richten die relevanten Timer ein
 (Klasse \texttt{AbstractTimer} mit Hilfe von \texttt{AbstractTimerFactory}, in den Diagrammen nicht dargestellt). Die Klassen \texttt{Event\-PubSub}
-und \texttt{AdjustingEventPubSub} können RSSFeeds verarbeiten, welche aus mehreren Einträgen (Events) bestehen. Ein RSS-Server produziert nur ganz
+und \texttt{AdjustingEventPubSub} können RSSFeeds verarbeiten, welche aus mehreren Einträgen (Events) bestehen.\\
+
+Grundsätzlich kann ein Knoten Timer der Klasse \texttt{AbstractTimer} erzeugen. Bei Ablauf des Timers sendet dieser an den Erzeugerknoten eine Nachricht
+vom Typ \texttt{InternalMessage}, um ihn vom Ablauf der gesetzten Zeit zu unterrichten.\\
+
+Ein RSS-Server produziert dann einen neuen Feed, wenn er eine Nachricht des Typs \texttt{GenerateFeedMessage} erhält. Nachrichten dieses Typs werden von einem
+Timer innerhalb einer Zeitspanne erzeugt, welche durch die Attribute \texttt{minUpIntv} und \texttt{maxUpIntv} der Klasse
+\texttt{SimParameters} definiert werden können. Ein RSSServer generiert nur ganz
 allgemeine Instanzen der Klasse \texttt{RSSFeed} mittels der Klasse \texttt{RSSFeedFactory}. Über eine Realisierung des Interfaces
-\texttt{RSSEventFeedFactory} (hier nicht dargestellt) können allerdings spezielle Feeds der Klasse \texttt{EventFeed} erzeugt werden.
+\texttt{RSSEventFeedFactory} (hier nicht dargestellt) können allerdings spezielle Feeds der Klasse \texttt{EventFeed} generiert werden. Wird mit der Methode
+\texttt{newFeed()} eine Event-Feed generiert, so wird genau ein neues Event erzeugt, welches in den bisherigen Feed Eingang findet. Das älteste Event wird dabei entfernt.\\
+
+Mit \texttt{requestFeed()} erfragt ein Subscriber den aktuellen Feed eines RSS-Servers. Dabei wird eine Nachricht des Typs \texttt{RSSFeedRequest} an den RSS-Server schickt.
+Wird diese von einem \texttt{QueueingRSSServer} nicht verworfen, so antwortet dieser nach Erhalt einer von ihm selbst erzeugten \texttt{DispatchQueueMessage} mit einem
+RSSFeed der Klasse \texttt{RSSFeedMessage}. Der empfangende Subscriber (Publisher) erzeugt einen neuen RSS-Feed mit ausschließlich den für ihn neuen Events und sendet diesen an den
+ihm zugewiesenenen Broker. Dieser speichert den Feed in der Variablen \texttt{feed}, extrahiert seinerseits die neu hinzugekommenen Events und leitet diese als neuen Feed an
+alle mit ihm verbundenen Subscriber und Broker weiter.
+
+\section{Parameter}
+Es gibt eine Vielzahl von Parametern, welche in einer Konfigurationsdatei gesetzt werden können und das Verhalten der Simulation steuern.
+Eine nähere Beschreibung der einzelnen Parameter findet sich in der generierten Quellcode-Beschreibung. Abbildung \ref{Abb:Konfigurationsdatei}
+zeigt eine Auflistung der Parameter mit Beispielwerten.
+
+\begin{picturenothere}{10}{17}{Beispiel einer Parameter-Konfigurationsdatei}{Abb:Konfigurationsdatei}
+  \put(2.2,8.6){\oval(15,18.4)}
+  \put(-4.5,0){\parbox[b]{15cm}{
+      \texttt{actionFile=actions.al\\
+        engineTimerPeriod=5\\
+        gnuplotFileAvgMsgDelayRatio=avgMsgDelayRatio.gnuplotdata\\
+        gnuplotFileAvgUptodateRatio=avgUptodateRatio.gnuplotdata\\
+        gnuplotFileCoeffVarCPP=coeffVarCPP.gnuplotdata\\
+        gnuplotFileMarkers=markers.gnuplot\\
+        gnuplotFileMeanValueCPP=meanValueCPP.gnuplotdata\\
+        gnuplotFileQueueSize=queue.gnuplot\\
+        gnuplotFileRelReOmRatio=relReOmRatio.gnuplotdata\\
+        gnuplotFileStdDevCPP=stdDevCPP.gnuplotdata\\
+        gnuplotFileTotalTemporaryRequests=totalTemporaryRequests.gnuplotdata\\
+        gnuplotTimeStepSecs=5\\
+        gui=false\\
+        informBrokersTimeout=2000\\
+        informSubscribersTimeout=2000\\
+        isDiscreteSimulation=true\\
+        maxFeedEvents=5\\
+        maxPollingPeriod=910800\\
+        maxSubscriberEvents=10\\
+        maxUpIntv=30\\
+        minUpIntv=5\\
+        pingTimeoutFactor=2\\
+        pingTimer=8000\\
+        preferredPollingPeriod=1\\
+        processingTimeFeedRequest=350\\
+        processingTimeUnrepliedRequest=43\\
+        rssFeedMsgRepresent=true\\
+        rssFeedMsgRT=70\\
+        rssFeedRequestMsgRT=50\\
+        saveProperties=false\\
+        scenarioFile=BRITEQuServAdjColEvBrkCongContPubSub.sim\\
+        seedValue=-7847005838091513385\\
+        serverQueueSize=40\\
+        showSizeBrokerMsg=false\\
+        spreadDivisor=6\\
+        subnetParamMsgRT=50\\
+        ttl=5
+      }
+    }}
+\end{picturenothere}
+
+\subsection{Aktionsliste}
+Mit dem Parameter \texttt{actionFile} kann eine Datei definiert werden, in der zeitabhängige Aktionen festgesetzt werden können. In der ersten Spalte
+wird die Zeit in Sekunden angegeben, zu der eine Aktion stattfinden soll. In der zweiten Spalte findet sich die Aktion selbst.
+
+\begin{picturenothere}{10}{5}{Beispiel einer Aktionsliste}{Abb:Aktionsliste}
+  \put(2,1.5){\oval(10,4)}
+  \put(-1.5,0){\parbox[b]{15cm}{
+      \texttt{0 : startGnuplotRecording\\
+        1 : setServiceTimeFactor(50)\\
+        1 : subscribersJoin(1000)\\
+        3000 : startChurn(80,900)\\
+        5000 : stopChurn\\
+        6001 : stopGnuplotRecording\\
+        6002 : exitSimulation
+      }
+    }}
+\end{picturenothere}
 
 %%% Local Variables: 
 %%% mode: latex
