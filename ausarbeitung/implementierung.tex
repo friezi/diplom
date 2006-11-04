@@ -13,17 +13,20 @@ Daher steht der gesamte Code unter der GPL. Im Zuge der Entwicklung wurden aber 
 hier gestellten Anforderungen zu genügen.\\
 
 Die Simulationsumgebung wurde in der Programmiersprache Java implementiert. Die zu testenden Komponenten in der Implementierung wurden dabei
-so konzipiert, dass sie beliebig erweitert und mit einander kombiniert werden können.
+so konzipiert, dass sie beliebig erweitert und mit einander kombiniert werden können.\\
+
+Bei den folgenden UML-Klassendiagrammen haben wir uns auf die Darstellung der wichtigsten Klassen beschränkt. Beziehungen einer Klasse zu anderen Klassen
+können auf mehrere Diagramme verteilt sein.
 
 \section{Simulationsumgebung}
 
-Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsumgebung vor. Wir beschränken uns dabei auf die zum Verständnis für uns
-am wichtigsten erscheinenden Komponenten. Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
+Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsumgebung vor.
+Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
 agierenden Einheiten vermittelt, ist die sogenannte ``Engine'', repräsentiert durch die Klasse \texttt{Engine}. Selbständig agierende Einheiten können
 Aktionen ausführen oder Ereignisse hervorrufen. Sie repräsentieren beispielsweise Knoten in einem Netzwerk und werden durch die Klasse \texttt{Node}
 implementiert. Komponenten der Klasse \texttt{Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten, welche mit Hilfe der Klasse
 \texttt{Message} umgesetzt wurden, zuschicken. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
-\texttt{send()} der Klasse \texttt{Message} abgeschickt. Jede Nachricht landet in einer Warteschlange der Klasse \texttt{Engine}. Die Engine sorgt dafür,
+\texttt{send()} der Klasse \texttt{Message} abgeschickt. Alle Nachrichten werden in einer Warteschlange der Klasse \texttt{Engine} gesammelt. Die Engine sorgt dafür,
 dass Knoten die ihnen zugedachten Nachrichten erhalten, indem sie die einzelnen Nachrichten der Warteschlange entnimmt und die Methode \texttt{receive()} des
 adressierten Knotens aufruft. Dieser kann die Nachricht nun verarbeiten. Den Nachrichten werden Laufzeiten zugewiesen, so dass eine
 Nachricht erst nach Ablauf dieser Laufzeit den Adressaten erreicht.\\
@@ -44,7 +47,8 @@ zeitverzögerte Ereignisse oder vom Typ der Subklasse \texttt{Transfer\-Message} 
 
 Um das Systemverhalten auch optisch mitverfolgen zu können, kann optional eine graphische Benutzeroberfläche gestartet werden, in der die verschiedenen Ebenen
 (physisches Netzwerk, Overlay-Netzwerk) des gesamten Netzwerks und der Kommunikationsfluss dargestellt sind. Zusätzlich können erhaltene
-RSS-Feeds sowie statistische Werte des Gesamtsystems und der einzelnen Knoten abgefragt werden.\\
+RSS-Feeds sowie statistische Werte des Gesamtsystems und der einzelnen Knoten abgefragt werden. Auch kann der Benutzer das System interaktiv beeinflussen. So ist
+es beispielsweise möglich Knoten abzumelden, Knoten zu blockieren oder Parameter zu ändern.\\
 
 \begin{picturenothere}{1}{17}{\mbox{Simulationsumgebung: UML-Klassendiagramm}}{Abb:UML:Simulationsumgebung}
  \includegraphics[bb=200 0 544 504 ,scale=0.9]{simulationsumgebung}
@@ -75,10 +79,17 @@ des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.\\
 
 Abbildung \ref{Abb:UML:Topologien_und_Knoten} zeigt die Beziehung zwischen den Klassen \texttt{Topology} und \texttt{Node}. Eine Instanz der Klasse
 \texttt{Topology} muss bei der Erzeugung der Netzwerkstruktur die vom Anwender gewünschten Subklassen der Klasse \texttt{Node} berücksichtigen.
-Dies geschieht über eine Factory der Klasse \texttt{RPSFactory}. Auch RSSFeeds können unterschiedlichen Typs sein. Als Basisklasse dient
+Dies geschieht über eine Factory der Klasse \texttt{RPSFactory}. Die spezielle Klasse \texttt{BRITETopology} (zu BRITE siehe Kapitel \ref{c:experimente})
+muss zudem noch die kürzesten Wege zwischen allen Knoten für die Übermittlung von Nachrichten auf Sublayer-Ebene berechnen. Dies geschieht mittels des
+Floyd-Warshal-Algorithmus, welcher in der Methode \texttt{shortestPath()} der Klasse \texttt{Graph} implementiert ist. Anschließend kann eine Routing-Tabelle
+mit der Methode \texttt{generateRoutingTable()} der Klasse \texttt{Engine} generiert werden. Auf der Ebene des Overlay-Netzwerks muss ein minimaler
+Spannbaum zwischen den Brokern konstruiert werden. Dies wird ebenfalls von der Klasse \texttt{BRITETopology} durch Aufruf der Methode \texttt{Graph.spanningTree()}
+vorgenommen.\\
+
+Auch RSSFeeds können unterschiedlichen Typs sein. Als Basisklasse dient
 \texttt{RSSFeed}. Die graphische Darstellung eines RSSFeeds erfolgt mittels der Methode \texttt{represent()} der Klasse \texttt{RSSFeedRepresentation}.
 
-\section{Publisher, Broker und Server}
+\section{Publisher, Broker, Server und Feeds}
 Abbildung \ref{Abb:UML:Knoten} zeigt die verschiedenen Knotenklassen und ihre Beziehungen zueinander. Hauptkomponenten der Simulationsumgebung
 sind die Klassen \texttt{PubSubNode}, \texttt{BrokerNode} und \texttt{RSSServerNode}. Sie repräsentieren die Einheiten Publisher/Subscriber bzw.
 Broker bzw. RSSServer. Diese Klassen sind abstrakt und stellen nur eine Grundfunktionalität (wie z. B. eine Differenzierung der Nachrichten 
@@ -87,12 +98,50 @@ Funktionalitäten, welche von anderen Klassen (wie z. B. \texttt{Engine} oder \te
 Interfaces \texttt{PubSubType}, \texttt{RSSServerType} und \texttt{BrokerType} deklariert. Erst die spezielleren Klassen \texttt{PubSub} bzw.
 \texttt{Broker} können Nachrichten gezielt bearbeiten, übernehmen die Kommunikation mit anderen Knoten und richten die relevanten Timer ein
 (Klasse \texttt{AbstractTimer} mit Hilfe von \texttt{AbstractTimerFactory}, in den Diagrammen nicht dargestellt). Die Klassen \texttt{Event\-PubSub}
-und \texttt{AdjustingEventPubSub} können RSSFeeds verarbeiten, welche aus mehreren Einträgen (Events) bestehen.\\
+und \texttt{AdjustingEventBroker} können RSSFeeds verarbeiten, welche aus mehreren Einträgen (Events) bestehen.\\
 
 Grundsätzlich kann ein Knoten Timer der Klasse \texttt{AbstractTimer} erzeugen. Bei Ablauf des Timers sendet dieser an den Erzeugerknoten eine Nachricht
-vom Typ \texttt{InternalMessage}, um ihn vom Ablauf der gesetzten Zeit zu unterrichten.\\
+der Basisklasse \texttt{InternalMessage}, um ihn vom Ablauf der gesetzten Zeit zu unterrichten.\\
 
-\begin{picturenothere}{10}{5}{Beispiel einer Szenariodatei}{Abb:Szenario-Datei}
+Obwohl RSSFeeds in der Realität per TCP als Datenstrom übermittelt werden, werden diese in der Simulation der Einfachheit halber als atomare Nachrichten verschickt.
+Der Erhalt eines Feeds entspricht dann der Ankunft des ersten Datenbytes des Datenstroms.\\
+
+Ein RSS-Server produziert dann einen neuen Feed, wenn er eine Nachricht des Typs \texttt{GenerateFeedMessage} erhält. Nachrichten dieses Typs werden von einem
+Timer innerhalb einer Zeitspanne erzeugt, welche durch die Attribute \texttt{minUpIntv} und \texttt{maxUpIntv} der Klasse
+\texttt{SimParameters} definiert werden kann. Ein RSSServer generiert nur ganz
+allgemeine Instanzen der Klasse \texttt{RSSFeed} mittels der Klasse \texttt{RSSFeedFactory}. Über eine Realisierung des Interfaces
+\texttt{RSSEventFeedFactory} (hier nicht dargestellt) können allerdings spezielle Feeds der Klasse \texttt{EventFeed} generiert werden. Wird mit der Methode
+\texttt{newFeed()} ein Event-Feed generiert, so wird genau ein neues Event erzeugt, welches in den bisherigen Feed Eingang findet. Wird dabei der Wert des vom Benutzer
+wählbaren Parameters $maxFeedEvents$ überschritten, so wird das älteste Event entfernt.\\
+
+Mit \texttt{requestFeed()} erfragt ein Subscriber den aktuellen Feed eines RSS-Servers. Dabei wird eine Nachricht des Typs \texttt{RSSFeedRequest} an den RSS-Server schickt.
+Wird diese von einem \texttt{QueueingRSSServer} nicht verworfen, so antwortet dieser nach Erhalt einer von ihm selbst erzeugten \texttt{DispatchQueueMessage} mit einem
+RSSFeed der Klasse \texttt{RSSFeedMessage} (eine \texttt{DispatchQueueMessage} dient zur Benachrichtigung über das Ende der Bearbeitung einer Anfrage). Wieviel Zeit die
+Bearbeitung einer Anfrage benötigt, bestimmt der Parameter $processingTimeFeedRequest$ (siehe Abschnitt \ref{Parameter}) in Zusammenhang mit dem Faktor $serviceTimeFactor$, mit
+dessen Hilfe verschiedene Belastungsgrade bzw. die Leistungsfähigkeit eines Servers simuliert werden können. $processingTimeUnrepliedRequest$ bestimmt die Bearbeitungszeit für
+abgewiesene Anfragen.\\
+
+Der empfangende Subscriber (Publisher) eines Feeds erzeugt einen neuen RSS-Feed ausschließlich mit den für ihn neuen Events und sendet diesen an den
+ihm zugewiesenenen Broker. Dieser speichert den Feed in der Variablen \texttt{feed}, extrahiert seinerseits die neu hinzugekommenen Events und leitet diese als neuen Feed an
+alle mit ihm verbundenen Subscriber und Broker weiter. Die Methoden zur Abstimmung und Staukontrolle entsprechen weitestgehend den in Kapitel \ref{adapt_informationsverteilung}
+vorgestellten Methoden.
+
+\section{Aktionen und Statistik}
+\begin{picturenothere}{1}{11}{\mbox{Handler und Statistik: UML-Klassendiagramme}}{Abb:UML:KnotenHandler_und_Statistik}
+  \includegraphics[bb=145 0 544 504 ,scale=0.9]{Handler}
+\end{picturenothere}
+Während der Simulation können vom Benutzer definierte Aktionen eintreten. Diese werden von der Klasse \texttt{ActionHandler} verwaltet. Dazu gehört das Einlesen von
+Aktionsdeklarationen aus einer Datei (s.u.) und das Auslösen von Aktionen. Gegebenenfalls werden weitere Handler erzeugt und benachrichtigt.
+\texttt{ActionHandler} und alle weiteren Handler-Klassen sind vom Typ \texttt{Node}, so dass das Auslösen
+bestimmter Aktionen durch Nachrichten (Klassse \texttt{InternalMessage}) geschehen kann. Eine Instanz der Klasse \texttt{ActionHandler} wird von der
+Klasse \texttt{Engine} aus im Falle einer Diskreten Ereignissimulation gestartet. In der Klasse \texttt{RPSStatistics} werden statistische Werte des Gesamtsystems gesammelt.
+Falls eine entsprechende Aktion definiert wird, werden diese Werte in Form von Gnuplot-Dateien \cite{GnuplotHomepage} abgespeichert. Die Speicherung übernehmen Subklassen der Klasse
+\texttt{AbstractGnuplotDataWriter}. Deren Aktivierung übernimmt die Klasse \texttt{ActionHandler}. Abbildung \ref{Abb:UML:KnotenHandler_und_Statistik} veranschaulicht
+die wesentlichen Beziehungen der beteiligten Klassen. Um Statistiken des Gesamtsystems ermitteln zu können, führt jeder PubSub-Knoten bzw. der RSS-Server über eine individuelle
+Statistik. Dazu dienen die Klassen \texttt{PubSubNodeStatistics} bzw. \texttt{RSSServerNodeStatistics}. Bei Auffrischung der Einzelstatistiken wird ebenfalls die Gesamtstatistik
+mittels Callback-Funktionen angepasst.  
+
+\begin{picturehere}{10}{5}{Beispiel einer Szenariodatei}{Abb:Szenario-Datei}
   \put(2,1.5){\oval(10,4)}
   \put(-1.5,0){\parbox[b]{15cm}{
       \texttt{TopologyClass=BRITETopology\\
@@ -104,27 +153,64 @@ vom Typ \texttt{InternalMessage}, um ihn vom Ablauf der gesetzten Zeit zu unterr
         RSSFeedClass=ColorEventFeed}
       
     }}
-\end{picturenothere}
+\end{picturehere}
 
-Ein RSS-Server produziert dann einen neuen Feed, wenn er eine Nachricht des Typs \texttt{GenerateFeedMessage} erhält. Nachrichten dieses Typs werden von einem
-Timer innerhalb einer Zeitspanne erzeugt, welche durch die Attribute \texttt{minUpIntv} und \texttt{maxUpIntv} der Klasse
-\texttt{SimParameters} definiert werden kann. Ein RSSServer generiert nur ganz
-allgemeine Instanzen der Klasse \texttt{RSSFeed} mittels der Klasse \texttt{RSSFeedFactory}. Über eine Realisierung des Interfaces
-\texttt{RSSEventFeedFactory} (hier nicht dargestellt) können allerdings spezielle Feeds der Klasse \texttt{EventFeed} generiert werden. Wird mit der Methode
-\texttt{newFeed()} ein Event-Feed generiert, so wird genau ein neues Event erzeugt, welches in den bisherigen Feed Eingang findet. Das älteste Event wird dabei entfernt.\\
-
-Mit \texttt{requestFeed()} erfragt ein Subscriber den aktuellen Feed eines RSS-Servers. Dabei wird eine Nachricht des Typs \texttt{RSSFeedRequest} an den RSS-Server schickt.
-Wird diese von einem \texttt{QueueingRSSServer} nicht verworfen, so antwortet dieser nach Erhalt einer von ihm selbst erzeugten \texttt{DispatchQueueMessage} mit einem
-RSSFeed der Klasse \texttt{RSSFeedMessage} (eine \texttt{DispatchQueueMessage} dient zur Benachrichtigung über das Ende der Bearbeitung einer Anfrage).
-Der empfangende Subscriber (Publisher) erzeugt einen neuen RSS-Feed mit ausschließlich den für ihnneuen Events und sendet diesen an den
-ihm zugewiesenenen Broker. Dieser speichert den Feed in der Variablen \texttt{feed}, extrahiert seinerseits die neu hinzugekommenen Events und leitet diese als neuen Feed an
-alle mit ihm verbundenen Subscriber und Broker weiter. Die Methoden zur Abstimmung und Staukontrolle entsprechen den in Kapitel \ref{adapt_informationsverteilung}
-vorgestellten Methoden.
+\begin{picturehere}{10}{5}{Beispiel einer Aktionsliste}{Abb:Aktionsliste}
+  \put(2,1.5){\oval(10,4)}
+  \put(-1.5,0){\parbox[b]{15cm}{
+      \texttt{0 : startGnuplotRecording\\
+        1 : setServiceTimeFactor(50)\\
+        1 : subscribersJoin(1000)\\
+        3000 : startChurn(80,900)\\
+        5000 : stopChurn\\
+        6001 : stopGnuplotRecording\\
+        6002 : exitSimulation
+      }
+    }}
+\end{picturehere}
 
 \section{Parameter}
+\label{Parameter}
 Es gibt eine Vielzahl von Parametern, welche in einer Konfigurationsdatei gesetzt werden können und das Verhalten der Simulation steuern.
-Eine nähere Beschreibung der einzelnen Parameter findet sich in der generierten Quellcode-Beschreibung. Abbildung \ref{Abb:Konfigurationsdatei}
+Aufgrund der Fülle der Parameter verweisen wir auf die generierte Quellcode-Beschreibung, in der sich eine nähere Beschreibung der einzelnen Parameter findet.
+Abbildung \ref{Abb:Konfigurationsdatei}
 zeigt eine Auflistung der Parameter mit Beispielwerten. Zusätzlich können zwei weitere Dateien angegeben werden, in denen Szenario und Aktionen definiert werden.
+
+\subsection{Szenariodefinition}
+Der Parameter \texttt{scenarioFile} bestimmt eine Datei, in der der Aufbau des Szenarios spezifiziert wird. Es werden die verwendete Topologie
+und die Knotenklassen für die Einheiten Publisher/Subscriber, Broker und RSS-Server angegeben. Im Falle einer BRITE-Topologie (siehe Kapitel
+\ref{c:experimente}) müssen Dateien für das Sublayer und das Broker-Netzwerk angegeben werden. Ein Beispiel einer Szenariodatei zeigt Abbildung
+\ref{Abb:Szenario-Datei}.
+
+\subsection{Aktionsliste}
+Mit dem Parameter \texttt{actionFile} kann eine Datei definiert werden, in der zeitabhängige Aktionen spezifiziert werden können. In der ersten Spalte
+wird die Zeit in Sekunden angegeben, zu der eine Aktion stattfinden soll. In der zweiten Spalte findet sich die Aktion selbst. Abbildung \ref{Abb:Aktionsliste}
+zeigt exemplarisch den Aufbau einer Aktionsliste. Tabelle \ref{Tab:Aktionen} gibt Aufschluss über die möglichen Aktionen und ihrer Bedeutung.
+
+\begin{table*}[h]
+  \begin{center}
+    \begin{tabular}{|lp{7cm}|}
+      \hline
+      Aktion & Beschreibung\\
+      \hline\hline
+      exitSimulation & Ausstieg aus dem Programm\\
+      startGnuplotRecording & startet das Mitschneiden von Werten\\
+      stopGnuplotRecording & stoppt das Mitschneiden\\
+      setServiceTimeFactor(float factor) & setze $serviceTimeFactor$ auf $factor$\\
+      startChurn(int percent, long timerange) & Beginn der Churn-Phase: $percent$ Prozent der Subscriber werden innerhalb der Zeitspanne
+      $timerange$ (in Sekunden) ausgetauscht\\
+      stopChurn & stoppt die Churn-Phase\\
+      blockSubscribers(int percent) & blockiert $percent$ Prozent der Subscriber\\
+      unblockSubscribers & hebt Blockierung aller Subscriber auf\\
+      subscribersLeave(int percent) & $percent$ Prozent Subscriber verlassen das System\\
+      subscribersRejoin & Subscriber, die zuvor das Netzwerk verlassen haben, treten ihm wieder bei\\
+      subscribersJoin(long timerange) & Beginn der Join-Phase über eine Zeitraum von $timerange$ Sekunden: Subscriber treten dem Netzwerk bei\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Aktionen}
+  \label{Tab:Aktionen}
+\end{table*}
 
 \begin{picturenothere}{10}{17}{Beispiel einer Parameter-Konfigurationsdatei}{Abb:Konfigurationsdatei}
   \put(2.2,8.6){\oval(15,18.4)}
@@ -170,29 +256,8 @@ zeigt eine Auflistung der Parameter mit Beispielwerten. Zusätzlich können zwei w
     }}
 \end{picturenothere}
 
-\subsection{Szenariodatei}
-Der Parameter \texttt{scenarioFile} bestimmt eine Datei, in der der Aufbau des Szenarios spezifiziert wird. Es werden die verwendete Topologie
-und die Knotenklassen für die Einheiten Publisher/Subscriber, Broker und RSS-Server angegeben. Im Falle einer BRITE-Topologie (siehe Kapitel
-\ref{c:experimente}) müssen Dateien für das Sublayer und das Broker-Netzwerk angegeben werden. Ein Beispiel einer Szenariodatei zeigt Abbildung
-\ref{Abb:Szenario-Datei}.
 
-\subsection{Aktionsliste}
-Mit dem Parameter \texttt{actionFile} kann eine Datei definiert werden, in der zeitabhängige Aktionen spezifiziert werden können. In der ersten Spalte
-wird die Zeit in Sekunden angegeben, zu der eine Aktion stattfinden soll. In der zweiten Spalte findet sich die Aktion selbst.
 
-\begin{picturenothere}{10}{5}{Beispiel einer Aktionsliste}{Abb:Aktionsliste}
-  \put(2,1.5){\oval(10,4)}
-  \put(-1.5,0){\parbox[b]{15cm}{
-      \texttt{0 : startGnuplotRecording\\
-        1 : setServiceTimeFactor(50)\\
-        1 : subscribersJoin(1000)\\
-        3000 : startChurn(80,900)\\
-        5000 : stopChurn\\
-        6001 : stopGnuplotRecording\\
-        6002 : exitSimulation
-      }
-    }}
-\end{picturenothere}
 
 %%% Local Variables: 
 %%% mode: latex
