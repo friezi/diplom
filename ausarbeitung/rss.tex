@@ -1,5 +1,137 @@
 \section{Really Simple Syndication (RSS)}
 \label{ch_rss}
-\todo{folgt}
+RSS ist eine Technik, um Kurznachrichten oder andere Inhalte des WorldWideWeb an Nutzer, die sich dafür interessieren, zu verbreiten. Anbieter können
+die von ihnen angebotenen Informationen oder auf sie bezogene Kurzbeschreibungen in einer Datei (RSS-Feed) zusammenfassen und über einen Link
+auf einer Webseite zur Verfügung stellen. Nutzer können RSS-Feeds abonnieren und benötigen dafür ein Programm (RSS-Reader), welches die abonnierten
+RSS-Feeds automatisch über das Netz läd und anzeigt. Jeder RSS-Feed ist dabei einem Thema (Channel bzw. Kanal) zugeordnet. Häufig werden RSS-Feeds dazu benutzt,
+Nachrichten-Schlagzeilen zu sammeln und bereitzustellen. Es können aber auch aktuelle Blog-Einträge oder Video- bzw. Audiodaten (als Podcasts) zur
+Verfügung gestellt werden.\\
+
+RSS zählt zwar zu den Pub/Sub-Systemen jedoch nicht zu den verteilten push-basierten, wie sie in Abschnitt \ref{publishsubscribe} beschrieben wurden,
+denn es folgt dem klassischen Client/Server-Ansatz. Es handelt sich um zentralisiertes Polling, Message-Broker sind hierbei nicht vorgesehen.\\
+
+Die zugrunde liegende Beschreibungssprache der RSS-Feeds ist XML. Ursprünglich bediente man sich dabei
+der RDF-Syntax. RDF steht für ``Resource Description Framework'' und bezeichnet eine formale Sprache, mit der Metadaten definiert werden, um Webinhalte
+darzustellen (siehe \cite{RDF}). Für RSS gibt es verschiedene Übersetzungen: ``Rich Site Summary'', ``RDF Site Summary'' und ab RSS der Version 2.0
+``Really Simple Syndication''. RSS 2.0 macht keinen Gebrauch mehr von RDF.
+
+\paragraph{Elemente eines RSS-Feeds:}
+Ein RSS-Feed besteht aus einigen erforderlichen und optionalen Elementen (siehe \cite{RSSSpecWi2004}), die hier in tabellarischer Form aufgelistet werden
+sollen (Tabellen \ref{Tab:erf_Elemente_RSS} und \ref{Tab:opt_Elemente_RSS}):
+\begin{table*}[h]
+  \begin{center}
+    \begin{tabular}{|ll|}
+      \hline
+      Element & Beschreibung\\
+      \hline\hline
+      title & Name des Kanals \\
+      link & URL der Webseite, zu der dieser Kanal gehört\\
+      description & textuelle Beschreibung des Kanals\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{erforderliche Elemente eines RSS-Feeds}
+  \label{Tab:erf_Elemente_RSS}
+\end{table*}
+
+\begin{table*}[h]
+  \begin{center}
+    \begin{tabular}{|lp{11cm}|}
+      \hline
+      Element & Beschreibung\\
+      \hline\hline
+       language & Sprache, in der der Kanal verfasst wurde\\
+       copyright & Copyright-Notiz\\
+       managingEditor & email-Adresse des für den Inhalt verantwortlichen Herausgebers\\
+       webMaster & email-Adresse der für den Kanal technisch verantwortlichen Person\\
+       pubDate & Veröffentlichungszeitpunkt des Inhalts des Kanals\\
+       lastBuildDate & Zeitpunkt, zu dem sich der Inhalt des Kanals das letzte Mal verändert hat\\
+       category & spezifiziert eine oder mehrere Kategorien, zu der der Kanal gehört\\
+       generator & bezeichnet Programm, welches den Kanal generiert hat\\
+       docs & URL, verweist auf Dokumentation des verwendeteten Formats\\
+       cloud & Adresse, bei der sich Programme registrieren können, um über Aktualisierungen des Kanals unterrichtet zu werden (PubSub)\\
+       ttl & time to live: gibt Auskunft darüber, wie lange Feed aktuell bleibt\\
+       image & Adresse einer Bilddatei\\
+       rating & Bewertung für diesen Kanal (PICS)\\
+       textInput & Spezifiziert Texteingabe-Box\\
+       skipHours & Uhrzeiten, zu denen der Kanal nicht abgefragt werden soll\\
+       skipDays & Tage, zu denen der Kanal nicht abgefragt werden soll\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{optionale Elemente eines RSS-Feeds}
+  \label{Tab:opt_Elemente_RSS}
+\end{table*}
+
+Jeder Eintrag eines RSS-Feeds wird über das Element \texttt{item} gekennzeichnet. Einträge in einem Feed sind optional. Ein RSS-Feed kann beliebig viele Einträge besitzen.
+Das Element \texttt{item} besitzt ebenfalls eine Reihe von optionalen Elementen, welche in Tabelle \ref{Tab:item_Elemente_RSS} zusammengetragen sind.
+
+\begin{table*}[h]
+  \begin{center}
+    \begin{tabular}{|ll|}
+      \hline
+      Element & Beschreibung\\
+      \hline\hline
+      title & Titel des Eintrags \\
+      link & URL des Eintrags\\
+      description & textuelle Beschreibung des Eintrags\\
+      author & email-Adresse des Autors des Eintrags\\
+      category & kategorielle Zuordnung des Eintrags\\
+      comments & URL für Kommentare bzgl. des Eintrags\\
+      enclosure & Beschreibt ein zugehöriges Media-Objekt\\
+      guid & eindeutige Zeichenkette zur Identifizierung des Eintrags\\
+      pubDate & zeigt an, wann der Eintrag erstellt wurde\\
+      source & Ursprungskanal, zu dem der Eintrag gehört\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Elemente eines \texttt{item}-Elements eines RSS-Feeds}
+  \label{Tab:item_Elemente_RSS}
+\end{table*}
+
+Abbildung \ref{Abb:beisp_RSS-Feed} zeigt ein Beispiel eines RSS-Feeds.
+
+\begin{figure*}
+  \lstset{language=XML}
+  \begin{lstlisting}
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+        <channel>
+                <title>Front page news</title>
+                <link>http://www.my-web-page.org/</link>
+                <description>Some Infos</description>
+                <copyright>Copyright by me</copyright>
+                <lastBuildDate>Wed, 01 Nov 2006 20:19:08 GMT
+                </lastBuildDate>
+                <generator>RSS generator</generator>
+                <item>
+                        <title>new Songs produced</title>
+                        <description>nex-generation Songs
+                        </description>
+                        <author>justme@my-web-page.org</author>
+                        <pubDate>Wed, 01 Nov 2006 20:19:08 GMT
+                        </pubDate>
+                </item>
+                <item>
+                        <title>new Videos produced</title>
+                        <description>nex-generation Videos
+                        </description>
+                        <author>justme@my-web-page.org</author>
+                        <pubDate>Wed, 01 Nov 2006 20:12:34 GMT
+                        </pubDate>
+                </item>
+        </channel>
+
+</rss>
+  \end{lstlisting}
+  \caption{Beispiel eines RSS-Feeds}
+  \label{Abb:beisp_RSS-Feed}
+\end{figure*}
+
 %\subsection{Optionale Parameter}
 \label{op_rss}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

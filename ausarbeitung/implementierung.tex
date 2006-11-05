@@ -81,7 +81,7 @@ Abbildung \ref{Abb:UML:Topologien_und_Knoten} zeigt die Beziehung zwischen den K
 \texttt{Topology} muss bei der Erzeugung der Netzwerkstruktur die vom Anwender gewünschten Subklassen der Klasse \texttt{Node} berücksichtigen.
 Dies geschieht über eine Factory der Klasse \texttt{RPSFactory}. Die spezielle Klasse \texttt{BRITETopology} (zu BRITE siehe Kapitel \ref{c:experimente})
 muss zudem noch die kürzesten Wege zwischen allen Knoten für die Übermittlung von Nachrichten auf Sublayer-Ebene berechnen. Dies geschieht mittels des
-Floyd-Warshal-Algorithmus, welcher in der Methode \texttt{shortestPath()} der Klasse \texttt{Graph} implementiert ist. Anschließend kann eine Routing-Tabelle
+Floyd-Warshall-Algorithmus (siehe \cite{Algorithmen}), welcher in der Methode \texttt{shortestPath()} der Klasse \texttt{Graph} implementiert ist. Anschließend kann eine Routing-Tabelle
 mit der Methode \texttt{generateRoutingTable()} der Klasse \texttt{Engine} generiert werden. Auf der Ebene des Overlay-Netzwerks muss ein minimaler
 Spannbaum zwischen den Brokern konstruiert werden. Dies wird ebenfalls von der Klasse \texttt{BRITETopology} durch Aufruf der Methode \texttt{Graph.spanningTree()}
 vorgenommen.\\
