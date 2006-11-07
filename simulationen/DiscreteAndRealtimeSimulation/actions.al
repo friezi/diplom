@@ -1,5 +1,5 @@
 0  : startGnuplotRecording
-1  : subscribersJoin(2000)
+1  : subscribersJoin(500)
 1  : setServiceTimeFactor(1)
 #100 : startChurn(100,50)
 #1000   : setServiceTimeFactor(0.2)
@@ -11,5 +11,5 @@
 #5000	: setServiceTimeFactor(1.2)
 #5000	: stopChurn
 6001 : stopGnuplotRecording
-#6002 : exitSimulation
+6002 : exitSimulation
 
