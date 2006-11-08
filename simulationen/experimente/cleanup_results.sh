@@ -14,6 +14,7 @@ do
 	rm -f *.bak
 	rm -f *.log
 	rm -f *.tgz
+	rm -f *.log
 	popd
 done
 
