@@ -64,7 +64,11 @@ account = '1und1'
 subject = '\'DiscreteAndRealtimeSimulation: sequence-test finished!\''
 errorsubject = '\'DiscreteAndRealtimeSimulation: ERROR occured!\''
 errorfile = 'error.log'
+errorfilestring = ""
 mailfile = 'mailfile'
+
+if mail == 'true':
+    errorfilestring = " 2>>" + dir + "/" + errorfile + " "
 
 try:
     
@@ -78,14 +82,14 @@ try:
         print "pass = " , passvalue
         print "seedvalue = ", seedvalue
         os.system( "python " + execdir + "/run_test.py" + " --seedfile=" + seedfile + " --dir=" + dir
-                   + mem + " --pass=" + str( passvalue ) + errormail )
+                   + mem + " --pass=" + str( passvalue ) + errormail + errorfilestring )
         os.remove( seedfile )
         
     file.close()
         
     """ confidence-intervals """
     if os.system( 'java -cp ' + execdir + '/../java:' + execdir + '/../java/commons-math-1.1.jar ConfidenceIntervalCalculator '
-                  + dir + ' 2>>' + errorfile) != 0:
+                  + dir + errorfilestring ) != 0:
         if mail == 'true':
             os.system( 'echo $HOSTNAME > ' + mailfile )
             os.system( 'echo ' + dir + ' >> ' + mailfile )
@@ -93,20 +97,25 @@ try:
             os.system( 'echo  ERROR while running java ConfidenceIntervalCalculator for dir ' + dir + ': >> ' +  mailfile )
             os.system( 'cat ' + errorfile + ' >> mailfile' )
             os.system( "python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + errorsubject + " --account="
-                   + account + " --textfile=" + mailfile )
+                   + account + " --textfile=" + mailfile + errorfilestring )
             print 'mail sent'
             os.remove( mailfile )
  
     """ gnuplot """
-    os.system( "python " + execdir + "/exec_gnuplotfile.py --dir=" + dir + ' 2>>' + errorfile)
+    os.system( "python " + execdir + "/exec_gnuplotfile.py --dir=" + dir + errorfilestring )
  
     """ tar-archive """
     olddir = os.getcwd()
     newdir = dir
     os.chdir( newdir )
-    print "building tar-archive " + tarfileprefix + ".tgz of generated data-files"
-    os.system( 'tar cfz ' + tarfileprefix + '.tgz' + ' *.gnuplotdata *.gnuplot *.ps *.cfg *.sim *.al testscenarios gnuplotfiles'
-                + ' 2>>' + errorfile )
+    newerrorfilestring = ""
+    if mail == 'true':
+        newerrorfilestring = " 2>>" + errorfile + " "
+    print "building tar-archive " + tarfileprefix + ".tar of generated data-files"
+    os.system( 'tar cf ' + tarfileprefix + '.tar' + ' *.gnuplotdata *.gnuplot *.ps *.cfg *.sim *.al testscenarios gnuplotfiles'
+                + newerrorfilestring )
+    print "compressing tar-file " + tarfileprefix + '.tar' 
+    os.system( 'gzip -9 ' + tarfileprefix + '.tar' )
     os.chdir( olddir )
     
     """ mail """
@@ -114,10 +123,10 @@ try:
         os.system( 'echo $HOSTNAME > ' + mailfile )
         os.system( 'echo ' + dir + ' >> ' + mailfile )
         os.system( "python " + execdir + "/mail.py --from=" + me + " --to=" + me + " --subject=" + subject + " --account="
-                   + account + " --textfile=" + mailfile )
+                   + account + " --textfile=" + mailfile + errorfilestring )
         print 'mail sent'
         os.remove( mailfile )
         
 except IOError:
-    sys.stderr.write('file "' + seedsfile + '" not found\n')
+    sys.stderr.write( 'file "' + seedsfile + '" not found\n' )
     sys.exit( 1 )

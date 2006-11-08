@@ -55,7 +55,8 @@ execdir = os.path.dirname( sys.argv[0] )
 me = 'ka1379-912@online.de'
 account = '1und1'
 subject = '\'DiscreteAndRealtimeSimulation: ERROR occured!\''
-errorfile = '../error.log'
+errorfile = 'error.log'
+errorfilestring = ""
 
 try:
     file = open( seedfile, 'r' )
@@ -77,6 +78,9 @@ if options.mem != None:
     
 if options.errormail != None:
     errormail = 'true'
+    
+if errormail == 'true':
+    errorfilestring = " 2>> " + errorfile + " "
 
 dir = options.dir
 os.chdir( dir )
@@ -94,7 +98,7 @@ for simulation in linescanner.linetokens( file ):
         os.system( "echo " + oldseedvalue + " > " + tempseedfile )
         
         """ modify seed value """
-        os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + seedvalue +"/g' " + simulation + " > " + tempfile )
+        os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + seedvalue +"/g' " + simulation + " > " + tempfile + errorfilestring )
         os.rename( tempfile, simulation )
  
     """ potentiellen infix entfernen """
@@ -105,7 +109,7 @@ for simulation in linescanner.linetokens( file ):
                + " -e 's/^[ ]*\(gnuplotFileAvgMsgDelayRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                + " -e 's/^[ ]*\(gnuplotFileRelReOmRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                + " -e 's/^[ ]*\(gnuplotFileAvgUptodateRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
-               + simulation + " > " + tempfile )
+               + simulation + " > " + tempfile + errorfilestring )
     os.rename( tempfile, simulation )
         
     if passvalue != "":
@@ -118,11 +122,11 @@ for simulation in linescanner.linetokens( file ):
                    + " -e 's/^[ ]*\(gnuplotFileAvgMsgDelayRatio\)[ ]*=\(.*\)\(.gnuplotdata\)$/\\1=\\2" + infix + passvalue +"\\3/g' "
                    + " -e 's/^[ ]*\(gnuplotFileRelReOmRatio\)[ ]*=\(.*\)\(.gnuplotdata\)$/\\1=\\2" + infix + passvalue +"\\3/g' "
                    + " -e 's/^[ ]*\(gnuplotFileAvgUptodateRatio\)[ ]*=\(.*\)\(.gnuplotdata\)$/\\1=\\2" + infix + passvalue +"\\3/g' "
-                   + simulation + " > " + tempfile )
+                   + simulation + " > " + tempfile + errorfilestring )
         os.rename( tempfile, simulation )
     
     print "starting simulation " + simulation    
-    if os.system( "java " + mem + "-cp ../../DiscreteAndRealtimeSimulation/ Simulation " + simulation + ' 2>>' + errorfile) != 0:
+    if os.system( "java " + mem + "-cp ../../DiscreteAndRealtimeSimulation/ Simulation " + simulation + errorfilestring ) != 0:
         if errormail == 'true':
             """ mail """
             os.system( 'echo $HOSTNAME > ' + mailfile )
@@ -142,7 +146,7 @@ for simulation in linescanner.linetokens( file ):
                + " -e 's/^[ ]*\(gnuplotFileAvgMsgDelayRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                + " -e 's/^[ ]*\(gnuplotFileRelReOmRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
                + " -e 's/^[ ]*\(gnuplotFileAvgUptodateRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
-               + simulation + " > " + tempfile )
+               + simulation + " > " + tempfile + errorfilestring )
     os.rename( tempfile, simulation )
     
     """ alten seed value wieder setzen """
@@ -152,7 +156,8 @@ for simulation in linescanner.linetokens( file ):
         oldseedvalue = linescanner.token( 0, oldseedfile )
         oldseedfile.close()
         
-        os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + oldseedvalue +"/g' " + simulation + " > " + tempfile )
+        os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + oldseedvalue +"/g' " + simulation + " > "
+                   + tempfile + errorfilestring )
         os.rename( tempfile, simulation )
         os.remove( tempseedfile )
    
