@@ -8,7 +8,6 @@ from optparse import OptionParser
 
 testscenarios = "testscenarios"
 tempfile = "t.e.m.p.f.i.l.e"
-tempseedfile = "t.e.m.p.s.e.e.d.f.i.l.e"
 infix = ".pass"
 
 def parsecmdl():
