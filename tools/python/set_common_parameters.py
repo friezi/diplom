@@ -60,11 +60,11 @@ common_parameters = options.common_parameters
 
 """ read properties from common_parameters """
 cp_propertyReader = PropertyReader( common_parameters )
-toplayer = cp_propertyReader.getProperty( 'Toplayer' )
+toplayer = cp_propertyReader.getProperty( 'Brokernet' )
 sublayer = cp_propertyReader.getProperty( 'Sublayer' )
 
 if toplayer != None:
-        sedcommands = sedcommands + ' -e \'s/^[ ]*\(BRITEToplayerFile\)[ ]*=\(.*\)$/\\1=' + escapeForSed(toplayer) + '/g\''
+        sedcommands = sedcommands + ' -e \'s/^[ ]*\(BRITEBrokernetFile\)[ ]*=\(.*\)$/\\1=' + escapeForSed(toplayer) + '/g\''
 
 if sublayer != None:
         sedcommands = sedcommands + ' -e \'s/^[ ]*\(BRITESublayerFile\)[ ]*=\(.*\)$/\\1=' + escapeForSed(sublayer) + '/g\''
