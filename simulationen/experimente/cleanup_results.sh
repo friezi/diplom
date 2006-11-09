@@ -13,7 +13,7 @@ do
 	rm -f markers*.gnuplot
 	rm -f *.bak
 	rm -f *.log
-	rm -f *.tgz
+	rm -f *.tar.gz
 	rm -f *.log
 	popd
 done
