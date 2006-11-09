@@ -90,12 +90,11 @@ print "entering directory " + dir
 file = open( testscenarios, 'r' )
 for simulation in linescanner.linetokens( file ):
 
+    """ save original """
+    original = simulation + ".orig"
+    os.system("cp -f " + simulation + " " + original)
+
     if seedvalue != "":
-        
-        """ save old seed value """
-        propertyReader = PropertyReader( simulation )
-        oldseedvalue = propertyReader.getProperty( 'seedValue' )
-        os.system( "echo " + oldseedvalue + " > " + tempseedfile )
         
         """ modify seed value """
         os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + seedvalue +"/g' " + simulation + " > " + tempfile + errorfilestring )
@@ -138,28 +137,8 @@ for simulation in linescanner.linetokens( file ):
                        + account + " --textfile=" + mailfile )
             os.remove( mailfile )
 
-    """ infix wieder entfernen """
-    os.system( "sed -e 's/^[ ]*\(gnuplotFileCoeffVarCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
-               + " -e 's/^[ ]*\(gnuplotFileMeanValueCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
-               + " -e 's/^[ ]*\(gnuplotFileStdDevCPP\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g'"
-               + " -e 's/^[ ]*\(gnuplotFileTotalTemporaryRequests\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
-               + " -e 's/^[ ]*\(gnuplotFileAvgMsgDelayRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
-               + " -e 's/^[ ]*\(gnuplotFileRelReOmRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
-               + " -e 's/^[ ]*\(gnuplotFileAvgUptodateRatio\)[ ]*=\(.*\)" + infix + ".*\(.gnuplotdata\)$/\\1=\\2\\3/g' "
-               + simulation + " > " + tempfile + errorfilestring )
-    os.rename( tempfile, simulation )
-    
-    """ alten seed value wieder setzen """
-    if seedvalue != "":
-        
-        oldseedfile = open( tempseedfile, 'r' )
-        oldseedvalue = linescanner.token( 0, oldseedfile )
-        oldseedfile.close()
-        
-        os.system( "sed -e 's/^[ ]*\(seedValue\)[ ]*=.*$/\\1=" + oldseedvalue +"/g' " + simulation + " > "
-                   + tempfile + errorfilestring )
-        os.rename( tempfile, simulation )
-        os.remove( tempseedfile )
+    """ restore original """
+    os.rename( original, simulation )
    
 file.close()
     
