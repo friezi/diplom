@@ -1,16 +1,22 @@
 \chapter{Implementierung der Simulationsumgebung}
 \label{c:implementierung}
-Um die vorgestellten Verfahren und Algorithmen testen zu können, wurde eine eigene Simulationsumgebung erstellt. Diese bietet die Möglichkeit,
-Parameter zu variieren und Teilverfahren ein- oder auszublenden oder durch alternative Verfahren zu ersetzen. Es lässt sich mit verschiedenen
-Netzwerk-Topologien arbeiten, um die Algorithmen in unterschiedlichen Szenarien testen zu können. Dabei besteht die Möglicheit, das Verhalten
+Um die vorgestellten Verfahren und Algorithmen testen und evaluieren zu können, wurde eine eigene Simulationsumgebung erstellt. Diese bietet die Möglichkeit,
+Parameter zu variieren und Teilverfahren aktivieren, deaktivieren oder durch alternative Verfahren ersetzen zu können. Verschiedene
+Netzwerk-Topologien können gewählt werden, um die Algorithmen in unterschiedlichen Szenarien testen zu können. Dabei besteht die Möglicheit, das Verhalten
 der Algorithmen visuell mitzuverfolgen,
 Auskünfte über die Zustände beteiligter Einheiten einzuholen und statistische Werte zu ermitteln und zwecks einer späteren Auswertung
 über einen selbst definierten Zeitraum mitzuschneiden. Darüber hinaus können Ereignisse definiert werden, welche zu selbst gewählten Zeitpunkten
 eintreten und in der Realität vorkommende Ereignisse widerspiegeln sollen.\\
 
-Ursprünglich diente das Simulationsframework \texttt{msgnet} von Robert Schiele \cite{MSGNET} als Basis für die hier vorgestellte Implementierung.
+Ausgangspunkt für die hier vorgestellte Implementierung ist das Simulationsframework \texttt{msgnet} von Robert Schiele \cite{MSGNET}.
 Daher steht der gesamte Code unter der GPL. Im Zuge der Entwicklung wurden aber ganze Teile des Quellcodes stark modifiziert oder ausgetauscht, um den 
 hier gestellten Anforderungen zu genügen.\\
+
+Um reproduzierbare und einheitlicheErgebnisse zu erzielen, bedienen wir uns einer \mbox{(zeit-)} diskreten
+Ereignissimulation (siehe \cite{Perros2003:CST,Muell2004:Sim}).
+Die Simulation verläuft dabei nicht zeitgesteuert sondern ereignisgesteuert. Jedem Ereignis wird ein Ausführungstermin zugeordnet. Die Ereignisse werden in einer
+nach ihrem Ausführungstermin geordneten Prio\-ritäts\-warte\-schlange gesammelt. Bei jeder Entnahme eines Ereignisses aus der wird die Prioritätswarteschlange
+aktuelle Zeit auf die Ausführungszeit gesetzt.\\
 
 Die Simulationsumgebung wurde in der Programmiersprache Java implementiert. Die zu testenden Komponenten in der Implementierung wurden dabei
 so konzipiert, dass sie beliebig erweitert und mit einander kombiniert werden können.\\
@@ -20,44 +26,35 @@ können auf mehrere Diagramme verteilt sein.
 
 \section{Simulationsumgebung}
 
+Um das Systemverhalten auch optisch mitverfolgen zu können, kann optional eine graphische Benutzeroberfläche gestartet werden, in der die verschiedenen Ebenen
+(physisches Netzwerk, Overlay-Netzwerk) des gesamten Netzwerks und der Kommunikationsfluss dargestellt sind. Zusätzlich können erhaltene
+RSS-Feeds sowie statistische Werte des Gesamtsystems und der einzelnen Knoten abgefragt werden. Auch kann der Benutzer das System interaktiv beeinflussen. So ist
+es beispielsweise möglich Knoten abzumelden, Knoten zu blockieren oder Parameter zu ändern.\\
+
 Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsumgebung vor.
 Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
-agierenden Einheiten vermittelt, ist die sogenannte ``Engine'', repräsentiert durch die Klasse \texttt{Engine}. Selbständig agierende Einheiten können
+agierenden Einheiten vermittelt, ist die sogenannte \glqq Engine\grqq , repräsentiert durch die Klasse \texttt{Engine}. Selbständig agierende Einheiten können
 Aktionen ausführen oder Ereignisse hervorrufen. Sie repräsentieren beispielsweise Knoten in einem Netzwerk und werden durch die Klasse \texttt{Node}
-implementiert. Komponenten der Klasse \texttt{Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten, welche mit Hilfe der Klasse
-\texttt{Message} umgesetzt wurden, zuschicken. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
+implementiert. Komponenten der Klasse \texttt{Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten zuschicken, welche mit Hilfe der Klasse
+\texttt{Message} umgesetzt wurden. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
 \texttt{send()} der Klasse \texttt{Message} abgeschickt. Alle Nachrichten werden in einer Warteschlange der Klasse \texttt{Engine} gesammelt. Die Engine sorgt dafür,
 dass Knoten die ihnen zugedachten Nachrichten erhalten, indem sie die einzelnen Nachrichten der Warteschlange entnimmt und die Methode \texttt{receive()} des
 adressierten Knotens aufruft. Dieser kann die Nachricht nun verarbeiten. Den Nachrichten werden Laufzeiten zugewiesen, so dass eine
 Nachricht erst nach Ablauf dieser Laufzeit den Adressaten erreicht.\\
 
-Es gibt verschiedene Ansätze, eine Engine zu implementieren. Bei einer
-Realzeit-Si\-mu\-la\-tion läuft die Zeit kontinuierlich weiter. Dabei können die Methoden eines Knotens, welche Nachrichten verarbeiten, als einzelne Prozesse
-realisiert werden. Die Engine, selbst ein eigenständiger Prozess, braucht nicht auf die Beendigung der Verarbeitung der Nachrichten zu warten,
-sondern kann die Methode \texttt{receive()} der verschiedenen Empfangsknoten parallel aufrufen. Für visuelle Demonstrationen des entsprechenden Systems
-ist so eine Umsetzung geeignet, jedoch nicht für den Zweck, wissenschaftlich aussagekräftige Ergebnisse zu erhalten, da eine Realzeit-Simulation stark
-von der Rechengeschwindigkeit des benutzten Computersystems und seiner temporären Gegebenheiten abhängig ist. Daher ist es damit nicht möglich, reproduzierbare
-und einheitliche Ergebnisse zu erhalten. Zu diesem Zweck bedient man sich einer (zeit-)diskreten Ereignissimulation (siehe \cite{Perros2003:CST,Muell2004:Sim}).
-Die Simulation verläuft dabei nicht zeitgesteuert sondern ereignisgesteuert. Jedem Ereignis wird ein Ausführungstermin zugeordnet. Die Ereignisse werden in einer
-nach ihrem Ausführungstermin geordneten Prioritätswarteschlange gesammelt. Bei jeder Entnahme eines Ereignisses aus der Prioritätswarteschlange wird die
-aktuelle Zeit auf die Ausführungszeit gesetzt.\\
-Mit der hier vorgestellten Simulationsumgebung kann sowohl eine Realzeit-Simulation als auch eine zeitdiskrete Ereignissimulation durchgeführt werden. Jedes
-Ereignis wird in Form der Klasse \texttt{Message} dargestellt und ist entweder vom Typ der Subklasse \texttt{Internal\-Message} für nicht
-zeitverzögerte Ereignisse oder vom Typ der Subklasse \texttt{Transfer\-Message} für zeitverzögerte Ereignisse bzw. für Nachrichten zwischen verschiedenen Knoten.\\
-
-Um das Systemverhalten auch optisch mitverfolgen zu können, kann optional eine graphische Benutzeroberfläche gestartet werden, in der die verschiedenen Ebenen
-(physisches Netzwerk, Overlay-Netzwerk) des gesamten Netzwerks und der Kommunikationsfluss dargestellt sind. Zusätzlich können erhaltene
-RSS-Feeds sowie statistische Werte des Gesamtsystems und der einzelnen Knoten abgefragt werden. Auch kann der Benutzer das System interaktiv beeinflussen. So ist
-es beispielsweise möglich Knoten abzumelden, Knoten zu blockieren oder Parameter zu ändern.\\
+Jedes Ereignis wird in Form der Klasse \texttt{Message} dargestellt und ist entweder vom Typ der Subklasse \texttt{Internal\-Message} für nicht
+zeitverzögerte Ereignisse oder vom Typ der Subklasse \texttt{Transfer\-Message} für zeitverzögerte Ereignisse bzw. für Nachrichten zwischen verschiedenen Knoten.
+Mit einer \texttt{InternalMessage} lässt sich die Kommunikation mit Knoten erreichen, die nicht Bestandteil des Netzwerks sind und Sonderfunktionen übernehmen
+(beispielsweise Timer oder Rekorder für statistische Daten, s. u.).\\
 
 \begin{picturenothere}{1}{17}{\mbox{Simulationsumgebung: UML-Klassendiagramm}}{Abb:UML:Simulationsumgebung}
  \includegraphics[bb=200 0 544 504 ,scale=0.9]{simulationsumgebung}
 \end{picturenothere}
 
 Abbildung \ref{Abb:UML:Simulationsumgebung} zeigt die zentralen Einheiten der Simulationsumgebung und ihre Beziehungen untereinander
-in einem UML-Klassendiagramm (UML2). Es werden in der Darstellung
-nur die wichtigsten Methoden und Attribute aufgelistet. Eine vollständige Referenz findet sich in der generierten Quelltext-Dokumentation.
-Einige Beziehungen zu noch nicht aufgeführten Klassen werden in den nachfolgenden Grafiken veranschaulicht.\\
+in einem UML-Klassendiagramm \cite{UML}. Nur die wichtigsten Methoden und Attribute werden in der Darstellung aufgelistet.
+Eine vollständige Referenz findet sich in der generierten Quelltext-Dokumentation. Einige Beziehungen zu noch nicht aufgeführten Klassen werden in den
+nachfolgenden Grafiken veranschaulicht.\\
 
 Die Klasse \texttt{Simulation} enthält die \texttt{main()}-Methode und richtet
 die gesamte Simulationsumgebung ein: Parameter werden eingelesen, eine Topologie mit allen dazu gehörigen Knoten wird
@@ -65,7 +62,7 @@ erzeugt und die Engine wird gestartet. Diese übernimmt nun die Kontrolle, setzt 
 weitere notwendige Handler ein (evtl. \texttt{Gui} und \texttt{ActionHandler}, s. u.). Nachfolgend werden wir nur die Funktionsweise der Klasse
 \texttt{DiscreteEngineTask} betrachten. Zentraler Teil ist die Prioritätswarteschlange \texttt{messagequeue}, in der alle Ereignisse gespeichert werden.
 Soll die optionale graphische Benutzeroberfläche (Klasse \texttt{Gui}) nicht gestartet werden, so beginnt die Engine mit der Initialisierung aller
-selbständig agierenden Knoten und der anschliessenden Abarbeitung der \texttt{messagequeue} in einer Schleife. Dabei wird das erste Ereignis \texttt{message}
+selbständig agierenden Knoten und der anschließenden Abarbeitung der \texttt{messagequeue} in einer Schleife. Dabei wird das erste Ereignis \texttt{message}
 der Warteschlange entnommen und die aktuelle Zeit auf \texttt{message.getArrivalTime()} gesetzt. Nun erfolgt der Aufruf der Methode \texttt{receiveMessage()}
 des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.\\
 
@@ -80,33 +77,36 @@ des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.\\
 Abbildung \ref{Abb:UML:Topologien_und_Knoten} zeigt die Beziehung zwischen den Klassen \texttt{Topology} und \texttt{Node}. Eine Instanz der Klasse
 \texttt{Topology} muss bei der Erzeugung der Netzwerkstruktur die vom Anwender gewünschten Subklassen der Klasse \texttt{Node} berücksichtigen.
 Dies geschieht über eine Factory der Klasse \texttt{RPSFactory}. Die spezielle Klasse \texttt{BRITETopology} (zu BRITE siehe Kapitel \ref{c:experimente})
-muss zudem noch die kürzesten Wege zwischen allen Knoten für die Übermittlung von Nachrichten auf Sublayer-Ebene berechnen. Dies geschieht mittels des
-Floyd-Warshall-Algorithmus (siehe \cite{Algorithmen}), welcher in der Methode \texttt{shortestPath()} der Klasse \texttt{Graph} implementiert ist. Anschließend kann eine Routing-Tabelle
-mit der Methode \texttt{generateRoutingTable()} der Klasse \texttt{Engine} generiert werden. Auf der Ebene des Overlay-Netzwerks muss ein minimaler
-Spannbaum zwischen den Brokern konstruiert werden. Dies wird ebenfalls von der Klasse \texttt{BRITETopology} durch Aufruf der Methode \texttt{Graph.spanningTree()}
-vorgenommen.\\
+muss zudem noch die kürzesten Wege zwischen allen Knoten für die Übermittlung von Nachrichten auf Sublayer-Ebene berechnen.
+Dies geschieht mittels des Floyd-Warshall-Algorithmus (siehe \cite{Algorithmen}), welcher in der Methode \texttt{shortestPath()} der Klasse \texttt{Graph}
+implementiert ist. Anschließend kann eine Routing-Tabelle mit der Methode \texttt{generateRoutingTable()} der Klasse \texttt{Engine} generiert werden.\\
 
 Auch RSSFeeds können unterschiedlichen Typs sein. Als Basisklasse dient
 \texttt{RSSFeed}. Die graphische Darstellung eines RSSFeeds erfolgt mittels der Methode \texttt{represent()} der Klasse \texttt{RSSFeedRepresentation}.
 
 \section{Publisher, Broker, Server und Feeds}
 Abbildung \ref{Abb:UML:Knoten} zeigt die verschiedenen Knotenklassen und ihre Beziehungen zueinander. Hauptkomponenten der Simulationsumgebung
-sind die Klassen \texttt{PubSubNode}, \texttt{BrokerNode} und \texttt{RSSServerNode}. Sie repräsentieren die Einheiten Publisher/Subscriber bzw.
+sind die Klassen \texttt{PubSubNode}, \texttt{BrokerNode} und \texttt{RSSServerNode}. Sie repräsentieren die Einheiten Klient bzw.
 Broker bzw. RSSServer. Diese Klassen sind abstrakt und stellen nur eine Grundfunktionalität (wie z. B. eine Differenzierung der Nachrichten 
 in \texttt{InternalMessage} und \texttt{Transfer\-Message} und eine eventuelle Weiterleitung von Nachrichten) und die wichtigsten Attribute zur Verfügung.
 Funktionalitäten, welche von anderen Klassen (wie z. B. \texttt{Engine} oder \texttt{Gui}) aus zugreifbar sein sollen, sind als Methoden in den
 Interfaces \texttt{PubSubType}, \texttt{RSSServerType} und \texttt{BrokerType} deklariert. Erst die spezielleren Klassen \texttt{PubSub} bzw.
-\texttt{Broker} können Nachrichten gezielt bearbeiten, übernehmen die Kommunikation mit anderen Knoten und richten die relevanten Timer ein
+\texttt{AdjustingBroker} können Nachrichten gezielt bearbeiten, übernehmen die Kommunikation mit anderen Knoten und richten die relevanten Timer ein
 (Klasse \texttt{AbstractTimer} mit Hilfe von \texttt{AbstractTimerFactory}, in den Diagrammen nicht dargestellt). Die Klassen \texttt{Event\-PubSub}
 und \texttt{AdjustingEventBroker} können RSSFeeds verarbeiten, welche aus mehreren Einträgen (Events) bestehen.\\
 
 Grundsätzlich kann ein Knoten Timer der Klasse \texttt{AbstractTimer} erzeugen. Bei Ablauf des Timers sendet dieser an den Erzeugerknoten eine Nachricht
 der Basisklasse \texttt{InternalMessage}, um ihn vom Ablauf der gesetzten Zeit zu unterrichten.\\
 
-Obwohl RSSFeeds in der Realität per TCP als Datenstrom übermittelt werden, werden diese in der Simulation der Einfachheit halber als atomare Nachrichten verschickt.
+Obwohl RSSFeeds in der Praxis per TCP als Datenstrom übermittelt werden, werden diese in der Simulation der Einfachheit halber als atomare Nachrichten verschickt.
 Der Erhalt eines Feeds entspricht dann der Ankunft des ersten Datenbytes des Datenstroms.\\
 
-Ein RSS-Server produziert dann einen neuen Feed, wenn er eine Nachricht des Typs \texttt{GenerateFeedMessage} erhält. Nachrichten dieses Typs werden von einem
+Ein RSS-Server ist zuständig für die Produktion neuer RSS-Feeds. Erhält er eine Anfrage eines Subscribers, so übersendet er diesem nach einer Bearbeitungszeit den aktuellen Feed.
+Der RSS-Server unterhält eine Queue fester Größe, in der anstehende Anfragen zunächst zwischengespeichert und nach und nach zwecks Bearbeitung
+entnommen werden. Anfragen, die den RSS-Server bei voller Queue erreichen, werden verworfen. Auch das Verwerfen von Anfragen kostet eine bestimmten Betrag an Zeit.
+Queuegröße und Bearbeitungszeitenen können vor Beginn der Simulation vom Nutzer festgelegt werden.\\
+
+Ein RSS-Server produziert genau dann einen neuen Feed, wenn er eine Nachricht des Typs \texttt{GenerateFeedMessage} erhält. Nachrichten dieses Typs werden von einem
 Timer innerhalb einer Zeitspanne erzeugt, welche durch die Attribute \texttt{minUpIntv} und \texttt{maxUpIntv} der Klasse
 \texttt{SimParameters} definiert werden kann. Ein RSSServer generiert nur ganz
 allgemeine Instanzen der Klasse \texttt{RSSFeed} mittels der Klasse \texttt{RSSFeedFactory}. Über eine Realisierung des Interfaces
@@ -119,12 +119,13 @@ Wird diese von einem \texttt{QueueingRSSServer} nicht verworfen, so antwortet di
 RSSFeed der Klasse \texttt{RSSFeedMessage} (eine \texttt{DispatchQueueMessage} dient zur Benachrichtigung über das Ende der Bearbeitung einer Anfrage). Wieviel Zeit die
 Bearbeitung einer Anfrage benötigt, bestimmt der Parameter $processingTimeFeedRequest$ (siehe Abschnitt \ref{Parameter}) in Zusammenhang mit dem Faktor $serviceTimeFactor$, mit
 dessen Hilfe verschiedene Belastungsgrade bzw. die Leistungsfähigkeit eines Servers simuliert werden können. $processingTimeUnrepliedRequest$ bestimmt die Bearbeitungszeit für
-abgewiesene Anfragen.\\
+abgewiesene Anfragen, $serverQueueSize$ bestimmt die Größe der Server-Queue.\\
 
-Der empfangende Subscriber (Publisher) eines Feeds erzeugt einen neuen RSS-Feed ausschließlich mit den für ihn neuen Events und sendet diesen an den
+Der empfangende Subscriber (bzw. Publisher) eines Feeds erzeugt einen neuen RSS-Feed ausschließlich mit den für ihn neuen Events und sendet diesen an den
 ihm zugewiesenenen Broker. Dieser speichert den Feed in der Variablen \texttt{feed}, extrahiert seinerseits die neu hinzugekommenen Events und leitet diese als neuen Feed an
-alle mit ihm verbundenen Subscriber und Broker weiter. Die Methoden zur Abstimmung und Staukontrolle entsprechen weitestgehend den in Kapitel \ref{adapt_informationsverteilung}
-vorgestellten Methoden.
+alle mit ihm verbundenen Subscriber und Broker weiter. Dies entspricht der Filtertechnik \glqq flooding\grqq\ (siehe \cite{MuFiBu:2002:FilterSimilarities}).
+Um diese Arbeit in angemessenem Rahmen zu halten, wurden keine weiteren Filtertechniken implementiert. Die Methoden zur Abstimmung und Staukontrolle entsprechen
+weitestgehend den in Kapitel \ref{adapt_informationsverteilung} vorgestellten Methoden.
 
 \section{Aktionen und Statistik}
 \begin{picturenothere}{1}{11}{\mbox{Handler und Statistik: UML-Klassendiagramme}}{Abb:UML:KnotenHandler_und_Statistik}
@@ -133,11 +134,11 @@ vorgestellten Methoden.
 Während der Simulation können vom Benutzer definierte Aktionen eintreten. Diese werden von der Klasse \texttt{ActionHandler} verwaltet. Dazu gehört das Einlesen von
 Aktionsdeklarationen aus einer Datei (s.u.) und das Auslösen von Aktionen. Gegebenenfalls werden weitere Handler erzeugt und benachrichtigt.
 \texttt{ActionHandler} und alle weiteren Handler-Klassen sind vom Typ \texttt{Node}, so dass das Auslösen
-bestimmter Aktionen durch Nachrichten (Klassse \texttt{InternalMessage}) geschehen kann. Eine Instanz der Klasse \texttt{ActionHandler} wird von der
+bestimmter Aktionen durch Nachrichten (Klasse \texttt{InternalMessage}) geschehen kann. Eine Instanz der Klasse \texttt{ActionHandler} wird von der
 Klasse \texttt{Engine} aus im Falle einer Diskreten Ereignissimulation gestartet. In der Klasse \texttt{RPSStatistics} werden statistische Werte des Gesamtsystems gesammelt.
-Falls eine entsprechende Aktion definiert wird, werden diese Werte in Form von Gnuplot-Dateien \cite{GnuplotHomepage} abgespeichert. Die Speicherung übernehmen Subklassen der Klasse
-\texttt{AbstractGnuplotDataWriter}. Deren Aktivierung übernimmt die Klasse \texttt{ActionHandler}. Abbildung \ref{Abb:UML:KnotenHandler_und_Statistik} veranschaulicht
-die wesentlichen Beziehungen der beteiligten Klassen. Um Statistiken des Gesamtsystems ermitteln zu können, führt jeder PubSub-Knoten bzw. der RSS-Server über eine individuelle
+Falls eine entsprechende Aktion definiert wird, werden diese Werte als Dateien im Gnuplot-Format \cite{GnuplotHomepage} abgespeichert. Die Speicherung übernehmen Subklassen der Klasse
+\texttt{AbstractGnuplotDataRecorder}. Deren Aktivierung übernimmt die Klasse \texttt{ActionHandler}. Abbildung \ref{Abb:UML:KnotenHandler_und_Statistik} veranschaulicht
+die wesentlichen Beziehungen der beteiligten Klassen. Um Statistiken des Gesamtsystems ermitteln zu können, führt jeder PubSub-Knoten bzw. der RSS-Server eine individuelle
 Statistik. Dazu dienen die Klassen \texttt{PubSubNodeStatistics} bzw. \texttt{RSSServerNodeStatistics}. Bei Auffrischung der Einzelstatistiken wird ebenfalls die Gesamtstatistik
 mittels Callback-Funktionen angepasst.  
 
@@ -174,11 +175,11 @@ mittels Callback-Funktionen angepasst.
 Es gibt eine Vielzahl von Parametern, welche in einer Konfigurationsdatei gesetzt werden können und das Verhalten der Simulation steuern.
 Aufgrund der Fülle der Parameter verweisen wir auf die generierte Quellcode-Beschreibung, in der sich eine nähere Beschreibung der einzelnen Parameter findet.
 Abbildung \ref{Abb:Konfigurationsdatei}
-zeigt eine Auflistung der Parameter mit Beispielwerten. Zusätzlich können zwei weitere Dateien angegeben werden, in denen Szenario und Aktionen definiert werden.
+zeigt eine Auflistung der Parameter mit Beispielwerten. Zusätzlich können zwei weitere Dateien angegeben werden, in denen Szenarien und Aktionen definiert werden.
 
 \subsection{Szenariodefinition}
 Der Parameter \texttt{scenarioFile} bestimmt eine Datei, in der der Aufbau des Szenarios spezifiziert wird. Es werden die verwendete Topologie
-und die Knotenklassen für die Einheiten Publisher/Subscriber, Broker und RSS-Server angegeben. Im Falle einer BRITE-Topologie (siehe Kapitel
+und die Knotenklassen für die Einheiten Klient, Broker und RSS-Server angegeben. Im Falle einer BRITE-Topologie (siehe Kapitel
 \ref{c:experimente}) müssen Dateien für das Sublayer und das Broker-Netzwerk angegeben werden. Ein Beispiel einer Szenariodatei zeigt Abbildung
 \ref{Abb:Szenario-Datei}.
 
@@ -212,8 +213,8 @@ zeigt exemplarisch den Aufbau einer Aktionsliste. Tabelle \ref{Tab:Aktionen} gib
   \label{Tab:Aktionen}
 \end{table*}
 
-\begin{picturenothere}{10}{17}{Beispiel einer Parameter-Konfigurationsdatei}{Abb:Konfigurationsdatei}
-  \put(2.2,8.6){\oval(15,18.4)}
+\begin{picturenothere}{10}{18}{Beispiel einer Parameter-Konfigurationsdatei}{Abb:Konfigurationsdatei}
+  \put(2.2,8.8){\oval(15,18.8)}
   \put(-4.5,0){\parbox[b]{15cm}{
       \texttt{actionFile=actions.al\\
         engineTimerPeriod=5\\
@@ -250,6 +251,7 @@ zeigt exemplarisch den Aufbau einer Aktionsliste. Tabelle \ref{Tab:Aktionen} gib
         serverQueueSize=40\\
         showSizeBrokerMsg=false\\
         spreadDivisor=6\\
+        subscribers=500\\
         subnetParamMsgRT=50\\
         ttl=5
       }

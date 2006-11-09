@@ -1,12 +1,12 @@
 \chapter{Experimente und Auswertung}
 \label{c:experimente}
-In diesem Kapitel werden wir das Adaptionsverhalten der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte der Verfahren genauer
-betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir bedienen uns dabei der in Kapitel \ref{c:implementierung} vorgestellten Simulationsumgebung. Da
+In diesem Kapitel werden wir das Adaptionsverhalten \todo{sihe Korrektur}der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte der Verfahren genauer
+betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir verwenden die in Kapitel \ref{c:implementierung} vorgestellte Simulationsumgebung. Da
 wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir das Verhalten des Systems bei unterschiedlichen Parametern bzw. Algorithmen
 untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Überprüfung der getroffenen Annahmen, die die Entwicklung unserer
 Verfahren motiviert haben.
 
-\section{Aufbau der Experimente:}
+\section{Aufbau der Experimente}
 Damit die Experimente untereinander vergleichbar sind, haben wir eine einheitliche Parameterwahl getroffen. Parameter wurden nur dann gezielt modifiziert,
 wenn dies für das jeweilige Experiment von entscheidender Bedeutung war.
 
@@ -18,16 +18,19 @@ Netzwerktopologien, so wie sie im Internet vorzufinden sind, als realistisch ein
 Topologien, welche auf dem Transit-Stub-Modell \cite{Zegura1996} basieren. Dieses Modell spiegelt sehr gut reale Internetstrukturen wider. Bei diesem Modell
 besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ ``Stub-Domäne'' oder ``Transit-Domäne'' sind. Während der Datenverkehr nur dann durch eine
 Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht. Transit-Domänen
-dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie Backbones.\\
+dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie den Backbone.\\
 
 Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier
 Verwendung fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche
 die physischen Verbindungen
 zwischen den Knoten darstellt und eine Toplayer-Topologie, welche das Overlay-Netzwerk repräsentiert. Bei allen Experimenten wurde eine Sublayer-Topologie
-bestehend aus 2000 Knoten verwendet. Das Overlay-Netzwerk bestimmt sich dann aus den Broker-Knoten (hier 200 Knoten), welche fest gewählt wurden, und den
+bestehend aus 2.000 Knoten verwendet. Das Overlay-Netzwerk bestimmt sich dann aus den Broker-Knoten (hier 200 Knoten), welche fest gewählt wurden, und den
 Subscriber-Knoten, deren Zahl sich aus der Hälfte der verbleibenden Knoten bestimmt (also 900) und die zufällig den einzelnen Brokern zugewiesen wurden.
 Dies geschieht jedoch so,
-dass jeder Broker in etwa gleich viele Subscriber verwaltet. Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
+dass jeder Broker in etwa gleich viele Subscriber verwaltet. Hätten wir keine homogene Verteilung der Subscriber, so würden sich Ballungszentren bilden, in denen
+die Verbreitung der RSS-Feeds relativ schnell geschehen kann. Unser Ziel ist es jedoch, das System unter möglichst ungünstigen Bedingungen zu testen.
+Aus dem gleichen Grund haben wir uns dazu entschieden, die Lokalität bei der Zuweisung der Subscriber nicht zu berücksichtigen.
+Die übrigen Knoten sind lediglich Transfer-Knoten, welche für die Weiterleitung des Datenverkehrs
 zuständig sind.\\
 
 Da ein einzelner Durchlauf eines Experimentes keine repräsentativen Ergebnisse liefert, wurde jedes Experiment 30 mal mit unterschiedlichen
@@ -70,14 +73,14 @@ angegebenen Parameter als Standardwerte gesetzt.
 \label{Tab:Standardparameter}
 \end{table*}
 
-Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot Basis\-lauf\-zeit$ (bezogen auf den Nachrichtentyp,
-siehe Tabelle \ref{Tab:Standardparameter}). Wir haben bewusst relativ hohe
-Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Hohe Nachrichtenlaufzeiten können bewirken,
+Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot rss\-Feed\-Msg\-RT$ bzw. $engineTimerPeriod\cdot rss\-Feed\-Request\-Msg\-RT$.
+Wir haben bewusst relativ große
+Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Große Nachrichtenlaufzeiten können bewirken,
 dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfragen wiederholen. Dies führt zunächst zu einer Mehrbelastung
 des Servers. Auch wenn in der Realität dauerhaft solch hohe Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
 Adaptionsalgorithmen unter Extrembedingungen testen.\\
 
-Die Zeitdauer bei jeder Messung betrug 6000 Sekunden.
+Die Zeitdauer bei jeder Messung betrug 6.000 Ticks bzw. simulierte Sekunden.
 
 \section{Experimente -- bevorzugte Polling-Periode}
 Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Eine Legende zu den
@@ -87,9 +90,9 @@ Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 \importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
 Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis eines Experiments, welches gleichzeitig als Referenz
-für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kamen. Dargestellt ist
+für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kommen. Dargestellt ist
 die Entwicklung der Serverbelastung anhand der eingegangenen Feed-Requests. Von den Standardparametern
-wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1..1000$ Sekunden dem Overlay-Netzwerk bei.
+wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1...1000$ Sekunden dem Overlay-Netzwerk bei.
 Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$, siehe Kapitel \ref{c:implementierung}),
 ist hierbei 1.\\
 

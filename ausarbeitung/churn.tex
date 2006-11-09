@@ -1,50 +1,58 @@
 \subsection{Churn}
 \label{cs:churn}
-Bei allen Peer-To-Peer-Systemen tritt ein Phänomen auf, welches als ``Churn'' bezeichnet wird: das dynamische Zu- und Abwandern von Klienten bzw. Knoten. In
+Ein Phänomen, welches bei Peer-To-Peer-Systemen häufig auftritt, ist \glqq Churn\grqq: das dynamische Zu- und Abwandern von Klienten bzw. Knoten. In
 Peer-To-Peer-Systemen spielen die Klienten eine entscheidende Rolle. In fast allen diesen Systemen kommunizieren die Klienten direkt miteinander, um Daten
 auszutauschen oder wichtige Informationen zu liefern (z. B. Dateien oder Routing-Informationen). Je nach Struktur des Peer-To-Peer-Netzes kann die plötzliche
 Abwesenheit von beteiligten Knoten zu Beeinträchtigungen oder gar Fehlfunktionen des Systems führen. Während unstrukturierte Peer-To-Peer-Netze Churn zum Teil
-gut verkraften, können strukturierte Peer-To-Peer-Netze (z. B. DHTs) mit Churn nicht anstandslos umgehen, bzw. benötigen sie spezielle Mechanismen, um den
+gut verkraften, können strukturierte Peer-To-Peer-Netze (z. B. DHTs) mit Churn nicht anstandslos umgehen, bzw. sie benötigen spezielle Mechanismen, um den
 Einflüssen von Churn entgegenzuwirken \cite{Stutzbach2004}.
 
 \paragraph{Auswirkungen:}
 Die Auswirkungen von Churn können verschiedenartig sein. So kann Churn beispielsweise bei BitTorrent dazu führen, dass sich Downloadzeiten verlängern, falls
 Klienten das System verlassen, oder dass bestimmte Dateien nicht zugreifbar sind, falls ein Tracker ausfällt. Bei DHT-basierten Netzen (neuere BitTorrent-Versionen
 sind mittlerweile DHT-basiert) kann schon ein
-vorüber\-gehen\-der Verlust eines Nachbarknoten zu Performanzeinbußen führen (Effizienz ist ein Designziel bei DHT), da der Ausgangsknoten gezwungen ist,
-suboptimale Routen zu wählen \cite{Rhea2004}. Dabei erhöht sich die Wahrscheinlichkeit zukünftiger Ausfälle des Systems.
+vorüber\-gehen\-der Verlust eines Nachbarknoten zu Performanzeinbußen führen (Effizienz ist ein Designziel bei DHT-basierten Peer-To-Peer-Systemen),
+da der Ausgangsknoten gezwungen ist, suboptimale Routen zu wählen \cite{Rhea2004}.
 
 \paragraph{Messung:}
 Um Churn messen zu können, ist eine Metrik erforderlich, die über Zu- und Abwanderung Auskunft gibt. Es bietet sich an, die Zeit zwischen Betreten und Verlassen
 des Systems durch einen Knoten zu messen. Beobachtungen haben gezeigt, dass sich die durchschnittlichen Zeiten zwischen einer Stunde und einigen Minuten bewegen
 können \cite{Rhea2004}. Stutzbach und Rejaie \cite{Stutzbach2004} haben eine Reihe von Techniken entwickelt und in einem von ihnen entwickelten Tool ($Cruiser$)
-vereint, um das Gnutella-Netzwerk in relativ kurzer Zeit zu durchforsten und einen aktuellen Schnappschuss (``Snapshot'') der Gnutella-Population zu erhalten. Wie
+vereint, um das Gnutella-Netzwerk in relativ kurzer Zeit zu durchforsten und einen aktuellen Schnappschuss (\glqq Snapshot\grqq) der Gnutella-Population zu erhalten. Wie
 Stutzbach und Rejaie feststellen, ist das Gnutella-Netzwerk ein sehr großes Peer-To-Peer-Netzwerk bestehend aus hunderttausenden von heterogenen und
-geographisch verteilten Peers. Darüber hinaus wird jeder User-Client-Prozess direkt durch einen Benutzer gesteuert. Das heißt, das ``Verhalten der User-Clients
-repräsentiert vollständig Benutzer-gesteuerte Aspekte dynamischer Mitgliedschaften'' im System \cite{Stutzbach2004}. Ergebnisse einer solchen Untersuchung können
+geographisch verteilten Peers. Darüber hinaus wird jeder User-Client-Prozess direkt durch einen Benutzer gesteuert. Das heißt, das \glqq Verhalten der User-Clients
+repräsentiert vollständig Benutzer-gesteuerte Aspekte dynamischer Mitgliedschaften\grqq\ im System \cite{Stutzbach2004}. Ergebnisse einer solchen Untersuchung können
 damit für Peer-To-Peer-Systeme auf gleicher Basis herangezogen werden. Nach Stutzbach und Rejaie entspricht die Verteilung der Zeitwerte, über die sich Benutzer im
 System befinden, nicht, wie bisher angenommen, einer Poisson-Verteilung, sondern einer Exponentialverteilung.
 
 \paragraph{Gegenmaßnahmen:}
 Um den Auswirkungen von Churn entgegen zu wirken, wurden einige Techniken in Abhängigkeit von der zugrunde liegenden Netzwerkstruktur entwickelt. Mit
-Churn-Kompensation bei CMR-basierten Netzen (``Concentric Multi-ring Overlay'') beschäftigen sich Wepiw\'e und Albayrak in \cite{Giscard2006},
+Churn-Kompensation bei CMR-basierten Netzen (\glqq Concentric Multi-ring Overlay\grqq) beschäftigen sich Wepiw\'e und Albayrak in \cite{Giscard2006},
 bei DHT-basierten Netzen Rhea et al. in \cite{Rhea2004}. Ziel der beschriebenen Verfahren ist es, das Netzwerk in einem konsistenten Zustand zu
 halten bzw. das Netzwerk schnell in einen solchen wieder zurückzuführen.
 
 \paragraph{Auswirkungen von Churn auf \pubsubrss:}
-Verlassen einzelne Broker das Netzwerk, so kann man sich sehr leicht vorstellen, welche Auswirkungen das auf das Gesamtsystem hat: da das Brokersystem in einer
-baumartigen Struktur aufgebaut ist, bedeutet der Verlust einzelner Broker ein Auseinanderfallen des Baumes in mehrere unabhängige Teilbäume. Während das Erfragen
-von RSS-Feeds durch Subscriber und das Messen der roundtrip-times weiterhin vonstatten gehen kann, können zwischen den Teilbäumen keine Nachrichten mehr
-ausgetauscht werden. Je größer also der Zerfall ist, desto geringer wird der Aktualitätsgrad der RSS-Feeds sein und desto länger dauert eine Anpassung der
-Polling-Perioden der Subscriber an eine veränderte Serverbelastung, da eine Ausbalancierung der Polling-Perioden in immer geringerem Maße erfolgen wird.\\
+Verlassen einzelne Broker das Netzwerk, so kann man sich sehr leicht vorstellen, welche Auswirkungen das auf das Gesamtsystem hat: der Verlust einzelner Broker
+bedeutet ein Auseinanderfallen des Netzes in mehrere unabhängige Teilbäume, falls das Broker-System baumartig aufgebaut ist oder falls genug Broker ausfallen.
+Während das Erfragen
+von RSS-Feeds durch Subscriber und das Messen der roundtrip-times weiterhin vonstatten gehen kann, können zwischen den Teilbäumen (\glqq Inseln\grqq) keine Nachrichten mehr
+ausgetauscht werden. RSS-Feeds werden dadurch nicht mehr über das gesamte Overlay-Netzwerk verteilt.
+Da wir davon ausgehen, dass die Subscriber ihre Polling-Perioden optimal an die Server-Belastung angepasst haben und dieser an seiner
+Belastungsgrenze arbeitet, kann ein Anheben der Polling-Perioden keinen Ausgleich schaffen. Je größer der Zerfall ist,
+desto geringer wird folglich der Aktualitätsgrad der RSS-Feeds sein. Eine Anpassung der
+Polling-Perioden der Subscriber an eine veränderte Serverbelastung wird einen längeren Zeitraum beanspruchen, da eine Ausbalancierung der Polling-Perioden
+aufgrund fehlender durch das Notifikationssystem übertragener RSS-Feeds in geringerem Maße erfolgen wird.\\
 Welche Knoten in einem Netzwerk die Rolle der Broker übernehmen, bleibt zunächst offen. Ob Broker das System benutzergesteuert verlassen können, hängt ganz von der
-jeweiligen Umsetzung des Systems ab. Denkbar sind beispielsweise dedizierte Knoten, welche dauerhaft online sind und kaum Ausfallerscheinungen aufweisen. Deshalb
-wollen wir hier auf eine mögliche Kompensation von Churn bei Brokern nicht eingehen.\\
+jeweiligen Umsetzung des Systems ab. Denkbar sind beispielsweise dedizierte Knoten, welche dauerhaft online sind und kaum Ausfallerscheinungen aufweisen
+(Supernodes bei Gnutella und Kazaa \todo{Referenz}). Daher tritt Churn auf Brokerebene in Abhängigkeit des jeweiligen Notifikationssystems auf. Um die Auswirkungen
+von Churn auf dieser Ebene zu reduzieren, wären Rekonfigurationsverfahren auf Brokerebene notwendig. Cugola et al. beschäfftigen sich mit Rekonfigurationsalgorithmen
+bei Publish-Subscribe-Systemen in \cite{cugola02towards,picco03efficient}.
+Dies soll jedoch nicht Gegenstand dieser Arbeit sein und offen bleiben für zukünftige Entwicklungen.\\
 
 Da in \pubsubrss Klienten nicht direkt miteinander kommunizieren, hat Churn weder Auswirkung auf die Übertragungsgeschwindigkeit von Daten noch auf die
 Erreichbarkeit einzelner Daten (Feeds).\\
 Verlassen Subscriber das System, so hat das weniger Feed-Requests pro Zeiteinheit zur Folge, woraufhin die übrigen
-Subscriber ihre Polling-Perioden erniedrigen werden. Dies ist kein nachteiliger Effekt.\\
+Subscriber ihre Polling-Perioden verringern werden. Dies ist kein nachteiliger Effekt.\\
 Beim Eintreten von Subscribern in das System stellen diese zunächst ihren
 $cpp$ auf den von ihnen gewählten $ppp$ ein. Erst im Laufe der Messung der roundtrip-times werden diese Subscriber ihren $cpp$ erhöhen. Bei einer hohen Anzahl von
 neu in das System hinzukommenden Subscribern pro Zeiteinheit gibt es also eine erhöhte Rate an Feed-Requests. Dies bedeutet bei einer konstanten Churn-Rate eine
@@ -54,7 +62,7 @@ bisherigen Methode schlecht kompensiert werden kann (siehe Abschnitt \ref{exp:ch
 
 \subsubsection{Churn-Kompensation bei \pubsubrss}
 Um die negativen Auswirkungen von Churn bei \pubsubrss zu reduzieren, muss die Mehrbelastung des Servers durch neu hinzugekommene Subscriber so weit wie möglich
-vermieden werden. Dabei hilft uns folgende Idee: tritt ein Subscriber dem System bei, so existieren eventuell schon genügend Subscriber, welche einen
+vermieden werden. Eine Lösung kann aufgrund folgender Überlegung entwickelt werden: tritt ein Subscriber dem System bei, so existieren eventuell schon genügend Subscriber, welche einen
 aussagekräftigen $artt$ und $cpp$ berechnet haben. Der neu hinzugekommene Subscriber kann sich an diesen Richtwerten orientieren und muss seinen
 individuellen $cpp$ nicht mit Hilfe seines $ppp$ als Ausgangswert berechnen. Es wäre mit einigem Aufwand
 verbunden, die Anzahl der Subscriber im gesamten Netzwerk zu bestimmen. Es reicht jedoch aus, die Anzahl der Subscriber heranzuziehen, welche mit dem gleichen
@@ -77,7 +85,7 @@ public class InitialBrokerRSSFeed extends RSSFeed {
 
 }
 
-speichere_initiale_borkerinformationen(InitialBrokerRSSFeed feed) {
+speichere_initiale_brokerinformationen(InitialBrokerRSSFeed feed) {
 
         if ( feed.zahl_lokaler_subscriber < 2 )
           return;
