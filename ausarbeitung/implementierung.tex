@@ -33,7 +33,7 @@ es beispielsweise möglich Knoten abzumelden, Knoten zu blockieren oder Parameter
 
 Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsumgebung vor.
 Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
-agierenden Einheiten vermittelt, ist die sogenannte \glqq Engine\grqq , repräsentiert durch die Klasse \texttt{Engine}. Selbständig agierende Einheiten können
+agierenden Einheiten vermittelt, ist die sogenannte \glqq Engine\grqq{} , repräsentiert durch die Klasse \texttt{Engine}. Selbständig agierende Einheiten können
 Aktionen ausführen oder Ereignisse hervorrufen. Sie repräsentieren beispielsweise Knoten in einem Netzwerk und werden durch die Klasse \texttt{Node}
 implementiert. Komponenten der Klasse \texttt{Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten zuschicken, welche mit Hilfe der Klasse
 \texttt{Message} umgesetzt wurden. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
@@ -123,7 +123,7 @@ abgewiesene Anfragen, $serverQueueSize$ bestimmt die Größe der Server-Queue.\\
 
 Der empfangende Subscriber (bzw. Publisher) eines Feeds erzeugt einen neuen RSS-Feed ausschließlich mit den für ihn neuen Events und sendet diesen an den
 ihm zugewiesenenen Broker. Dieser speichert den Feed in der Variablen \texttt{feed}, extrahiert seinerseits die neu hinzugekommenen Events und leitet diese als neuen Feed an
-alle mit ihm verbundenen Subscriber und Broker weiter. Dies entspricht der Filtertechnik \glqq flooding\grqq\ (siehe \cite{MuFiBu:2002:FilterSimilarities}).
+alle mit ihm verbundenen Subscriber und Broker weiter. Dies entspricht der Filtertechnik \glqq flooding\grqq{} (siehe \cite{MuFiBu:2002:FilterSimilarities}).
 Um diese Arbeit in angemessenem Rahmen zu halten, wurden keine weiteren Filtertechniken implementiert. Die Methoden zur Abstimmung und Staukontrolle entsprechen
 weitestgehend den in Kapitel \ref{adapt_informationsverteilung} vorgestellten Methoden.
 

@@ -1,7 +1,7 @@
 \section{Timer}
 \label{css:timer}
 Ein wichtiger Bestandteil der im weiteren Verlauf der Arbeit vorgestellten Verfahren sind Timer. Daher stellen wir
-zunächst dar, was unter dem Begriff ``Timer'' zu verstehen ist und welche Problematiken sich im Umgang mit Timern ergeben.\\
+zunächst dar, was unter dem Begriff \glqq Timer\grqq{} zu verstehen ist und welche Problematiken sich im Umgang mit Timern ergeben.\\
 
 Bei der Kommunikation zwischen Computern werden Informationen im allgemeinen in einzelne Datenpakete eingeteilt und zwischen
 den beteiligten Computern ausgetauscht. Ein Timer ist ein Mechanismus, um in Computer-Kommunikationsnetzen Fehler erkennen zu können \cite{18216},
@@ -14,9 +14,9 @@ so wird ein eventuell aufgetretener Fehler zu spät erkannt. Ist die Zeitspanne d
 Um ein optimales Leistungsverhalten zu erzielen, wird ein Gleichgewicht zwischen diesen gegensätzlichen Zielen angestrebt.\\
 
 Verschiedene Timer werden bei Kommunikationsprotokollen (Bsp. TCP, siehe Abschnitt \ref{staukontrolle_tcp}) verwendet, um verschiedenartige
-Formen der Kommunikationsstörung zu erkennen. So sorgt ein ``retransmission-timer'' für das wiederholte Aussenden von eventuell verloren gegangenen
-Datenpaketen. Dagegen gibt ein ``death-timer'' Auskunft über den Zusammenbruch einer Datenverbindung \cite{18216}. Die Zeitspannen
-(``Timeout-Intervalle'') werden dabei je nach Timer unterschiedlich gesetzt. Um ein Gleichgewicht zwischen der Reduzierung falscher Alarme
+Formen der Kommunikationsstörung zu erkennen. So sorgt ein \glqq retransmission-timer\grqq{} für das wiederholte Aussenden von eventuell verloren gegangenen
+Datenpaketen. Dagegen gibt ein \glqq death-timer\grqq{} Auskunft über den Zusammenbruch einer Datenverbindung \cite{18216}. Die Zeitspannen
+(\glqq Timeout-Intervalle\grqq{}) werden dabei je nach Timer unterschiedlich gesetzt. Um ein Gleichgewicht zwischen der Reduzierung falscher Alarme
 und der rechtzeitigen Erkennung aufgetretener Störungen zu erreichen, werden die Timeout-Intervalle meistens dynamisch und situationsabhängig
 bestimmt. Folgende Situationen können nach Zhang \cite{18216} beispielsweise für das Ablaufen von retransmission-timern ursächlich sein:
 \begin{enumerate}

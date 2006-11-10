@@ -1,4 +1,119 @@
 \chapter{Einleitung}
+Der Austausch von Informationen hat seit jeher einen großen Stellenwert in menschlichen Gemeinschaften.
+\begin{notizen}
+  \begin{itemize}
+  \item ermöglicht Reaktion auf veränderten Zustand der Umgebung
+  \item ermöglicht veränderte Reaktion auf Zustand der Umgebung
+  \item Bereitstellung von Informationen auf Webseiten: geeignet für statische Informationen
+  \item stark dynamisch Informationen erfordern Notifikationssystem
+  \end{itemize}
+\end{notizen} 
+
 \section{Motivation}
+Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub bzw. Pub/\-Sub-System) finden sich drei
+Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren
+sich für bestimmte Informationen und können diese abonnieren (subskribieren);
+\glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen an die Subscriber.
+Aufgrund der indirekten Verbindung zwischen Subscribern und Publishern über die Broker brauchen sich Publisher nicht um eine Vielzahl von
+Interessenten zu kümmern.
+Zudem lässt die broker-seitige Ansammlung einer Reihe von Informationen die Definition von Filtern zu, durch die
+anbieterübergreifend Informationen seitens der Subscriber abgefragt werden können.\\
+
+RSS (Really Simple Syndication) zählt zwar zu den Pub/Sub-Systemen jedoch nicht zu den verteilten push-basierten, wie sie oben beschrieben wurden,
+denn es folgt dem klassischen Client/Server-Ansatz.
+Es handelt sich um zentralisiertes Polling, Message-Broker sind hierbei nicht vorgesehen:
+auf einer Webpage wird ein RSS-Feed (aktueller Beitrag) vom RSS-Server als XML-Datei abgelegt.
+Ein Feed ist einem Thema (Channel) zugeordnet und beinhaltet
+verschiedene Einträge (z.B. Nachrichten-Schlagzeilen). Interessenten bzw. Nutzer können nun diese Feeds
+herunterladen. Da nicht vorhersehbar ist, zu welchem Zeitpunkt eine Aktualisierung der Feeds seitens des Servers erfolgen wird,
+müssen die Nutzer in regelmäßigen
+Zeitabständen beim Server nachfragen, um über Neuigkeiten informiert zu sein (Polling). Die Definition von Filtern ist nicht vorgesehen,
+d.h. Nutzer erhalten den kompletten Feed und müssen
+sich notfalls bei vielen verschiedenen Servern subskribieren, um eine große Auswahl an Informationen zu einem bestimmten Thema zu erhalten.
+RSS-Feeds sind über die Channels zwar themenbasiert organisiert (vgl. \cite{LiuVenSirer:2005:MeasureRSSPubSub}), jedoch wird die inhaltlich thematische
+Zuordnung auf Server-Seite vorgenommen. Eine thematische Filterung 
+aus Nutzersicht auf höherer Ebene kann lediglich lokal auf Nutzerseite erfolgen.\\
+Das ständige Abfragen des Servers durch möglicherweise hunderttausende von Abonnenten führt zu einer
+starken server-seitigen Last (vgl. \cite{SandlerEtAl:2005:FeedTree},
+\cite{Hicks:2004:RSSBandwith}).
+Möchte ein Nutzer eine mit dem Publisher möglichst synchronisierte Aktualisierung der Feeds erreichen, so muss er die Polling-Rate
+hoch setzen. Dies bedeutet wiederum eine höhere Server-Belastung. Um eine hohe Belastung durch hohe Polling-Raten zu unterbinden, haben Server die
+Möglichkeit, einen Nutzer (abgrenzbar durch seine IP-Adresse), dessen Polling-Rate zu hoch ist, vorübergehend zu blocken.
+Dadurch ist der Grad der Aktualität der RSS-Feeds begrenzt.
+Beispiele für die (RSS-basierten) Datenmengen, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
+in \cite{SandlerEtAl:2005:FeedTree}.
 \section{Ziele der Arbeit}
+Um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität der Informationen und eine höhere Flexibilität in Bezug
+auf die Auswahl der Informationen seitens der Nutzer zu erreichen, bietet es
+sich an, ein Publish/Subscribe-System einzusetzen. RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
+übermitteln, welche die Feeds ihrerseits an Nutzer (Subscriber) weiterleiten. Dies würde jedoch bedeuten,
+dass sowohl auf Nutzer- als auch auf RSS-Server-Seite die schon bestehenden Anwendungen durch neue ersetzt werden müssten oder entsprechende Software
+installiert werden müsste.
+Solch ein Ansatz würde sicherlich auf
+Akzeptanzschwierigkeiten stoßen. Außerdem würde der Aktualitätsgrad hier wie auch bei dem Ansatz unten mit nur einem Poller von dem Overlay-Netz abhängen
+und könnte ungünstig ausfallen! Um dies zu verhindern, bietet sich folgendes Konzept an: Die Rolle der RSS-Server bleibt bestehen und ändert sich nicht.
+Nutzer entsprechen sowohl den Publishern als auch den Subscribern.
+In der Rolle des Publishers erfragt ein Nutzer den aktuellen Feed beim
+RSS-Server und speist ihn in das Netz ein bzw. übermittelt ihn an seinen lokalen Broker.
+Dieser sorgt dafür, dass der Feed an alle Broker weitergeleitet wird, zu denen Subscriber verbunden sind, die sich für diesen interessieren.
+In der Rolle eines Subscribers erhält ein Nutzer einen Feed von
+einem Broker. Für einen Nutzer gibt es also zwei Möglichkeiten einen Feed zu erhalten: direkt vom RSS-Server oder über das Netzwerk.
+Um eine Server-Entlastung zu erreichen, würde es ausreichen, nur
+einen Publisher zu definieren, welcher die Feeds in das System einspeist. Alle übrigen Nutzer/Subscriber würden
+den Feed über das Netzwerk erhalten,
+wodurch weniger Anfragen beim RSS-Server auftreten würden. Doch
+dieses Konzept ginge auf Kosten der Aktualität der Feeds, da es möglicherweise sehr lange dauert, bis ein Feed einen Subscriber erreicht (abhängig von der
+Struktur des Overlay-Netzes).
+Es sollte also verschiedene Publisher geben, welche Feeds in das Netzwerk einspeisen und die geeignet im Overlay-Netzwerk positioniert sind.
+Die Publisher müssen sich untereinander koordinieren, welche von
+ihnen den nächsten Feed herunterladen. Sind es zu viele Publisher, so führt das wiederum zu einer Mehrbelastung des Servers. Es gilt also, ein Optimum
+zwischen Aktualitätsgrad und Server-Belastung zu finden.
+
+Ziel dieser Arbeit ist es, ein hohes Update-Intervall ohne Blockierung zu erreichen, indem sich die Publisher beim Polling abwechseln.
+Dies kann den Grad an Aktualität der Feeds erhöhen.\\
+Die RSS-Feeds können mit Hilfe von Filtern, welche durch Subscriber definiert werden,
+schon auf der Broker-Ebene gefiltert werden (Filter werden von Brokern an
+Nachbarbroker weitergeleitet). Die Filterung kann anbieterübergreifend wirken, da sich Feeds von unterschiedlichen
+RSS-Servern an einem Broker sammeln. Um eine genaue Analyse der Feeds bezüglich der angegebenen Filter zu ermöglichen, wird die inhaltsbasierte Filterung
+(content-based filtering, \cite{Muehl:2001:GenericConstraints}) favorisiert. Hierfür ist es notwendig, nicht nur die Feeds selbst, sondern
+auch die durch sie referenzierten Daten herunterzuladen, um sie in den Filtervorgang mit einzubeziehen.
+Die Filterung der Feeds auf Broker-Ebene ermöglicht den Subscribern eine
+inhaltsorientierte Sichtweise auf Subskriptionen im Gegensatz zur bisherigen anbieterorientierten Sichtweise.\\\\
+Vorteile des genannten Ansatzes gegenüber anderen Ansätzen (wie z.B. FeedTree\cite{SandlerEtAl:2005:FeedTree}) sind:
+\begin{itemize}
+  \item Die Lösung kann sich problemlos in ein bestehendes RSS-System integrieren, d.h. es ist keine neue Anbieter-Software
+        für RSS-Server nötig
+  \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z.B. Abfangen der Anfragen durch eine Proxy)
+  \item Eine komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig, auf schon bestehende Systeme kann zurückgegriffen und aufgebaut werden
+        (z.B. REBECA\cite{MuFiBu:2001:ArchFrameECommApp})
+\end{itemize}
+
+Der zu entwerfende Algorithmus sollte dabei folgende Eigenschaften erfüllen:
+\begin{itemize}
+\item Hotspots (gleichzeitige Anfrage aller Publisher an einen RSS-Server) sollen nach Möglichkeit vermieden werden
+\item Dem Netz spontan beigetretene Broker sollen erforderliche Parameter automatisch beziehen bzw. einstellen:
+  $\longrightarrow$ Selbstkonfiguration\\
+  Die Parameter der Broker sollen sich den veränderlichen Bedingungen des Netzes (z.B. Netzgröße) anpassen:
+  $\longrightarrow$  Adaption\\
+  Das Netz soll auftretende Fehler in der Netzkonfiguration überstehen und selbständig beseitigen (z.B eventuelle Zyklen im
+  Netz):
+  $\longrightarrow$ Selbststabilisierung\\
+  Siehe dazu auch \cite{HeMueGei:2005:SelfMa}
+\end{itemize}
+
+Folgende Fragen werden dabei aufgeworfen:
+\begin{itemize}
+\item Nach welcher Methode stimmen sich die Publisher ab, um ein verteiltes Erfragen der Feeds zu erreichen?
+\item Nach welchen Kriterien bestimmen sich Subscriber-bezogene Zuständigkeiten eines Brokers?
+\item Muss es sich immer um ein zusammenhängendes Netz handeln, oder soll es zulässig sein, dass ein Netz (zeitweise?) aus mehreren Fragmenten besteht?
+\item Sollen nur die Feeds übermittelt werden oder auch die durch sie repräsentierten Daten?
+\item Wie bestimmt sich das Polling-Intervall?
+\end{itemize}
+Im Verlauf der Arbeit sollen diese Fragen erörtert und angemessene Lösungen gefunden werden. Auf Grundlage einer bestehenden Overlay-Netzwerk-Software soll
+eine Simulation implementiert werden, um die entwickelten Algorithmen umzusetzen, zu testen und zu demonstrieren.
 \section{Aufbau der Arbeit}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

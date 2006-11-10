@@ -23,9 +23,9 @@ Um sich dem entsprechenden Broker bekannt zu machen und Filter zu hinterlegen, m
 Registrierungsnachricht registrieren.
 Ein Broker braucht nur an diejenigen Subscriber aktuelle Feeds zu übermitteln, welche auch tatsächlich online sind. Zusätzlich ist es also notwendig,
 dass ein Subscriber in regelmäßigen Zeitabständen den jeweiligen Broker über seinen Online-Status unterrichtet (nennen wir eine solche Nachricht
-``KEEPALIVE-Nachricht''). Erhält ein Broker eine KEEPALIVE-Nachricht eines Subscribers, für den er den Zustand ``ist offline'' gespeichert hat,
+\glqq KEEPALIVE-Nachricht\grqq{}). Erhält ein Broker eine KEEPALIVE-Nachricht eines Subscribers, für den er den Zustand \glqq ist offline\grqq{} gespeichert hat,
 sollte er diesem eine Zusammenstellung der aktuellsten Ereignisse übermitteln. Denn kommt es aufgrund von Störungen im physischen Netzwerk oder
-aufgrund von Netzüberlastung zu verloren gegangenen KEEPALIVE-Nachrichten, so gilt der Subscriber für seinen Broker als ``offline''. Dieser wird ihm
+aufgrund von Netzüberlastung zu verloren gegangenen KEEPALIVE-Nachrichten, so gilt der Subscriber für seinen Broker als \glqq offline\grqq{}. Dieser wird ihm
 daraufhin keine Feeds mehr übermitteln.
 Hat der Subscriber aufgrund von adaptiven Maßnahmen seine aktuelle Polling-Periode stark angehoben, so wird er zunächst keine weiteren Feeds beim
 entsprechenden RSS-Server selbständig erfragen, so dass ihm eventuell Informationen verloren gehen. Die Menge verloren gegangener Informationen
@@ -33,4 +33,8 @@ kann geringer gehalten werden, wenn dem Subscriber die letzten Ereignisse bei Wi
 Entsprechend sollte ein Subscriber seinen jeweiligen Broker darüber informieren, wenn er offline geht, um unnötigen Datentransfer zu vermeiden.\\
 
 Im Zusammenhang mit Brokern werden noch einige weitere Maßnahmen und Nachrichtentypen notwendig sein, auf die wir jedoch erst in späteren Kapiteln zu sprechen
-kommen werden, da sie Anpassungen an spezielle Bedürfnisse darstellen (siehe Kapitel ``Churn'' \ref{cs:churn}) .
+kommen werden, da sie Anpassungen an spezielle Bedürfnisse darstellen (siehe Kapitel \glqq Churn\grqq{} \ref{cs:churn}) .
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

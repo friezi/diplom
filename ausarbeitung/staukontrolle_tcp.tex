@@ -14,7 +14,7 @@ Verbindungsknoten (einschließlich des Empfangsknotens) auf und kann durch versch
   \item [Bandbreiten:]
     Unterschiedliche Bandbreiten auf dem Weg zwischen Sender und Empfänger beeinflussen die Übertragungsgeschwindigkeit einer Verbindung
     nachteilig in der
-    Form, dass die ``langsamste'' Leitung (also die mit der geringsten Bandbreite) die
+    Form, dass die \glqq langsamste\grqq{} Leitung (also die mit der geringsten Bandbreite) die
     Gesamt-Übertragungsgeschwindigkeit vorgibt. Trifft eine schnelle Leitung auf eine langsame Leitung, so können die an der langsamen Leitung ankommenden
     Pakete nicht schnell genug weitergeleitet werden. An diesem Knoten kommt es zum Pufferüberlauf, Datenpakete gehen verloren.
   \item [Anzahl der Verbindungen:]
@@ -37,27 +37,27 @@ Bezeichnungen):
   \item fast retransmit
 \end{itemize}
 
-Dabei soll erreicht werden, dass die maximal mögliche Bandbreite (begrenzt durch die minimale Bandbreite (``bottleneck'') auf dem Verbindungsweg, s. o.) voll
+Dabei soll erreicht werden, dass die maximal mögliche Bandbreite (begrenzt durch die minimale Bandbreite (\glqq bottleneck\grqq{}) auf dem Verbindungsweg, s. o.) voll
 ausgenutzt wird, ohne
 dass Pakete verloren gehen; es darf also kein Paket in das Netzwerk eingespeist werden, bevor ein altes Paket entfernt wurde (die Verbindung befindet sich dann im
-``Equilibrium'', der Paketfluss ist ``conservative'' \cite{jacobson88congestion}). Im Folgenden wollen wir die wichtigsten der oben genannten Algorithmen
+\glqq Equilibrium\grqq{}, der Paketfluss ist \glqq conservative\grqq{} \cite{jacobson88congestion}). Im Folgenden wollen wir die wichtigsten der oben genannten Algorithmen
 vorstellen. Eine genaue Herleitung und Analyse der Algorithmen geht jedoch über den Rahmen dieser Arbeit hinaus.
 Wir verweisen auf die entsprechenden Quellen in den Literaturangaben.
 
 \paragraph{more aggressive receiver ack policy:}
 \footnote{Hier ist in \cite{jacobson88congestion} nicht eindeutig feststellbar,  worauf sich van Jacobson genau bezieht, da er diese Bezeichnung im weiteren Text
 nicht mehr verwendet. Es erschien sinnvoll, die folgende im o. g. Text zu findende Erklärung diesem Thema zuzuordnen.}TCP
-ist ``self-clocking'': da $acks$ erst nach Erhalt der entsprechenden Datenpakete versendet werden können, bestimmt die Rate der ankommenden $acks$ die
+ist \glqq self-clocking\grqq{}: da $acks$ erst nach Erhalt der entsprechenden Datenpakete versendet werden können, bestimmt die Rate der ankommenden $acks$ die
 Rate, mit der weitere Datenpakete ausgesendet werden sollen. Die Senderate passt sich somit automatisch der Bandbreite an.
 
 \paragraph{slow-start:}
-Durch das ``self-clocking'' tritt nur beim Start des Datentransfers ein Problem auf, da
-hier zunächst eine feste Rate gewählt werden muss. Diese wird zu Beginn relativ niedrig gewählt, bzw. ein Staufenster ``congestion window'' ($cngw$) 
+Durch das \glqq self-clocking\grqq{} tritt nur beim Start des Datentransfers ein Problem auf, da
+hier zunächst eine feste Rate gewählt werden muss. Diese wird zu Beginn relativ niedrig gewählt, bzw. ein Staufenster \glqq congestion window\grqq{} ($cngw$) 
 bestimmt die Anzahl der Pakete pro Sendevorgang. Bei Start des Transfers oder nach Paketverlust wird die Größe des Staufenster auf 1 gesetzt.
-Für jedes $ack$ wird das Staufenster um den Betrag 1 erhöht. Begrenzt wird dessen Größe durch das ``advertised receiver window'',
+Für jedes $ack$ wird das Staufenster um den Betrag 1 erhöht. Begrenzt wird dessen Größe durch das \glqq advertised receiver window\grqq{},
 welches vom Empfänger festgelegt wird und angibt, wieviele Bytes maximal als nächstes übersendet werden sollen. Die Zunahme der Größe $w$ des
 Staufensters geschieht in der Zeit
-$rtt\cdot log_2w$, wobei $rtt$ die ``roundtrip-time'' des letzten versendeten Datenpaketes ist (Zeit zwischen Versenden eines Datenpaketes und Erhalt des
+$rtt\cdot log_2w$, wobei $rtt$ die \glqq roundtrip-time\grqq{} des letzten versendeten Datenpaketes ist (Zeit zwischen Versenden eines Datenpaketes und Erhalt des
 entsprechenden $acks$). Siehe dazu \cite{jacobson88congestion,RFC2581}. 
 
 \paragraph{roundtrip-time variance estimation:}
@@ -66,22 +66,22 @@ $Acks$ können die Geschwindigkeit des Datenflusses steuern, doch was geschieht, 
 beispielsweise bei voll ausgenutzter Bandbreite plötzlich zwei Datenströme dieselbe Leitung teilen, kommt es bei gleichbleibender Datentransferrate mit Sicherheit zu
 Paketverlusten und somit zu
 ausbleibenden $acks$. Der Sender muss einen Timer unterhalten, bei dessen Ablauf das zuletzt gesendete Datenpaket erneut versendet wird (im Folgenden als
-``Wiederholung'' bezeichnet). Paketverlust kann auch
+\glqq Wiederholung\grqq{} bezeichnet). Paketverlust kann auch
 durch Beschädigung der Daten während der Übermittlung auftreten. Nach van Jacobson \cite{jacobson88congestion} liegt die Wahrscheinlichkeit dafür aber weit
 unter 1\%. Daher lassen Timeouts bei gut eingestellten Timern mit sicherer Gewissheit auf Paketverluste schließen \footnote{Zur Problematik
-bei Timern siehe \ref{css:timer}}. Diese Timeouts werden pro Verbindung dynamisch berechnet; im Folgenden bezeichnet $rto$ das ``retransmission timeout''-Intervall,
+bei Timern siehe \ref{css:timer}}. Diese Timeouts werden pro Verbindung dynamisch berechnet; im Folgenden bezeichnet $rto$ das \glqq retransmission timeout\grqq{}-Intervall,
 also die Zeitdifferenz bis zum nächsten Aussenden eines Datenpaketes. Entsprechend der TCP-Spezifikation
 berechnet sich dieser Wert wie folgt \cite{18216}:
 \begin{equation}
   rto=min\{UBound, max\{LBound, \beta \cdot srtt\}\}
 \end{equation}
 $\beta$ ist dabei ein empirisch ermittelter Varianz-Faktor, $UBound$ und $LBound$ sind untere und
-obere Schranke für den $rto$, $srtt$ ist die ``smoothed roundtrip time'' und
+obere Schranke für den $rto$, $srtt$ ist die \glqq smoothed roundtrip time\grqq{} und
 wird wie folgt ermittelt:
 \begin{equation}
   srtt= \alpha \cdot  srtt+ (1 - \alpha) \cdot  rtt
 \end{equation} 
-$\alpha$ ist ein ebenfalls empirisch ermittelter Glättungsfaktor (``smoothing factor''). Empfohlene Werte sind für $\alpha:$ $0.8 \sim 0.9$ und für $\beta:$
+$\alpha$ ist ein ebenfalls empirisch ermittelter Glättungsfaktor (\glqq smoothing factor\grqq{}). Empfohlene Werte sind für $\alpha:$ $0.8 \sim 0.9$ und für $\beta:$
 $1.3 \sim 2$ \cite{18216}.\\
 Laut van Jacobson \cite{jacobson88congestion} liegt hierin folgende Problematik: $\beta$ kann sich höchstens an eine bis zu 30\% gesteigerte Last anpassen. Aber die
 Varianz des Wertes $rtt$ steigert sich rapide mit ansteigender Last. Bei
@@ -102,16 +102,16 @@ ausgenutzt wird. Daher sollte die Größe der Staufenster nach einem bestimmten Sc
 \begin{itemize}
   \item Nach jedem Timeout wird $cwnd$ halbiert.
   \item Nach jedem $ack$ für neue Daten wird $cwnd$ um $1/cwnd$ erhöht.
-  \item Beim Senden wird das Minimum an Daten von $cwnd$ und dem ``receivers advertised window'' gesendet.
+  \item Beim Senden wird das Minimum an Daten von $cwnd$ und dem \glqq receivers advertised window\grqq{} gesendet.
 \end{itemize}
 
-Dieser Algorithmus trägt zur Stauvermeidung (``congestion avoidance'') bei und besteht parallel zum ``slow-start''-Algorithmus. Van Jacobson gibt in
+Dieser Algorithmus trägt zur Stauvermeidung (\glqq congestion avoidance\grqq{}) bei und besteht parallel zum \glqq slow-start\grqq{}-Algorithmus. Van Jacobson gibt in
 \cite{jacobson88congestion} ein Auswahlkriterium an, nachdem zustandsabhängig zwischen beiden Algorithmen ausgewählt wird.
 
 \paragraph{Karn's clamped retransmit backoff:}
 \label{csp:karns_algorithmus}
 Sequenznummern ermöglichen die Zuordnung eines $acks$ zu dem entsprechenden Datenpaket. Kommt es aufgrund von Timeouts zu Wiederholungen
-desselben Datenpaketes, so tritt ein Problem auf, welches Karn und Partridge in \cite{Karn1991} als ``retransmission ambiguity'' bezeichnen:
+desselben Datenpaketes, so tritt ein Problem auf, welches Karn und Partridge in \cite{Karn1991} als \glqq retransmission ambiguity\grqq{} bezeichnen:
 es kann nicht festgestellt werden, auf welche Aussendung desselben Datenpaketes sich das $ack$ bezieht. Damit ist nicht klar, anhand welches Paketes
 sich der $rtt$ bestimmen soll, er wird in jedem Falle nicht verlässlich sein. Verschiedene Protokollimplementationen behandeln dieses Problem
 auf unterschiedliche Weise: teils wird die am längsten zurückliegende Aussendung als Grundlage zur Berechnung herangezogen, teils die am kürzesten zurückliegende
@@ -129,20 +129,20 @@ lassen den $rtt$ bei Wiederholungen außer acht. Dies geht gut, solange der $rto$
 gut gewählt, so ist die Möglichkeit dafür sehr gering. Tritt dieser Fall dennoch ein, so kommt es (wie im letztgenannten Fall) zu überflüssigen Wiederholungen.\\
 
 Um diesem Problem zu begegnen, schlägt Karn folgenden Algorithmus vor \cite{Karn1991}:\\
-Grundsätzlich wird der $rto$ nach einem Timeout vergrößert (``back-off'').
+Grundsätzlich wird der $rto$ nach einem Timeout vergrößert (\glqq back-off\grqq{}).
 Erreicht ein $ack$ den Sender nach einer Wiederholung eines Datenpaketes, so wird keine Neuberechnung des $rtt$ und $srtt$ vorgenommen. Dafür wird der neu
-ermittelte (``backed-off'') $rto$ als Grundlage für die nächste Wiederholung bzw. für die Aussendung des nächsten Datenpaketes herangezogen. Nur wenn ein $ack$
+ermittelte (\glqq backed-off\grqq{}) $rto$ als Grundlage für die nächste Wiederholung bzw. für die Aussendung des nächsten Datenpaketes herangezogen. Nur wenn ein $ack$
 den Sender ohne vorausgehende Wiederholung erreicht, wird der $rto$ mit Hilfe des nun neu berechneten $srtt$ ermittelt.\\
 Die Wahl des neuen $rto$ im Falle einer Wiederholung muss laut Karn so erfolgen, dass der $rto$ größer ist als die tatsächliche roundtrip-time. Typischerweise
-geschieht die Steigerung des $rto$ exponentiell (entsprechend des ``exponential retransmit timer backoff'', s. o.).
+geschieht die Steigerung des $rto$ exponentiell (entsprechend des \glqq exponential retransmit timer backoff\grqq{}, s. o.).
 
 \paragraph{fast retransmit:}
 Erreichen den Sender vier identische $acks$ in Folge, so wird der Sender das vom Empfänger erwartete Datenpaket sofort aussenden, ohne auf das
-Ablaufen des Retransmission-Timers zu warten. ``Slow-start'' wird so lange ausgesetzt, bis ein anderes, nicht zu den vorherigen identisches $ack$ den Sender
+Ablaufen des Retransmission-Timers zu warten. \glqq Slow-start\grqq{} wird so lange ausgesetzt, bis ein anderes, nicht zu den vorherigen identisches $ack$ den Sender
 erreicht  (\cite{RFC2581}). Die identischen $acks$ lassen sowohl darauf schließen, dass ein Datenpaket verloren gegangen ist, als auch, dass andere Datenpakete den
 Empfänger höchstwahrscheinlich erreichen, da die identischen $acks$ sonst ausgeblieben wären. Die den identischen $acks$ zugrundeliegenden Datenpakete beeinflussen
 das Datenaufkommen nicht mehr, da diese schon die Empfänger-Queue erreicht haben. Daher geht man davon aus, dass das erneute, schnelle Senden des fehlenden
-Datenpaketes das Netz nicht wesentlich im Negativen beeinflusst. ``Fast retransmit'' sollte, muss aber nicht, von einer konkreten TCP-Implementation unterstützt
+Datenpaketes das Netz nicht wesentlich im Negativen beeinflusst. \glqq Fast retransmit\grqq{} sollte, muss aber nicht, von einer konkreten TCP-Implementation unterstützt
 werden.\\
 
 Zusätzliche Erweiterungen zum TCP in Hinsicht auf hohe Performanz finden sich in \cite{jacobson93tcp}.

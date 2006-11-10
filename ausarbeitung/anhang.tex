@@ -11,15 +11,15 @@ die Füllhöhe der Server-Queue und die Anzahl der abgewiesenen Feed-Requests pro 
 \importgnuplotps{Legende der Diagramme}{Abb:Legende_Diagramme}{legende}
 
 Auf der y-Achse (siehe Abbildung \ref{Abb:Legende_Diagramme}) wird die Anzahl der Anfragen an einen RSS-Server dargestellt.
-Unterhalb der Queue (``$<$Anfragen in der Queue$>$'') ist die Füllgröße der Queue zu diesem Zeitpunkt zu sehen.
-Oberhalb der Queue (``$<$Verworfene Anfragen$>$'') ist die Anzahl der abgewiesenen Nachrichten zu sehen. Die Darstellung beider Größen innerhalb
+Unterhalb der Queue (\glqq $<$Anfragen in der Queue$>$\grqq{}) ist die Füllgröße der Queue zu diesem Zeitpunkt zu sehen.
+Oberhalb der Queue (\glqq $<$Verworfene Anfragen$>$\grqq{}) ist die Anzahl der abgewiesenen Nachrichten zu sehen. Die Darstellung beider Größen innerhalb
 eines Diagramms ist dabei nicht ganz unproblematisch, da die Füllgröße der Queue einen Zustand zum aktuellen Zeitpunkt repräsentiert,
 während sich die Anzahl der abgewiesenen Nachrichten über einen Zeitraum von einem Zeitpunkt in der
 Vergangenheit bis zum aktuellen Zeitpunkt erstreckt. Da die Nachrichten in der Simulation aber sequenziell bearbeitet werden,
 kummulieren sich die abgewiesenen Nachrichten
 (Kurve über der Queue steigt), bis der Server eine nächste Antwort aussendet (Kurve über der Queue bricht ab). Dadurch kann das
 Verhältnis zwischen mittlerer Ankunftsrate der Anfragen und mittlerer Bearbeitungszeit gut nachvollzogen werden.\\
-Im Bereich ``$<$Aktionsbereich$>$'' werden Aktionen angezeigt, die während der Simulation aufgetreten sind. Tabelle \ref{Tab:Aktionssymbole}
+Im Bereich \glqq $<$Aktionsbereich$>$ \grqq{} werden Aktionen angezeigt, die während der Simulation aufgetreten sind. Tabelle \ref{Tab:Aktionssymbole}
 gibt eine Übersicht über die den Symbolen zugeordneten Aktionen mitsamt Beispielparametern.\\
 \begin{table}
   \begin{center}
