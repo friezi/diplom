@@ -62,7 +62,7 @@ try:
     seedvalue = linescanner.token( 0, file )
     file.close()
 except IOError:
-    print 'file "seed" not found'
+    print 'file ' + seedfile + ' not found'
     sys.exit()
 except linescanner.OutOfBoundsError, e:
     print e.value
