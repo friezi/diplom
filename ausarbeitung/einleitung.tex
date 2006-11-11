@@ -1,19 +1,27 @@
 \chapter{Einleitung}
-Der Austausch von Informationen hat seit jeher einen großen Stellenwert in menschlichen Gemeinschaften.
-\begin{notizen}
-  \begin{itemize}
-  \item ermöglicht Reaktion auf veränderten Zustand der Umgebung
-  \item ermöglicht veränderte Reaktion auf Zustand der Umgebung
-  \item Bereitstellung von Informationen auf Webseiten: geeignet für statische Informationen
-  \item stark dynamisch Informationen erfordern Notifikationssystem
-  \end{itemize}
-\end{notizen} 
+Der Austausch von Informationen hat seit jeher eine große Bedeutung in menschlichen Gemeinschaften. Das Internet stellt ein Medium dar,
+Informationen relativ schnell und leicht zur Verfügung zu stellen, auszutauschen und zu verbreiten. Zu diesem Zweck sind im Laufe der
+Zeit verschiedene Internet-Dienste entwickelt worden. Private Informationen können als e-mail (elektronische Post) versendet werden.
+Um Informationen einer breiten Öffentlichkeit zugänglich zu machen, findet die Möglichkeit, diese auf Webseiten zu präsentieren, häufig Anwendung.
+Für statische Informationen, die keinem stetigen Wechsel unterliegen, ist dies ein geeignetes Verfahren.
+Da im Internet präsentierte Informationen in zunehmendem Maße einen stark dynamischen Charakter aufweisen (z. B. Nachrichten-Schlagzeilen, Börsennachrichten), 
+sind Konzepte entwickelt worden, Interessenten über deren inhaltliche Änderungen zu unterrichten. Ein allgemeines Kommunikationsmodell, welches diesem Zweck gerecht
+wird, ist Publish/Subscribe.
+
+%\begin{notizen}
+%  \begin{itemize}
+%  \item ermöglicht Reaktion auf veränderten Zustand der Umgebung
+%  \item ermöglicht veränderte Reaktion auf Zustand der Umgebung
+%  \item Bereitstellung von Informationen auf Webseiten: geeignet für statische Informationen
+%  \item stark dynamisch Informationen erfordern Notifikationssystem
+%  \end{itemize}
+%\end{notizen} 
 
 \section{Motivation}
 Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub bzw. Pub/\-Sub-System) finden sich drei
 Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren
 sich für bestimmte Informationen und können diese abonnieren (subskribieren);
-\glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen an die Subscriber.
+\glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen (Benachrichtigungen) an die Subscriber.
 Aufgrund der indirekten Verbindung zwischen Subscribern und Publishern über die Broker brauchen sich Publisher nicht um eine Vielzahl von
 Interessenten zu kümmern.
 Zudem lässt die broker-seitige Ansammlung einer Reihe von Informationen die Definition von Filtern zu, durch die
@@ -22,8 +30,8 @@ anbieterübergreifend Informationen seitens der Subscriber abgefragt werden könne
 RSS (Really Simple Syndication) zählt zwar zu den Pub/Sub-Systemen jedoch nicht zu den verteilten push-basierten, wie sie oben beschrieben wurden,
 denn es folgt dem klassischen Client/Server-Ansatz.
 Es handelt sich um zentralisiertes Polling, Message-Broker sind hierbei nicht vorgesehen:
-auf einer Webpage wird ein RSS-Feed (aktueller Beitrag) vom RSS-Server als XML-Datei abgelegt.
-Ein Feed ist einem Thema (Channel) zugeordnet und beinhaltet
+auf einer Webseite wird ein RSS-Feed (aktueller Beitrag) vom RSS-Server als XML-Datei abgelegt.
+Ein Feed ist einem Thema (Kanal bzw. Channel) zugeordnet und beinhaltet
 verschiedene Einträge (z.B. Nachrichten-Schlagzeilen). Interessenten bzw. Nutzer können nun diese Feeds
 herunterladen. Da nicht vorhersehbar ist, zu welchem Zeitpunkt eine Aktualisierung der Feeds seitens des Servers erfolgen wird,
 müssen die Nutzer in regelmäßigen
@@ -42,10 +50,11 @@ Möglichkeit, einen Nutzer (abgrenzbar durch seine IP-Adresse), dessen Polling-Ra
 Dadurch ist der Grad der Aktualität der RSS-Feeds begrenzt.
 Beispiele für die (RSS-basierten) Datenmengen, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
 in \cite{SandlerEtAl:2005:FeedTree}.
+
 \section{Ziele der Arbeit}
 Um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität der Informationen und eine höhere Flexibilität in Bezug
 auf die Auswahl der Informationen seitens der Nutzer zu erreichen, bietet es
-sich an, ein Publish/Subscribe-System einzusetzen. RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
+sich an, ein push-basiertes Publish/Subscribe-System einzusetzen. RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
 übermitteln, welche die Feeds ihrerseits an Nutzer (Subscriber) weiterleiten. Dies würde jedoch bedeuten,
 dass sowohl auf Nutzer- als auch auf RSS-Server-Seite die schon bestehenden Anwendungen durch neue ersetzt werden müssten oder entsprechende Software
 installiert werden müsste.
@@ -67,51 +76,68 @@ Struktur des Overlay-Netzes).
 Es sollte also verschiedene Publisher geben, welche Feeds in das Netzwerk einspeisen und die geeignet im Overlay-Netzwerk positioniert sind.
 Die Publisher müssen sich untereinander koordinieren, welche von
 ihnen den nächsten Feed herunterladen. Sind es zu viele Publisher, so führt das wiederum zu einer Mehrbelastung des Servers. Es gilt also, ein Optimum
-zwischen Aktualitätsgrad und Server-Belastung zu finden.
-
+zwischen Aktualitätsgrad und Server-Belastung zu finden.\\
 Ziel dieser Arbeit ist es, ein hohes Update-Intervall ohne Blockierung zu erreichen, indem sich die Publisher beim Polling abwechseln.
 Dies kann den Grad an Aktualität der Feeds erhöhen.\\
-Die RSS-Feeds können mit Hilfe von Filtern, welche durch Subscriber definiert werden,
+
+Die Enwicklung eines solchen Systems soll folgende Weiterenwicklung ermöglichen: RSS-Feeds können mit Hilfe von Filtern, welche durch Subscriber definiert werden,
 schon auf der Broker-Ebene gefiltert werden (Filter werden von Brokern an
 Nachbarbroker weitergeleitet). Die Filterung kann anbieterübergreifend wirken, da sich Feeds von unterschiedlichen
 RSS-Servern an einem Broker sammeln. Um eine genaue Analyse der Feeds bezüglich der angegebenen Filter zu ermöglichen, wird die inhaltsbasierte Filterung
 (content-based filtering, \cite{Muehl:2001:GenericConstraints}) favorisiert. Hierfür ist es notwendig, nicht nur die Feeds selbst, sondern
 auch die durch sie referenzierten Daten herunterzuladen, um sie in den Filtervorgang mit einzubeziehen.
 Die Filterung der Feeds auf Broker-Ebene ermöglicht den Subscribern eine
-inhaltsorientierte Sichtweise auf Subskriptionen im Gegensatz zur bisherigen anbieterorientierten Sichtweise.\\\\
-Vorteile des genannten Ansatzes gegenüber anderen Ansätzen (wie z.B. FeedTree\cite{SandlerEtAl:2005:FeedTree}) sind:
+inhaltsorientierte Sichtweise auf Subskriptionen im Gegensatz zur bisherigen anbieterorientierten Sichtweise.\\
+
+Um diese Arbeit in angemessenem Rahmen zu halten, werden wir auf die Umsetzung von Filtertechniken nicht weiter eingehen, schaffen jedoch eine Basis für weitere Entwicklungen
+in dieser Richtung. Als Ausgangspunkt für Erweiterungen verwenden wir die
+Filtertechnik des \glqq floodings\grqq{} (siehe \cite{MuFiBu:2002:FilterSimilarities}).\\
+
+Vorteile des genannten Ansatzes gegenüber anderen Ansätzen (wie z.B. FeedTree, siehe \cite{SandlerEtAl:2005:FeedTree}) sind:
 \begin{itemize}
   \item Die Lösung kann sich problemlos in ein bestehendes RSS-System integrieren, d.h. es ist keine neue Anbieter-Software
         für RSS-Server nötig
-  \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z.B. Abfangen der Anfragen durch eine Proxy)
+  \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z.B. Abfangen der Anfragen durch einen Proxy)
   \item Eine komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig, auf schon bestehende Systeme kann zurückgegriffen und aufgebaut werden
-        (z.B. REBECA\cite{MuFiBu:2001:ArchFrameECommApp})
+        (z.B. RE\-BE\-CA \cite{MuFiBu:2001:ArchFrameECommApp})
 \end{itemize}
 
-Der zu entwerfende Algorithmus sollte dabei folgende Eigenschaften erfüllen:
-\begin{itemize}
-\item Hotspots (gleichzeitige Anfrage aller Publisher an einen RSS-Server) sollen nach Möglichkeit vermieden werden
-\item Dem Netz spontan beigetretene Broker sollen erforderliche Parameter automatisch beziehen bzw. einstellen:
-  $\longrightarrow$ Selbstkonfiguration\\
-  Die Parameter der Broker sollen sich den veränderlichen Bedingungen des Netzes (z.B. Netzgröße) anpassen:
-  $\longrightarrow$  Adaption\\
-  Das Netz soll auftretende Fehler in der Netzkonfiguration überstehen und selbständig beseitigen (z.B eventuelle Zyklen im
-  Netz):
-  $\longrightarrow$ Selbststabilisierung\\
-  Siehe dazu auch \cite{HeMueGei:2005:SelfMa}
-\end{itemize}
+Im Verlauf der Arbeit soll eine angemessene Lösung für die oben beschriebene Zielsetzung gefunden werden. Des Weiteren soll eine Simulationsungebung implementiert
+werden, um die entwickelten Algorithmen umzusetzen, zu evaluieren und zu demonstrieren.
 
-Folgende Fragen werden dabei aufgeworfen:
+\section{wissenschaftlicher Beitrag}
+Im Lauf der Arbeit entwickeln wir zwei voneinander relativ unabhängige Verfahren:
 \begin{itemize}
-\item Nach welcher Methode stimmen sich die Publisher ab, um ein verteiltes Erfragen der Feeds zu erreichen?
-\item Nach welchen Kriterien bestimmen sich Subscriber-bezogene Zuständigkeiten eines Brokers?
-\item Muss es sich immer um ein zusammenhängendes Netz handeln, oder soll es zulässig sein, dass ein Netz (zeitweise?) aus mehreren Fragmenten besteht?
-\item Sollen nur die Feeds übermittelt werden oder auch die durch sie repräsentierten Daten?
-\item Wie bestimmt sich das Polling-Intervall?
+\item Ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
+  tolerant ist, ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
+\item Ein Verfahren zur Adaption von Polling-Raten verschiedener Klienten an den Leistungsgrad eines Servers, das ohne Kenntnis der übrigen Klienten und der
+  Gesamtstruktur und -größe des Netzwerks auskommt
 \end{itemize}
-Im Verlauf der Arbeit sollen diese Fragen erörtert und angemessene Lösungen gefunden werden. Auf Grundlage einer bestehenden Overlay-Netzwerk-Software soll
-eine Simulation implementiert werden, um die entwickelten Algorithmen umzusetzen, zu testen und zu demonstrieren.
+Diese Verfahren wurden zwar in Hinsicht auf RSS entwickelt, sie lassen sich aber auch auf andere ähnlich gestaltete bzw. ereignisbasierte Systeme übertragen.
+Zudem lassen sich die Algorithmen durch geringfügige Modifikationen auch an
+paketorientierte Übertragungstechniken (z. B. UDP) anpassen, obwohl wir diese Verfahren für eine datenstrombasierte Übertragungsmethode (TCP) entworfen haben.
+
 \section{Aufbau der Arbeit}
+In Kapitel \ref{Abschnitt:Grundlagen} geben wir zunächst einen Überblick über ausgewählte Grundbegriffe und Verfahren, soweit sie für diese Arbeit von Bedeutung sind,
+und stellen diese vor. Im weiteren Verlauf der Arbeit werden wir Begriffe aus diesem Kapitel referenzieren.\\
+
+Kapitel \ref{Abschnitt:RSS_mittels_verteiltem_pubsub} befasst sich mit RSS und der designbezogenen Problematik im Kontext einer großen Nutzergemeinde. Wir werden die
+schon angesprochenen Ziele unserer Arbeit genauer formulieren und problematische Aspekte bei ihrer Umsetzung beleuchten. Zuletzt geben wir einen kurzen Überblick über
+Arbeiten, die sich auf ähnliche oder andere Weise diesem Thema zugewandt haben.\\
+
+In Kapitel \ref{adapt_informationsverteilung} werden wir ein auf unsere Zielsetzung abgestimmtes Lösungskonzept entwickeln. Die Entwicklung erfolgt dabei schrittweise,
+und wir werden sie durch die Analyse der sich ergebenden Begleitumstände motivieren.\\
+
+Kapitel \ref{c:implementierung} beschäftigt sich mit der Implementierung der entwickelten Simulationsumgebung. Wir stellen die wichtigsten Klassen vor, geben einen
+Überblick über die wichtigsten Methoden und ihr Wechselspiel und erläutern die Parametrisierung der Software.\\
+
+
+In Kapitel \ref{c:experimente} stellen wir Experimente vor, mit deren Hilfe wir die entwickelten Algorithmen getestet und evaluiert haben. Erläutert werden die Ergebnisse
+durch geeignete Graphiken und Diagramme.\\
+
+Kapitel \ref{Abschnitt:Zusammenfassung} fasst sowohl die geleistete Arbeit als auch die Ergebnisse zusammen und führt eine abschließende Bewertung durch.
+Darüber hinaus werden wir einen Ausblick auf mögliche Erweiterungen zu den entwickelten Verfahren geben.
+
 
 %%% Local Variables: 
 %%% mode: latex
