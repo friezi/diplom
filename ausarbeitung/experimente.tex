@@ -75,7 +75,7 @@ angegebenen Parameter als Standardwerte gesetzt.
 
 Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot rss\-Feed\-Msg\-RT$ bzw. $engineTimerPeriod\cdot rss\-Feed\-Request\-Msg\-RT$.
 Wir haben bewusst relativ große
-Nachrichtenlaufzeiten gewählt, um das System unter sehr ungünstigen Bedingungen zu testen. Große Nachrichtenlaufzeiten können bewirken,
+Nachrichtenlaufzeiten gewählt, um das System unter möglichst ungünstigen Bedingungen zu testen. Große Nachrichtenlaufzeiten können bewirken,
 dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfragen wiederholen. Dies führt zunächst zu einer Mehrbelastung
 des Servers. Auch wenn in der Realität dauerhaft solch hohe Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
 Adaptionsalgorithmen unter Extrembedingungen testen.\\
@@ -85,7 +85,15 @@ Die Zeitdauer bei jeder Messung betrug 6.000 Ticks bzw. simulierte Sekunden.
 \section{Experimente -- bevorzugte Polling-Periode}
 Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Eine Legende zu den
 Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
+\importsmallgnuplotps{Verbesserung des Aktualitätsgrades $\Gamma_A$}
+{Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_up_to_date_percent_improvement}
+\importsmallgnuplotps{Verbesserung des Verzögerungsgrades $\Gamma_V$}
+{Abb:Verbesserung_des_Verzoegerungsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_message_delay_percent_improvement}
 
+\todo{Beschreibung}
+
+\section{Weitere Experimente -- bevorzugte Polling-Periode}
+In diesem Abschnitt werden wir einzelne Aspekte der entwickelten Verfahren näher untersuchen. \todo{Mehr?}
 \subsection{Beispiel und Referenz}
 \importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
