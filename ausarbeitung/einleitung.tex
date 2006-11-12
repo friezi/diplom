@@ -1,7 +1,7 @@
 \chapter{Einleitung}
 Der Austausch von Informationen hat seit jeher eine große Bedeutung in menschlichen Gemeinschaften. Das Internet stellt ein Medium dar,
 Informationen relativ schnell und leicht zur Verfügung zu stellen, auszutauschen und zu verbreiten. Zu diesem Zweck sind im Laufe der
-Zeit verschiedene Internet-Dienste entwickelt worden. Private Informationen können als e-mail (elektronische Post) versendet werden.
+Zeit verschiedene Internet-Dienste entwickelt worden. Private Informationen können als Email (elektronische Post) versendet werden.
 Um Informationen einer breiten Öffentlichkeit zugänglich zu machen, findet die Möglichkeit, diese auf Webseiten zu präsentieren, häufig Anwendung.
 Für statische Informationen, die keinem stetigen Wechsel unterliegen, ist dies ein geeignetes Verfahren.
 Da im Internet präsentierte Informationen in zunehmendem Maße einen stark dynamischen Charakter aufweisen (z. B. Nachrichten-Schlagzeilen, Börsennachrichten), 
@@ -33,12 +33,12 @@ Es handelt sich um zentralisiertes Polling, Message-Broker sind hierbei nicht vo
 auf einer Webseite wird ein RSS-Feed (aktueller Beitrag) vom RSS-Server als XML-Datei abgelegt.
 Ein Feed ist einem Thema (Kanal bzw. Channel) zugeordnet und beinhaltet
 verschiedene Einträge (z.B. Nachrichten-Schlagzeilen). Interessenten bzw. Nutzer können nun diese Feeds
-herunterladen. Da nicht vorhersehbar ist, zu welchem Zeitpunkt eine Aktualisierung der Feeds seitens des Servers erfolgen wird,
+herunter laden. Da nicht vorhersehbar ist, zu welchem Zeitpunkt eine Aktualisierung der Feeds seitens des Servers erfolgen wird,
 müssen die Nutzer in regelmäßigen
 Zeitabständen beim Server nachfragen, um über Neuigkeiten informiert zu sein (Polling). Die Definition von Filtern ist nicht vorgesehen,
 d.h. Nutzer erhalten den kompletten Feed und müssen
 sich notfalls bei vielen verschiedenen Servern subskribieren, um eine große Auswahl an Informationen zu einem bestimmten Thema zu erhalten.
-RSS-Feeds sind über die Channels zwar themenbasiert organisiert (vgl. \cite{LiuVenSirer:2005:MeasureRSSPubSub}), jedoch wird die inhaltlich thematische
+RSS-Feeds sind über die Channel zwar themenbasiert organisiert (vgl. \cite{LiuVenSirer:2005:MeasureRSSPubSub}), jedoch wird die inhaltlich thematische
 Zuordnung auf Server-Seite vorgenommen. Eine thematische Filterung 
 aus Nutzersicht auf höherer Ebene kann lediglich lokal auf Nutzerseite erfolgen.\\
 Das ständige Abfragen des Servers durch möglicherweise hunderttausende von Abonnenten führt zu einer
@@ -75,12 +75,13 @@ dieses Konzept ginge auf Kosten der Aktualität der Feeds, da es möglicherweise s
 Struktur des Overlay-Netzes).
 Es sollte also verschiedene Publisher geben, welche Feeds in das Netzwerk einspeisen und die geeignet im Overlay-Netzwerk positioniert sind.
 Die Publisher müssen sich untereinander koordinieren, welche von
-ihnen den nächsten Feed herunterladen. Sind es zu viele Publisher, so führt das wiederum zu einer Mehrbelastung des Servers. Es gilt also, ein Optimum
+ihnen den nächsten Feed herunter laden. Sind es zu viele Publisher, so führt das wiederum zu einer Mehrbelastung des Servers. Es gilt also, ein Optimum
 zwischen Aktualitätsgrad und Server-Belastung zu finden.\\
 Ziel dieser Arbeit ist es, ein hohes Update-Intervall ohne Blockierung zu erreichen, indem sich die Publisher beim Polling abwechseln.
 Dies kann den Grad an Aktualität der Feeds erhöhen.\\
 
-Die Enwicklung eines solchen Systems soll folgende Weiterenwicklung ermöglichen: RSS-Feeds können mit Hilfe von Filtern, welche durch Subscriber definiert werden,
+Die Ausarbeitung eines solchen Systems soll folgende Weiterentwicklung ermöglichen: RSS-Feeds können mit Hilfe von Filtern, welche durch Subscriber
+definiert werden,
 schon auf der Broker-Ebene gefiltert werden (Filter werden von Brokern an
 Nachbarbroker weitergeleitet). Die Filterung kann anbieterübergreifend wirken, da sich Feeds von unterschiedlichen
 RSS-Servern an einem Broker sammeln. Um eine genaue Analyse der Feeds bezüglich der angegebenen Filter zu ermöglichen, wird die inhaltsbasierte Filterung
@@ -89,28 +90,28 @@ auch die durch sie referenzierten Daten herunterzuladen, um sie in den Filtervor
 Die Filterung der Feeds auf Broker-Ebene ermöglicht den Subscribern eine
 inhaltsorientierte Sichtweise auf Subskriptionen im Gegensatz zur bisherigen anbieterorientierten Sichtweise.\\
 
-Um diese Arbeit in angemessenem Rahmen zu halten, werden wir auf die Umsetzung von Filtertechniken nicht weiter eingehen, schaffen jedoch eine Basis für weitere Entwicklungen
-in dieser Richtung. Als Ausgangspunkt für Erweiterungen verwenden wir die
+Um diese Arbeit in angemessenem Rahmen zu halten, werden wir auf die Umsetzung von Filtertechniken nicht weiter eingehen, schaffen jedoch eine Basis für
+weitere Entwicklungen in dieser Richtung. Als Ausgangspunkt für Erweiterungen verwenden wir die
 Filtertechnik des \glqq floodings\grqq{} (siehe \cite{MuFiBu:2002:FilterSimilarities}).\\
 
 Vorteile des genannten Ansatzes gegenüber anderen Ansätzen (wie z.B. FeedTree, siehe \cite{SandlerEtAl:2005:FeedTree}) sind:
 \begin{itemize}
   \item Die Lösung kann sich problemlos in ein bestehendes RSS-System integrieren, d.h. es ist keine neue Anbieter-Software
-        für RSS-Server nötig
-  \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z.B. Abfangen der Anfragen durch einen Proxy)
+        für RSS-Server nötig.
+  \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z.B. Abfangen der Anfragen durch einen Proxy).
   \item Eine komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig, auf schon bestehende Systeme kann zurückgegriffen und aufgebaut werden
-        (z.B. RE\-BE\-CA \cite{MuFiBu:2001:ArchFrameECommApp})
+        (z.B. RE\-BE\-CA \cite{MuFiBu:2001:ArchFrameECommApp}).
 \end{itemize}
 
-Im Verlauf der Arbeit soll eine angemessene Lösung für die oben beschriebene Zielsetzung gefunden werden. Des Weiteren soll eine Simulationsungebung implementiert
+Im Verlauf der Arbeit soll eine angemessene Lösung für die oben beschriebene Zielsetzung gefunden werden. Des Weiteren soll eine Simulationsumgebung implementiert
 werden, um die entwickelten Algorithmen umzusetzen, zu evaluieren und zu demonstrieren.
 
 \section{wissenschaftlicher Beitrag}
 Im Lauf der Arbeit entwickeln wir zwei voneinander relativ unabhängige Verfahren:
 \begin{itemize}
-\item Ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
+\item ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
   tolerant ist, ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
-\item Ein Verfahren zur Adaption von Polling-Raten verschiedener Klienten an den Leistungsgrad eines Servers, das ohne Kenntnis der übrigen Klienten und der
+\item ein Verfahren zur Adaption von Polling-Raten verschiedener Klienten an den Leistungsgrad eines Servers, das ohne Kenntnis der übrigen Klienten und der
   Gesamtstruktur und -größe des Netzwerks auskommt
 \end{itemize}
 Diese Verfahren wurden zwar in Hinsicht auf RSS entwickelt, sie lassen sich aber auch auf andere ähnlich gestaltete bzw. ereignisbasierte Systeme übertragen.
@@ -118,22 +119,22 @@ Zudem lassen sich die Algorithmen durch geringfügige Modifikationen auch an
 paketorientierte Übertragungstechniken (z. B. UDP) anpassen, obwohl wir diese Verfahren für eine datenstrombasierte Übertragungsmethode (TCP) entworfen haben.
 
 \section{Aufbau der Arbeit}
-In Kapitel \ref{Abschnitt:Grundlagen} geben wir zunächst einen Überblick über ausgewählte Grundbegriffe und Verfahren, soweit sie für diese Arbeit von Bedeutung sind,
-und stellen diese vor. Im weiteren Verlauf der Arbeit werden wir Begriffe aus diesem Kapitel referenzieren.\\
+In Kapitel \ref{Abschnitt:Grundlagen} geben wir zunächst einen Überblick über ausgewählte Grundbegriffe und Verfahren, soweit sie für diese Arbeit von Bedeutung
+sind, und stellen diese vor. Im weiteren Verlauf der Arbeit werden wir Begriffe aus diesem Kapitel referenzieren.\\
 
-Kapitel \ref{Abschnitt:RSS_mittels_verteiltem_pubsub} befasst sich mit RSS und der designbezogenen Problematik im Kontext einer großen Nutzergemeinde. Wir werden die
-schon angesprochenen Ziele unserer Arbeit genauer formulieren und problematische Aspekte bei ihrer Umsetzung beleuchten. Zuletzt geben wir einen kurzen Überblick über
-Arbeiten, die sich auf ähnliche oder andere Weise diesem Thema zugewandt haben.\\
+Kapitel \ref{Abschnitt:RSS_mittels_verteiltem_pubsub} befasst sich mit RSS und der designbezogenen Problematik im Kontext einer großen Nutzergemeinde. Wir werden
+die schon angesprochenen Ziele unserer Arbeit genauer formulieren und problematische Aspekte bei ihrer Umsetzung beleuchten. Zuletzt geben wir einen kurzen
+Überblick über Arbeiten, die sich auf vergleichbare oder andere Weise diesem Thema zugewandt haben.\\
 
-In Kapitel \ref{adapt_informationsverteilung} werden wir ein auf unsere Zielsetzung abgestimmtes Lösungskonzept entwickeln. Die Entwicklung erfolgt dabei schrittweise,
-und wir werden sie durch die Analyse der sich ergebenden Begleitumstände motivieren.\\
+In Kapitel \ref{adapt_informationsverteilung} werden wir ein auf unsere Zielsetzung abgestimmtes Lösungskonzept entwickeln. Die Entwicklung erfolgt dabei
+schrittweise, und wir werden sie durch die Analyse der gegebenen Begleitumstände motivieren.\\
 
 Kapitel \ref{c:implementierung} beschäftigt sich mit der Implementierung der entwickelten Simulationsumgebung. Wir stellen die wichtigsten Klassen vor, geben einen
 Überblick über die wichtigsten Methoden und ihr Wechselspiel und erläutern die Parametrisierung der Software.\\
 
 
-In Kapitel \ref{c:experimente} stellen wir Experimente vor, mit deren Hilfe wir die entwickelten Algorithmen getestet und evaluiert haben. Erläutert werden die Ergebnisse
-durch geeignete Graphiken und Diagramme.\\
+In Kapitel \ref{c:experimente} stellen wir Experimente vor, mit deren Hilfe wir die entwickelten Algorithmen getestet und evaluiert haben. Die Ergebnisse werden
+durch geeignete Graphiken und Diagramme erläutert.\\
 
 Kapitel \ref{Abschnitt:Zusammenfassung} fasst sowohl die geleistete Arbeit als auch die Ergebnisse zusammen und führt eine abschließende Bewertung durch.
 Darüber hinaus werden wir einen Ausblick auf mögliche Erweiterungen zu den entwickelten Verfahren geben.
