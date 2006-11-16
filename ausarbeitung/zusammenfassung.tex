@@ -1,0 +1,46 @@
+\chapter{Zusammenfassung und Ausblick}
+\label{Abschnitt:Zusammenfassung}
+In dieser Arbeit haben wir ein System konzipiert, um RSS-Feeds basierend auf dem Kommunikationsmodell von verteiltem Pub/Sub
+an Interessenten zu verteilen. Der bisherige Ansatz, dass Klienten RSS-Feeds direkt von der Webseite des Anbieters herunterladen, bleibt bestehen.
+RSS-Feeds werden von Klienten in ein Notifikationssystem eingespeist und mit dessen Hilfe an weitere Interessenten verteilt. Zwei wesentliche Verfahren
+wurden dabei entwickelt:
+\begin{itemize}
+\item ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
+  tolerant ist ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
+\item ein Verfahren zur Adaption von Polling-Raten verschiedener Klienten an den Leistungsgrad eines Servers, das ohne Kenntnis der übrigen Klienten und der
+  Gesamtstruktur und -größe des Netzwerks auskommt
+\end{itemize}
+
+In Abschnitt \ref{c:experimente} haben wir gezeigt, dass solch ein System entscheidende Verbesserungen bezüglich des Aktualitätsgrades der RSS-Feeds 
+im Gegensatz zum herkömmlichen Verfahren bringt. Zusätzlich kann eine Entlastung der RSS-Server und eine Verteilung des Datenverkehrs auf mehrere Teilbereiche des Netzes
+erreicht werden. Die Vorteile dieses Systems liegen für Klienten also in einer besseren potenziellen Aktualität der Daten.\\
+
+Während der Entwicklung des Systems sind wir auf einige Begleiterscheinungen aufmerksam geworden, deren Auswirkungen wir durch geeignete Gegenmaßnahmen verringern können.
+
+\section{Ausblick}
+Eine ganze Reihe von Punkten haben wir während der Entwicklung kurz angesprochen, konnten aber nicht näher darauf eingehen. Diese bilden Material für weiterführende Studien und
+Entwicklungen.
+
+\paragraph{Filter:} Komplexere Filtertechniken als die Technik des \glqq flooding\grqq{} haben wir in dem bisherigen Entwurf nicht berücksichtigt. Wir haben aber das System so
+konzipiert, dass innerhalb des Notifikationssystems auch andere Filtertechniken zur Anwendung kommen können.
+\begin{notizen}
+Filtertechniken: content-based
+\end{notizen}
+Da Broker RSS-Feeds neu zusammenstellen, können die Einträge auch verschiedenen Kanälen entnommen werden und themenbasiert in einem neuen Feed zusammengefasst werden. Mit Hilfe des in
+der RSS-Spezifikation vorgesehenen Elements \texttt{source} (siehe Abschnitt \ref{ch_rss}) kann ein Klient die Einträge eindeutig den ursprünglichen Kanälen zuordnen.\\
+Bei der inhaltsbasierten Filterung wird der Inhalt des durch einen RSS-Feed-Eintrag referenzierten Objektes in die Filterung mit einbezogen. Der referenzierte Inhalt könnte
+zusätzlich zum übermittelten RSS-Feed durch das Notifikationssystem verteilt werden.
+
+\paragraph{Fehlinformationen\todo{?}:}
+Die Entwicklung unseres Systems basiert auf einem kooperativen Modell: ein kooperatives Verhalten der Klienten bzw. der Applikationen auf Klientenseite wird vorausgesetzt.
+Damit alle beteiligten Klienten gleichermaßen von dem System profitieren, werden de gewünschten Informationen und Informationen zur Anpassung der
+Polling-Perioden ausgetauscht ($artt$). Spielen beispielsweise finanzielle Belange eine Rolle, so könnten einzelne Klienten ein Interesse daran haben,
+dass andere Klienten die gewünschten Informationen erst sehr
+spät erhalten. Um dies zu erreichen, könnten sie die neuen Informationen zurückhalten und ein spätes Antwortverhalten des jeweiligen RSS-Servers vortäuschen.
+Dies hätte zur Folge, dass andere Klienten ihre Polling-Perioden in die Höhe treiben und neue Feeds erst relativ spät erhalten.\\
+Es müssten weitere Verfahren und Maßnahmen entwickelt werden, um derartiges Fehlverhalten auszuschließen bzw. zu entdecken und einzudämmen.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "diplomarbeit"
+%%% End: 

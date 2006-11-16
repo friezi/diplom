@@ -83,22 +83,31 @@ Adaptionsalgorithmen unter Extrembedingungen testen.\\
 Die Zeitdauer bei jeder Messung betrug 6.000 Ticks bzw. simulierte Sekunden.
 
 \section{Experimente -- bevorzugte Polling-Periode}
-Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Eine Legende zu den
-Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
+Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Zunächst werden wir betrachten, welche
+Vorteile das vorgestellte Verfahren gegenüber dem herkömmlichen Verfahren bietet.
+
 \importsmallgnuplotps{Verbesserung des Aktualitätsgrades $\Gamma_A$}
 {Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_up_to_date_percent_improvement}
-\importsmallgnuplotps{Verbesserung des Verzögerungsgrades $\Gamma_V$}
-{Abb:Verbesserung_des_Verzoegerungsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_message_delay_percent_improvement}
 
-\todo{Beschreibung}
+Abbildung \ref{Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber} zeigt die Verbesserung des Aktualitätsgrades
+(Gütefunktion $\Gamma_A$) in Ab\-hän\-gig\-keit von der Anzahl der Klienten im Netzwerk. Ausgangsparameter für dieses Experiment sind eine Netzgröße von 2001 Knoten,
+200 Broker, ppp=1 , rssFeedMsgRT=1 und rssFeedRequestMsgRT=1. Die Nachrichtenlaufzeiten wurden bewusst geringer gesetzt als in den übrigen Experimenten, um bei diesem Experiment
+auch für das herkömmliche Verfahren (keine Staukontrolle) zu erreichen, dass keine Verzögerungen der Nachrichten bedingt durch zu hohe Nachrichtenlaufzeiten auftreten.
+Die Zeiten entsprechen eher realen Bedingungen. So kann ein Schwellenwert der Anzahl der Klienten bestimmt werden, bei dem eine Divergenz der Dienstgüte eintritt.
+Der Zeitpunkt, zudem die  Messung der Dienstgüte stattfand, lag bei 6.000 Ticks. In der Abbildung ist zu sehen, dass
+bereits bei einer Anzahl von 24 Klienten eine Verbesserung des Aktualitätsgrades der Nachrichten eintritt. Mit zunehmender Zahl der Klienten im Netzwerk steigt auch
+der Grad der Verbesserung der Dienstgüte.
+%\importsmallgnuplotps{Verbesserung des Verzögerungsgrades $\Gamma_V$}
+%{Abb:Verbesserung_des_Verzoegerungsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_message_delay_percent_improvement}
 
 \section{Weitere Experimente -- bevorzugte Polling-Periode}
-In diesem Abschnitt werden wir einzelne Aspekte der entwickelten Verfahren näher untersuchen. \todo{Mehr?}
+In diesem Abschnitt werden wir einzelne Aspekte der entwickelten Verfahren näher untersuchen. Eine Legende zu den
+Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 \subsection{Beispiel und Referenz}
 \importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
 Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis eines Experiments, welches gleichzeitig als Referenz
-für einige Experimente dienen soll, da alle in den vorherigen Kapiteln beschriebenen Verfahren zur Anwendung kommen. Dargestellt ist
+für einige weitere Experimente dienen soll, da alle in den vorhergehenden Kapiteln beschriebenen Verfahren zur Anwendung kommen. Dargestellt ist
 die Entwicklung der Serverbelastung anhand der eingegangenen Feed-Requests. Von den Standardparametern
 wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1...1000$ Sekunden dem Overlay-Netzwerk bei.
 Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$, siehe Kapitel \ref{c:implementierung}),
@@ -139,6 +148,10 @@ $\Gamma_A$ (siehe Abbildung \ref{Abb:Referenzverlauf_Aktualitaetsgrad}). Die anf
 Server in diesem Zeitbereich noch wenig belastet ist. Daher können die Nachrichten schnell durch das Notifikationssystem
 übermittelt werden. Ein Zusammenhang zwischen Serverbelastung, Nachrichtenverzögerung und
 Aktualitätsgrad ist also deutlich zu erkennen. \\
+
+Die gezeigten Werte in den Abbildungen \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} und \ref{Abb:Referenzverlauf_Aktualitaetsgrad} mögen relativ
+schlecht erscheinen, jedoch ist zu beachten, dass diese Werte aufgrund der besonderen Parameterwahl zustande kommen. Die starke Verzögerung der Nachrichten
+ist beabsichtigt. Relevant ist in diesen Diagrammen lediglich die zeitliche Entwicklung der Werte.\\
 
 Abbildung \ref{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten} zeigt den prozentualen Anteil der gesparten Nachrichten im Gegensatz zu einem System ohne
 Verteilung der Feeds über ein Notifikationssystem. Grundsätzlich gilt: je geringer die Rate der Anfragen und je größer die Serverbelastung, desto höher ist
@@ -275,7 +288,6 @@ nur eine kurzzeitige Senkung des Füllgrades der Server-Queue bewirkt. Der Pegel 
 Der Beitritt der Klienten zum System bewirkt zwar eine kurzzeitige starke Mehrbelastung des Servers, das System kann diese Mehrbelastung jedoch
 relativ schnell ausgleichen.
 
-\newpage
 \subsection{Steigerung des $rto$}
 \importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
 Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
@@ -321,6 +333,8 @@ Belastungsänderung unterschiedliche Anforderungen an das System.
 \importsmallgnuplotps{Serverbelastung: langzeitige Belastungsminderung}{Abb:langzeitige_Belastungsminderung}{ToTR_FastDegrading_MVR}
 \importsmallgnuplotps{Serverbelastung: kurzzeitige Überbelastung}{Abb:kurzzeitige_Ueberbelastung}{ToTR_SuddenIncreaseDecrease40_MVR}
 \importsmallgnuplotps{Serverbelastung: kurzzeitige Belastungsminderung}{Abb:kurzzeitige_Belastungsminderung}{ToTR_SuddenDecreaseIncrease40_MVR}
+\importsmallgnuplotps{Serverbelastung: allmähliche Überbelastung}{Abb:allmaehliche_Ueberbelastung}{ToTR_SoftIncreasing_MVR}
+\importsmallgnuplotps{Serverbelastung: allmähliche Minderbelastung}{Abb:allmaehliche_Minderbelastung}{ToTR_SoftDegrading_MVR}
 \paragraph{Langzeitige Belastungsänderungen:}
 Bei einer langzeitigen Belastungsänderung eines Servers fordern wir vom System (bzw. von den Klienten) eine möglichst rasche Adaption an die
 neuen Bedingungen. Abbildung \ref{Abb:langzeitige_Ueberbelastung} zeigt den Verlauf der Adaption bei einer 50-fachen Steigerung der
@@ -340,12 +354,6 @@ Wie zu sehen ist, ändert sich der Verlauf der Kurve nur ganz geringfügig. Abbild
 \ref{Abb:kurzzeitige_Belastungsminderung} zeigt auch hier den umgekehrten Fall bei einem ursprünglichen $serviceTimeFactor$ von 50.
 Kurzzeitige Belastungsminderungen sind allerdings in der Realität eher weniger wahrscheinlich.
 
-\importsmallgnuplotps{Serverbelastung: allmähliche Überbelastung}{Abb:allmaehliche_Ueberbelastung}{ToTR_SoftIncreasing_MVR}
-\importsmallgnuplotps{Serverbelastung: allmähliche Minderbelastung}{Abb:allmaehliche_Minderbelastung}{ToTR_SoftDegrading_MVR}
-
-\importsmallgnuplotps{Serverbelastung: $mpp=3600$}{Abb:mpp_3600}{ToTR_mpp3600_serviceTimeFactor50_MVR}
-\importsmallgnuplotps{Serverbelastung: $mpp=910800$}{Abb:mpp_910800}{ToTR_mpp910800_serviceTimeFactor50_MVR}
-
 \paragraph{Allmähliche Belastungsänderungen:}
 Bei einer allmählichen Belastungsänderung fordern wir, dass sich das System so schnell an den veränderten Belastungsgrad anpasst, dass
 eine zusätzliche Mehr- bzw. Minderbelastung ausbleibt. Abbildungen \ref{Abb:allmaehliche_Ueberbelastung} und
@@ -360,6 +368,9 @@ gering gewählter $mpp$ auf das Adaptionsverhalten auswirkt, sehen wir exemplaris
 $mpp$ von 3600 und einem $serviceTimeFactor$ von 50. Den Verlauf der Adaption bei $mpp=910800$ unter ansonsten gleichen Bedingungen ist in Abbildung
 \ref{Abb:mpp_910800} zu sehen. Bei $mpp=3600$ wird eine vollständige Adaption verhindert, da der $cpp$ eines Klienten nicht groß genug
 gewählt werden kann.
+
+\importsmallgnuplotps{Serverbelastung: $mpp=3600$}{Abb:mpp_3600}{ToTR_mpp3600_serviceTimeFactor50_MVR}
+\importsmallgnuplotps{Serverbelastung: $mpp=910800$}{Abb:mpp_910800}{ToTR_mpp910800_serviceTimeFactor50_MVR}
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
