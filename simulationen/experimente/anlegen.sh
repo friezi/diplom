@@ -1,12 +1,19 @@
-i=20
+i=50
 
-while (( $i<=50 ))
+while (( $i<=90 ))
 do
-  mkdir hauptexperiment_${i}
-  cp hauptexperiment_1/* hauptexperiment_${i}/
-  cvs add hauptexperiment_${i}
-  cd hauptexperiment_${i}
+
+  if (( $i == 50 ))
+  then 
+      i=$(($i+20))
+      continue
+  fi
+
+  mkdir subscribersLeave${i}
+  cp subscribersLeave50/* subscribersLeave${i}/
+  cvs add subscribersLeave${i}
+  cd subscribersLeave${i}
   cvs add *
   cd ..
-  i=$(($i+1))
+  i=$(($i+20))
 done

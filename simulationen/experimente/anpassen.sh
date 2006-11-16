@@ -1,20 +1,25 @@
 
-i=1
-subs=2
+i=10
 
-while (( $i<=50 ))
+while (( $i<=90 ))
 do
-	cd hauptexperiment_${i}
-	echo betrete verzeichnis hauptexperiment_${i}
-        for file in mac_parameters*
+
+  if (( $i == 50 ))
+  then
+      i=$(($i+20))
+      continue
+  fi
+
+	cd subscribersLeave${i}
+	echo betrete verzeichnis subscribersLeave${i}
+        for file in actions*
 	do
 		echo bearbeite ${file}
-		sed --in-place=.bak -e 's/subscribers=\(.*\)/subscribers='${subs}'/g' ${file}
+		sed --in-place=.bak -e 's/subscribersLeave(50)/subscribersLeave('${i}')/g' ${file}
 	done
 	cd ..
 	
-	i=$(($i+1))
-	subs=$(($subs+2))
+	i=$(($i+20))
 done
 
 
