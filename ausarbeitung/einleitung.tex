@@ -1,24 +1,29 @@
 \chapter{Einleitung}
-Der Austausch von Informationen hat seit jeher eine große Bedeutung in menschlichen Gemeinschaften. Das Internet stellt ein Medium dar,
-Informationen relativ schnell und leicht zur Verfügung zu stellen, auszutauschen und zu verbreiten. Zu diesem Zweck sind im Laufe der
-Zeit verschiedene Internet-Dienste entwickelt worden. Private Informationen können als Email (elektronische Post) versendet werden.
-Um Informationen einer breiten Öffentlichkeit zugänglich zu machen, findet die Möglichkeit, diese auf Webseiten zu präsentieren, häufig Anwendung.
-Für statische Informationen, die keinem stetigen Wechsel unterliegen, ist dies ein geeignetes Verfahren.
-Da im Internet präsentierte Informationen in zunehmendem Maße einen stark dynamischen Charakter aufweisen (z. B. Nachrichten-Schlagzeilen, Börsennachrichten), 
-sind Konzepte entwickelt worden, Interessenten über deren inhaltliche Änderungen zu unterrichten. Ein allgemeines Kommunikationsmodell, welches diesem Zweck gerecht
-wird, ist Publish/Subscribe.
+Der Austausch von Informationen hat seit jeher eine große Bedeutung in menschlichen Gemeinschaften. Das Internet stellt eine Basistechnologie
+dar, mit deren Hilfe Informationen relativ schnell und leicht zur Verfügung gestellt, ausgetauscht und verbreitet werden können. Zu diesem Zweck sind im Laufe der
+Zeit verschiedene Internet-Dienste entwickelt worden. So können Informationen als E-Mail (elektronische Post) versendet werden.
+Sollen Informationen einer breiten Öffentlichkeit zugänglich gemacht werden, so können diese auf einer Webseite präsentiert werden.
+Für statische Informationen, die keinem stetigen Wechsel unterliegen, ist dies ein geeignetes Verfahren. In zunehmendem Maße weisen im Internet präsentierte Informationen
+einen stark dynamischen Charakter auf. Daher hat sich in neuerer Zeit u. a. die Benutzung von Wikis stark verbreitet.
+Ein Wiki ist eine Sammlung von WWW-Seiten zu einem bestimmten Thema, die von Benutzern sowohl gelesen als auch online verändert werden kann. Es bietet die Möglichkeit,
+neue Informationen schnell im WWW zu veröffentlichen.
+Bei dieser Art der Präsentation von Informationen spricht man von einem pull-basierten Ansatz, da ein Interessent den Informationsanbieter (bzw. seine Webseite) aktiv
+kontaktieren muss, um einen aktuellen Stand der Informationen zu erhalten. 
+Ist der Informationsanbieter der Initiator der Informationsübermittlung (Bsp. E-Mail), so spricht man von einem push-basierten Ansatz der Informationsverteilung.
+Ein allgemeines Kommunikationsmodell, um Interessenten über inhaltliche Änderungen von im Internet präsentierten Informationen zu unterrichten,
+ist Publish/Subscribe. Es kann sowohl dem push- als auch dem pull-basierten Ansatz folgen, obwohl in diesem Zusammenhang der push-basierte Ansatz häufiger anzutreffen ist.
 
 \section{Motivation}
-Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub bzw. Pub/\-Sub-System) finden sich drei
+Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub) finden sich drei
 Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren
-sich für bestimmte Informationen und können diese abonnieren (subskribieren);
+sich für bestimmte Informationen und können diese unter Zuhilfenahme von Filtern abonnieren (subskribieren);
 \glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen (Benachrichtigungen) an die Subscriber.
-Aufgrund der indirekten Verbindung zwischen Subscribern und Publishern über die Broker brauchen sich Publisher nicht um eine Vielzahl von
-Interessenten zu kümmern.
-Zudem lässt die broker-seitige Ansammlung einer Reihe von Informationen die Definition von Filtern zu, durch die
-anbieterübergreifend Informationen seitens der Subscriber abgefragt werden können.\\
+Aufgrund der indirekten Verbindung zwischen Subscribern und Publishern über die Broker brauchen Publisher nicht eine Vielzahl von
+Interessenten zu verwalten.
+Filter werden im Allgemeinen zusammen mit dem Abonnement bei einem Broker hinterlegt. Sie können derart definiert werden, dass sie Informationen anbieterübergreifend
+abdecken.\\
 
-RSS (Really Simple Syndication) zählt zwar zu den Pub/Sub-Systemen jedoch nicht zu den verteilten push-basierten, wie sie oben beschrieben wurden,
+RSS (Really Simple Syndication) kann man zu den Pub/Sub-Systemen rechnen, jedoch nicht zu den verteilten push-basierten, wie sie oben beschrieben wurden,
 denn es folgt dem klassischen Client/Server-Ansatz.
 Es handelt sich um zentralisiertes Polling, Message-Broker sind hierbei nicht vorgesehen:
 auf einer Webseite wird ein RSS-Feed (aktueller Beitrag) vom RSS-Server als XML-Datei abgelegt.
