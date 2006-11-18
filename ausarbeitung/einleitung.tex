@@ -1,17 +1,17 @@
 \chapter{Einleitung}
 Der Austausch von Informationen hat seit jeher eine große Bedeutung in menschlichen Gemeinschaften. Das Internet stellt eine Basistechnologie
 dar, mit deren Hilfe Informationen relativ schnell und leicht zur Verfügung gestellt, ausgetauscht und verbreitet werden können. Zu diesem Zweck sind im Laufe der
-Zeit verschiedene Internet-Dienste entwickelt worden. So können Informationen als E-Mail (elektronische Post) versendet werden.
-Sollen Informationen einer breiten Öffentlichkeit zugänglich gemacht werden, so können diese auf einer Webseite präsentiert werden.
-Für statische Informationen, die keinem stetigen Wechsel unterliegen, ist dies ein geeignetes Verfahren. In zunehmendem Maße weisen im Internet präsentierte Informationen
-einen stark dynamischen Charakter auf. Daher hat sich in neuerer Zeit u. a. die Benutzung von Wikis stark verbreitet.
-Ein Wiki ist eine Sammlung von WWW-Seiten zu einem bestimmten Thema, die von Benutzern sowohl gelesen als auch online verändert werden kann. Es bietet die Möglichkeit,
-neue Informationen schnell im WWW zu veröffentlichen.
-Bei dieser Art der Präsentation von Informationen spricht man von einem pull-basierten Ansatz, da ein Interessent den Informationsanbieter (bzw. seine Webseite) aktiv
-kontaktieren muss, um einen aktuellen Stand der Informationen zu erhalten. 
+Zeit verschiedene Internet-Dienste entwickelt worden. So können beispielsweise Informationen als E-Mail (elektronische Post) versendet werden.
+Sollen Informationen einer breiten Öffentlichkeit zugänglich gemacht werden, können diese auf einer Webseite präsentiert werden.
+Für statische Informationen, die keinem stetigen Wechsel unterliegen, ist dies ein geeignetes Verfahren. In zunehmendem Maße weisen im Internet präsentierte
+Informationen einen stark dynamischen Charakter auf. Daher ist in neuerer Zeit u. a. die Benutzung von Wikis weit verbreitet.
+Ein Wiki ist eine Sammlung von WWW-Seiten zu einem bestimmten Thema, die von Benutzern sowohl gelesen als auch online verändert werden können.
+Es bietet die Möglichkeit, neue Informationen schnell im WWW zu veröffentlichen.
+Bei dieser Art der Präsentation von Informationen spricht man von einem pull-basierten Ansatz, da ein Interessent den Informationsanbieter (bzw. seine Webseite)
+aktiv kontaktieren muss, um einen aktuellen Stand der Informationen zu erhalten. 
 Ist der Informationsanbieter der Initiator der Informationsübermittlung (Bsp. E-Mail), so spricht man von einem push-basierten Ansatz der Informationsverteilung.
-Ein allgemeines Kommunikationsmodell, um Interessenten über inhaltliche Änderungen von im Internet präsentierten Informationen zu unterrichten,
-ist Publish/Subscribe. Es kann sowohl dem push- als auch dem pull-basierten Ansatz folgen, obwohl in diesem Zusammenhang der push-basierte Ansatz häufiger anzutreffen ist.
+Ein allgemeines Kommunikationsmodell, um Interessenten über inhaltliche Änderungen von Informationen zu unterrichten,
+ist Publish/Subscribe. Üblicherweise folgt es dem push-basierten Ansatz.
 
 \section{Motivation}
 Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub) finden sich drei
@@ -33,45 +33,46 @@ herunter laden. Da nicht vorhersehbar ist, zu welchem Zeitpunkt eine Aktualisier
 müssen die Nutzer in regelmäßigen
 Zeitabständen beim Server nachfragen, um über Neuigkeiten informiert zu sein (Polling). Die Definition von Filtern ist nicht vorgesehen,
 d.h. Nutzer erhalten den kompletten Feed und müssen
-sich notfalls bei vielen verschiedenen Servern subskribieren, um eine große Auswahl an Informationen zu einem bestimmten Thema zu erhalten.
+sich notfalls bei vielen verschiedenen Servern subskribieren, um eine große Auswahl an Informationen zu einem zu den Channeln orthogonalen Thema zu erhalten.
 RSS-Feeds sind über die Channel zwar themenbasiert organisiert (vgl. \cite{LiuVenSirer:2005:MeasureRSSPubSub}), jedoch wird die inhaltlich thematische
 Zuordnung auf Server-Seite vorgenommen. Eine thematische Filterung 
 aus Nutzersicht auf höherer Ebene kann lediglich lokal auf Nutzerseite erfolgen.\\
 Das ständige Abfragen des Servers durch möglicherweise hunderttausende von Abonnenten führt zu einer
-starken server-seitigen Last (vgl. \cite{SandlerEtAl:2005:FeedTree},
+starken Server-seitigen Last (vgl. \cite{SandlerEtAl:2005:FeedTree},
 \cite{Hicks:2004:RSSBandwith}).
 Möchte ein Nutzer eine mit dem Publisher möglichst synchronisierte Aktualisierung der Feeds erreichen, so muss er die Polling-Rate
-hoch setzen. Dies bedeutet wiederum eine höhere Server-Belastung. Um eine hohe Belastung durch hohe Polling-Raten zu unterbinden, haben Server die
+unabhängig von der Aktualisierungsfrequenz hoch setzen. Dies bedeutet wiederum eine höhere Server-Belastung. Um eine hohe Belastung
+durch hohe Polling-Raten zu unterbinden, haben Server die
 Möglichkeit, einen Nutzer (abgrenzbar durch seine IP-Adresse), dessen Polling-Rate zu hoch ist, vorübergehend zu blocken.
 Dadurch ist der Grad der Aktualität der RSS-Feeds begrenzt.
-Beispiele für die (RSS-basierten) Datenmengen, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
+Beispiele für die Datenmengen an RSS-Feeds, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
 in \cite{SandlerEtAl:2005:FeedTree}.
 
 \section{Ziele der Arbeit}
-Um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität der Informationen und eine höhere Flexibilität in Bezug
-auf die Auswahl der Informationen seitens der Nutzer zu erreichen, bietet es
-sich an, ein push-basiertes Publish/Subscribe-System einzusetzen. RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
+Publish/Subscribe (verteilt/push) eignen sich hervorragend, um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität
+der Informationen und eine höhere Flexibilität in Bezug auf die Auswahl der Informationen seitens der Nutzer zu erreichen.
+RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
 übermitteln, welche die Feeds ihrerseits an Nutzer (Subscriber) weiterleiten. Dies würde jedoch bedeuten,
 dass sowohl auf Nutzer- als auch auf RSS-Server-Seite die schon bestehenden Anwendungen durch neue ersetzt werden müssten oder entsprechende Software
 installiert werden müsste.
-Solch ein Ansatz würde sicherlich auf
-Akzeptanzschwierigkeiten stoßen. Außerdem würde der Aktualitätsgrad hier wie auch bei dem Ansatz unten mit nur einem Poller von dem Overlay-Netz abhängen
-und könnte ungünstig ausfallen! Um dies zu verhindern, bietet sich folgendes Konzept an: Die Rolle der RSS-Server bleibt bestehen und ändert sich nicht.
+Solch ein Ansatz würde sicherlich auf Akzeptanzschwierigkeiten stoßen.
+Um das Akzeptanzproblem zu lösen, bietet sich folgendes Konzept an: Die Rolle der RSS-Server bleibt bestehen und ändert sich nicht.
 Nutzer entsprechen sowohl den Publishern als auch den Subscribern.
 In der Rolle des Publishers erfragt ein Nutzer den aktuellen Feed beim
 RSS-Server und speist ihn in das Netz ein bzw. übermittelt ihn an seinen lokalen Broker.
 Dieser sorgt dafür, dass der Feed an alle Broker weitergeleitet wird, zu denen Subscriber verbunden sind, die sich für diesen interessieren.
 In der Rolle eines Subscribers erhält ein Nutzer einen Feed von
-einem Broker. Für einen Nutzer gibt es also zwei Möglichkeiten einen Feed zu erhalten: direkt vom RSS-Server oder über das Netzwerk.
+einem Broker. Für einen Nutzer gibt es also zwei Möglichkeiten einen Feed zu erhalten: direkt vom RSS-Server oder über das Notifikationssystem.
 Um eine Server-Entlastung zu erreichen, würde es ausreichen, nur
 einen Publisher zu definieren, welcher die Feeds in das System einspeist. Alle übrigen Nutzer/Subscriber würden
-den Feed über das Netzwerk erhalten,
-wodurch weniger Anfragen beim RSS-Server auftreten würden. Doch
-dieses Konzept ginge auf Kosten der Aktualität der Feeds, da es möglicherweise sehr lange dauert, bis ein Feed einen Subscriber erreicht (abhängig von der
-Struktur des Overlay-Netzes).
+den Feed über das Notifikationssystem erhalten,
+wodurch weniger Anfragen beim RSS-Server auftreten würden. Allerdings würde der Aktualitätsgrad hier wie auch beim oben genannten Ansatz
+von der Struktur und Stabilität des Overlay-Netz abhängen und könnte ungünstig ausfallen, da es möglicherweise sehr lange dauert, bis ein
+Feed einen Subscriber erreicht.
 Es sollte also verschiedene Publisher geben, welche Feeds in das Netzwerk einspeisen und die geeignet im Overlay-Netzwerk positioniert sind.
 Die Publisher müssen sich untereinander koordinieren, welche von
-ihnen den nächsten Feed herunter laden. Sind es zu viele Publisher, so führt das wiederum zu einer Mehrbelastung des Servers. Es gilt also, ein Optimum
+ihnen den nächsten Feed herunter laden. Dabei ist im Allgemeinen nicht bekannt, wann dieser vorliegen wird.
+Sind es zu viele Publisher, so führt das wiederum zu einer Mehrbelastung des Servers. Es gilt also, ein Optimum
 zwischen Aktualitätsgrad und Server-Belastung zu finden.\\
 Ziel dieser Arbeit ist es, ein hohes Update-Intervall ohne Blockierung zu erreichen, indem sich die Publisher beim Polling abwechseln.
 Dies kann den Grad an Aktualität der Feeds erhöhen.\\
@@ -92,37 +93,37 @@ Filtertechnik des \glqq floodings\grqq{} (siehe \cite{MuFiBu:2002:FilterSimilari
 
 Vorteile des genannten Ansatzes gegenüber anderen Ansätzen (wie z.B. FeedTree, siehe \cite{SandlerEtAl:2005:FeedTree}) sind:
 \begin{itemize}
-  \item Die Lösung kann sich problemlos in ein bestehendes RSS-System integrieren, d.h. es ist keine neue Anbieter-Software
+  \item Die Lösung kann sich problemlos in ein bestehendes RSS-System integrieren, d.h. es ist keine neue Software
         für RSS-Server nötig.
-  \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z.B. Abfangen der Anfragen durch einen Proxy).
-  \item Eine komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig, auf schon bestehende Systeme kann zurückgegriffen und aufgebaut werden
-        (z.B. RE\-BE\-CA \cite{MuFiBu:2001:ArchFrameECommApp}).
+  \item Bei geschickter Umsetzung kann auch die Client-Software weiter verwendet werden (z. B. durch Abfangen der Anfragen durch einen Proxy).
+  \item Auf schon bestehende Pub/Sub-Systeme kann zurückgegriffen und aufgebaut werden
+        (z. B. RE\-BE\-CA \cite{MuFiBu:2001:ArchFrameECommApp}).
 \end{itemize}
 
 Im Verlauf der Arbeit soll eine angemessene Lösung für die oben beschriebene Zielsetzung gefunden werden. Des Weiteren soll eine Simulationsumgebung implementiert
 werden, um die entwickelten Algorithmen umzusetzen, zu evaluieren und zu demonstrieren.
 
-\section{wissenschaftlicher Beitrag}
+\section{Wissenschaftlicher Beitrag}
 Im Lauf der Arbeit entwickeln wir zwei voneinander relativ unabhängige Verfahren:
 \begin{itemize}
 \item ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
-  tolerant ist ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
-\item ein Verfahren zur Adaption von Polling-Raten verschiedener Klienten an den Leistungsgrad eines Servers, das ohne Kenntnis der übrigen Klienten und der
-  Gesamtstruktur und -größe des Netzwerks auskommt
+  tolerant ist, ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
+\item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers, das ohne Kenntnis der übrigen Klienten und der
+  Gesamtstruktur und -größe des Netzwerks auskommt $\longrightarrow$ globales Wissen ist nicht nötig
 \end{itemize}
 Diese Verfahren wurden zwar in Hinsicht auf RSS entwickelt, sie lassen sich aber auch auf andere ähnlich gestaltete bzw. ereignisbasierte Systeme übertragen.
 Zudem lassen sich die Algorithmen durch geringfügige Modifikationen auch an
-paketorientierte Übertragungstechniken (z. B. UDP) anpassen, obwohl wir diese Verfahren für eine datenstrombasierte Übertragungsmethode (TCP) entworfen haben.
+nicht verbindungsorientierte Übertragungstechniken (z. B. UDP) anpassen, obwohl wir sie für eine datenstrombasierte Übertragungsmethode (TCP) entworfen haben.
 
 \section{Aufbau der Arbeit}
-In Kapitel \ref{Abschnitt:Grundlagen} geben wir zunächst einen Überblick über ausgewählte Grundbegriffe und Verfahren, soweit sie für diese Arbeit von Bedeutung
+In Kapitel \ref{Abschnitt:Grundlagen} geben wir zunächst eine Einführung in die wichtisten Grundlagen und Verfahren, soweit sie für diese Arbeit von Bedeutung
 sind. Im weiteren Verlauf der Arbeit werden wir Begriffe aus diesem Kapitel referenzieren.\\
 
 Kapitel \ref{Abschnitt:RSS_mittels_verteiltem_pubsub} befasst sich mit RSS und der designbezogenen Problematik im Kontext einer großen Nutzergemeinde. Wir werden
-die schon angesprochenen Ziele unserer Arbeit genauer formulieren und problematische Aspekte bei ihrer Umsetzung beleuchten. Zuletzt geben wir einen kurzen
+die schon angesprochenen Ziele unserer Arbeit genauer formulieren und problematische Aspekte bei ihrer Umsetzung herausarbeiten. Zuletzt geben wir einen kurzen
 Überblick über Arbeiten, die sich auf vergleichbare oder andere Weise diesem Thema zugewandt haben.\\
 
-In Kapitel \ref{adapt_informationsverteilung} werden wir ein auf unsere Zielsetzung abgestimmtes Lösungskonzept entwickeln. Die Entwicklung erfolgt dabei
+In Kapitel \ref{adapt_informationsverteilung} entwickeln wir ein auf unsere Zielsetzung abgestimmtes Lösungskonzept. Die Entwicklung erfolgt dabei
 schrittweise, und wir werden sie durch die Analyse der gegebenen Begleitumstände motivieren.\\
 
 Kapitel \ref{c:implementierung} beschäftigt sich mit der Implementierung der entwickelten Simulationsumgebung. Wir stellen die wichtigsten Klassen vor, geben einen
