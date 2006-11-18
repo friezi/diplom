@@ -1,13 +1,7 @@
-i=50
+i=20
 
-while (( $i<=90 ))
+while (( $i<=80 ))
 do
-
-  if (( $i == 50 ))
-  then 
-      i=$(($i+20))
-      continue
-  fi
 
   mkdir subscribersLeave${i}
   cp subscribersLeave50/* subscribersLeave${i}/
@@ -16,4 +10,5 @@ do
   cvs add *
   cd ..
   i=$(($i+20))
+
 done
