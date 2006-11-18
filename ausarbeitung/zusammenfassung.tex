@@ -6,39 +6,50 @@ RSS-Feeds werden von Klienten in ein Notifikationssystem eingespeist und mit des
 wurden dabei entwickelt:
 \begin{itemize}
 \item ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
-  tolerant ist ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
-\item ein Verfahren zur Adaption von Polling-Raten verschiedener Klienten an den Leistungsgrad eines Servers, das ohne Kenntnis der übrigen Klienten und der
+  tolerant ist, ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
+\item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers, das ohne Kenntnis der übrigen Klienten und der
   Gesamtstruktur und -größe des Netzwerks auskommt
 \end{itemize}
 
 In Abschnitt \ref{c:experimente} haben wir gezeigt, dass solch ein System entscheidende Verbesserungen bezüglich des Aktualitätsgrades der RSS-Feeds 
 im Gegensatz zum herkömmlichen Verfahren bringt. Zusätzlich kann eine Entlastung der RSS-Server und eine Verteilung des Datenverkehrs auf mehrere Teilbereiche des Netzes
-erreicht werden. Die Vorteile dieses Systems liegen für Klienten also in einer besseren potenziellen Aktualität der Daten.\\
+erreicht werden. Die Vorteile dieses Systems für Klienten sind also in einer besseren potenziellen Aktualität der Daten zu sehen.\\
 
-Während der Entwicklung des Systems sind wir auf einige Begleiterscheinungen aufmerksam geworden, deren Auswirkungen wir durch geeignete Gegenmaßnahmen verringern können.
+Während des Entwurfs des Systems sind wir auf einige Begleiterscheinungen aufmerksam geworden (Bsp.: Churn), deren nachteilige Auswirkungen
+auf die Adaption des Anfrageverhaltens der Klienten an die jeweilige Serverbelastung durch geeignete Gegenmaßnahmen verringert
+werden können.
 
 \section{Ausblick}
-Eine ganze Reihe von Punkten haben wir während der Entwicklung kurz angesprochen, konnten aber nicht näher darauf eingehen. Diese bilden Material für weiterführende Studien und
+Wir haben während des Entwurfs eine ganze Reihe von Punkten angesprochen, auf die wir nicht näher eingehen konnten. Diese bilden Material für weiterführende Studien und
 Entwicklungen.
 
 \paragraph{Filter:} Komplexere Filtertechniken als die Technik des \glqq flooding\grqq{} haben wir in dem bisherigen Entwurf nicht berücksichtigt. Wir haben aber das System so
-konzipiert, dass innerhalb des Notifikationssystems auch andere Filtertechniken zur Anwendung kommen können.
-\begin{notizen}
-Filtertechniken: content-based
-\end{notizen}
-Da Broker RSS-Feeds neu zusammenstellen, können die Einträge auch verschiedenen Kanälen entnommen werden und themenbasiert in einem neuen Feed zusammengefasst werden. Mit Hilfe des in
-der RSS-Spezifikation vorgesehenen Elements \texttt{source} (siehe Abschnitt \ref{ch_rss}) kann ein Klient die Einträge eindeutig den ursprünglichen Kanälen zuordnen.\\
-Bei der inhaltsbasierten Filterung wird der Inhalt des durch einen RSS-Feed-Eintrag referenzierten Objektes in die Filterung mit einbezogen. Der referenzierte Inhalt könnte
-zusätzlich zum übermittelten RSS-Feed durch das Notifikationssystem verteilt werden.
+konzipiert, dass das Notifikationssystem auch in Hinsicht auf die Benutzung anderer Filtertechniken erweiterbar ist. Grundlage dafür bildet die (temporäre) brokerseitige
+Speicherung der RSS-Feeds. Damit die Definition von Filtern auf Nutzerseite zur Anwendung kommen kann,
+müssen diese in Nachrichten zur Registrierung beim Notifikationssystem integriert werden. 
+Da Broker RSS-Feeds neu zusammenstellen, können Feed-Einträge auch verschiedenen Kanälen entnommen und themenbasiert in einem neuen Feed zusammengefasst werden.
+Mit Hilfe des in der RSS-Spezifikation vorgesehenen Elements \texttt{source} (siehe Abschnitt \ref{ch_rss})
+kann klientenseitig trotzdem eine genaue Aufschlüsselung der Einträge in die ursprünglichen Kanälen erfolgen.\\
+Bei der inhaltsbasierten Filterung (siehe \cite{Muehl:2001:GenericConstraints}) kann der Inhalt des durch einen Feed-Eintrag referenzierten Objektes in
+die Filterung mit einbezogen werden. Der referenzierte Inhalt könnte zusätzlich zum übermittelten RSS-Feed durch das Notifikationssystem übertragen werden, so
+dass auch an dieser Stelle serverseitig eine Einsparung des übertragenen Datenvolumens mit Hilfe des Notifikationssystems möglich ist.
 
-\paragraph{Fehlinformationen\todo{?}:}
+\paragraph{Umgehung der Systemfunktionalität:}
 Die Entwicklung unseres Systems basiert auf einem kooperativen Modell: ein kooperatives Verhalten der Klienten bzw. der Applikationen auf Klientenseite wird vorausgesetzt.
-Damit alle beteiligten Klienten gleichermaßen von dem System profitieren, werden de gewünschten Informationen und Informationen zur Anpassung der
-Polling-Perioden ausgetauscht ($artt$). Spielen beispielsweise finanzielle Belange eine Rolle, so könnten einzelne Klienten ein Interesse daran haben,
-dass andere Klienten die gewünschten Informationen erst sehr
-spät erhalten. Um dies zu erreichen, könnten sie die neuen Informationen zurückhalten und ein spätes Antwortverhalten des jeweiligen RSS-Servers vortäuschen.
-Dies hätte zur Folge, dass andere Klienten ihre Polling-Perioden in die Höhe treiben und neue Feeds erst relativ spät erhalten.\\
-Es müssten weitere Verfahren und Maßnahmen entwickelt werden, um derartiges Fehlverhalten auszuschließen bzw. zu entdecken und einzudämmen.
+Damit alle beteiligten Klienten gleichermaßen von dem System profitieren, werden die von den Klienten gewünschten Informationen und die Informationen zur Anpassung der
+Polling-Perioden untereinander ausgetauscht ($artt$).\\
+Spielen jedoch finanzielle Belange eine Rolle (beispielsweise bei aktuellen Börsenkursen), so könnten einzelne Klienten ein Interesse daran haben,
+alleine von aktuellen Informationen zu profitieren. Bei dem in dieser Arbeit vorgestellten System ist es möglich, dass einzelne Klienten den übrigen im Overlay-Netzwerk
+befindlichen Klienten ein anderes Verhalten eines RSS-Servers vortäuschen, als tatsächlich vorliegt: das Zurückhalten von Informationen und die Übermittlung von
+falschen, zu hohen $artt$s kann zu einer Fehlanpassung durch die Wahl zu hoher Polling-Perioden führen. Davon würden Klienten profitieren, die diese Reaktion
+provoziert haben und ihrerseits den Adaptionsmechanismus umgehen, indem sie durch Manipulation der Software die Einstellung willkürlicher Polling-Perioden
+forcieren.\\
+Es müssten weitere Verfahren und Sicherheitstechniken entwickelt werden, um derartiges Fehlverhalten auszuschließen bzw. zu entdecken und einzudämmen. Ein möglicher
+Ansatz wäre, dass seitens der Broker der übermittelte $feed.artt$ eines Klienten in Beziehung zur Frequenz gesetzt wird, mit der dieser Klient neue Feeds in das
+Notifikationssystem einspeist. Abhängig von dieser Frequenz bzw. von der Zeit bis zur letzten zurückliegenden Einspeisung muss es eine obere Schranke für den $feed.artt$
+geben. Ist diese Schranke überschritten, deutet dass auf eine bewusste Manipulation des $feed.artt$ hin.\\
+Dies soll nur ein Denkansatz für weitere Entwicklungen sein. Ein umfangreiches Sicherheitskonzept in dieser Hinsicht zu entwickeln, ist eine anspruchsvolle Aufgabe und
+erfordert sicherlich Maßnahmen an mehr als einer Stelle innerhalb des Systems.
 
 %%% Local Variables: 
 %%% mode: latex

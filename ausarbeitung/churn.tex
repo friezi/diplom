@@ -34,7 +34,6 @@ bei DHT-basierten Netzen Rhea et al. in \cite{Rhea2004}. Ziel der beschriebenen 
 halten bzw. das Netzwerk schnell in einen solchen wieder zurückzuführen. Da diese Techniken keine Relevanz in bezug auf Churn bei \pubsubrss haben,
 wollen wir hier nicht näher darauf eingehen und verweisen auf die in der Literaturliste angegebenen Fachartikel.
 
-
 \paragraph{Auswirkungen von Churn auf \pubsubrss:}
 Verlassen einzelne Broker das Netzwerk, so liegen die Auswirkungen auf das Gesamtsystem nahe: der Verlust einzelner Broker
 bedeutet ein Auseinanderfallen des Netzes in mehrere unabhängige Teilbäume, falls das Broker-System baumartig aufgebaut ist oder falls genug Broker ausfallen.
@@ -44,12 +43,13 @@ können zwischen den Teilbäumen (\glqq Inseln\grqq{}) keine Nachrichten mehr
 ausgetauscht werden. RSS-Feeds werden dadurch nicht mehr über das gesamte Overlay-Netzwerk verteilt.
 Unter der Annahme, dass die Subscriber ihre Polling-Perioden optimal an die Server-Belastung angepasst haben und dieser an seiner
 Belastungsgrenze arbeitet, kann ein Anheben der Polling-Perioden keinen Ausgleich schaffen. Je größer der Zerfall ist,
-desto geringer wird folglich der Aktualitätsgrad der RSS-Feeds sein. Eine Anpassung der
-Polling-Perioden der Subscriber an eine veränderte Serverbelastung wird einen längeren Zeitraum beanspruchen, da eine Ausbalancierung der Polling-Perioden
-aufgrund fehlender durch das Notifikationssystem übertragener RSS-Feeds in geringerem Maße erfolgen wird.\\
+desto geringer wird folglich der Aktualitätsgrad der RSS-Feeds in Inseln sein, in denen ein guter Aktualitätsgrad durch den Erhalt
+von RSS-Feeds über das Notifikationssystem zustande kam. Eine Anpassung der
+Polling-Perioden der Subscriber an eine veränderte Serverbelastung wird einen längeren Zeitraum beanspruchen, da weniger RSS-Feeds über das
+Notifikationssystem verteilt werden und somit eine Ausbalancierung der Polling-Perioden in gerimgerem Maße erfolgen wird.\\
 Welche Knoten in einem Netzwerk die Rolle der Broker übernehmen, bleibt zunächst offen. Ob Broker das System benutzergesteuert verlassen können, hängt ganz von der
 jeweiligen Umsetzung des Systems ab. Denkbar sind beispielsweise dedizierte Knoten, welche dauerhaft online sind und kaum Ausfallerscheinungen aufweisen
-(Supernodes bei Gnutella und KaZaA \todo{Referenz}). Daher tritt Churn auf Brokerebene in Abhängigkeit des jeweiligen Notifikationssystems auf. Um die Auswirkungen
+(Supernodes bei Gnutella und KaZaA \cite{Aberer:P2P,KaZaA}). Daher tritt Churn auf Brokerebene in Abhängigkeit des jeweiligen Notifikationssystems auf. Um die Auswirkungen
 von Churn auf dieser Ebene zu reduzieren, wären Rekonfigurationsverfahren auf Brokerebene notwendig. Cugola et al. beschäfftigen sich mit Rekonfigurationsalgorithmen
 bei Publish-Subscribe-Systemen in \cite{cugola02towards,picco03efficient}.
 Dies soll jedoch nicht Gegenstand dieser Arbeit sein und offen bleiben für zukünftige Entwicklungen.\\
@@ -70,8 +70,7 @@ Um die negativen Auswirkungen von Churn bei \pubsubrss zu reduzieren, muss die M
 vermieden werden. Eine Lösung kann aufgrund folgender Überlegung entwickelt werden: tritt ein Subscriber dem System bei, so existieren eventuell schon
 genügend Subscriber, welche einen
 aussagekräftigen $artt$ und $cpp$ berechnet haben. Der neu hinzugekommene Subscriber kann sich an diesen Richtwerten orientieren und muss seinen
-individuellen $cpp$ nicht mit Hilfe seines $ppp$ als Ausgangswert berechnen. Es wäre mit einigem Aufwand
-verbunden, die Anzahl der Subscriber im gesamten Netzwerk zu bestimmen. Es reicht jedoch aus, die Anzahl der Subscriber heranzuziehen, welche mit dem gleichen
+individuellen $cpp$ nicht mit Hilfe seines $ppp$ als Ausgangswert berechnen. Es reicht aus, die Anzahl der Subscriber heranzuziehen, welche mit dem gleichen
 lokalen Broker verbunden sind. Diese Information kann der lokale Broker ohne Schwierigkeiten liefern. Da nur $RichRSSFeeds$ einen Broker passieren (siehe Abschnitt
 \ref{cs:ausbalancierung_der_polling-perioden}), kann dieser den enthaltenen $feed.artt$ eines Feeds zwischenspeichern. Betritt ein neuer Subscriber das System, so
 kann der Broker diesem den aktuellen Feed mitsamt des zwischengespeicherten $artt$-Wertes übermitteln. Der neue Subscriber wählt nun wie bisher seinen $cpp$ auf
