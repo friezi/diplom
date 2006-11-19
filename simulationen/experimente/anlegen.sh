@@ -1,14 +1,16 @@
 i=20
 
-while (( $i<=80 ))
+DIR=churnCompensation
+
+while (( $i<=90 ))
 do
 
-  mkdir subscribersLeave${i}
-  cp subscribersLeave50/* subscribersLeave${i}/
-  cvs add subscribersLeave${i}
-  cd subscribersLeave${i}
+  mkdir ${DIR}${i}
+  cp ${DIR}10/* ${DIR}${i}/
+  cvs add ${DIR}${i}
+  cd ${DIR}${i}
   cvs add *
   cd ..
-  i=$(($i+20))
+  i=$(($i+10))
 
 done
