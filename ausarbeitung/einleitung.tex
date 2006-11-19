@@ -14,7 +14,7 @@ Ein allgemeines Kommunikationsmodell, um Interessenten über inhaltliche Änderung
 ist Publish/Subscribe. Üblicherweise folgt es dem push-basierten Ansatz.
 
 \section{Motivation}
-Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub) finden sich drei
+Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub), welches dem push-basierten Ansatz folgt, finden sich drei
 Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren
 sich für bestimmte Informationen und können diese unter Zuhilfenahme von Filtern abonnieren (subskribieren);
 \glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen (Benachrichtigungen) an die Subscriber.
@@ -49,7 +49,7 @@ Beispiele für die Datenmengen an RSS-Feeds, die pro Tag von einzelnen Servern üb
 in \cite{SandlerEtAl:2005:FeedTree}.
 
 \section{Ziele der Arbeit}
-Publish/Subscribe (verteilt/push) eignen sich hervorragend, um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität
+Verteiltes Publish/Subscribe eignet sich hervorragend, um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität
 der Informationen und eine höhere Flexibilität in Bezug auf die Auswahl der Informationen seitens der Nutzer zu erreichen.
 RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
 übermitteln, welche die Feeds ihrerseits an Nutzer (Subscriber) weiterleiten. Dies würde jedoch bedeuten,
@@ -111,7 +111,7 @@ Im Lauf der Arbeit entwickeln wir zwei voneinander relativ unabhängige Verfahren
 \item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers, das ohne Kenntnis der übrigen Klienten und der
   Gesamtstruktur und -größe des Netzwerks auskommt $\longrightarrow$ globales Wissen ist nicht nötig
 \end{itemize}
-Diese Verfahren wurden zwar in Hinsicht auf RSS entwickelt, sie lassen sich aber auch auf andere ähnlich gestaltete bzw. ereignisbasierte Systeme übertragen.
+Diese Verfahren werden zwar in Hinsicht auf RSS entwickelt, sie lassen sich aber auch auf andere ähnlich gestaltete bzw. ereignisbasierte Systeme übertragen.
 Zudem lassen sich die Algorithmen durch geringfügige Modifikationen auch an
 nicht verbindungsorientierte Übertragungstechniken (z. B. UDP) anpassen, obwohl wir sie für eine datenstrombasierte Übertragungsmethode (TCP) entworfen haben.
 

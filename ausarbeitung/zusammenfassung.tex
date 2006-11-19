@@ -37,20 +37,29 @@ dass auch an dieser Stelle serverseitig eine Einsparung des übertragenen Datenvo
 \paragraph{Umgehung der Systemfunktionalität:}
 Die Entwicklung unseres Systems basiert auf einem kooperativen Modell: ein kooperatives Verhalten der Klienten bzw. der Applikationen auf Klientenseite wird vorausgesetzt.
 Damit alle beteiligten Klienten gleichermaßen von dem System profitieren, werden die von den Klienten gewünschten Informationen und die Informationen zur Anpassung der
-Polling-Perioden untereinander ausgetauscht ($artt$).\\
+Polling-Perioden ($artt$) untereinander ausgetauscht.\\
 Spielen jedoch finanzielle Belange eine Rolle (beispielsweise bei aktuellen Börsenkursen), so könnten einzelne Klienten ein Interesse daran haben,
 alleine von aktuellen Informationen zu profitieren. Bei dem in dieser Arbeit vorgestellten System ist es möglich, dass einzelne Klienten den übrigen im Overlay-Netzwerk
 befindlichen Klienten ein anderes Verhalten eines RSS-Servers vortäuschen, als tatsächlich vorliegt: das Zurückhalten von Informationen und die Übermittlung von
 falschen, zu hohen $artt$s kann zu einer Fehlanpassung durch die Wahl zu hoher Polling-Perioden führen. Davon würden Klienten profitieren, die diese Reaktion
-provoziert haben und ihrerseits den Adaptionsmechanismus umgehen, indem sie durch Manipulation der Software die Einstellung willkürlicher Polling-Perioden
+provozieren und ihrerseits den Adaptionsmechanismus umgehen, indem sie durch Manipulation der Software die Einstellung willkürlicher Polling-Perioden
 forcieren.\\
 Es müssten weitere Verfahren und Sicherheitstechniken entwickelt werden, um derartiges Fehlverhalten auszuschließen bzw. zu entdecken und einzudämmen. Ein möglicher
 Ansatz wäre, dass seitens der Broker der übermittelte $feed.artt$ eines Klienten in Beziehung zur Frequenz gesetzt wird, mit der dieser Klient neue Feeds in das
-Notifikationssystem einspeist. Abhängig von dieser Frequenz bzw. von der Zeit bis zur letzten zurückliegenden Einspeisung muss es eine obere Schranke für den $feed.artt$
-geben. Ist diese Schranke überschritten, deutet dass auf eine bewusste Manipulation des $feed.artt$ hin.\\
+Notifikationssystem einspeist. Abhängig von dieser Frequenz bzw. von der Zeit bis zur letzten zurückliegenden Einspeisung sollte es eine obere Schranke für den $feed.artt$
+geben. Ist diese Schranke überschritten, kann das auf eine bewusste Manipulation des $feed.artt$ hindeuten.\\
 Dies soll nur ein Denkansatz für weitere Entwicklungen sein. Ein umfangreiches Sicherheitskonzept in dieser Hinsicht zu entwickeln, ist eine anspruchsvolle Aufgabe und
 erfordert sicherlich Maßnahmen an mehr als einer Stelle innerhalb des Systems.
 
+\paragraph{Alternative angestrebte Adaptionsgüte:}
+In dieser Arbeit haben wir ein Verfahren entwickelt, mit dem die Polling-Perioden der Klienten so angepasst werden, dass ein Kompromiss zwischen dem Belastungsgrad des
+RSS-Servers und den angestrebten Polling-Perioden auf Klientenseite bei optimalem Aktualitätsgrad der RSS-Feeds erreicht wird. Nicht in jedem Szenario ist es jedoch
+erforderlich, den RSS-Server bis an die Grenze seiner
+Leistungsfähigkeit zu bringen. Denkbar sind Szenarien, in denen ein Anbieter von RSS-Feeds ein Interesse daran hat, einem möglichst geringen zusätzlichen Datenverkehr
+durch die Übermittlung von RSS-Feeds und durch Anfragen zu unterliegen (Bsp.: privater Anbieter ohne Flatrate). Ist außerdem der Aktualitätsgrad der RSS-Feeds für
+Interessenten zweitrangig, so könnte ein alternatives Verfahren zur Anpassung der Polling-Perioden angewendet werden, welches einen Kompromiss zwischen dem
+zwischen RSS-Server und Klient aufkommenden Datenvolumen und dem Aktualitätsgrad der RSS-Feeds anstrebt. Für einen Klienten würde das bedeuten, dass RSS-Feeds
+hauptsächlich über das Notifikationssystem übertragen werden.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"

@@ -1,8 +1,9 @@
 \chapter{Experimente und Auswertung}
 \label{c:experimente}
-In diesem Kapitel werden wir das Adaptionsverhalten \todo{sihe Korrektur}der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte der Verfahren genauer
-betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir verwenden die in Kapitel \ref{c:implementierung} vorgestellte Simulationsumgebung. Da
-wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir das Verhalten des Systems bei unterschiedlichen Parametern bzw. Algorithmen
+In diesem Kapitel werden wir untersuchen, welche Vorteile das in dieser Arbeit vorgestellte System gegenüber dem herkömmlichen System bietet.
+Des Weiteren werden wir das Adaptionsverhalten der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte
+der Verfahren genauer betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir verwenden die in Kapitel \ref{c:implementierung} vorgestellte Simulationsumgebung.
+Da wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir das Verhalten des Systems bei unterschiedlichen Parametern bzw. Algorithmen
 untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Überprüfung der getroffenen Annahmen, die die Entwicklung unserer
 Verfahren motiviert haben.
 
@@ -38,9 +39,6 @@ Zufallswerten durchgeführt. Dadurch hat sich bei jedem Durchlauf das Overlay-Net
 gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle berechnet.
 
 \paragraph{Parameter:}
-Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
-angegebenen Parameter als Standardwerte gesetzt.
-
 \begin{table*}
 \begin{center}
   \begin{tabular}{|rlr|}
@@ -73,6 +71,9 @@ angegebenen Parameter als Standardwerte gesetzt.
 \label{Tab:Standardparameter}
 \end{table*}
 
+Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
+angegebenen Parameter als Standardwerte gesetzt.\\
+
 Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot rss\-Feed\-Msg\-RT$ bzw. $engineTimerPeriod\cdot rss\-Feed\-Request\-Msg\-RT$.
 Wir haben bewusst relativ große
 Nachrichtenlaufzeiten gewählt, um das System unter möglichst ungünstigen Bedingungen zu testen. Große Nachrichtenlaufzeiten können bewirken,
@@ -84,7 +85,7 @@ Die Zeitdauer bei jeder Messung betrug 6.000 Ticks bzw. simulierte Sekunden.
 
 \section{Experimente -- bevorzugte Polling-Periode}
 Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Zunächst werden wir betrachten, welche
-Vorteile das vorgestellte Verfahren gegenüber dem herkömmlichen Verfahren bietet.
+Vorteile das vorgestellte Verfahren gegenüber dem herkömmlichen Verfahren bietet.\\
 
 \importsmallgnuplotps{Verbesserung des Aktualitätsgrades $\Gamma_A$}
 {Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_up_to_date_percent_improvement}
@@ -100,7 +101,7 @@ der Grad der Verbesserung der Dienstgüte.
 %\importsmallgnuplotps{Verbesserung des Verzögerungsgrades $\Gamma_V$}
 %{Abb:Verbesserung_des_Verzoegerungsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_message_delay_percent_improvement}
 
-\section{Weitere Experimente -- bevorzugte Polling-Periode}
+\section{Zusätzliche Experimente -- bevorzugte Polling-Periode}
 In diesem Abschnitt werden wir einzelne Aspekte der entwickelten Verfahren näher untersuchen. Eine Legende zu den
 Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 \subsection{Beispiel und Referenz}
@@ -280,22 +281,23 @@ relativ klein.
 
 \subsection{Reaktion auf Netzwerkveränderung}
 Dieses Experiment dient zur Untersuchung, wie das System auf plötzliche Veränderungen der Netzwerkgröße (Anzahl der Klienten im System)
-reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und dass es dabei nicht zu Seiteneffekten
-(wie z. B. ein starkes Schwingungsverhalten) kommt. Für diesen Zweck verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
+reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und es dabei nicht zu Seiteneffekten
+(wie z. B. zu einem starken Schwingungsverhalten) kommt. In einem Beispielexperiment verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
 2000 das Overlay-Netzwerk. Zum Zeitpunkt 4000 tritt die gleiche Anzahl an Klienten dem Netzwerk wieder bei. Abbildung
 \ref{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse} zeigt den graphischen Verlauf. Es ist zu erkennen, dass das Verlassen der Klienten
 nur eine kurzzeitige Senkung des Füllgrades der Server-Queue bewirkt. Der Pegel steigt anschließend wieder bis zur oberen Grenze.
 Der Beitritt der Klienten zum System bewirkt zwar eine kurzzeitige starke Mehrbelastung des Servers, das System kann diese Mehrbelastung jedoch
-relativ schnell ausgleichen.
+relativ schnell ausgleichen. In Abbildung \ref{Abb:Spitzenwerte_abgewiesene_Anfragen} sind die Spitzenwerte abgewiesener Nachrichten nach einem
+Wiedereintritt in Abhängigkeit von der Anzahl der Subscriber dargestellt, die zuvor das System verlassen haben, bzw. vorübergehend nicht erreichbar waren.
+Abbildung \ref{Abb:Adaptionszeiten_nach_Wiedereintritt} zeigt die Zeitdauern der Adaptionen der Polling-Perioden nach einem Wiedereintritt
+in Abhängigkeit von der Anzahl der Subscriber, die zuvor das System verlassen haben. In beiden Graphiken ist ein fast linearer Verlauf der Kurven
+zu erkennen.
 
 \subsection{Steigerung des $rto$}
 \importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
-Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
-nach sich zieht.
-Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 Sekunden wird dieser auf 400 hochgesetzt, so dass der Server
-nur noch stark zeitverzögert antworten kann. Abbildung \ref{Abb:Exponentielle_Steigerung_des_rto} zeigt die Adaptionsgüte bei exponentieller Steigerung,
-Abbildung \ref{Abb:Polynomielle_Steigerung_des_rto} die Adaptionsgüte bei polynomieller Steigerung des $rto$. Hier ist ein deutlich besserer
-Verlauf der Adaption bei exponentieller Steigerung zu sehen.
+
+\importsmallgnuplotps{Spitzenwerte abgewiesener Anfragen}{Abb:Spitzenwerte_abgewiesene_Anfragen}{subscribersRejoin_peeks}
+\importsmallgnuplotps{Adaptionszeiten nach Wiedereintritt}{Abb:Adaptionszeiten_nach_Wiedereintritt}{subscribersRejoin_adaptionTime}
 
 \importsmallgnuplotps{Serverbelastung: Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
 \importsmallgnuplotps{Serverbelastung: Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
@@ -304,6 +306,12 @@ Verlauf der Adaption bei exponentieller Steigerung zu sehen.
 \importsmallgnuplotps{Mittelwerte $cpp$: Queuegröße 3000}{Abb:Mittelwerte_Queuegroesse_3000}{meanValueCPP_queue3000_MeanValueRanges}
 \importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Queuegröße 3000}{Abb:Standardabweichung_Mittelwerte_Queuegroesse_3000}{stdDevCPP_queue3000_MeanValueRanges}
 \importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Queuegröße 3000}{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}{coeffVarCPP_queue3000_MeanValueRanges}
+Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
+nach sich zieht.
+Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 Sekunden wird dieser auf 400 hochgesetzt, so dass der Server
+nur noch stark zeitverzögert antworten kann. Abbildung \ref{Abb:Exponentielle_Steigerung_des_rto} zeigt die Adaptionsgüte bei exponentieller Steigerung,
+Abbildung \ref{Abb:Polynomielle_Steigerung_des_rto} die Adaptionsgüte bei polynomieller Steigerung des $rto$. Hier ist ein deutlich besserer
+Verlauf der Adaption bei exponentieller Steigerung zu sehen.
 
 \subsection{Queuegrößen}
 Bisher haben wir eine im Verhältnis zu Anzahl der Klienten sehr kleine Queuegröße für die Server-Queue gewählt. In diesem Experiment wollen wir
@@ -352,7 +360,7 @@ mit einer starken und länger andauernden Reaktion überreagiert. Abbildung \ref{A
 auf eine 50-fach gesteigerte Serverbelastung, welche nach 40 Sekunden auf den ursprünglichen Wert zurückgesetzt wurde.
 Wie zu sehen ist, ändert sich der Verlauf der Kurve nur ganz geringfügig. Abbildung
 \ref{Abb:kurzzeitige_Belastungsminderung} zeigt auch hier den umgekehrten Fall bei einem ursprünglichen $serviceTimeFactor$ von 50.
-Kurzzeitige Belastungsminderungen sind allerdings in der Realität eher weniger wahrscheinlich.
+Kurzzeitige Belastungsminderungen sind allerdings in der Praxis eher weniger wahrscheinlich.
 
 \paragraph{Allmähliche Belastungsänderungen:}
 Bei einer allmählichen Belastungsänderung fordern wir, dass sich das System so schnell an den veränderten Belastungsgrad anpasst, dass
