@@ -2,7 +2,8 @@
 \label{c:experimente}
 In diesem Kapitel werden wir untersuchen, welche Vorteile das in dieser Arbeit vorgestellte System gegenüber dem herkömmlichen System bietet.
 Des Weiteren werden wir das Adaptionsverhalten der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte
-der Verfahren genauer betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir verwenden die in Kapitel \ref{c:implementierung} vorgestellte Simulationsumgebung.
+der Verfahren genauer betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir verwenden die in Kapitel \ref{c:implementierung} vorgestellte
+Simulationsumgebung.
 Da wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir das Verhalten des Systems bei unterschiedlichen Parametern bzw. Algorithmen
 untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Überprüfung der getroffenen Annahmen, die die Entwicklung unserer
 Verfahren motiviert haben.
@@ -17,9 +18,9 @@ welche gut für eine visuelle Kontrolle der Algorithmen geeignet
 sind, da sie von ihrer Struktur her einfach und übersichtlich aufgebaut sind. Um jedoch aussagekräftige Ergebnisse zu erhalten, die auch in Hinsicht auf
 Netzwerktopologien, so wie sie im Internet vorzufinden sind, als realistisch eingestuft werden können, müssen wir andere Topologien heranziehen. Wir bedienen uns
 Topologien, welche auf dem Transit-Stub-Modell \cite{Zegura1996} basieren. Dieses Modell spiegelt sehr gut reale Internetstrukturen wider. Bei diesem Modell
-besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ \glqq Stub-Domäne\grqq{} oder \glqq Transit-Domäne\grqq{} sind. Während der Datenverkehr nur dann durch eine
-Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht. Transit-Domänen
-dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie den Backbone.\\
+besteht das Netzwerk aus mehreren Domänen, die entweder vom Typ \glqq Stub-Domäne\grqq{} oder \glqq Transit-Domäne\grqq{} sind. Während der Datenverkehr nur dann
+durch eine Stub-Domäne fließt, wenn der Ziel- bzw. Ausgangsknoten innerhalb dieser Stub-Domäne liegt, besteht diese Einschränkung für Transit-Domänen nicht.
+Transit-Domänen dienen somit dazu, Stub-Domänen miteinander zu verbinden, sie leiten den Datenverkehr weiter. Für die Stub-Domänen bilden sie den Backbone.\\
 
 Es gibt verschiedene Tools, um Topologien basierend auf dem Transit-Stub-Modell zu generieren. Eines davon ist BRITE \cite{Medina:2001BRITE}, welches hier
 Verwendung fand, um die notwendigen Topologien zu generieren. Für die Simulation sind zwei Topologien notwendig: eine Sublayer-Topologie, welche
@@ -92,8 +93,9 @@ Vorteile das vorgestellte Verfahren gegenüber dem herkömmlichen Verfahren bietet
 
 Abbildung \ref{Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber} zeigt die Verbesserung des Aktualitätsgrades
 (Gütefunktion $\Gamma_A$) in Ab\-hän\-gig\-keit von der Anzahl der Klienten im Netzwerk. Ausgangsparameter für dieses Experiment sind eine Netzgröße von 2001 Knoten,
-200 Broker, ppp=1 , rssFeedMsgRT=1 und rssFeedRequestMsgRT=1. Die Nachrichtenlaufzeiten wurden bewusst geringer gesetzt als in den übrigen Experimenten, um bei diesem Experiment
-auch für das herkömmliche Verfahren (keine Staukontrolle) zu erreichen, dass keine Verzögerungen der Nachrichten bedingt durch zu hohe Nachrichtenlaufzeiten auftreten.
+200 Broker, ppp=1 , rssFeedMsgRT=1 und rssFeedRequestMsgRT=1. Die Nachrichtenlaufzeiten wurden bewusst geringer gesetzt als in den übrigen Experimenten, um bei
+diesem Experiment auch für das herkömmliche Verfahren (keine Staukontrolle) zu erreichen, dass keine Verzögerungen der Nachrichten bedingt durch zu hohe
+Nachrichtenlaufzeiten auftreten.
 Die Zeiten entsprechen eher realen Bedingungen. So kann ein Schwellenwert der Anzahl der Klienten bestimmt werden, bei dem eine Divergenz der Dienstgüte eintritt.
 Der Zeitpunkt, zudem die  Messung der Dienstgüte stattfand, lag bei 6.000 Ticks. In der Abbildung ist zu sehen, dass
 bereits bei einer Anzahl von 24 Klienten eine Verbesserung des Aktualitätsgrades der Nachrichten eintritt. Mit zunehmender Zahl der Klienten im Netzwerk steigt auch
@@ -194,8 +196,9 @@ wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:O
 \importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Ausbalancierung}
 {Abb:Ausbalancierung_Variationskoeffizient_der_Mittelwerte_der_Polling-Perioden}{coeffVarCPP_Balancing_MeanValueRanges}
 
-In diesem Experiment soll untersucht werden, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt und ob es
-zum Effekt des \glqq Aussperrens\grqq{} kommt (siehe Abschnitt \ref{cs:ausbalancierung_der_polling-perioden}). Um den Effekt zu maximieren, haben wir bei diesem Experiment
+In diesem Experiment soll untersucht werden, wie sich ein Ausbleiben der Ausbalancierung der Polling-Perioden auf die Adaption der Polling-Perioden auswirkt
+und ob es zum Effekt des \glqq Aussperrens\grqq{} kommt (siehe Abschnitt \ref{cs:ausbalancierung_der_polling-perioden}). Um den Effekt zu maximieren,
+haben wir bei diesem Experiment
 auf ein allmähliches Beitreten der Subscriber zum Overlay-Netzwerk verzichtet. Alle Subscriber treten gleichzeitig zu Beginn der Simulation dem Overlay-Netzwerk
 bei. Kommt es zum \glqq Aussperren\grqq{}, so sollte dieser Effekt anhand der Anzahl der Anfragen an den RSS-Server deutlich sichtbar sein, denn alle ausgesperrten
 Subscriber werden aufgrund ausbleibender Antworten ihre Anfragen wiederholen. Dies muss nahezu gleichzeitig geschehen, da alle Subscriber zur selben Zeit dem
@@ -236,6 +239,10 @@ als der Variationskoeffizient des nicht-ausbalancierten Verfahrens
 
 \importsmallgnuplotps{Serverbelastung: Ohne Churn-Kompensation}{Abb:ohne_Churn-Kompensation}{ToTR_NoChurnCompensation50_80_900_MVR}
 \importsmallgnuplotps{Serverbelastung: Mit Churn-Kompensation}{Abb:mit_Churn-Kompensation}{ToTR_ChurnCompensation50_80_900_MVR}
+\importsmallgnuplotps{Churn-Kompensation: Mittelwerte abgewiesener Anfragen}{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen}
+{churn_meanValues}
+\importsmallgnuplotps{Churn-Kompensation: Spitzenwerte abgewiesener Anfragen}{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen}
+{churn_peeks}
 
 \importsmallgnuplotps{Serverbelastung: Exponentielle Skalierungsfunktion}
 {Abb:Exponentielle_Skalierungsfunktion}{ToTR_ExponentialArttFactor_serviceTimeFactor400_MVR}
@@ -287,25 +294,27 @@ reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte S
 \ref{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse} zeigt den graphischen Verlauf. Es ist zu erkennen, dass das Verlassen der Klienten
 nur eine kurzzeitige Senkung des Füllgrades der Server-Queue bewirkt. Der Pegel steigt anschließend wieder bis zur oberen Grenze.
 Der Beitritt der Klienten zum System bewirkt zwar eine kurzzeitige starke Mehrbelastung des Servers, das System kann diese Mehrbelastung jedoch
-relativ schnell ausgleichen. In Abbildung \ref{Abb:Spitzenwerte_abgewiesene_Anfragen} sind die Spitzenwerte abgewiesener Nachrichten nach einem
+relativ schnell ausgleichen. In Abbildung \ref{Abb:Netzwerkgroesse_Spitzenwerte_abgewiesene_Anfragen} sind die Spitzenwerte abgewiesener Nachrichten nach einem
 Wiedereintritt in Abhängigkeit von der Anzahl der Subscriber dargestellt, die zuvor das System verlassen haben, bzw. vorübergehend nicht erreichbar waren.
-Abbildung \ref{Abb:Adaptionszeiten_nach_Wiedereintritt} zeigt die Zeitdauern der Adaptionen der Polling-Perioden nach einem Wiedereintritt
+Abbildung \ref{Abb:Netzwerkgroesse_Adaptionszeiten_nach_Wiedereintritt} zeigt die Zeitdauern der Adaptionen der Polling-Perioden nach einem Wiedereintritt
 in Abhängigkeit von der Anzahl der Subscriber, die zuvor das System verlassen haben. In beiden Graphiken ist ein fast linearer Verlauf der Kurven
 zu erkennen.
 
 \subsection{Steigerung des $rto$}
 \importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
 
-\importsmallgnuplotps{Spitzenwerte abgewiesener Anfragen}{Abb:Spitzenwerte_abgewiesene_Anfragen}{subscribersRejoin_peeks}
-\importsmallgnuplotps{Adaptionszeiten nach Wiedereintritt}{Abb:Adaptionszeiten_nach_Wiedereintritt}{subscribersRejoin_adaptionTime}
+\importsmallgnuplotps{Netzwerkgröße: Spitzenwerte abgewiesener Anfragen}{Abb:Netzwerkgroesse_Spitzenwerte_abgewiesene_Anfragen}{subscribersRejoin_peeks}
+\importsmallgnuplotps{Netzwerkgröße: Adaptionszeiten nach Wiedereintritt}{Abb:Netzwerkgroesse_Adaptionszeiten_nach_Wiedereintritt}{subscribersRejoin_adaptionTime}
 
 \importsmallgnuplotps{Serverbelastung: Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
 \importsmallgnuplotps{Serverbelastung: Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
 
 \importsmallgnuplotps{Serverbelastung: Queuegröße 3000}{Abb:Queuegroesse_3000}{ToTR_q3000_MVR}
 \importsmallgnuplotps{Mittelwerte $cpp$: Queuegröße 3000}{Abb:Mittelwerte_Queuegroesse_3000}{meanValueCPP_queue3000_MeanValueRanges}
-\importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Queuegröße 3000}{Abb:Standardabweichung_Mittelwerte_Queuegroesse_3000}{stdDevCPP_queue3000_MeanValueRanges}
-\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Queuegröße 3000}{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}{coeffVarCPP_queue3000_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Queuegröße 3000}{Abb:Standardabweichung_Mittelwerte_Queuegroesse_3000}
+{stdDevCPP_queue3000_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Queuegröße 3000}{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}
+{coeffVarCPP_queue3000_MeanValueRanges}
 Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
 nach sich zieht.
 Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 Sekunden wird dieser auf 400 hochgesetzt, so dass der Server
