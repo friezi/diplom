@@ -258,13 +258,25 @@ Die gewählten Werte für Nachrichtenlaufzeiten sind im Vergleich zu in der Realit
 Allerdings wollen wir das System unter möglichst ungünstigen Bedingungen testen. Bei geringeren Übertragungsgeschwindigkeiten verbessert sich
 die Auswirkung der Churn-Kompensation. Die hier dargestellten Werte sind Extremwerte und sollten unter realen Bedingungen weit besser ausfallen.\\
 
-Churn beginnt beim Zeitpunkt 3000 und endet beim Zeitpunkt 5000. Dabei sind nach 900 Sekunden 80\% der Klienten ausgetauscht.
+Churn beginnt beim Zeitpunkt 3000 und endet beim Zeitpunkt 5000. Dabei sind nach 900 Ticks 80\% der Klienten ausgetauscht.
 Abbildung \ref{Abb:ohne_Churn-Kompensation} zeigt den Einfluss von Churn auf die Serverbelastung ohne Churn-Kompensation. Zu erkennen ist eine starke
 und stetig ansteigende Serverbelastung. Nur ab etwa dem Zeitpunkt 4600 Sekunden fällt die Kurve wieder leicht ab. Nach Beendigung der Churnphase
 pegelt sich die Kurve langsam wieder in Richtung Server-Queue ein. Dagegen zeigt der Graph mit Churn-Kompensation in
 Abbildung \ref{Abb:mit_Churn-Kompensation} eine weit geringere Serverbelastung und ein besseres Adaptionsverhalten, obwohl auch hier der Einfluss
 von Churn nicht ganz vermeidbar ist. Es fällt weiterhin auf, dass durch die Churn-Kompensation schon in der Beitrittsphase (0...1000 Sekunden)
 ein besseres Adaptionsverhalten erreicht wird.\\
+
+Das beschriebene Experiment stellt nur ein ausgewähltes Beispiel für die Entwicklung der Serverbelastung mit und ohne Churn-Kompensation dar.
+Um zu ermitteln, wie der Grad der Churn-Kompensation mit der Churnrate zusammenhängt, wurden weitere Experimente durchgeführt, deren Ergebnisse
+in den Abbildungen \ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} und \ref{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen}
+veranschaulicht sind. Dabei wird die Serverbelastung bzw. die Anzahl abgewiesener Anfragen in Abhängigkeit der prozentualen Angabe der Subscriber
+dargestellt, die innerhalb einer festen Zeit (900 Ticks) das System dynamisch betreten und verlassen. Abbildung
+\ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} zeigt die Mittelwerte abgewiesener Anfragen innerhalb der definierten Churnphase.
+Abbildung \ref{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen} zeigt die Spitzenwerte. In Abbildung
+\ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} ist ein annähernd linearer Kurvenverlauf zu sehen. In
+\ref{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen} ist zu erkennen, dass die Kurve ab etwa 70\% nach oben hin ansteigt.
+Das lässt sich dadurch erklären, dass die Wahrscheinlichkeit zunimmt, dass Anfragen verschiedener Klienten zeitlich
+zusammenfallen, je größer die Churnrate ist.\\
 
 Obwohl sich in der Simulation Churn auch trotz Churn-Kompensation auf die Serverbelastung nachteilig auswirkt, sollte dieses Phänomen in der Praxis
 nur unter der Bedingung auftreten, dass die Broker selbst stark überlastet sind und nicht in angemessener Zeit antworten können, so dass ein
@@ -277,6 +289,7 @@ Auf die Entwicklung der Serverbelastung bei Wahl der Standard-Parameter hat Chur
 
 \subsection{Bestimmung des $artt$ -- Skalierungsfunktion für den $rtt$}
 \label{exp:skalierung}
+\importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
 
 Bei diesem Experiment soll die Adaptionsgüte der Polling-Perioden anhand der Serverbelastung bei unterschiedlicher Wahl der Skalierungsfunktion
 sf() (siehe Abschnitt \ref{css:staukontrolle_pubsubrss}) ermittelt werden. Wir beschränken uns dabei auf den Vergleich exponentieller und
@@ -287,6 +300,22 @@ $\text{sf}(x):=x^2$ zu sehen. Unterschiede im Verlauf sind zwar sichtbar, der Vo
 relativ klein.
 
 \subsection{Reaktion auf Netzwerkveränderung}
+
+\suppressfloats
+
+\importsmallgnuplotps{Netzwerkgröße: Spitzenwerte abgewiesener Anfragen}{Abb:Netzwerkgroesse_Spitzenwerte_abgewiesene_Anfragen}{subscribersRejoin_peeks}
+\importsmallgnuplotps{Netzwerkgröße: Adaptionszeiten nach Wiedereintritt}{Abb:Netzwerkgroesse_Adaptionszeiten_nach_Wiedereintritt}{subscribersRejoin_adaptionTime}
+
+\importsmallgnuplotps{Serverbelastung: Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
+\importsmallgnuplotps{Serverbelastung: Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
+
+\importsmallgnuplotps{Serverbelastung: Queuegröße 3000}{Abb:Queuegroesse_3000}{ToTR_q3000_MVR}
+\importsmallgnuplotps{Mittelwerte $cpp$: Queuegröße 3000}{Abb:Mittelwerte_Queuegroesse_3000}{meanValueCPP_queue3000_MeanValueRanges}
+\importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Queuegröße 3000}{Abb:Standardabweichung_Mittelwerte_Queuegroesse_3000}
+{stdDevCPP_queue3000_MeanValueRanges}
+\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Queuegröße 3000}{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}
+{coeffVarCPP_queue3000_MeanValueRanges}
+
 Dieses Experiment dient zur Untersuchung, wie das System auf plötzliche Veränderungen der Netzwerkgröße (Anzahl der Klienten im System)
 reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und es dabei nicht zu Seiteneffekten
 (wie z. B. zu einem starken Schwingungsverhalten) kommt. In einem Beispielexperiment verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
@@ -301,20 +330,6 @@ in Abhängigkeit von der Anzahl der Subscriber, die zuvor das System verlassen ha
 zu erkennen.
 
 \subsection{Steigerung des $rto$}
-\importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
-
-\importsmallgnuplotps{Netzwerkgröße: Spitzenwerte abgewiesener Anfragen}{Abb:Netzwerkgroesse_Spitzenwerte_abgewiesene_Anfragen}{subscribersRejoin_peeks}
-\importsmallgnuplotps{Netzwerkgröße: Adaptionszeiten nach Wiedereintritt}{Abb:Netzwerkgroesse_Adaptionszeiten_nach_Wiedereintritt}{subscribersRejoin_adaptionTime}
-
-\importsmallgnuplotps{Serverbelastung: Exponentielle Steigerung des $rto$}{Abb:Exponentielle_Steigerung_des_rto}{ToTR_Exponential_MVR}
-\importsmallgnuplotps{Serverbelastung: Polynomielle Steigerung des $rto$}{Abb:Polynomielle_Steigerung_des_rto}{ToTR_Polynomial_MVR}
-
-\importsmallgnuplotps{Serverbelastung: Queuegröße 3000}{Abb:Queuegroesse_3000}{ToTR_q3000_MVR}
-\importsmallgnuplotps{Mittelwerte $cpp$: Queuegröße 3000}{Abb:Mittelwerte_Queuegroesse_3000}{meanValueCPP_queue3000_MeanValueRanges}
-\importsmallgnuplotps{Standardabweichung Mittelwerte $cpp$: Queuegröße 3000}{Abb:Standardabweichung_Mittelwerte_Queuegroesse_3000}
-{stdDevCPP_queue3000_MeanValueRanges}
-\importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Queuegröße 3000}{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}
-{coeffVarCPP_queue3000_MeanValueRanges}
 Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
 nach sich zieht.
 Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 Sekunden wird dieser auf 400 hochgesetzt, so dass der Server
