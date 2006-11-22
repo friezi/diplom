@@ -176,10 +176,26 @@ dass die Serverbelastung wie erwartet stetig zunimmt.
 \importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}
 {Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
 
+\importsmallgnuplotps{Ein Publisher: Akualitätsgrad $\Gamma_A$}{Abb:Ein_Publisher_Akualitaetsgrad}{avgUptodateRatio_SinglePublisher_MeanValueRanges}
+\importsmallgnuplotps{Ein Publisher: Nachrichtenverzögerung $\Gamma_V$}{Abb:Ein_Publisher_Nachrichtenverzoegerung}{avgMsgDelayRatio_SinglePublisher_MeanValueRanges}
+
 Der Grad der Nachrichtenverzögerung nimmt ebenfalls stetig zu (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
 wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}).
 
+\subsection{Ein Publisher}
+In Anlehnung an das vorige Experiment (keine Staukontrolle) untersuchen wir hier die Adaptionsgüte für den Ansatz, dass sich nur ein Publisher im System befindet. Es ist irrelevant,
+ob es sich dabei um einen push-basierten Ansatz handelt, bei dem der RSS-Server Feeds selbständig in das Notifikationssystem einspeist, oder ob es sich um einen
+pull-Ansatz handelt, bei dem genau ein Klient die Rolle des Publishers übernimmt und in regelmäßigen Zeitabständen den RSS-Server pollt.\\
+In diesem Experiment übernimmt ein Klient die Rolle des Publishers und pollt den RSS-Server mit einer Polling-Periode von 1 Sekunde. Abbildung
+\ref{Abb:Ein_Publisher_Akualitaetsgrad} zeigt die Adaptionsgüte $\Gamma_A$. Der Aktualitätsgrad ist im Schnitt deutlich geringer als bei unserem Referenzexperiment.
+Abbildung \ref{Abb:Ein_Publisher_Nachrichtenverzoegerung} zeigt die Nachrichtenverzögerung $\Gamma_V$. Diese ist deutlich höher als beim Referenzexperiment. Auch wenn sich das Experiment
+auf ein spezielles Szenario bezieht, so macht es deutlich, dass bei ungünstigen Netzwerken (große Netzwerke, geringer Grad der Verzweigung zwischen Brokern, lange Übertragungszeiten)
+der in dieser Arbeit vorgestellte Ansatz dem Ansatz mit nur einem Publisher vorzuziehen ist.
+
+
 \subsection{Ausbalancierung}
+
+\suppressfloats
 
 \importsmallgnuplotps{Serverbelastung: Keine Ausbalancierung}{Abb:Keine_Ausbalancierung}{ToTR_NoBalancing_MVR}
 \importsmallgnuplotps{Serverbelastung: Ausbalancierung}{Abb:Ausbalancierung}{ToTR_Balancing_MVR}
@@ -289,7 +305,6 @@ Auf die Entwicklung der Serverbelastung bei Wahl der Standard-Parameter hat Chur
 
 \subsection{Bestimmung des $artt$ -- Skalierungsfunktion für den $rtt$}
 \label{exp:skalierung}
-\importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
 
 Bei diesem Experiment soll die Adaptionsgüte der Polling-Perioden anhand der Serverbelastung bei unterschiedlicher Wahl der Skalierungsfunktion
 sf() (siehe Abschnitt \ref{css:staukontrolle_pubsubrss}) ermittelt werden. Wir beschränken uns dabei auf den Vergleich exponentieller und
@@ -300,6 +315,24 @@ $\text{sf}(x):=x^2$ zu sehen. Unterschiede im Verlauf sind zwar sichtbar, der Vo
 relativ klein.
 
 \subsection{Reaktion auf Netzwerkveränderung}
+\importsmallgnuplotps{Plötzliche Veränderung der Netzwerkgröße}{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse}{ToTR_SubscribersLeave50_MVR}
+
+Dieses Experiment dient zur Untersuchung, wie das System auf plötzliche Veränderungen der Netzwerkgröße (Anzahl der Klienten im System)
+reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und es dabei nicht zu Seiteneffekten
+(wie z. B. zu einem starken Schwingungsverhalten) kommt. In einem Beispielexperiment verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
+2000 das Overlay-Netzwerk. Zum Zeitpunkt 4000 tritt die gleiche Anzahl an Klienten dem Netzwerk wieder bei. Abbildung
+\ref{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse} zeigt den graphischen Verlauf. Es ist zu erkennen, dass das Verlassen der Klienten
+nur eine kurzzeitige Senkung des Füllgrades der Server-Queue bewirkt. Der Pegel steigt anschließend wieder bis zur oberen Grenze.
+Der Beitritt der Klienten zum System bewirkt zwar eine kurzzeitige starke Mehrbelastung des Servers, das System kann diese Mehrbelastung jedoch
+relativ schnell ausgleichen.\\
+
+Um allgemeingültigere Aussagen treffen zu können, haben wir die Entwicklung von Serverbelastung und Adaptionszeiten in Abhängigkeit von der Anzahl Subscriber
+untersucht, die das System verlassen.
+In Abbildung \ref{Abb:Netzwerkgroesse_Spitzenwerte_abgewiesene_Anfragen} sind die Spitzenwerte abgewiesener Nachrichten nach einem
+Wiedereintritt in Abhängigkeit von der prozentualen Anzahl der Subscriber dargestellt, die zuvor das System verlassen haben, bzw. vorübergehend nicht erreichbar waren.
+Abbildung \ref{Abb:Netzwerkgroesse_Adaptionszeiten_nach_Wiedereintritt} zeigt die Zeitdauern der Adaptionen der Polling-Perioden nach einem Wiedereintritt
+in Abhängigkeit von der prozentualen Anzahl der Subscriber, die zuvor das System verlassen haben. In beiden Graphiken ist ein fast linearer Verlauf der Kurven
+zu erkennen.
 
 \suppressfloats
 
@@ -315,19 +348,6 @@ relativ klein.
 {stdDevCPP_queue3000_MeanValueRanges}
 \importsmallgnuplotps{Variationskoeffizient Mittelwerte $cpp$: Queuegröße 3000}{Abb:Variationskoeffizient_Mittelwerte_Queuegroesse_3000}
 {coeffVarCPP_queue3000_MeanValueRanges}
-
-Dieses Experiment dient zur Untersuchung, wie das System auf plötzliche Veränderungen der Netzwerkgröße (Anzahl der Klienten im System)
-reagiert. Es ist wünschenswert, dass sich das System schnell an die veränderte Situation anpasst und es dabei nicht zu Seiteneffekten
-(wie z. B. zu einem starken Schwingungsverhalten) kommt. In einem Beispielexperiment verlassen in der Simulation die Hälfte der Klienten zum Zeitpunkt
-2000 das Overlay-Netzwerk. Zum Zeitpunkt 4000 tritt die gleiche Anzahl an Klienten dem Netzwerk wieder bei. Abbildung
-\ref{Abb:Ploetzliche_Veraenderung_der_Netzwerkgroesse} zeigt den graphischen Verlauf. Es ist zu erkennen, dass das Verlassen der Klienten
-nur eine kurzzeitige Senkung des Füllgrades der Server-Queue bewirkt. Der Pegel steigt anschließend wieder bis zur oberen Grenze.
-Der Beitritt der Klienten zum System bewirkt zwar eine kurzzeitige starke Mehrbelastung des Servers, das System kann diese Mehrbelastung jedoch
-relativ schnell ausgleichen. In Abbildung \ref{Abb:Netzwerkgroesse_Spitzenwerte_abgewiesene_Anfragen} sind die Spitzenwerte abgewiesener Nachrichten nach einem
-Wiedereintritt in Abhängigkeit von der Anzahl der Subscriber dargestellt, die zuvor das System verlassen haben, bzw. vorübergehend nicht erreichbar waren.
-Abbildung \ref{Abb:Netzwerkgroesse_Adaptionszeiten_nach_Wiedereintritt} zeigt die Zeitdauern der Adaptionen der Polling-Perioden nach einem Wiedereintritt
-in Abhängigkeit von der Anzahl der Subscriber, die zuvor das System verlassen haben. In beiden Graphiken ist ein fast linearer Verlauf der Kurven
-zu erkennen.
 
 \subsection{Steigerung des $rto$}
 Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
@@ -386,6 +406,11 @@ Wie zu sehen ist, ändert sich der Verlauf der Kurve nur ganz geringfügig. Abbild
 \ref{Abb:kurzzeitige_Belastungsminderung} zeigt auch hier den umgekehrten Fall bei einem ursprünglichen $serviceTimeFactor$ von 50.
 Kurzzeitige Belastungsminderungen sind allerdings in der Praxis eher weniger wahrscheinlich.
 
+\suppressfloats
+
+\importsmallgnuplotps{Serverbelastung: $mpp=3600$}{Abb:mpp_3600}{ToTR_mpp3600_serviceTimeFactor50_MVR}
+\importsmallgnuplotps{Serverbelastung: $mpp=910800$}{Abb:mpp_910800}{ToTR_mpp910800_serviceTimeFactor50_MVR}
+
 \paragraph{Allmähliche Belastungsänderungen:}
 Bei einer allmählichen Belastungsänderung fordern wir, dass sich das System so schnell an den veränderten Belastungsgrad anpasst, dass
 eine zusätzliche Mehr- bzw. Minderbelastung ausbleibt. Abbildungen \ref{Abb:allmaehliche_Ueberbelastung} und
@@ -400,9 +425,6 @@ gering gewählter $mpp$ auf das Adaptionsverhalten auswirkt, sehen wir exemplaris
 $mpp$ von 3600 und einem $serviceTimeFactor$ von 50. Den Verlauf der Adaption bei $mpp=910800$ unter ansonsten gleichen Bedingungen ist in Abbildung
 \ref{Abb:mpp_910800} zu sehen. Bei $mpp=3600$ wird eine vollständige Adaption verhindert, da der $cpp$ eines Klienten nicht groß genug
 gewählt werden kann.
-
-\importsmallgnuplotps{Serverbelastung: $mpp=3600$}{Abb:mpp_3600}{ToTR_mpp3600_serviceTimeFactor50_MVR}
-\importsmallgnuplotps{Serverbelastung: $mpp=910800$}{Abb:mpp_910800}{ToTR_mpp910800_serviceTimeFactor50_MVR}
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
