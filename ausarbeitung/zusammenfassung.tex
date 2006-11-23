@@ -5,10 +5,10 @@ an Interessenten zu verteilen. Der bisherige Ansatz, dass Klienten RSS-Feeds dir
 RSS-Feeds werden von Klienten in ein Notifikationssystem eingespeist und mit dessen Hilfe an weitere Interessenten verteilt. Zwei wesentliche Verfahren
 wurden dabei entwickelt:
 \begin{itemize}
-\item ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
-  tolerant ist, ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
-\item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers, das ohne Kenntnis der übrigen Klienten und der
-  Gesamtstruktur und -größe des Netzwerks auskommt
+\item ein Abstimmungs- bzw. Koordinierungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server -- es ist gegenüber hohen Nachrichtenlaufzeiten und
+  Knotenausfällen tolerant, ohne dass es zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten führt.
+\item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers -- ausschließlich lokales Wissen ist dafür notwendig:
+  Kenntnis der übrigen Klienten und der Gesamtstruktur und -größe des Netzwerks ist nicht erforderlich.
 \end{itemize}
 
 In Abschnitt \ref{c:experimente} haben wir an ausgewählten Beispielen gezeigt, dass solch ein System entscheidende Verbesserungen bezüglich des Aktualitätsgrades
@@ -56,11 +56,11 @@ Aufgabe und erfordert sicherlich Maßnahmen an mehr als einer Stelle innerhalb de
 In dieser Arbeit haben wir ein Verfahren entwickelt, mit dem die Polling-Perioden der Klienten so angepasst werden, dass ein Kompromiss zwischen dem
 Belastungsgrad des RSS-Servers und den angestrebten Polling-Perioden auf Klientenseite bei optimalem Aktualitätsgrad der RSS-Feeds erreicht wird. Nicht in
 jedem Szenario ist es jedoch erforderlich, den RSS-Server bis an die Grenze seiner
-Leistungsfähigkeit zu bringen. Denkbar sind Szenarien, in denen ein Anbieter von RSS-Feeds ein Interesse daran hat, einem möglichst geringen zusätzlichen
-Datenverkehr durch die Übermittlung von RSS-Feeds und durch Anfragen zu unterliegen (Beispiel: privater Anbieter ohne Flatrate). Ist außerdem der Aktualitätsgrad
+Leistungsfähigkeit zu bringen. Denkbar sind Szenarien, in denen ein Anbieter von RSS-Feeds ein Interesse daran hat, einen möglichst geringen zusätzlichen
+Datenverkehr durch die Übermittlung von RSS-Feeds und durch Anfragen entstehen zu lassen (Beispiel: privater Anbieter ohne Flatrate). Ist außerdem der Aktualitätsgrad
 der RSS-Feeds für Interessenten zweitrangig, so könnte ein alternatives Verfahren zur Anpassung der Polling-Perioden angewendet werden, welches einen
-Kompromiss zwischen dem Aktualitätsgrad der RSS-Feeds und dem Datenvolumen anstrebt, das zwischen RSS-Server und Klient aufkommt. Für einen Klienten würde das
-bedeuten, dass RSS-Feeds hauptsächlich über das Notifikationssystem übertragen werden.
+Kompromiss zwischen dem Aktualitätsgrad der RSS-Feeds und dem Datenvolumen anstrebt, das bei der Übertragung zwischen RSS-Server und Klient entsteht.
+Für einen Klienten würde das bedeuten, dass RSS-Feeds hauptsächlich über das Notifikationssystem übertragen werden.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"

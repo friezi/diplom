@@ -6,16 +6,17 @@ Sollen Informationen einer breiten Öffentlichkeit zugänglich gemacht werden, kön
 Für statische Informationen, die keinem stetigen Wechsel unterliegen, ist dies ein geeignetes Verfahren. In zunehmendem Maße weisen im Internet präsentierte
 Informationen einen stark dynamischen Charakter auf. Daher ist in neuerer Zeit u. a. die Benutzung von Wikis weit verbreitet.
 Ein Wiki ist eine Sammlung von WWW-Seiten zu einem bestimmten Thema, die von Benutzern sowohl gelesen als auch online verändert werden können.
-Es bietet die Möglichkeit, neue Informationen schnell im WWW zu veröffentlichen.
-Bei dieser Art der Präsentation von Informationen spricht man von einem pull-basierten Ansatz, da ein Interessent den Informationsanbieter (bzw. seine Webseite)
-aktiv kontaktieren muss, um einen aktuellen Stand der Informationen zu erhalten. 
-Ist der Informationsanbieter der Initiator der Informationsübermittlung (Bsp. E-Mail), so spricht man von einem push-basierten Ansatz der Informationsverteilung.
+Es bietet die Möglichkeit, neue Informationen schnell im WWW zu veröffentlichen.\\
+Muss ein Interessent aktiv den Informationsanbieter (bzw. seine Webseite) kontaktieren, um den aktuellen Stand der Informationen zu erhalten, spricht man
+von einem pull-basierten Ansatz. Ist der Informationsanbieter der Initiator der Informationsübermittlung (Beispiel E-Mail),
+so spricht man von einem push-basierten Ansatz der Informationsverteilung.
 Ein allgemeines Kommunikationsmodell, um Interessenten über inhaltliche Änderungen von Informationen zu unterrichten,
-ist Publish/Subscribe. Üblicherweise folgt es dem push-basierten Ansatz.
+ist Publish/Subscribe. Es kann sowohl dem pull-basierten Ansatz als auch dem push-basierten Ansatz folgen. Der push-basierte Ansatz ist in der Praxis
+jedoch häufiger anzutreffen.
 
 \section{Motivation}
-Im Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/Sub), welches dem push-basierten Ansatz folgt, finden sich drei
-Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Verfügung; \glqq Subscriber\grqq{} interessieren
+Im push-basierten Kommunikationsmodell von verteiltem Publish/Subscribe (kurz: Pub/\-Sub), finden sich drei
+Parteien: \glqq Publisher\grqq{} stellen Informationen öffentlich zur Ver\-fü\-gung; \glqq Subscriber\grqq{} interessieren
 sich für bestimmte Informationen und können diese unter Zuhilfenahme von Filtern abonnieren (subskribieren);
 \glqq Message-Broker\grqq{} (kurz: \glqq Broker\grqq) sorgen für die Sammlung und Weiterleitung von Notifikationen (Benachrichtigungen) an die Subscriber.
 Durch die Entkoppelung von Publishern und Subscribern brauchen Publisher nicht eine Vielzahl von Interessenten zu verwalten.
@@ -106,7 +107,7 @@ werden, um die entwickelten Algorithmen umzusetzen, zu evaluieren und zu demonst
 Im Lauf der Arbeit entwickeln wir zwei voneinander relativ unabhängige Verfahren:
 \begin{itemize}
 \item ein Abstimmungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server, welches gegenüber hohen Nachrichtenlaufzeiten und Knotenausfällen
-  tolerant ist, ohne zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten zu führen
+  tolerant ist, ohne dass es zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten führt
 \item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers, das ohne Kenntnis der übrigen Klienten und der
   Gesamtstruktur und -größe des Netzwerks auskommt $\longrightarrow$ globales Wissen ist nicht nötig
 \end{itemize}

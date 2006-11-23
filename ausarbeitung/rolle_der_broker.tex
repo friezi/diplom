@@ -1,13 +1,13 @@
 \section{Rolle der Broker}
-\todo{Literaturangaben}\\
-Broker sind der zentrale Bestandteil des Notifikationssystems. Ein Broker empfängt Feeds von Brokern oder von Klienten/Publishern.
-Anschließend sorgt er für eine Verteilung der
+Broker sind der zentrale Bestandteil des Notifikationssystems. Das Notifikationssystem besteht aus einer Reihe von Brokern,
+die untereinander verbunden sind und ein zusammenhängendes Netz bilden (Overlay-Broker-Netzwerk, siehe dazu \cite{PietzuchBacon:2003:P2POverlay}).
+Ein Broker empfängt Feeds von Brokern oder von Klienten/Publishern. Anschließend sorgt er für eine Verteilung der
 Feeds an eine bestimmte Auswahl von mit ihm verbundenen Brokern bzw. Subscribern. Ein Broker kann also eine zentrale Sammelstelle für Feeds
 unterschiedlicher Anbieter sein. Die einzelnen in den Feeds zusammengefassten Ereignisse können durch den Broker neu zusammengestellt werden.
-Als Kriterien für neue Zusammenstellungen bieten sich die Aktualität der einzelnen Ereignisse sowie bestimmte Filterregeln an. Einzelne 
+Als Kriterien für neue Zusammenstellungen bieten sich die Aktualität der einzelnen Ereignisse sowie definierbare Filterregeln an. Einzelne 
 Ereignisse, die den Broker bereits erreicht haben, brauchen nicht erneut weitergeleitet zu werden und finden daher nach unserem Konzept keinen
 Eingang in die neu zusammengestellten Feeds. Dadurch können Netzressourcen gespart werden. Voraussetzung dafür ist, dass der Broker einen Cache
-unterhält, in dem einige Ereignisse zwischengespeichert werden.\\
+unterhält, in dem Ereignisse zwischengespeichert werden.\\
 
 Filter können durch Subscriber definiert und bei Brokern
 hinterlegt werden. Aufgrund der Filterregeln können Ereignisse verschiedener
@@ -17,8 +17,8 @@ erforscht und sollen nicht Gegenstand dieser Arbeit sein. Deshalb fanden sie auc
 Simulationsumgebung. Sie erweitern die Möglichkeiten des Systems lediglich, haben aber keinen Einfluss auf das Grundkonzept, um das es hier geht.
 Unser System \pubsubrss könnte mit bestehenden Pub/Sub-Systemen, welche Filtertechniken unterstützen (wie z. B. das System
 REBECA \cite{MuFiBu:2001:ArchFrameECommApp}), kombiniert werden.\\
-\todo{Hier folgen noch Bezüge zur geplanten Übersicht über Filter im 1. Kapitel}
 
+\todo{nächsten Absatz evtl. entfernen}
 Um sich dem entsprechenden Broker bekannt zu machen und Filter zu hinterlegen, muss sich ein Subscriber bei diesem Broker mit einer speziellen
 Registrierungsnachricht registrieren.
 Ein Broker braucht nur an diejenigen Subscriber aktuelle Feeds zu übermitteln, welche auch tatsächlich online sind. Zusätzlich ist es also notwendig,

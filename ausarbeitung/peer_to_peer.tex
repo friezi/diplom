@@ -17,7 +17,7 @@ Musikdateien. Ein allgemeines P2P-System, was als Basistechnologie für andere P2
 Pastry kurz in den Grundzügen vorstellen, da es als Basis für weitere in dieser Arbeit angesprochene Verfahren dient.
 
 \subsection{Pastry}
-Das von A. Rowstron und P. Druschel entwickelte P2P-System Pastry \cite{Pastry} ist ein skalierbares P2P-Grundgerüst, welches die Verteilung und Auffindung
+Das von A. Rowstron und P. Druschel entwickelte P2P-System Pastry \cite{Pastry} ist ein skalierbares P2P-Grundgerüst, welches die Verteilung und das Auffinden
 von Objekten in Netzwerken ermöglicht und als Basis für groß angelegte P2P-Anwendungen dienen kann. Um eine gleichmäßige Verteilung und ein schnelles Routing zu erreichen,
 wird jedem Knoten bzw. Peer innerhalb des Netzwerks ein eindeutiger numerischer 128-Bit Bezeichner ({\itshape Id}) zugewiesen. Erhält ein Knoten eine Nachricht und einen Schlüssel,
 so wird die Nachricht zu dem Knoten weitergeleitet, dessen Id dem Schlüssel numerisch am nächsten liegt. Ist die Anzahl der Knoten im Pastry-Netz $N$,
@@ -27,7 +27,7 @@ die im Prefix der Länge $n$ mit der Knoten-Id des Ausgangsknotens übereinstimmen
 die dem Ausgangsknoten entsprechend einer Nachbarschaftsmetrik am nächsten liegen. Die Blatt-Menge enthält Knoten-Ids von Knoten, die der Knoten-Id des Ausgangsknotens am
 nächsten liegen und wird für die Weiterleitung von Nachrichten herangezogen. Für eine ausführliche Beschreibung verweisen wir auf \cite{Pastry}.\\
 Darüber hinaus ist Pastry ein selbstorganisierendes und adaptierendes System. Es kann selbständig die notwendigen Initialisierungsschritte bei Zu- und Abwanderung von Knoten
-vornehmen (zu Selbstorganisation siehe \cite{HeMueGei:2005:SelfMa}).
+vornehmen (zu Selbstorganisation und Selbststabilisierung siehe \cite{HeMueGei:2005:SelfMa,ShTi:2004:SSPubSub}).
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
