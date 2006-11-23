@@ -21,10 +21,10 @@ Das von A. Rowstron und P. Druschel entwickelte P2P-System Pastry \cite{Pastry} 
 von Objekten in Netzwerken ermöglicht und als Basis für groß angelegte P2P-Anwendungen dienen kann. Um eine gleichmäßige Verteilung und ein schnelles Routing zu erreichen,
 wird jedem Knoten bzw. Peer innerhalb des Netzwerks ein eindeutiger numerischer 128-Bit Bezeichner ({\itshape Id}) zugewiesen. Erhält ein Knoten eine Nachricht und einen Schlüssel,
 so wird die Nachricht zu dem Knoten weitergeleitet, dessen Id dem Schlüssel numerisch am nächsten liegt. Ist die Anzahl der Knoten im Pastry-Netz $N$,
-so liegt die erwartete Zahl an Routing-Schritten in $O$$(\log N)$. Jeder Knoten innerhalb des Pastry-Netzes unterhält eine Routing-Tabelle, eine Nachbarschafts-Menge
-({\itshape neighborhood-set}) und eine Blatt-Menge ({\itshape leaf-set}). In einer Spalte $n$ der Routing-Tabelle sind IP-Adressen von Knoten eingetragen,
-die im Prefix der Länge $n$ mit der Knoten-Id des Ausgangsknotens übereinstimmen. Die Nachbarschafts-Menge unterhält Knoten-Ids und IP-Adressen von Knoten,
-die dem Ausgangsknoten entsprechend einer Nachbarschaftsmetrik am nächsten liegen. Die Blatt-Menge enthält Knoten-Ids von Knoten, die der Knoten-Id des Ausgangsknotens am
+so liegt die erwartete Zahl an Routing-Schritten in $O$$(\log N)$. Jeder Knoten innerhalb des Pastry-Netzes unterhält eine Routing-Tabelle, eine Nachbarschaftsmenge
+({\itshape neighborhood-set}) und eine Blattmenge ({\itshape leaf-set}). In einer Spalte $n$ der Routing-Tabelle sind IP-Adressen von Knoten eingetragen,
+die im Prefix der Länge $n$ mit der Knoten-Id des Ausgangsknotens übereinstimmen. Die Nachbarschaftsmenge unterhält Knoten-Ids und IP-Adressen von Knoten,
+die dem Ausgangsknoten entsprechend einer Nachbarschaftsmetrik am nächsten liegen. Die Blattmenge enthält Knoten-Ids von Knoten, die der Knoten-Id des Ausgangsknotens am
 nächsten liegen und wird für die Weiterleitung von Nachrichten herangezogen. Für eine ausführliche Beschreibung verweisen wir auf \cite{Pastry}.\\
 Darüber hinaus ist Pastry ein selbstorganisierendes und adaptierendes System. Es kann selbständig die notwendigen Initialisierungsschritte bei Zu- und Abwanderung von Knoten
 vornehmen (zu Selbstorganisation und Selbststabilisierung siehe \cite{HeMueGei:2005:SelfMa,ShTi:2004:SSPubSub}).
