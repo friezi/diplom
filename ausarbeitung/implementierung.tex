@@ -47,7 +47,7 @@ zeitverzögerte Ereignisse oder vom Typ der Subklasse \texttt{Transfer\-Message} 
 Mit einer \texttt{InternalMessage} lässt sich die Kommunikation mit Knoten erreichen, die nicht Bestandteil des Netzwerks sind und Sonderfunktionen übernehmen
 (beispielsweise Timer oder Rekorder für statistische Daten, s. u.).\\
 
-\begin{picturenothere}{1}{17}{\mbox{Simulationsumgebung: UML-Klassendiagramm}}{Abb:UML:Simulationsumgebung}
+\begin{picturenothere}{1}{17}{\mbox{UML-Klassendiagramm: Simulationsumgebung}}{Abb:UML:Simulationsumgebung}
  \includegraphics[bb=200 0 544 504 ,scale=0.9]{simulationsumgebung}
 \end{picturenothere}
 
@@ -66,11 +66,11 @@ selbständig agierenden Knoten und der anschließenden Abarbeitung der \texttt{mes
 der Warteschlange entnommen und die aktuelle Zeit auf \texttt{message.getArrivalTime()} gesetzt. Nun erfolgt der Aufruf der Methode \texttt{receiveMessage()}
 des Empfängerknotens, welcher die Verarbeitung der Nachricht vornimmt.\\
 
-\begin{picturenothere}{1}{20}{\mbox{Topologien, Knoten und Feeds: UML-Klassendiagramme}}{Abb:UML:Topologien_und_Knoten}
+\begin{picturenothere}{1}{20}{\mbox{UML-Klassendiagramm: Topologien, Knoten und Feeds}}{Abb:UML:Topologien_und_Knoten}
   \includegraphics[bb=130 0 544 504 ,scale=0.9]{topology_und_nodes}
 \end{picturenothere}
 
-\begin{picturenothere}{1}{21}{\mbox{Knoten und Feeds: UML-Klassendiagramme}}{Abb:UML:Knoten}
+\begin{picturenothere}{1}{21}{\mbox{UML-Klassendiagramm: Knoten und Feeds}}{Abb:UML:Knoten}
   \includegraphics[bb=145 0 544 504 ,scale=0.8]{nodes}
 \end{picturenothere}
 
@@ -101,7 +101,8 @@ der Basisklasse \texttt{InternalMessage}, um ihn vom Ablauf der gesetzten Zeit z
 Obwohl RSSFeeds in der Praxis per TCP als Datenstrom übermittelt werden, werden diese in der Simulation der Einfachheit halber als atomare Nachrichten verschickt.
 Der Erhalt eines Feeds entspricht dann der Ankunft des ersten Datenbytes des Datenstroms.\\
 
-Ein RSS-Server ist zuständig für die Produktion neuer RSS-Feeds. Erhält er eine Anfrage eines Subscribers, so übersendet er diesem nach einer Bearbeitungszeit den aktuellen Feed.
+Ein RSS-Server ist zuständig für die Produktion neuer RSS-Feeds. Erhält er eine Anfrage eines Subscribers, so übersendet er diesem nach einer Bearbeitungszeit den
+aktuellen Feed.
 Der RSS-Server unterhält eine Queue fester Größe, in der anstehende Anfragen zunächst zwischengespeichert und nach und nach zwecks Bearbeitung
 entnommen werden. Anfragen, die den RSS-Server bei voller Queue erreichen, werden verworfen. Auch das Verwerfen von Anfragen kostet eine bestimmten Betrag an Zeit.
 Queuegröße und Bearbeitungszeitenen können vor Beginn der Simulation vom Nutzer festgelegt werden.\\
@@ -111,36 +112,38 @@ Timer innerhalb einer Zeitspanne erzeugt, welche durch die Attribute \texttt{min
 \texttt{SimParameters} definiert werden kann. Ein RSSServer generiert nur ganz
 allgemeine Instanzen der Klasse \texttt{RSSFeed} mittels der Klasse \texttt{RSSFeedFactory}. Über eine Realisierung des Interfaces
 \texttt{RSSEventFeedFactory} (hier nicht dargestellt) können allerdings spezielle Feeds der Klasse \texttt{EventFeed} generiert werden. Wird mit der Methode
-\texttt{newFeed()} ein Event-Feed generiert, so wird genau ein neues Event erzeugt, welches in den bisherigen Feed Eingang findet. Wird dabei der Wert des vom Benutzer
-wählbaren Parameters $maxFeedEvents$ überschritten, so wird das älteste Event entfernt.\\
+\texttt{newFeed()} ein Event-Feed generiert, so wird genau ein neues Event erzeugt, welches in den bisherigen Feed Eingang findet. Wird dabei der Wert des vom
+Benutzer wählbaren Parameters $maxFeedEvents$ überschritten, so wird das älteste Event entfernt.\\
 
-Mit \texttt{requestFeed()} erfragt ein Subscriber den aktuellen Feed eines RSS-Servers. Dabei wird eine Nachricht des Typs \texttt{RSSFeedRequest} an den RSS-Server schickt.
-Wird diese von einem \texttt{QueueingRSSServer} nicht verworfen, so antwortet dieser nach Erhalt einer von ihm selbst erzeugten \texttt{DispatchQueueMessage} mit einem
-RSSFeed der Klasse \texttt{RSSFeedMessage} (eine \texttt{DispatchQueueMessage} dient zur Benachrichtigung über das Ende der Bearbeitung einer Anfrage). Wieviel Zeit die
-Bearbeitung einer Anfrage benötigt, bestimmt der Parameter $processingTimeFeedRequest$ (siehe Abschnitt \ref{Parameter}) in Zusammenhang mit dem Faktor $serviceTimeFactor$, mit
-dessen Hilfe verschiedene Belastungsgrade bzw. die Leistungsfähigkeit eines Servers simuliert werden können. $processingTimeUnrepliedRequest$ bestimmt die Bearbeitungszeit für
-abgewiesene Anfragen, $serverQueueSize$ bestimmt die Größe der Server-Queue.\\
+Mit \texttt{requestFeed()} erfragt ein Subscriber den aktuellen Feed eines RSS-Servers. Dabei wird eine Nachricht des Typs \texttt{RSSFeedRequest} an den
+RSS-Server schickt. Wird diese von einem \texttt{QueueingRSSServer} nicht verworfen, so antwortet dieser nach Erhalt einer von ihm selbst erzeugten
+\texttt{DispatchQueueMessage} mit einem RSSFeed der Klasse \texttt{RSSFeedMessage} (eine \texttt{DispatchQueueMessage} dient zur Benachrichtigung über das Ende
+der Bearbeitung einer Anfrage). Wieviel Zeit die
+Bearbeitung einer Anfrage benötigt, bestimmt der Parameter $processingTimeFeedRequest$ (siehe Abschnitt \ref{Parameter}) in Zusammenhang mit dem Faktor
+$serviceTimeFactor$, mit dessen Hilfe verschiedene Belastungsgrade bzw. die Leistungsfähigkeit eines Servers simuliert werden können.
+$processingTimeUnrepliedRequest$ bestimmt die Bearbeitungszeit für abgewiesene Anfragen, $serverQueueSize$ bestimmt die Größe der Server-Queue.\\
 
 Der empfangende Subscriber (bzw. Publisher) eines Feeds erzeugt einen neuen RSS-Feed ausschließlich mit den für ihn neuen Events und sendet diesen an den
-ihm zugewiesenenen Broker. Dieser speichert den Feed in der Variablen \texttt{feed}, extrahiert seinerseits die neu hinzugekommenen Events und leitet diese als neuen Feed an
-alle mit ihm verbundenen Subscriber und Broker weiter. Dies entspricht der Filtertechnik \glqq flooding\grqq{} (siehe \cite{MuFiBu:2002:FilterSimilarities}).
+ihm zugewiesenenen Broker. Dieser speichert den Feed in der Variablen \texttt{feed}, extrahiert seinerseits die neu hinzugekommenen Events und leitet diese als
+neuen Feed an alle mit ihm verbundenen Subscriber und Broker weiter. Dies entspricht der Filtertechnik \glqq flooding\grqq{}
+(siehe \cite{MuFiBu:2002:FilterSimilarities}).
 Um diese Arbeit in angemessenem Rahmen zu halten, wurden keine weiteren Filtertechniken implementiert. Die Methoden zur Abstimmung und Staukontrolle entsprechen
 weitestgehend den in Kapitel \ref{adapt_informationsverteilung} vorgestellten Methoden.
 
 \section{Aktionen und Statistik}
-\begin{picturenothere}{1}{11}{\mbox{Handler und Statistik: UML-Klassendiagramme}}{Abb:UML:KnotenHandler_und_Statistik}
+\begin{picturenothere}{1}{11}{\mbox{UML-Klassendiagramm: Handler und Statistik}}{Abb:UML:KnotenHandler_und_Statistik}
   \includegraphics[bb=145 0 544 504 ,scale=0.9]{Handler}
 \end{picturenothere}
 Während der Simulation können vom Benutzer definierte Aktionen eintreten. Diese werden von der Klasse \texttt{ActionHandler} verwaltet. Dazu gehört das Einlesen von
 Aktionsdeklarationen aus einer Datei (s.u.) und das Auslösen von Aktionen. Gegebenenfalls werden weitere Handler erzeugt und benachrichtigt.
 \texttt{ActionHandler} und alle weiteren Handler-Klassen sind vom Typ \texttt{Node}, so dass das Auslösen
 bestimmter Aktionen durch Nachrichten (Klasse \texttt{InternalMessage}) geschehen kann. Eine Instanz der Klasse \texttt{ActionHandler} wird von der
-Klasse \texttt{Engine} aus im Falle einer Diskreten Ereignissimulation gestartet. In der Klasse \texttt{RPSStatistics} werden statistische Werte des Gesamtsystems gesammelt.
-Falls eine entsprechende Aktion definiert wird, werden diese Werte als Dateien im Gnuplot-Format \cite{GnuplotHomepage} abgespeichert. Die Speicherung übernehmen Subklassen der Klasse
-\texttt{AbstractGnuplotDataRecorder}. Deren Aktivierung übernimmt die Klasse \texttt{ActionHandler}. Abbildung \ref{Abb:UML:KnotenHandler_und_Statistik} veranschaulicht
-die wesentlichen Beziehungen der beteiligten Klassen. Um Statistiken des Gesamtsystems ermitteln zu können, führt jeder PubSub-Knoten bzw. der RSS-Server eine individuelle
-Statistik. Dazu dienen die Klassen \texttt{PubSubNodeStatistics} bzw. \texttt{RSSServerNodeStatistics}. Bei Auffrischung der Einzelstatistiken wird ebenfalls die Gesamtstatistik
-mittels Callback-Funktionen angepasst.  
+Klasse \texttt{Engine} aus im Falle einer Diskreten Ereignissimulation gestartet. In der Klasse \texttt{RPSStatistics} werden statistische Werte des Gesamtsystems
+gesammelt. Falls eine entsprechende Aktion definiert wird, werden diese Werte als Dateien im Gnuplot-Format \cite{GnuplotHomepage} abgespeichert. Die Speicherung
+übernehmen Subklassen der Klasse \texttt{AbstractGnuplotDataRecorder}. Deren Aktivierung übernimmt die Klasse \texttt{ActionHandler}. Abbildung
+\ref{Abb:UML:KnotenHandler_und_Statistik} veranschaulicht die wesentlichen Beziehungen der beteiligten Klassen. Um Statistiken des Gesamtsystems ermitteln zu
+können, führt jeder PubSub-Knoten bzw. der RSS-Server eine individuelle Statistik. Dazu dienen die Klassen \texttt{PubSubNodeStatistics} bzw.
+\texttt{RSSServerNodeStatistics}. Bei Auffrischung der Einzelstatistiken wird ebenfalls die Gesamtstatistik mittels Callback-Funktionen angepasst.  
 
 \begin{picturehere}{10}{5}{Beispiel einer Szenariodatei}{Abb:Szenario-Datei}
   \put(2,1.5){\oval(10,4)}

@@ -7,12 +7,12 @@ wurden dabei entwickelt:
 \begin{itemize}
 \item ein Abstimmungs- bzw. Koordinierungsverfahren für Klienten bezüglich des nächsten Zugriffs auf einen Server -- es ist gegenüber hohen Nachrichtenlaufzeiten und
   Knotenausfällen tolerant, ohne dass es zu einem stark erhöhten Netzwerkverkehr durch zusätzliche Abstimmungsnachrichten führt.
-\item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers -- ausschließlich lokales Wissen ist dafür notwendig:
-  Kenntnis der übrigen Klienten und der Gesamtstruktur und -größe des Netzwerks ist nicht erforderlich.
+\item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers -- ausschließlich lokales Wissen ist dafür
+  notwendig: Kenntnis der übrigen Klienten und der Gesamtstruktur und -größe des Netzwerks ist nicht erforderlich.
 \end{itemize}
 
 In Abschnitt \ref{c:experimente} haben wir an ausgewählten Beispielen gezeigt, dass solch ein System entscheidende Verbesserungen bezüglich des Aktualitätsgrades
-der RSS-Feeds  im Gegensatz zum herkömmlichen Verfahren bringt. Zusätzlich kann eine Entlastung der RSS-Server und eine Verteilung des Datenverkehrs auf
+der RSS-Feeds im Gegensatz zum herkömmlichen Verfahren bietet. Zusätzlich kann eine Entlastung der RSS-Server und eine Verteilung des Datenverkehrs auf
 mehrere Teilbereiche des Netzes erreicht werden. Die Vorteile dieses Systems für Klienten sind also in einer besseren potenziellen Aktualität der Daten zu sehen.\\
 
 Während des Entwurfs des Systems sind wir auf einige Begleiterscheinungen aufmerksam geworden, deren nachteilige Auswirkungen
@@ -35,7 +35,7 @@ Bei der inhaltsbasierten Filterung (siehe \cite{Muehl:2001:GenericConstraints}) 
 die Filterung mit einbezogen werden. Der referenzierte Inhalt könnte zusätzlich zum übermittelten RSS-Feed durch das Notifikationssystem übertragen werden, so
 dass auch an dieser Stelle serverseitig eine Einsparung des übertragenen Datenvolumens mit Hilfe des Notifikationssystems möglich ist.
 
-\paragraph{Umgehung der Systemfunktionalität:}
+\paragraph{Sicherheitskonzepte:}
 Die Entwicklung unseres Systems basiert auf einem kooperativen Modell: ein kooperatives Verhalten der Klienten bzw. der Applikationen auf Klientenseite wird
 vorausgesetzt. Damit alle beteiligten Klienten gleichermaßen von dem System profitieren, werden die von den Klienten gewünschten Informationen und die
 Informationen zur Anpassung der Polling-Perioden ($artt$) untereinander ausgetauscht.\\
@@ -45,20 +45,21 @@ Overlay-Netzwerk befindlichen Klienten ein anderes Verhalten eines RSS-Servers v
 die Übermittlung von falschen, zu hohen $artt$s kann zu einer Fehlanpassung durch die Wahl zu großer Polling-Perioden führen. Davon würden Klienten profitieren,
 die diese Reaktion provozieren und ihrerseits den Adaptionsmechanismus umgehen, indem sie durch Manipulation der Software die Einstellung willkürlicher
 Polling-Perioden forcieren.\\
-Es müssten weitere Verfahren und Sicherheitstechniken entwickelt werden, um derartiges Fehlverhalten auszuschließen bzw. zu entdecken und einzudämmen. Ein möglicher
-Ansatz wäre, dass seitens der Broker der übermittelte $feed.artt$ eines Klienten in Beziehung zur Frequenz gesetzt wird, mit der dieser Klient neue Feeds in das
-Notifikationssystem einspeist. Abhängig von dieser Frequenz bzw. von der Zeit bis zur letzten zurückliegenden Einspeisung sollte es eine obere Schranke für den
-$feed.artt$ geben. Ist diese Schranke überschritten, kann das auf eine bewusste Manipulation des $feed.artt$ hindeuten.\\
+Es müssten zusätzliche Verfahren und Sicherheitstechniken entwickelt werden, um derartiges Fehlverhalten auszuschließen bzw. zu entdecken und einzudämmen.
+Ein möglicher Ansatz wäre, seitens der Broker den übermittelten $feed.artt$ eines Klienten in Beziehung zur Frequenz zu setzen, mit der dieser Klient neue Feeds
+in das Notifikationssystem einspeist. Abhängig von dieser Frequenz bzw. von der Zeit bis zur letzten zurückliegenden Einspeisung sollte es eine obere Schranke
+für den $feed.artt$ geben. Ist diese Schranke überschritten, kann das auf eine bewusste Manipulation des $feed.artt$ hindeuten.\\
 Dies soll nur ein Denkansatz für weitere Entwicklungen sein. Ein umfangreiches Sicherheitskonzept in dieser Hinsicht zu entwickeln, ist eine anspruchsvolle
-Aufgabe und erfordert sicherlich Maßnahmen an mehr als einer Stelle innerhalb des Systems.
+Aufgabe und erfordert sicherlich Maßnahmen an mehr als einer Stelle innerhalb des Systems. Carzaniga et al. diskutieren in \cite{Wangetal:2002:PubSubSecurity}
+Sicherheitsaspekte in Pub/Sub-Systemen.
 
 \paragraph{Alternative angestrebte Adaptionsgüte:}
 In dieser Arbeit haben wir ein Verfahren entwickelt, mit dem die Polling-Perioden der Klienten so angepasst werden, dass ein Kompromiss zwischen dem
 Belastungsgrad des RSS-Servers und den angestrebten Polling-Perioden auf Klientenseite bei optimalem Aktualitätsgrad der RSS-Feeds erreicht wird. Nicht in
 jedem Szenario ist es jedoch erforderlich, den RSS-Server bis an die Grenze seiner
 Leistungsfähigkeit zu bringen. Denkbar sind Szenarien, in denen ein Anbieter von RSS-Feeds ein Interesse daran hat, einen möglichst geringen zusätzlichen
-Datenverkehr durch die Übermittlung von RSS-Feeds und durch Anfragen entstehen zu lassen (Beispiel: privater Anbieter ohne Flatrate). Ist außerdem der Aktualitätsgrad
-der RSS-Feeds für Interessenten zweitrangig, so könnte ein alternatives Verfahren zur Anpassung der Polling-Perioden angewendet werden, welches einen
+Datenverkehr durch die Übermittlung von RSS-Feeds und durch Anfragen entstehen zu lassen (Beispiel: privater Anbieter ohne Flatrate). Ist außerdem der
+Aktualitätsgrad der RSS-Feeds für Interessenten zweitrangig, so könnte ein alternatives Verfahren zur Anpassung der Polling-Perioden angewendet werden, welches einen
 Kompromiss zwischen dem Aktualitätsgrad der RSS-Feeds und dem Datenvolumen anstrebt, das bei der Übertragung zwischen RSS-Server und Klient entsteht.
 Für einen Klienten würde das bedeuten, dass RSS-Feeds hauptsächlich über das Notifikationssystem übertragen werden.
 %%% Local Variables: 

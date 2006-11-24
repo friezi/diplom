@@ -1,18 +1,23 @@
 \section{Really Simple Syndication (RSS)}
 \label{ch_rss}
-RSS ist eine Technik, um Kurznachrichten oder andere Inhalte des WorldWideWeb an Nutzer, die sich dafür interessieren, zu verbreiten. Anbieter können
+Im Internet bereitgestellte Informationen weisen zunehmend dynamischen Charakter auf (siehe Abschnitt \ref{Abschnitt:einleitung}).
+Um Änderungen dynamischer Webinhalte zusammenfassen und kenntlich machen zu können, so dass sie Interessenten in kompakter Form dargeboten werden können,
+bietet es sich an, ein für diesen Zweck gedachtes Darstellungsformat in standardisierter Form zu definieren. Liegt dies in maschinenlesbarer Form vor, so wird
+dadurch eine maschinelle Weiterverarbeitung der Daten ermöglicht.\\
+RSS ist ein Standard, um Kurznachrichten oder andere Inhalte des WorldWideWeb an Nutzer, die sich dafür interessieren, zu verbreiten. Anbieter können
 die von ihnen angebotenen Informationen oder auf sie bezogene Kurzbeschreibungen in einer Datei (RSS-Feed) zusammenfassen und über einen Link
-auf einer Webseite zur Verfügung stellen. Nutzer können RSS-Feeds abonnieren und benötigen dafür ein Programm (RSS-Reader), welches die abonnierten
-RSS-Feeds automatisch über das Netz läd und anzeigt. Jeder RSS-Feed ist dabei einem Thema (Channel bzw. Kanal) zugeordnet. Häufig werden RSS-Feeds dazu benutzt,
-Nachrichten-Schlagzeilen zu sammeln und bereitzustellen. Es können aber auch aktuelle Blog-Einträge oder Video- bzw. Audiodaten (als Podcasts) zur
-Verfügung gestellt werden.\\
+auf einer Webseite zur Verfügung stellen. Nutzer können RSS-Feeds abonnieren. Es gibt eine Reihe von RSS-Readern, welche klientenseitige Applikationen darstellen,
+mit deren Hilfe die abonnierten RSS-Feeds automatisch über das Netz geladen und anzeigt werden können. Jeder RSS-Feed ist dabei einem Thema
+(Channel bzw. Kanal) zugeordnet. Häufig werden RSS-Feeds dazu benutzt,
+Nachrichten-Schlagzeilen zu sammeln und bereitzustellen. Es können aber auch aktuelle Blog-Einträge oder Video- bzw. Audiodaten (als Podcasts) 
+referenziert werden.\\
 
-RSS zählt zwar zu den Pub/Sub-Systemen jedoch nicht zu den verteilten push-basierten, wie sie in Abschnitt \ref{publishsubscribe} beschrieben wurden,
+RSS kann man zwar zu den Pub/Sub-Systemen zählen jedoch nicht zu den verteilten push-basierten, wie sie in Abschnitt \ref{publishsubscribe} beschrieben wurden,
 denn es folgt dem klassischen Client/Server-Ansatz. Es handelt sich um zentralisiertes Polling, Message-Broker sind hierbei nicht vorgesehen.\\
 
 Die zugrunde liegende Beschreibungssprache der RSS-Feeds ist XML. Ursprünglich bediente man sich dabei
 der RDF-Syntax. RDF steht für \glqq Resource Description Framework\grqq{} und bezeichnet eine formale Sprache, mit der Metadaten definiert werden, um Webinhalte
-darzustellen (siehe \cite{RDF}). Für RSS gibt es verschiedene Übersetzungen: \glqq Rich Site Summary\grqq{}, \glqq RDF Site Summary\grqq{} und ab RSS der Version 2.0
+darzustellen (siehe \cite{RDF}). Für RSS gibt es verschiedene Semantiken: \glqq Rich Site Summary\grqq{}, \glqq RDF Site Summary\grqq{} und ab RSS der Version 2.0
 \glqq Really Simple Syndication\grqq{}. RSS 2.0 macht keinen Gebrauch mehr von RDF.
 
 \paragraph{Elemente eines RSS-Feeds:}

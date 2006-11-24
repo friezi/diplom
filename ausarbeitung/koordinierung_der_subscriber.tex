@@ -117,6 +117,8 @@ Um $ttl$ zu bestimmen, gibt es zwei Möglichkeiten:
     Wird der Parameter $ttl$ vom Informationsanbieter nicht unterstützt, so kann $ttl$ heuristisch durch den Klienten bestimmt werden.
 \end{itemize}
 
+\importgnuplotps{RSS-Feed-Aktualisierung}{Abb:rss_aktualisierung}{rss_aktualisierung}
+
 Wie wir sehen, sind $ttl$ und $nextBuild$ eng miteinander verknüpft. Wollen wir $ttl$ und damit $nextBuild$ ermitteln, stellt sich zunächst die Frage,
 ob und in welchen Fällen dies überhaupt sinnvoll ist. Informationen können vielfältiger Art sein, Informationsanbieter können ganz unterschiedliche Gewohnheiten an
 den Tag legen. Es hängt von der Vorhersagbarkeit des Auftretens neuer Daten und der zeitlichen Möglichkeit ab, diese Daten bereit zu stellen, mit welcher Güte
@@ -133,8 +135,6 @@ zu übermitteln. Betrachten wir nun einen anderen Fall: eine Nachrichtenagentur s
 ist nicht absehbar, wann ein neues Weltereignis eintritt, so dass die Nachrichtenagentur nicht plant, den RSS-Feed mit dem Wert $ttl$ zu versorgen. Eine
 heuristische Bestimmung des $ttl$ durch den Klienten ist wahrscheinlich mit einer großen Varianz behaftet und dadurch sehr ungenau. Und dennoch ist der Spielraum
 groß, was eine empirische Datenerhebung verdeutlicht.
-
-\importgnuplotps{RSS-Feed-Aktualisierung}{Abb:rss_aktualisierung}{rss_aktualisierung}
 
 Abbildung \ref{Abb:rss_aktualisierung} zeigt, wie oft und regelmäßig verschiedene Anbieter von RSS-Feeds (Spiegel, Heise, New-York-Times, Slashdot, Sourceforge)
 diese aktualisieren. Der gemessene Zeitraum erstreckt sich über

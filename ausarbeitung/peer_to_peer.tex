@@ -1,33 +1,45 @@
 \section{Peer-To-Peer-Systeme}
 \label{Abschnitt:peer_to_peer}
 Der klassische Ansatz, auf Daten oder Dienste innerhalb des Internets zuzugreifen, basiert auf dem Client/Server-Modell. Ein Server stellt als zentrale Einheit
-Dienste zur Verfügung, die einzelne, voneinander unabhängige Klienten anfordern können. In zunehmendem Maße spielen Peer-To-Peer (kurz P2P) -Systeme eine wichtige
-Rolle bei der Datenkommunikation im Internet. Ein $Peer$ ist eine Einheit, die sowohl Dienste zur Verfügung stellen als auch in Anspruch nehmen kann. So können
-Peers beispielsweise Ressourcen teilen (Drucker, Speicherkapazität, ...) oder Daten direkt miteinander austauschen. Ein Vorteil von P2P gegenüber dem Client/Server-Modell
-liegt in der Dezentralisierung von Ressourcen, so dass Ausfälle einzelner Einheiten  nicht unmittelbar den Zusammenbruch des Systems mit sich führen müssen.
+Dienste zur Verfügung, die einzelne, voneinander unabhängige Klienten anfordern können. Im Client/Server-Modell liegt jedoch eine inhärente Problematik.
+Ist die Zahl der Zugriffe auf den Server zu groß, kann es zu starken Verzögerungszeiten oder Ausfällen der angebotenen Dienste kommen. Auch eine große Entfernung
+des Servers zu einzelnen Klienten kann für diese in einer verlangsamten Bearbeitung der Anfragen resultieren. Fällt der Server aus, so kommt es zum kompletten
+Erliegen des entsprechenden Client/Server-Systems.\\
+
+In zunehmendem Maße spielen Peer-To-Peer (kurz P2P) -Systeme eine wichtige
+Rolle bei der Datenkommunikation im Internet. Ein Vorteil von P2P gegenüber dem
+Client/Server-Modell liegt in der Dezentralisierung von Ressourcen, so dass Ausfälle einzelner Einheiten  nicht unmittelbar den Zusammenbruch des
+Systems mit sich führen müssen. Darüber hinaus ermöglicht es ein intelligenteres Routing zu den gewünschten Dienstleistungen auf Anwendungsebene, als momentan über
+IP erreicht wird.\\
+
+Ein $Peer$ ist eine Einheit, die sowohl Dienste zur Verfügung stellen als auch in Anspruch nehmen kann. So können
+Peers beispielsweise Ressourcen teilen (Drucker, Speicherkapazität, ...) oder Daten direkt miteinander austauschen.
 Schollmeier unterscheidet in \cite{Schollmeier:P2PDefinition} $reine$ von $hybriden$ P2P-Systemen. Er definiert ein reines P2P-System als ein P2P-System,
 bei dem eine beliebige terminale Einheit
 aus dem Netzwerk entfernt werden kann, ohne dass das Netzwerk in seinen Diensten eingeschränkt wird. Bei hybriden P2P-Systemen sind zentrale Einheiten notwendig,
-um Teile der angebotenen Netzwerkdienste zur Verfügung zu stellen bzw. verfügbar zu machen. Nichtsdestoweniger ist das Teilen von Netzwerkressourcen der Peers ein
-substantieller Bestandteil eines hybriden P2P-Systems.\\
+um Teile der angebotenen Netzwerkdienste zur Verfügung zu stellen bzw. verfügbar zu machen. Nichtsdestoweniger ist das Teilen von Netzwerkressourcen der Peers und
+ein verbessertes Routing zu den Peers ein substantieller Bestandteil eines hybriden P2P-Systems. Häufig angestrebte Ziele bei P2P-Systemen sind unter anderem die
+Fähigkeit zur Selbstorganisation und Selbststabilisierung (siehe auch \cite{HeMueGei:2005:SelfMa,Dijkstra:1974:SS}).\\
 
-Verschiedene Netzwerkdienste arbeiten auf Basis von P2P-Systemen. Zu nennen wären beispielsweise Gnutella, Napster, Freenet oder KaZaA
-(siehe \cite{Aberer:P2P,KaZaA}). Diese sind sogenannte {\itshape File-Sharing-Dienste} und dienen zum Austausch von allgemeinen Dateien oder
-Musikdateien. Ein allgemeines P2P-System, was als Basistechnologie für andere P2P-Systeme dienen kann, ist Pastry \cite{Pastry}. Im Folgenden wollen wir
+Verschiedene im Detail sehr unterschiedliche Netzwerkdienste arbeiten auf Basis von P2P-Systemen. Zu nennen wären beispielsweise Gnutella, Napster, Freenet, KaZaA
+oder BitTorrent (siehe \cite{Aberer:P2P,KaZaA,BitTorrent}). Diese sind sogenannte {\itshape File-Sharing-Dienste} und dienen zum Austausch von allgemeinen Dateien
+oder Musikdateien.\\
+Ein allgemeines P2P-System, was als Routing-Substrat für andere P2P-Systeme dienen kann, ist Pastry \cite{Pastry}. Im Folgenden wollen wir
 Pastry kurz in den Grundzügen vorstellen, da es als Basis für weitere in dieser Arbeit angesprochene Verfahren dient.
 
 \subsection{Pastry}
 Das von A. Rowstron und P. Druschel entwickelte P2P-System Pastry \cite{Pastry} ist ein skalierbares P2P-Grundgerüst, welches die Verteilung und das Auffinden
-von Objekten in Netzwerken ermöglicht und als Basis für groß angelegte P2P-Anwendungen dienen kann. Um eine gleichmäßige Verteilung und ein schnelles Routing zu erreichen,
-wird jedem Knoten bzw. Peer innerhalb des Netzwerks ein eindeutiger numerischer 128-Bit Bezeichner ({\itshape Id}) zugewiesen. Erhält ein Knoten eine Nachricht und einen Schlüssel,
+von Objekten in Netzwerken ermöglicht und als Basis für groß angelegte P2P-Anwendungen dienen kann. Um eine gleichmäßige Verteilung und ein schnelles Routing zu
+erreichen, wird jedem Knoten bzw. Peer innerhalb des Netzwerks ein eindeutiger numerischer 128-Bit Bezeichner ({\itshape Id}) zugewiesen. Erhält ein Knoten eine
+Nachricht und einen Schlüssel,
 so wird die Nachricht zu dem Knoten weitergeleitet, dessen Id dem Schlüssel numerisch am nächsten liegt. Ist die Anzahl der Knoten im Pastry-Netz $N$,
 so liegt die erwartete Zahl an Routing-Schritten in $O$$(\log N)$. Jeder Knoten innerhalb des Pastry-Netzes unterhält eine Routing-Tabelle, eine Nachbarschaftsmenge
 ({\itshape neighborhood-set}) und eine Blattmenge ({\itshape leaf-set}). In einer Spalte $n$ der Routing-Tabelle sind IP-Adressen von Knoten eingetragen,
 die im Prefix der Länge $n$ mit der Knoten-Id des Ausgangsknotens übereinstimmen. Die Nachbarschaftsmenge unterhält Knoten-Ids und IP-Adressen von Knoten,
-die dem Ausgangsknoten entsprechend einer Nachbarschaftsmetrik am nächsten liegen. Die Blattmenge enthält Knoten-Ids von Knoten, die der Knoten-Id des Ausgangsknotens am
-nächsten liegen und wird für die Weiterleitung von Nachrichten herangezogen. Für eine ausführliche Beschreibung verweisen wir auf \cite{Pastry}.\\
-Darüber hinaus ist Pastry ein selbstorganisierendes und adaptierendes System. Es kann selbständig die notwendigen Initialisierungsschritte bei Zu- und Abwanderung von Knoten
-vornehmen (zu Selbstorganisation und Selbststabilisierung siehe \cite{HeMueGei:2005:SelfMa,ShTi:2004:SSPubSub}).
+die dem Ausgangsknoten entsprechend einer Nachbarschaftsmetrik am nächsten liegen. Die Blattmenge enthält Knoten-Ids von Knoten, die der Knoten-Id des
+Ausgangsknotens am nächsten liegen und wird für die Weiterleitung von Nachrichten herangezogen. Für eine ausführliche Beschreibung verweisen wir auf \cite{Pastry}.\\
+Darüber hinaus ist Pastry laut \cite{Pastry} ein selbstorganisierendes und adaptierendes System. Es kann selbständig die notwendigen Initialisierungsschritte bei
+Zu- und Abwanderung von Knoten vornehmen.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"

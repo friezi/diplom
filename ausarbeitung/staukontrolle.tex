@@ -66,7 +66,7 @@ Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer her
 \label{css:staukontrolle_pubsubrss}
 Wir fassen kurz zusammenfassen, welche primären Ziele und damit verbundenen sekundären Ziele wir verfolgen. Grundsätzlich geht es um die Bestimmung des Wertes
 $ttr$ eines Subscribers (siehe Abschnitt \ref{cs:der_grundlegende_algorithmus}).
-Zur Erinnerung: $ttr$ bezeichnet \glqq time-to-refresh\grqq{}footnote{In Anlehnung an die Beschreibungen in Kapitel \ref{staukontrolle_tcp} werden
+Zur Erinnerung: $ttr$ bezeichnet \glqq time-to-refresh\grqq{}\footnote{In Anlehnung an die Beschreibungen in Kapitel \ref{staukontrolle_tcp} werden
 wir ebenfalls englische Termini verwenden.}, also den konkreten Zeitpunkt, zu dem die nächste Anfrage an den jeweiligen RSS-Server
 gestellt werden soll. Um $ttr$ zu bestimmen, benötigen wir $\varDelta ttr$. Ein wichtiger Parameter zur Bestimmung von $\varDelta ttr$ ist der $cpp$. Um einer
 längerfristigen
@@ -103,13 +103,14 @@ Wie schon erwähnt, übernimmt bei einer Anfrage an einen RSS-Server die TCP-Schic
 dieser Stelle nicht um wiederholte Aussendungen von Anfragen zu kümmern braucht. Wird eine TCP-Verbindung jedoch unterbrochen bzw.
 kommt sie gar nicht zustande, so muss die
 Anwendungssoftware den Verbindungsaufbau nach einer gewissen Zeit wiederholen. Die Zeit, die in diesem Fall bis zum nächsten Verbindungsaufbau vergehen soll,
-wird durch $rto$ bestimmt. Das Problem der \glqq retransmission-ambiguity\grqq{} (siehe \ref{csp:karns_algorithmus}) kann nicht eintreten. Soll ein Verbindungsaufbau zu
-einem RSS-Server geschehen, so sprechen wir im Folgenden der Einfachheit halber von der Aussendung eines \glqq Feed-Requests\grqq{}.\\
+wird durch $rto$ bestimmt. Das Problem der \glqq retransmission-ambiguity\grqq{} (siehe \ref{csp:karns_algorithmus}) kann nicht eintreten.
+Soll ein Verbindungsaufbau zu einem RSS-Server geschehen, so sprechen wir im Folgenden der Einfachheit halber von der Aussendung eines \glqq Feed-Requests\grqq{}.\\
 Erhält ein Subscriber
 einen Feed, so muss in jedem Fall der $ttr$ für die Aussendung des nächsten Feed-Requests berechnet und ein entsprechender
 Timer $RQT$ (für \glqq Request-Timer\grqq{}) eingerichtet werden, nach dessen Ablauf der Feed-Request versendet wird. Nach Aussendung des Feed-Requests muss nun ein
-Timer $RT$ (für \glqq Retransmission-Timer\grqq{}) eingerichtet werden, nach dessen Ablauf der Feed-Request erneut ausgesandt wird. Die Unterscheidung der beiden Timer
-ist rein konzeptioneller Natur, in der Praxis können wir sagen: $RT:=RQT$, der $RQT$ wird dann je nach Situation unterschiedlich gesetzt. Um eine klarere
+Timer $RT$ (für \glqq Retransmission-Timer\grqq{}) eingerichtet werden, nach dessen Ablauf der Feed-Request erneut ausgesandt wird. Die Unterscheidung der
+beiden Timer ist rein konzeptioneller Natur, in der Praxis können wir sagen: $RT:=RQT$, der $RQT$ wird dann je nach Situation unterschiedlich gesetzt.
+Um eine klarere
 Differenzierung vorzunehmen, werden wir trotzdem dort zwischen den Begriffen $RQT$ und $RT$ unterscheiden, wo es der Deutlichkeit halber angebracht erscheint.
 Mitbestimmend für den $RQT$ ist der $cpp$, mitbestimmend für den $RT$ der $rto$. $cpp$ wird ebenfalls je nach Situation unterschiedlich berechnet.
 
@@ -139,8 +140,8 @@ Daher definieren wir einen weiteren Wert
 artt:=\text{sf}(i)\cdot rtt.
 \end{equation}
 
-Dabei ist $\text{sf}()$ die Skalierungsfunktion und $i$ die Anzahl der ausgesendeten Anfragen bzw. die Anzahl der Verbindungsversuche bis zu einer erfolgreichen Verbindung.
-Experimente mit Hilfe der entwickelten Simulationsumgebung haben gezeigt, dass eine exponentielle Skalierungsfunktion ein
+Dabei ist $\text{sf}()$ die Skalierungsfunktion und $i$ die Anzahl der ausgesendeten Anfragen bzw. die Anzahl der Verbindungsversuche bis zu einer erfolgreichen
+Verbindung. Experimente mit Hilfe der entwickelten Simulationsumgebung haben gezeigt, dass eine exponentielle Skalierungsfunktion ein
 besseres Adaptionsverhalten als eine polynomielle Skalierungsfunktion ermöglicht. Dabei muss man bedenken, dass die Berechnung des $rtt$-Wertes sowieso
 schon auf exponentieller Basis
 geschieht, da der für Wiederholungen relevante $rto$-Wert exponentiell gesteigert wird. Wir definieren also
@@ -149,8 +150,8 @@ geschieht, da der für Wiederholungen relevante $rto$-Wert exponentiell gesteiger
 \end{equation}
 
 Hier kann man eine Analogie zum Konzept der PI-Reglern herstellen (obwohl es nur Parallelen in den Grundideen gibt): während man den $rtt$-Wert
-als proportionalen Anteil in der Berechnung auffassen kann (da er eine genaue Zeitdifferenz ausdrückt), entspricht die Skalierungsfunktion $sf()$ dem integrativen Anteil beim PI-Regler,
-da sie die zeitliche Dauer der Server-Antwort berücksichtigt.\\
+als proportionalen Anteil in der Berechnung auffassen kann (da er eine genaue Zeitdifferenz ausdrückt), entspricht die Skalierungsfunktion $sf()$ dem integrativen
+Anteil beim PI-Regler, da sie die zeitliche Dauer der Server-Antwort berücksichtigt.\\
 
 Bei Eintritt des Subscribers in das System wird
 \begin{equation}
@@ -183,10 +184,10 @@ Weitere Verbesserungen werden wir in Abschnitt \ref{cs:ausbalancierung_der_polli
 
 \paragraph{Ungenauigkeiten und Probleme:}
 Ein Problem ist denkbar, welches sich auch in der Simulation gezeigt hat: einige wenige Subscriber, welche Anfragen mit einer hohen Frequenz aussenden (also
-bei einer sehr kleinen Polling-Periode), können die übrigen Subscriber \glqq aussperren\grqq{}. Die Subscriber, welche eine kürzere Polling-Periode berechnet haben, können
-diese halten, da ihre Anfragen (bedingt durch deren Menge) eine größere Chance haben, in der Server-Queue zu landen. Die Queue wird unter diesen wenigen
-Subscribern aufgeteilt. Somit erhalten sie die Feeds auch mit einer höheren Frequenz vom Server. Kann der Server der Beantwortung einer Anfrage schnell nachkommen,
-so kann der empfangende Subscriber seinen $cpp$ konstant halten. Die Polling-Perioden der
+bei einer sehr kleinen Polling-Periode), können die übrigen Subscriber \glqq aussperren\grqq{}. Die Subscriber, welche eine kürzere Polling-Periode berechnet
+haben, können diese halten, da ihre Anfragen (bedingt durch deren Menge) eine größere Chance haben, in der Server-Queue zu landen. Die Queue wird unter diesen
+wenigen Subscribern aufgeteilt. Somit erhalten sie die Feeds auch mit einer höheren Frequenz vom Server. Kann der Server der Beantwortung einer Anfrage schnell
+nachkommen, so kann der empfangende Subscriber seinen $cpp$ konstant halten. Die Polling-Perioden der
 übrigen Subscriber wachsen dagegen drastisch. Denn gerade durch den Umstand, dass ihre
 Anfragen seltener in der Server-Queue landen, werden sie durch die daraufhin verzögerten (oder ausbleibenden) Antworten ihre Polling-Perioden vergrößern.
 Dieser Rückkopplungseffekt führt dazu, dass ihre Polling-Perioden dauerhaft große Werte aufweisen und für diese Subscriber kaum Chancen bestehen,
@@ -199,8 +200,8 @@ werden wir in Abschnitt \ref{cs:ausbalancierung_der_polling-perioden} darstellen
 Ein \label{cssp:ung_u_probl:dysbalance} weiterer eventuell problematischer Punkt (im obigen Absatz bereits angesprochen) ist die Berechnung des Wertes $artt$,
 falls $RT$ noch nicht abgelaufen ist. In diesem Fall wird bei unserer Berechnung
 der $artt$ direkt auf die gemessene roundtrip-time gesetzt, während bei TCP diese nur zum Teil (unter zusätzlicher Zuhilfenahme des Glät\-tungs\-fak\-tors $\alpha$,
-siehe Abschnitt \ref{cssp:tcp_rtt}, Seite \pageref{cssp:tcp_rtt}) in die Berechnung eingeht. Diese direkte Rück\-setzung könnte zu einem starken Schwingungsverhalten der
-Serverbelastung und somit der Polling-Perioden im System führen. Allerdings ist eine schnelle Reaktion des Systems auf eine
+siehe Abschnitt \ref{cssp:tcp_rtt}, Seite \pageref{cssp:tcp_rtt}) in die Berechnung eingeht. Diese direkte Rück\-setzung könnte zu einem starken Schwingungsverhalten
+der Serverbelastung und somit der Polling-Perioden im System führen. Allerdings ist eine schnelle Reaktion des Systems auf eine
 verbesserte Server-Reaktionsfähigkeit erwünscht, und in der Mehrheit der Fälle werden nicht alle Subscriber gleichzeitig den Wert $artt$ auf diese Weise ermitteln.
 Beobachtungen zeigen jedoch, dass es bei einer plötzlichen Erreichbarkeit des Servers tatsächlich zu einem Ansturm
 auf diesen kommen kann. Wir werden aber
