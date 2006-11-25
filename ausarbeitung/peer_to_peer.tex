@@ -1,4 +1,4 @@
-\section{Peer-To-Peer-Systeme}
+\section{Peer-To-Peer}
 \label{Abschnitt:peer_to_peer}
 Der klassische Ansatz, auf Daten oder Dienste innerhalb des Internets zuzugreifen, basiert auf dem Client/Server-Modell. Ein Server stellt als zentrale Einheit
 Dienste zur Verfügung, die einzelne, voneinander unabhängige Klienten anfordern können. Im Client/Server-Modell liegt jedoch eine inhärente Problematik.
@@ -6,8 +6,7 @@ Ist die Zahl der Zugriffe auf den Server zu groß, kann es zu starken Verzögerung
 des Servers zu einzelnen Klienten kann für diese in einer verlangsamten Bearbeitung der Anfragen resultieren. Fällt der Server aus, so kommt es zum kompletten
 Erliegen des entsprechenden Client/Server-Systems.\\
 
-In zunehmendem Maße spielen Peer-To-Peer (kurz P2P) -Systeme eine wichtige
-Rolle bei der Datenkommunikation im Internet. Ein Vorteil von P2P gegenüber dem
+In zunehmendem Maße spielen Peer-To-Peer (kurz P2P) -Systeme eine wichtige Rolle bei der Datenkommunikation im Internet. Ein Vorteil von P2P gegenüber dem
 Client/Server-Modell liegt in der Dezentralisierung von Ressourcen, so dass Ausfälle einzelner Einheiten  nicht unmittelbar den Zusammenbruch des
 Systems mit sich führen müssen. Darüber hinaus ermöglicht es ein intelligenteres Routing zu den gewünschten Dienstleistungen auf Anwendungsebene, als momentan über
 IP erreicht wird.\\
@@ -19,7 +18,7 @@ bei dem eine beliebige terminale Einheit
 aus dem Netzwerk entfernt werden kann, ohne dass das Netzwerk in seinen Diensten eingeschränkt wird. Bei hybriden P2P-Systemen sind zentrale Einheiten notwendig,
 um Teile der angebotenen Netzwerkdienste zur Verfügung zu stellen bzw. verfügbar zu machen. Nichtsdestoweniger ist das Teilen von Netzwerkressourcen der Peers und
 ein verbessertes Routing zu den Peers ein substantieller Bestandteil eines hybriden P2P-Systems. Häufig angestrebte Ziele bei P2P-Systemen sind unter anderem die
-Fähigkeit zur Selbstorganisation und Selbststabilisierung (siehe auch \cite{HeMueGei:2005:SelfMa,Dijkstra:1974:SS}).\\
+Fähigkeit zur Selbstorganisation und Selbststabilisierung (siehe auch \cite{HeMueGei:2005:SelfMa,Dijkstra:1974:SS,Muehletal:2005:SelfStabPubSub}).\\
 
 Verschiedene im Detail sehr unterschiedliche Netzwerkdienste arbeiten auf Basis von P2P-Systemen. Zu nennen wären beispielsweise Gnutella, Napster, Freenet, KaZaA
 oder BitTorrent (siehe \cite{Aberer:P2P,KaZaA,BitTorrent}). Diese sind sogenannte {\itshape File-Sharing-Dienste} und dienen zum Austausch von allgemeinen Dateien
@@ -28,6 +27,7 @@ Ein allgemeines P2P-System, was als Routing-Substrat für andere P2P-Systeme dien
 Pastry kurz in den Grundzügen vorstellen, da es als Basis für weitere in dieser Arbeit angesprochene Verfahren dient.
 
 \subsection{Pastry}
+\label{Abschnitt:Pastry}
 Das von A. Rowstron und P. Druschel entwickelte P2P-System Pastry \cite{Pastry} ist ein skalierbares P2P-Grundgerüst, welches die Verteilung und das Auffinden
 von Objekten in Netzwerken ermöglicht und als Basis für groß angelegte P2P-Anwendungen dienen kann. Um eine gleichmäßige Verteilung und ein schnelles Routing zu
 erreichen, wird jedem Knoten bzw. Peer innerhalb des Netzwerks ein eindeutiger numerischer 128-Bit Bezeichner ({\itshape Id}) zugewiesen. Erhält ein Knoten eine

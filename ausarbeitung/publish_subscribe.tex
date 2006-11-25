@@ -1,5 +1,53 @@
-\section{Publish/Subscribe-Systeme}
+\section{Publish/Subscribe}
 \label{publishsubscribe}
+Heutige Internet-Anwendungen weisen einen zunehmend dynamischen und gleichzeitig eigenständigen Charakter auf: mehr und mehr unabhängige und über das gesamte Internet
+verteilte Einheiten bieten Informationen und Dienste an. Ort und Erreichbarkeit dieser Einheiten können im Laufe der Zeit stark variieren (siehe auch Abschnitt
+\ref{Abschnitt:peer_to_peer}).
+Diese Eigenschaften lassen das Bedürfnis nach flexibleren Kommunikationsmodellen aufkommen, die die Forderung nach statischen Verbindungen und ständiger Erreichbarkeit
+der Dienstapplikationen abschwächen (siehe \cite{Patrick:ManyFacesPubSub}). Um Applikationsdesigner von der Last dieser Forderungen zu befreien, sollten spezielle
+Middleware-Infrastrukturen herangezogen werden, die eine Vermittlerrolle zwischen den beteiligten Einheiten einnehmen und auf angemessenen Kommunikationsmodellen
+basieren. P2P-Systeme tragen der Forderung Rechnung, Ressourcen mehr und mehr zu dezentralisieren und über das Internet zu verteilen. Sie bieten darüber hinaus ein besseres
+Routing innerhalb des Systems (siehe Abschnitt \ref{Abschnitt:peer_to_peer}). Die Frage nach der Art der Kommunikation zwischen den einzelnen Peers bleibt damit
+aber unangetastet. Ein Kommunikationsmodell, welches den oben genannten Bedürfnissen nachkommt, ist Publish/Subscribe (kurz Pub/Sub).
+
+\paragraph{Publish/Subscribe:}
+\begin{picturenothere}{1}{5}{\mbox{Publish/Subscribe}}{Abb:Publish_Subscribe}
+ \includegraphics[bb=170 0 544 504 ,scale=0.7]{PubSub}
+\end{picturenothere}
+
+Das Pub/Sub-Kommunikationsmodell sieht zunächst zwei Einheiten vor: Publisher, welche Ereignisse im weitesten Sinne publizieren und Subscriber, welche ihr Interesse
+an speziellen Ereignissen oder einer Gruppe von Ereignissen durch Abonnements bzw. Subskriptionen bekunden können. Subscriber können über das Auftreten von Ereignissen,
+die dem bekundeten Interesse entsprechen, durch Notifikationen unterrichtet werden. Hier favorisiert man eine asynchrone Methode der Benachrichtigung aller Subscriber.
+Die Stärke dieses ereignisbasierten Interaktionsschemas liegt in der Entkopplung von {\itshape Zeit}, {\itshape Raum} und {\itshape Synchronisation} zwischen Publisher
+und Susbcriber (siehe \cite{Patrick:ManyFacesPubSub}). Im Basis-Interaktionsmodell von Pub/Sub geht von man von einem Notifikationsdienst aus, der Notifikationen
+entgegennehmen, zwischenspeichern und weiterleiten kann (siehe Abbildung \ref{Abb:Publish_Subscribe}). Ein Notifikationsdienst besteht in der Regel aus einer Reihe 
+von Message-Brokern, die untereinander in einer netzartigen Struktur verbunden sind.\\
+
+Um sein Interesse zu bekunden, ruft ein Subscriber üblicherweise eine Operation \texttt{sub\-scribe()} des Notifikationsdienstes auf. Häufig kann dabei eine
+Reihe von Filterregeln definiert werden, die die Menge der Ereignisse eingrenzen bzw. erweitern, für die sich der Subscriber interessiert. Diese Informationen
+bleiben auch bei Abwesenheit des Subscribers im Notifikationssystem gespeichert und werden erst durch Aufruf der Operation \texttt{un\-sub\-scribe()} gelöscht.\\
+
+Ein Publisher stellt durch Aufruf der Operation \texttt{publish()} dem Notifikationsdienst neue Ereignisse zur Verfügung. Mit der Operation \texttt{ad\-ver\-tise()}
+kann ein Publisher zukünftige Ereignisse ankündigen. Der Notifikationsdienst kann mit der Operation \texttt{notify()} alle Subscriber über die Ereignisse unterrichten,
+die auf die angegebenen Filterregeln passen.\\
+
+Die Entkopplung zwischen Publisher und Subscriber erfolgt in drei Dimensionen \cite{Patrick:ManyFacesPubSub}:
+\begin{description}
+\item [- Raum:] Die beteiligten Parteien Publisher und Subscriber brauchen sich gegenseitig nicht zu kennen. Die Verbindung erfolgt über das Notifikationssystem.
+  Das hat den Vorteil, dass Publisher nicht eine möglicherweise große Anzahl von Subscribern verwalten müssen. Im Gegenzug können sich Subscriber auf die Definition
+  ihrer Interessen beschränken und können von Lokalität und Verfügbarkeit der Publisher abstrahieren.
+\item [- Zeit:] Es ist nicht erforderlich, dass Publisher und Subscriber zeitgleich interagieren. Veröffentlichung von Ereignissen und Benachrichtigung über Ereignisse
+  können zeitlich versetzt erfolgen.
+\item [- Synchronisation:] Publisher werden beim Erzeugen neuer Ereignisse nicht blockiert. Subscriber können während der Ausführung paralleler Aktivitäten benachrichtigt
+  werden.
+\end{description}
+
+Es gibt eine Reihe von Pub/Sub-Systemen, die für verschiedene Zwecke eingesetzt werden können, wie z. B. Scribe \cite{SCRIBE}, Gryphon \cite{Gryphon} oder REBECA \cite{MuFiBu:2001:ArchFrameECommApp}.
+Da das im weiteren Verlauf der Arbeit vorgestellte System FeedTree auf Scribe basiert, werden wir Scribe kurz in den Grundzügen vorstellen.
+
+\subsection{Scribe}
+\label{Abschnitt:Scribe}
+Scribe \cite{SCRIBE} ist eine skalierbare Multicast-Infrastruktur auf Applikationsebene und baut auf dem P2P-Routing-Substrat Pastry auf (siehe Abschnitt \ref{Abschnitt:Pastry}).
 
 %%% Local Variables: 
 %%% mode: latex
