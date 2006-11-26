@@ -40,6 +40,13 @@ die dem Ausgangsknoten entsprechend einer Nachbarschaftsmetrik am nächsten liege
 Ausgangsknotens am nächsten liegen und wird für die Weiterleitung von Nachrichten herangezogen. Für eine ausführliche Beschreibung verweisen wir auf \cite{Pastry}.\\
 Darüber hinaus ist Pastry laut \cite{Pastry} ein selbstorganisierendes und adaptierendes System. Es kann selbständig die notwendigen Initialisierungsschritte bei
 Zu- und Abwanderung von Knoten vornehmen.
+
+\subsection{Scribe}
+\label{Abschnitt:Scribe}
+Das ebenfalls von Druschel et al. entwickelte P2P-System Scribe \cite{SCRIBE} ist eine skalierbare Multicast-Infrastruktur auf Applikationsebene und baut auf dem
+P2P-Routing-Substrat Pastry auf (siehe Abschnitt \ref{Abschnitt:Pastry}). Eine Scribe-Infrastruktur besteht aus einer Reihe von Gruppen. Jeder Knoten kann eine
+Gruppe erzeugen. Knoten können Gruppen beitreten oder Nachrichten an alle Mitglieder einer Gruppe senden. Jede Gruppe erhält eine 160-Bit GruppenId. Die Mitglieder
+einer Gruppe bilden einen Multicast-Baum. Laut den Autoren ist das System skalierbar gegenüber großen Gruppen und einer großen Anzahl von Gruppen.  
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"

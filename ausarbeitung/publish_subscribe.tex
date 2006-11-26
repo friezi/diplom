@@ -24,7 +24,8 @@ entgegennehmen, zwischenspeichern und weiterleiten kann (siehe Abbildung \ref{Ab
 von Message-Brokern, die untereinander in einer netzartigen Struktur verbunden sind.\\
 
 Um sein Interesse zu bekunden, ruft ein Subscriber üblicherweise eine Operation \texttt{sub\-scribe()} des Notifikationsdienstes auf. Häufig kann dabei eine
-Reihe von Filterregeln definiert werden, die die Menge der Ereignisse eingrenzen bzw. erweitern, für die sich der Subscriber interessiert. Diese Informationen
+Reihe von Filterregeln definiert werden, die die Menge der Ereignisse eingrenzen bzw. erweitern, für die sich der Subscriber interessiert (zu Filtern siehe
+\cite{MuFiBu:2002:FilterSimilarities,Muehl:2001:GenericConstraints}). Diese Informationen
 bleiben auch bei Abwesenheit des Subscribers im Notifikationssystem gespeichert und werden erst durch Aufruf der Operation \texttt{un\-sub\-scribe()} gelöscht.\\
 
 Ein Publisher stellt durch Aufruf der Operation \texttt{publish()} dem Notifikationsdienst neue Ereignisse zur Verfügung. Mit der Operation \texttt{ad\-ver\-tise()}
@@ -42,12 +43,9 @@ Die Entkopplung zwischen Publisher und Subscriber erfolgt in drei Dimensionen \c
   werden.
 \end{description}
 
-Es gibt eine Reihe von Pub/Sub-Systemen, die für verschiedene Zwecke eingesetzt werden können, wie z. B. Scribe \cite{SCRIBE}, Gryphon \cite{Gryphon} oder REBECA \cite{MuFiBu:2001:ArchFrameECommApp}.
-Da das im weiteren Verlauf der Arbeit vorgestellte System FeedTree auf Scribe basiert, werden wir Scribe kurz in den Grundzügen vorstellen.
-
-\subsection{Scribe}
-\label{Abschnitt:Scribe}
-Scribe \cite{SCRIBE} ist eine skalierbare Multicast-Infrastruktur auf Applikationsebene und baut auf dem P2P-Routing-Substrat Pastry auf (siehe Abschnitt \ref{Abschnitt:Pastry}).
+Es gibt eine Reihe von Pub/Sub-Systemen, die für verschiedene Zwecke eingesetzt werden können, wie z. B. REBECA \cite{MuFiBu:2001:ArchFrameECommApp}, Gryphon
+\cite{Gryphon}, HERMES \cite{Pietzuch:2004:HermesPhd}, JEDI \cite{CugolaEtAl:2001:JEDI} oder SIENA \cite{SIENA}. Für Informationen zu diesen Systemen verweisen wir
+auf die in den Literaturangaben verzeichneten Quellen.
 
 %%% Local Variables: 
 %%% mode: latex

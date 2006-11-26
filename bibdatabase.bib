@@ -601,21 +601,12 @@ topic =        "Self-Stabilization",
 @InProceedings{Pastry,
   author = 	 {Antony Rowstron And Peter Druschel},
   title = 	 {Pastry: {S}calable, {D}ecentralized {O}bject {l}ocation, and {R}outing for {L}arge-{S}cale {P}eer-to-{P}eer {S}ystems},
-  OPTcrossref =  {},
-  OPTkey = 	 {},
   booktitle = {Middleware 2001: IFIP/ACM International Conference on Distributed Systems Platforms Heidelberg, Germany, Novermber 12-16, 2001. Proceedings},
   pages = 	 {329},
   year = 	 {2001},
-  OPTeditor = 	 {},
   volume = 	 {2218/2001},
-  OPTnumber = 	 {},
   series = 	 {Lecture {N}otes {I}n {C}omputer {S}ience},
-  OPTaddress = 	 {},
-  OPTmonth = 	 {},
-  OPTorganization = {},
   publisher = {Springer Berlin / Heidelberg},
-  OPTnote = 	 {},
-  OPTannote = 	 {}
 }
 
 @article{Patrick:ManyFacesPubSub,
@@ -635,20 +626,96 @@ topic =        "Self-Stabilization",
 @InProceedings{SCRIBE,
   author = 	 {M. Castro and P. Druschel and A.-M. Kermarrec and A. Rowstron},
   title = 	 {{SCRIBE}: A large-scale and decentralized application-level mutlicast-infrastructure},
-  OPTcrossref =  {},
-  OPTkey = 	 {},
   booktitle = {IEEE JSAC},
-  OPTpages = 	 {},
   year = 	 {2002},
-  OPTeditor = 	 {},
   volume = 	 {20},
   number = 	 {8},
-  OPTseries = 	 {},
-  OPTaddress = 	 {},
   month = 	 oct,
-  OPTorganization = {},
-  OPTpublisher = {},
+}
+
+@Misc{SIENA,
+  OPTkey = 	 {},
+  author = {{Software Engineering Research Laboratory, University of Colorado at Boulder}},
+  title = 	 {{SIENA} - {Publish/Subscribe Wide-Area Event Notification}, http://serl.cs.colorado.edu/~carzanig/siena/index.html},
+  OPThowpublished = {},
+  OPTmonth = 	 {},
+  year = 	 {2004},
   OPTnote = 	 {},
   OPTannote = 	 {}
 }
 
+@Article{CugolaEtAl:2001:JEDI,
+  author =       "G. Cugola and E. {Di Nitto} and A. Fuggetta",
+  journal =      "IEEE Transactions on Software Engineering",
+  mynumber =     "ds177",
+  number =       "9",
+  pages =        "827--850",
+  title =        "The {JEDI} Event-based Infrastructure and its
+                 Application to the Development of the {OPSS WFMS}",
+  topic =        "Publish/Subscribe",
+  URL =          "http://doi.ieeecs.org/10.1109/32.950318,http://www.elet.polimi.it/upload/dinitto/papers/TSE_JEDI_final10.PDF",
+  volume =       "27",
+  year =         "2001",
+  modified =     "1136376478",
+}
+
+@PhdThesis{Pietzuch:2004:HermesPhd,
+  author =       "P. R. Pietzuch",
+  title =        "Hermes: {A} Scalable Event-Based Middleware",
+  school =       "Computer Laboratory, Queens' College, University of
+                 Cambridge",
+  year =         "2004",
+  month =        feb,
+  abstract =     "Large-scale distributed systems require new middleware
+                 paradigms that do not su er from the limitations of
+                 traditional request/reply middleware. These limitations
+                 include tight coupling between components, a lack of
+                 information ltering capabilities, and support for
+                 one-to-one communication semantics only. We argue that
+                 event-based middleware is a scalable and powerful new
+                 type of middleware for building large-scale distributed
+                 systems. However, it is important that an event-based
+                 middleware platform includes all the standard
+                 functionality that an application programmer expects
+                 from middleware. In this thesis we describe the design
+                 and implementation of Hermes, a distributed, eventbased
+                 middleware platform. The power and exibility of Hermes
+                 is illustrated throughout for two application domains:
+                 Internet-wide news distribution and a sensor-rich,
+                 active building. Hermes follows a type- and
+                 attribute-based publish/subscribe model that places
+                 particular emphasis on programming language integration
+                 by supporting type-checking of event data and event
+                 type inheritance. To handle dynamic, large-scale
+                 environments, Hermes uses peer-to-peer techniques for
+                 autonomic management of its overlay network of event
+                 brokers and for scalable event dissemination. Its
+                 routing algorithms, implemented on top of a distributed
+                 hash table, use rendezvous nodes to reduce routing
+                 state in the system, and include fault-tolerance
+                 features for repairing event dissemination trees. All
+                 this is achieved without compromising scalability and e
+                 ciency, as is shown by a simulational evaluation of
+                 Hermes routing. The core functionality of an
+                 event-based middleware is extended with three
+                 higher-level middleware services that address di erent
+                 requirements in a distributed computing environment. We
+                 introduce a novel congestion control service that
+                 avoids congestion in the overlay broker network during
+                 normal operation and recovery after failure, and
+                 therefore enables a resource-e cient deployment of the
+                 middleware. The expressiveness of subscriptions in the
+                 event-based middleware is enhanced with a composite
+                 event service that performs the distributed detection
+                 of complex event patterns, thus taking the burden away
+                 from clients. Finally, a security service adds access
+                 control to Hermes according to a secure
+                 publish/subscribe model. This model supports ne-grained
+                 access control decisions so that separate trust domains
+                 can share the same overlay broker network.",
+  owner =        "Michael A. Jaeger",
+  pdf =          "publish-subscribe/pietzuch_-_hermes__a_scalable_event-based_middleware.pdf",
+  URL =          "http://www.eecs.harvard.edu/~prp/doc/prp_thesis.pdf",
+  topic =        "Fault-Tolerance, Congestion Control, Middleware,
+                 Publish/Subscribe",
+}
