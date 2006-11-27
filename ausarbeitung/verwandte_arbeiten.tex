@@ -18,20 +18,19 @@ Informationen an Interessenten zu ermöglichen. Die Autoren geben folgende Schrit
   Verfügung stellen.
 \end{enumerate}
 
-Zusätzlich wird gefordert, dass RSS-Feeds mit dem Parameter {\itshape time-to-live} ausgestattet werden (siehe Abschnitt \ref{ch_rss}). Ein Publisher, der feststellt, dass
-innerhalb dieses Intervalls kein neues Ereignis auftrat, generiert ein {\itshape Heartbeat-}Ereignis. Dieses ermöglicht Subscribern festzustellen, ob zwischenzeitlich
-Veröffentlichungen verloren gegangen sind. Um die Möglichkeit zu verbessern, verloren gegangene Ereignisse dennoch zu erhalten, speichert jeder Teilnehmer
-des Systems eine feste Anzahl der letzten veröffentlichten Ereignisse.
+Zusätzlich wird gefordert, dass RSS-Feeds mit dem Parameter {\itshape time-to-live} ausgestattet werden (siehe Abschnitt \ref{ch_rss}). Ein Publisher, der
+feststellt, dass innerhalb dieses Intervalls kein neues Ereignis auftrat, generiert ein {\itshape Heartbeat-}Ereignis. Dieses ermöglicht Subscribern festzustellen,
+ob zwischenzeitlich Veröffentlichungen verloren gegangen sind. Um die Möglichkeit zu verbessern, verloren gegangene Ereignisse dennoch zu erhalten, speichert
+jeder Teilnehmer des Systems eine feste Anzahl der letzten veröffentlichten Ereignisse.
 
 \subsubsection{Beurteilung}
-Wir werden eventuelle Vor- und Nachteile dieses Systems kurz eruieren. Die grundsätzlichen Vorteile eines Pub/Sub-Systems gegenüber dem herkömmlichen
-Ansatz werden wir hier nicht erneut aufführen.
+Wir werden eventuelle Vor- und Nachteile dieses Systems kurz eruieren.
 
 \paragraph{Vorteile:}
 \begin{itemize}
 \item Dieses Verfahren ermöglicht eine Benachrichtigung der Klienten zum Zeitpunkt der Veröffentlichung eines neuen RSS-Feeds.
 \item Es spart Bandbreiten durch Vermeidung redundanter Übermittlung von RSS-Feeds.
-\item Die Signierung der RSS-Daten ermöglicht eine Überprüfung der Authentizität der Daten, was bei sicherheitskritischen Daten sehr
+\item Die Signierung der RSS-Daten ermöglicht eine Überprüfung der Authentizität der der einzelnen Einträge, was bei sicherheitskritischen Daten sehr
   relevant sein kann.
 \item Durch Sequenznummern kann ein Klient ermitteln, ob zwischenzeitlich Ereignisse verloren gegangen sind.
 \item Verloren gegangene Ereignisse können durch Zwischenspeicherung in Caches bei anderen Peers nachträglich wiederbeschafft werden. 
@@ -44,24 +43,25 @@ Ansatz werden wir hier nicht erneut aufführen.
   Viele Unternehmen sind nicht bereit, den zusätzlichen administrativen Aufwand zu
   leisten\footnote{Anmerkung: Obwohl der RSS-Standard 2.0 schon seit längerer Zeit auf dem Markt ist, verwenden viele Anbieter immer noch die Syntax der Version
     0.91 für angebotene Feeds. Dieser lässt die Definition nützlicher Parameter, wie beispielsweise {\itshape time-to-live}, nicht zu. Bereits hier ist zu erkennen,
-    dass sich neue Technologien und Entwicklungen nur langsam (wenn überhaupt) durchsetzen.}.
-\item Erweiterte Filtertechniken werden nicht unterstützt. Da Gruppen über ihre GruppenId mit der Id des Abonnements (URL) korrelieren, besteht diese Einschränkung bereits
-  auf Ebene des P2P-Systems. Zwar kann ein Klient Mitglied mehrerer Gruppen sein, wodurch er auch Feeds zu verschiedenen Kanälen erhalten kann, jedoch ist beispielsweise
-  eine anbieterübergreifende inhaltsbasierte Filterung bereits auf Ebene des Notifikationssystems nicht möglich.
-\item Wie wir im Laufe dieser Arbeit feststellen werden, kann sich das Vorhandensein nur eines Publishers bei einem großen Durchmesser des Overlay-Netzwerks nachteilig auf
-  den Aktualitätsgrad der RSS-Feeds auswirken (siehe Abschnitt \ref{Abschnitt:Ein_Publisher}).
+    dass sich neue Technologien und Entwicklungen bisweilen nur langsam (wenn überhaupt) durchsetzen.}.
+\item Erweiterte Filtertechniken werden nicht unterstützt. Da Gruppen über ihre GruppenId mit der Id des Abonnements (URL) korrelieren, besteht diese Einschränkung
+  bereits auf Ebene des P2P-Systems. Zwar kann ein Klient Mitglied mehrerer Gruppen sein, wodurch er auch Feeds zu verschiedenen Kanälen erhalten kann, jedoch ist
+  beispielsweise eine anbieterübergreifende inhaltsbasierte Filterung bereits auf Ebene des Notifikationssystems nicht möglich.
+\item Wie wir im Laufe dieser Arbeit feststellen werden, kann sich das Vorhandensein nur eines Publishers bei einem großen Durchmesser des Overlay-Netzwerks
+  nachteilig auf den Aktualitätsgrad der RSS-Feeds auswirken (siehe Abschnitt \ref{Abschnitt:Ein_Publisher}).
 \end{itemize}
 
 \subsection{CMS-ToPSS}
-CMS-ToPSS \cite{PetrovicEtAl:2005:CMS-ToPSS} wurde von M. Petrovic, H. Liu und H.-A. Jacobsen entwickelt. Es stellt eine Erweiterung zum Konzept der Content Management
-Systeme dar und sieht ein schnelles Routing
+CMS-ToPSS \cite{PetrovicEtAl:2005:CMS-ToPSS} wurde von M. Petrovic, H. Liu und H.-A. Jacobsen entwickelt. Es stellt eine Erweiterung zum Konzept der Content
+Management Systeme dar und sieht ein schnelles Routing
 und eine zeitgerechte Zustellung der RSS-Dokumente vor. Um eine Filterung der Dokumente zu ermöglichen, dient den Brokern des Notifikationssystems G-ToPSS
 \cite{PetrovicEtAl:2005:G-ToPSSFast} als Grundlage. G-ToPSS ist ein Publish/Subscribe-System und unterstützt die Filterung Graph-basierter Metadaten (Publikationen
-werden als gerichtete, gekennzeichnete Graphen repräsentiert). Dabei wird von einer Strukturierung der Dokumente entsprechend der RDF-Beschreibungssprache ausgegangen.
-Inhaltsbasierte Filterung ist durch die Unterstützung einer SQL-ähnlichen Anfragesprache (GQL) vorgesehen.
+werden als gerichtete, gekennzeichnete Graphen repräsentiert). Dabei wird von einer Strukturierung der Dokumente entsprechend der RDF-Beschreibungssprache
+ausgegangen. Inhaltsbasierte Filterung ist durch die Unterstützung einer SQL-ähnlichen Anfragesprache (GQL) vorgesehen.
 
 \subsubsection{Beurteilung}
-Auch hier werden wir die Vor- und Nachteile kurz betrachten und auflisten.
+Auch hier werden wir die Vor- und Nachteile kurz betrachten und auflisten. Die grundsätzlichen Vorteile eines Pub/Sub-Systems gegenüber dem herkömmlichen
+Ansatz werden wir hier nicht erneut aufführen.
 
 \paragraph{Vorteile:}
 \begin{itemize}

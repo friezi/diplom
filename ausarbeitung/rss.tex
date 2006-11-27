@@ -2,8 +2,8 @@
 \label{ch_rss}
 Im Internet bereitgestellte Informationen weisen zunehmend dynamischen Charakter auf (siehe Abschnitt \ref{Abschnitt:einleitung}).
 Um Änderungen dynamischer Webinhalte zusammenfassen und kenntlich machen zu können, so dass sie Interessenten in kompakter Form dargeboten werden können,
-bietet es sich an, ein für diesen Zweck gedachtes Darstellungsformat in standardisierter Form zu definieren. Liegt dies in maschinenlesbarer Form vor, so wird
-dadurch eine maschinelle Weiterverarbeitung der Daten ermöglicht.\\
+bietet es sich an, ein für diesen Zweck gedachtes Darstellungsformat in standardisierter Form zu definieren. Liegen darin erstellte Dokumente in
+maschinenlesbarer Form vor, so wird eine maschinelle Weiterverarbeitung der enthaltenen Daten ermöglicht.\\
 RSS ist ein Standard, um Kurznachrichten oder andere Inhalte des WorldWideWeb an Nutzer, die sich dafür interessieren, zu verbreiten. Anbieter können
 die von ihnen angebotenen Informationen oder auf sie bezogene Kurzbeschreibungen in einer Datei (RSS-Feed) zusammenfassen und über einen Link
 auf einer Webseite zur Verfügung stellen. Nutzer können RSS-Feeds abonnieren. Es gibt eine Reihe von RSS-Readern, welche klientenseitige Applikationen darstellen,
@@ -21,7 +21,8 @@ darzustellen (siehe \cite{RDF}). Für RSS gibt es verschiedene Semantiken: \glqq 
 \glqq Really Simple Syndication\grqq{}. RSS 2.0 macht keinen Gebrauch mehr von RDF.
 
 \subsubsection{Elemente eines RSS-Feeds}
-Wir beschränken uns hier auf die Darstellung der Elemente, die entsprechend des RSS 2.0 Standards vorgesehen sind, da dieser der zur Zeit am weitesten entwickelte ist.\\
+Wir beschränken uns hier auf die Darstellung der Elemente, die entsprechend des RSS 2.0 Standards vorgesehen sind, da dieser der zur Zeit am weitesten entwickelte
+ist.\\
 
 Ein RSS-Feed besteht aus einigen erforderlichen und optionalen Elementen
 (siehe \cite{RSSSpecWi2004}), die hier in tabellarischer Form aufgelistet werden sollen (Tabellen \ref{Tab:erf_Elemente_RSS} und \ref{Tab:opt_Elemente_RSS}):
@@ -70,34 +71,6 @@ Ein RSS-Feed besteht aus einigen erforderlichen und optionalen Elementen
   \label{Tab:opt_Elemente_RSS}
 \end{table*}
 
-Jeder Eintrag eines RSS-Feeds wird über das Element \texttt{item} gekennzeichnet. Einträge in einem Feed sind optional. Ein RSS-Feed kann beliebig viele Einträge besitzen.
-Das Element \texttt{item} besitzt ebenfalls eine Reihe von optionalen Elementen, welche in Tabelle \ref{Tab:item_Elemente_RSS} zusammengetragen sind.
-
-\begin{table*}[h]
-  \begin{center}
-    \begin{tabular}{|ll|}
-      \hline
-      Element & Beschreibung\\
-      \hline\hline
-      title & Titel des Eintrags \\
-      link & URL des Eintrags\\
-      description & textuelle Beschreibung des Eintrags\\
-      author & email-Adresse des Autors des Eintrags\\
-      category & kategorielle Zuordnung des Eintrags\\
-      comments & URL für Kommentare bzgl. des Eintrags\\
-      enclosure & Beschreibt ein zugehöriges Media-Objekt\\
-      guid & eindeutige Zeichenkette zur Identifizierung des Eintrags\\
-      pubDate & zeigt an, wann der Eintrag erstellt wurde\\
-      source & Ursprungskanal, zu dem der Eintrag gehört\\
-      \hline
-    \end{tabular}
-  \end{center}
-  \caption{Elemente eines \texttt{item}-Elements eines RSS-Feeds}
-  \label{Tab:item_Elemente_RSS}
-\end{table*}
-
-Abbildung \ref{Abb:beisp_RSS-Feed} zeigt ein Beispiel eines RSS-Feeds.
-
 \begin{figure*}
   \lstset{language=XML}
   \begin{lstlisting}
@@ -134,6 +107,34 @@ Abbildung \ref{Abb:beisp_RSS-Feed} zeigt ein Beispiel eines RSS-Feeds.
   \caption{Beispiel eines RSS-Feeds}
   \label{Abb:beisp_RSS-Feed}
 \end{figure*}
+
+Jeder Eintrag eines RSS-Feeds wird über das Element \texttt{item} gekennzeichnet. Einträge in einem Feed sind optional. Ein RSS-Feed kann beliebig viele Einträge
+besitzen. Das Element \texttt{item} besitzt ebenfalls eine Reihe von optionalen Elementen, welche in Tabelle \ref{Tab:item_Elemente_RSS} zusammengetragen sind.
+
+\begin{table*}[h]
+  \begin{center}
+    \begin{tabular}{|ll|}
+      \hline
+      Element & Beschreibung\\
+      \hline\hline
+      title & Titel des Eintrags \\
+      link & URL des Eintrags\\
+      description & textuelle Beschreibung des Eintrags\\
+      author & email-Adresse des Autors des Eintrags\\
+      category & kategorielle Zuordnung des Eintrags\\
+      comments & URL für Kommentare bzgl. des Eintrags\\
+      enclosure & Beschreibt ein zugehöriges Media-Objekt\\
+      guid & eindeutige Zeichenkette zur Identifizierung des Eintrags\\
+      pubDate & zeigt an, wann der Eintrag erstellt wurde\\
+      source & Ursprungskanal, zu dem der Eintrag gehört\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Elemente eines \texttt{item}-Elements eines RSS-Feeds}
+  \label{Tab:item_Elemente_RSS}
+\end{table*}
+
+Abbildung \ref{Abb:beisp_RSS-Feed} zeigt ein Beispiel eines RSS-Feeds.
 
 %\subsection{Optionale Parameter}
 \label{op_rss}
