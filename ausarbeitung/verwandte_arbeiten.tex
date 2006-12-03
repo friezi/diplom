@@ -44,14 +44,15 @@ Wir werden eventuelle Vor- und Nachteile dieses Systems kurz eruieren.
   Es kann nicht davon ausgegangen werden, dass viele Unternehmen dazu bereit sind, den zusätzlichen administrativen Aufwand zu
   leisten\footnote{Anmerkung: Obwohl der RSS-Standard 2.0 schon seit längerer Zeit auf dem Markt ist, verwenden viele Anbieter immer noch die Syntax der Version
     0.91 für angebotene Feeds. Dieser lässt die Definition nützlicher Parameter, wie beispielsweise {\itshape time-to-live}, nicht zu. Bereits hier ist zu erkennen,
-    dass sich neue Technologien und Entwicklungen bisweilen nur langsam (wenn überhaupt) durchsetzen.}.
+    dass sich neue Technologien und Entwicklungen bisweilen nur langsam (wenn überhaupt) durchsetzen. Liu et al. geben in \cite{LiuVenSirer:2005:MeasureRSSPubSub}
+    einen Überlick über die Verteilung der verschiedenen RSS-Versionen.}.
 \item Erweiterte Filtertechniken werden nicht unterstützt, da Gruppen über ihre Gruppen-Id mit der Id des Abonnements (URL) korrelieren.
   Zwar kann ein Klient Mitglied mehrerer Gruppen sein, wodurch er auch Feeds zu verschiedenen Kanälen erhalten kann, jedoch ist
   beispielsweise eine anbieterübergreifende inhaltsbasierte Filterung nicht vorgesehen. Prinzipiell ist es möglich Publish/Subscribe über Multicast zu realisieren,
   jedoch bringt dies in Zusammenhang mit inhaltsbasierter Filterung gewisse Schwierigkeiten mit sich. Da jeder Subscriber individuelle Filtermuster
   definieren kann, wären (bei einer idealen Umsetzung) bei $N$ Subscribern (bzw. Brokern) $2^N$ Multicast-Gruppen notwendig
   \cite{Opyrchaletal:2000:MulticastPubSub}. Um die Anzahl der Multicast-Gruppen
-  zu reduzieren, gibt es verschiedene Ansätze (siehe \cite{Opyrchaletal:2000:MulticastPubSub}). Im wesentlichen handelt es sich dabei um Präzisionsreduzierung,
+  zu reduzieren, gibt es verschiedene Ansätze (siehe \cite{Opyrchaletal:2000:MulticastPubSub}). Im Wesentlichen handelt es sich dabei um Präzisionsreduzierung,
   die Durchführung mehrere Sendevorgänge oder das Senden über mehrere Knoten/Hops.
 \item Wie wir im Laufe dieser Arbeit feststellen werden, kann sich das Vorhandensein nur eines Publishers bei einem großen Durchmesser des Overlay-Netzwerks
   nachteilig auf den Aktualitätsgrad der RSS-Feeds auswirken (siehe Abschnitt \ref{Abschnitt:Ein_Publisher}).

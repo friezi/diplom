@@ -13,12 +13,24 @@ schon als veraltet gelten, erreicht sie den Interessenten einige Sekunden zu spä
 ausgeschöpfter Kapazität der Warteschlange erreichen, kommen gar nicht an die gewünschte Information.\\
 \todo{Problematik der Datenmengen}
 \todo{Parameter Cloud in RSS !!!!!!!!}
+Ab der RSS-Version 0.92 wird der Parameter \texttt{cloud} unterstützt (siehe Abschnitt \ref{ch_rss}). Mit diesem Parameter kann ein Web-Service definiert werden,
+bei dem sich Subscriber registrieren können, um über Aktualisierungen eines RSS-Feeds unterrichtet zu werden. Somit kann unnötiges Pollen eines RSS-Servers vermieden werden.
+Nachteile:
+\begin{itemize}
+\item Ein Publisher muss einen Web-Service einrichten, welcher Klienten über Aktualisierungen benachrichtigt.
+\item Der Web-Service muss möglicherweise eine Vielzahl von Klienten/Subscribern verwalten.
+\item Umfangreichere Filterkriterien als nach bestehenden Kanälen auszuwählen, sind nicht möglich.
+\item Es wird nur ein unnötiges Pollen verhindert. Klienten müssen nach wie vor den RSS-Server kontaktieren, um RSS-Feeds zu erhalten. Ein Austausch der Feeds
+  unter den Klienten und somit eine Lastverteilung der Datenmengen ist damit nicht möglich.
+\end{itemize}
 
 \todo{Literaturangaben}
 \section{Ziele}
 \label{vs_ziele}
-Unser Ziel ist es, ein Verteilungsschema zu konzipieren, bei dem jeder Subscriber die gewünschte Information in gewünschter bzw.
-angemessener Zeit erhält. Je früher ein Subscriber die neueste Information, die beim RSS-Server vorliegt, erhält, desto größer ist ihr Aktualitätsgrad.
+Unser Ziel ist es, ein Verteilungsschema zu konzipieren, bei dem jeder Subscriber die gewünschten Informationen zeitgerecht erhält. Die Definition von komplexen Filtern,
+die die Menge der Informationen einschränkt bzw. über die bestehenden Kanäle hinaus erweitert, soll ermöglicht werden.\\
+
+Je früher ein Subscriber die neueste Information, die beim RSS-Server vorliegt, erhält, desto größer ist ihr Aktualitätsgrad.
 Führen wir uns kurz vor Augen, welche Faktoren den Aktualitätsgrad beeinflussen können. Denkbar sind drei Situationen, die den Aktualitätsgrad
 negativ beeinflussen:
 \begin{enumerate}

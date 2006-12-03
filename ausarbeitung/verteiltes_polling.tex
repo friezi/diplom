@@ -17,7 +17,8 @@ beschäftigen sich in \cite{bhide02adaptive} mit einer Kombination aus Push-Pull 
 Push-Ansätzen ergeben).
 \subsubsection*{Einbettung in PubSub}
 Es ist naheliegend, das Publish-Subscribe-Kommunikationsparadigma auf unser Problem anzuwenden: Die Informationen, konkret also die RSS-Feeds, sollen über ein
-Notifikationssystem an die Interessenten (Subscriber) ausgeliefert werden. Da sich die Funktion bzw. Rolle des RSS-Servers nicht ändern
+Notifikationssystem an die Interessenten (Subscriber) ausgeliefert werden. Dies bietet zusätzlich den Vorteil, Filterdefinitionen angeben zu können,
+die ein breiteres Spektrum an RSS-Feeds abdecken, als bisher über die Definition von Kanälen geschieht. Da sich die Funktion bzw. Rolle des RSS-Servers nicht ändern
 soll, muss die Funktion des Publishers eine andere Einheit übernehmen. Es bietet sich an, die Rolle des Publishers ebenfalls den Klienten
 zuzuweisen. Ein Klient erhält in der Rolle des Subscribers nach einer Anfrage seinerseits den RSS-Feed von einem RSS-Server.
 Der Klient kann nun diesen Feed in
@@ -30,7 +31,6 @@ Klient aktiv werden, um den RSS-Server zu kontaktieren, und wann soll ein Klient
 folgende Problemsituation ist denkbar: kontaktieren alle Klienten gleichzeitig den entsprechenden RSS-Server, so bringt das keine Vorteile, da dies dem alten Ansatz
 entspricht; erreicht der neue Feed
 einen Klienten über einen Broker, so besitzt der Klient diesen neuen Feed bereits, da er zuvor eigenmächtig den RSS-Server kontaktiert hat.
-\todo{Filter}
 \subsubsection*{Ansatz: Ein Publisher}
 Die einfachste Lösung wäre, einen dedizierten Publisher zu bestimmen, welcher als alleiniger Klient das Polling übernimmt. Alle weiteren Klienten
 würden die Feeds über das Broker-Netzwerk erhalten. Vorteil wäre, daß es relativ wenig

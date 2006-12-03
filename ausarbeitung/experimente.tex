@@ -136,9 +136,11 @@ Abbildung \ref{Abb:Standardabweichung_Referenzverlauf_Mittelwerte_der_Polling-Pe
 Mit Zunahme der Mittelwerte nimmt also auch in gleichem Maße die Streuung zu. Bemerkenswert ist, dass trotz immer noch starker Schwankungen der Mittelwerte
 und einer großen Streuung die Serverbelastung stabil bleibt (siehe Abbildung \ref{Abb:Referenzverlauf}). Um auch die Größe der Mittelwerte zu berücksichtigen,
 haben wir in Abbildung \ref{Abb:Variationskoeffizient_Referenzverlauf_Mittelwerte_der_Polling-Perioden} den normierten Wert der
-Standardabweichung, den Variationskoeffizienten, (Standardabweichung geteilt durch den Mittelwert) dargestellt. Der Einfluss der Größe eines Mittelwerts 
-auf die Streuung wird hierbei unterbunden. Es zeigt sich, dass der Variationskoeffizient nach einer gewissen Zeit relativ stabil bleibt und
-mit der Serverbelastung korreliert.\\
+Standardabweichung, den Variationskoeffizienten (Standardabweichung geteilt
+durch den Mittelwert\footnote{Entgegen der gängigen Praxis haben wir den Variationskoeffizienten hier nicht in Prozent angegeben. Um den prozentualen
+  Variationskoeffizienten zu erhalten, sind die ermittelten Werte mit dem Faktor 100 zu multiplizieren.}), dargestellt. Der Einfluss der Größe eines Mittelwerts 
+auf die Streuung wird hierbei unterbunden. Damit sind die Variationskoeffizienten bei unterschiedlichen Messreihen mit verschiedenen Mittelwerten trotzdem vergleichbar.
+Es zeigt sich, dass der Variationskoeffizient nach einer gewissen Zeit relativ stabil bleibt und mit der Serverbelastung korreliert.\\
 
 Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
 $\Gamma_V$. Auffällig ist, dass direkt nach Abschluss der Beitrittsphase die Nachrichtenverzögerung am niedrigsten ist (bis auf die
@@ -410,6 +412,12 @@ Kurzzeitige Belastungsminderungen sind allerdings in der Praxis eher weniger wah
 
 \importsmallgnuplotps{Serverbelastung: $mpp=3600$}{Abb:mpp_3600}{ToTR_mpp3600_serviceTimeFactor50_MVR}
 \importsmallgnuplotps{Serverbelastung: $mpp=910800$}{Abb:mpp_910800}{ToTR_mpp910800_serviceTimeFactor50_MVR}
+\importsmallgnuplotps{Serverbelastung: Nachrichtenlaufzeit = 1 Tick}{Abb:Serverbelastung_NLZ_1_sekunde}
+{ToTR_Referenzverlauf_MessageRuntime_1second_MVR}
+\importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf_small}
+{ToTR_Referenzverlauf_MVR_small}
+\importsmallgnuplotps{$\Gamma_A$: Nachrichtenlaufzeit = 1 Tick}{Abb:Gamma_A_NLZ_1_sekunde}
+{avgUptodateRatio_Referenzverlauf_MessageRuntime_1second_MeanValueRanges}
 
 \paragraph{Allmähliche Belastungsänderungen:}
 Bei einer allmählichen Belastungsänderung fordern wir, dass sich das System so schnell an den veränderten Belastungsgrad anpasst, dass
@@ -425,6 +433,23 @@ gering gewählter $mpp$ auf das Adaptionsverhalten auswirkt, sehen wir exemplaris
 $mpp$ von 3600 und einem $serviceTimeFactor$ von 50. Den Verlauf der Adaption bei $mpp=910800$ unter ansonsten gleichen Bedingungen ist in Abbildung
 \ref{Abb:mpp_910800} zu sehen. Bei $mpp=3600$ wird eine vollständige Adaption verhindert, da der $cpp$ eines Klienten nicht groß genug
 gewählt werden kann.
+
+\subsection{Kurze Nachrichtenlaufzeiten}
+Bisher haben wir fast alle Experimente mit relativ hohen Nachrichtenlaufzeiten durchgeführt, um z. B. eventuelle Bearbeitungszeiten bei Brokern oder
+eine verminderte Leistungsfähihkeit bei anderen auf dem Weg zwischen Sender und Empfänger liegenden Knoten zu simulieren. In diesem Experiment wollen
+wir darstellen, wie sich kurze Nachrichtenlaufzeiten auf die Anpassung der Polling-Perioden und auf die Adaptionsgüte\footnote{Wir beschränken uns dabei auf
+die Adaptionsgüte $\Gamma_A$.} im Vergleich zum Referenzgraphen auswirken. Im Vergleich zum Referenzgraphen (siehe Abbildung \ref{Abb:Referenzverlauf_small})
+ist zu erkennen (siehe Abbildung \ref{Abb:Serverbelastung_NLZ_1_sekunde}), dass zu Beginn der Simulation geringfügig mehr Zeit bis zum Erreichen des maximalen
+Füllgrades der Serverqueue benötigt wird. Dies bedeutet, dass der Server in dieser Zeitspanne einer geringeren Belastung unterliegt. Die Mehrbelastung im
+Referenzgraphen ist dadurch zu erklären, dass Subscriber wiederholte Anfragen stellen, bevor eine Antwort des Servers (aufgrund der längeren Nachrichtenlaufzeiten)
+den Subscriber erreicht. Auch innerhalb der Joinphase unterliegt der Server einer höheren Belastung im Referenzgraphen. Durch die langen Nachrichtenlaufzeiten hat die
+Churn-Kompensation einen geringeren Einfluss auf die Anpassung der Pollingperioden als im Graphen \ref{Abb:Serverbelastung_NLZ_1_sekunde}, da Antworten der entsprechenden
+Broker einen Subscriber bisweilen zu spät erreichen. Im weiteren Verlauf der Graphen ist zu erkennen, dass der Graph in Abbildung \ref{Abb:Serverbelastung_NLZ_1_sekunde}
+dichter an der Queuegröße liegt, als der Graph des Referenzverlaufs. Bei kurzen Nachrichtenlaufzeiten unterliegt der Server hier also einer geringeren Belastung, als
+bei längeren Nachrichtenlaufzeiten. Abbildung \ref{Abb:Gamma_A_NLZ_1_sekunde} zeigt bei kurzer Nachrichtenlaufzeit den Verlauf der Adaptionsgüte $\Gamma_A$,
+welche sich schnell bei 100\% einpegelt.\\
+Um diese Arbeit in angemessenem Rahmen zu halten, haben wir auf weitere Analysen bezüglich Nachrichtenlaufzeiten verzichtet.
+
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplomarbeit"
