@@ -3,7 +3,7 @@
 error_exit()
 {
 
-    echo 'usage: start.sh <experiments_file> <commmon_parameters_file> <seedsfile> [<memory_in_MB>]'
+    echo 'usage: start_experiments.sh <experiments_file> <commmon_parameters_file> <seedsfile> [<memory_in_MB>]'
     exit
 
 }
