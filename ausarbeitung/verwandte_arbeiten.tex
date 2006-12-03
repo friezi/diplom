@@ -1,12 +1,12 @@
 \section{Verwandte  Arbeiten}
-Um die oben aufgeführte Problematik in Zusammenhang mit RSS zu adressieren, wurden einige Arbeiten veröffentlicht. Wir stellen hier zwei verwandte Arbeiten vor,
+In diesem Abschnitt stellen wir zwei verwandte Arbeiten vor,
 die ebenfalls den Ansatz verfolgen, RSS-Feeds mittels push-basiertem Publish/Subscribe an Interessenten zu verteilen. Dabei werden wir herausstellen,
 welche Vorzüge diese Arbeiten gegenüber dem bisherigen Konzept bieten und wo eventuelle Nachteile zu sehen sind.
 \subsection{FeedTree}
 \label{Abschnitt:FeedTree}
 Das von Druschel et al. entwickelte System FeedTree \cite{SandlerEtAl:2005:FeedTree} dient zur zügigen und effizienten Auslieferung von RSS-Feeds an Subscriber.
-Es bedient sich des P2P-Overlay-Netzwerksystems Scribe \cite{SCRIBE} (siehe Abschnitt \ref{Abschnitt:Scribe}), um ein effizientes Routing von ereignisbasierten
-Informationen an Interessenten zu ermöglichen. Die Autoren geben folgende Schritte an, die beim Erzeugen eines neuen RSS-Feeds vollzogen werden:
+Es bedient sich des P2P-Overlay-Netzwerksystems Scribe \cite{SCRIBE} (siehe Abschnitt \ref{Abschnitt:Scribe}), um ein effizientes Routing von Nachrichten
+an eine Menge von Interessenten zu ermöglichen. Die Autoren geben folgende Schritte an, die beim Erzeugen eines neuen RSS-Feeds vollzogen werden:
 \begin{enumerate}
 \item Beim Erzeugen eines RSS-Feeds wird jedem Eintrag ein Zeitstempel und eine Sequenznummer zugewiesen, um Klienten die Ermittlung von verworfenen oder
   verspäteten Ereignissen zu erleichtern.
@@ -28,8 +28,9 @@ Wir werden eventuelle Vor- und Nachteile dieses Systems kurz eruieren.
 
 \paragraph{Vorteile:}
 \begin{itemize}
-\item Dieses Verfahren ermöglicht eine Benachrichtigung der Klienten zum Zeitpunkt der Veröffentlichung eines neuen RSS-Feeds.
-\item Es spart Bandbreiten durch Vermeidung redundanter Übermittlung von RSS-Feeds.
+\item Dieses Verfahren ermöglicht eine zeitnahe Benachrichtigung der Klienten über neue RSS-Feeds.
+\item Es spart Bandbreiten durch Vermeidung redundanter Übermittlung von RSS-Feeds, benötigt aber unter Umständen auch mehr Bandbreite fuer die Erzeugung von
+  Heartbeats.
 \item Die Signierung der RSS-Daten ermöglicht eine Überprüfung der Authentizität der der einzelnen Einträge, was bei sicherheitskritischen Daten sehr
   relevant sein kann.
 \item Durch Sequenznummern kann ein Klient ermitteln, ob zwischenzeitlich Ereignisse verloren gegangen sind.
@@ -40,13 +41,18 @@ Wir werden eventuelle Vor- und Nachteile dieses Systems kurz eruieren.
 \begin{itemize}
 \item Das System erfordert zusätzliche Software auf Serverseite zur Einspeisung der Feeds in das Notifikationssystem. Anbieter, die von dieser Art der
   Verbreitung von RSS-Daten profitieren wollen, sind gezwungen, zusätzliche Software zu installieren oder bestehende auszutauschen.
-  Viele Unternehmen sind nicht bereit, den zusätzlichen administrativen Aufwand zu
+  Es kann nicht davon ausgegangen werden, dass viele Unternehmen dazu bereit sind, den zusätzlichen administrativen Aufwand zu
   leisten\footnote{Anmerkung: Obwohl der RSS-Standard 2.0 schon seit längerer Zeit auf dem Markt ist, verwenden viele Anbieter immer noch die Syntax der Version
     0.91 für angebotene Feeds. Dieser lässt die Definition nützlicher Parameter, wie beispielsweise {\itshape time-to-live}, nicht zu. Bereits hier ist zu erkennen,
     dass sich neue Technologien und Entwicklungen bisweilen nur langsam (wenn überhaupt) durchsetzen.}.
-\item Erweiterte Filtertechniken werden nicht unterstützt. Da Gruppen über ihre GruppenId mit der Id des Abonnements (URL) korrelieren, besteht diese Einschränkung
-  bereits auf Ebene des P2P-Systems. Zwar kann ein Klient Mitglied mehrerer Gruppen sein, wodurch er auch Feeds zu verschiedenen Kanälen erhalten kann, jedoch ist
-  beispielsweise eine anbieterübergreifende inhaltsbasierte Filterung bereits auf Ebene des Notifikationssystems nicht möglich.
+\item Erweiterte Filtertechniken werden nicht unterstützt, da Gruppen über ihre Gruppen-Id mit der Id des Abonnements (URL) korrelieren.
+  Zwar kann ein Klient Mitglied mehrerer Gruppen sein, wodurch er auch Feeds zu verschiedenen Kanälen erhalten kann, jedoch ist
+  beispielsweise eine anbieterübergreifende inhaltsbasierte Filterung nicht vorgesehen. Prinzipiell ist es möglich Publish/Subscribe über Multicast zu realisieren,
+  jedoch bringt dies in Zusammenhang mit inhaltsbasierter Filterung gewisse Schwierigkeiten mit sich. Da jeder Subscriber individuelle Filtermuster
+  definieren kann, wären (bei einer idealen Umsetzung) bei $N$ Subscribern (bzw. Brokern) $2^N$ Multicast-Gruppen notwendig
+  \cite{Opyrchaletal:2000:MulticastPubSub}. Um die Anzahl der Multicast-Gruppen
+  zu reduzieren, gibt es verschiedene Ansätze (siehe \cite{Opyrchaletal:2000:MulticastPubSub}). Im wesentlichen handelt es sich dabei um Präzisionsreduzierung,
+  die Durchführung mehrere Sendevorgänge oder das Senden über mehrere Knoten/Hops.
 \item Wie wir im Laufe dieser Arbeit feststellen werden, kann sich das Vorhandensein nur eines Publishers bei einem großen Durchmesser des Overlay-Netzwerks
   nachteilig auf den Aktualitätsgrad der RSS-Feeds auswirken (siehe Abschnitt \ref{Abschnitt:Ein_Publisher}).
 \end{itemize}
@@ -60,7 +66,7 @@ werden als gerichtete, gekennzeichnete Graphen repräsentiert). Dabei wird von ei
 ausgegangen. Inhaltsbasierte Filterung ist durch die Unterstützung einer SQL-ähnlichen Anfragesprache (GQL) vorgesehen.
 
 \subsubsection{Beurteilung}
-Auch hier werden wir die Vor- und Nachteile kurz betrachten und auflisten. Die grundsätzlichen Vorteile eines Pub/Sub-Systems gegenüber dem herkömmlichen
+Auch hier werden wir die Vor- und Nachteile kurz betrachten und auflisten. Die grund\-sätz\-lichen Vorteile eines Pub/Sub-Systems gegenüber dem herkömmlichen
 Ansatz werden wir hier nicht erneut aufführen.
 
 \paragraph{Vorteile:}
