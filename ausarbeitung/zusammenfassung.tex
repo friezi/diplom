@@ -29,14 +29,14 @@ Studien und Entwicklungen.
 
 \paragraph{Filter:} In dem bisherigen Entwurf wurden komplexere Filtertechniken als die Technik des \glqq flooding\grqq{} nicht berücksichtigt. Das System wurde jedoch
 so konzipiert, dass das Notifikationssystem auch in Hinsicht auf die Benutzung anderer Filtertechniken erweiterbar ist. Grundlage dafür bildet die
-(temporäre) brokerseitige Speicherung der RSS-Feeds. Damit die Definition von Filtern auf Nutzerseite zur Anwendung kommen kann,
+(temporäre) Broker-seitige Speicherung der RSS-Feeds. Damit die Definition von Filtern auf Nutzerseite zur Anwendung kommen kann,
 müssen diese in Nachrichten zur Registrierung beim Notifikationssystem integriert werden. 
 Da Broker RSS-Feeds neu zusammenstellen, können Feed-Einträge auch verschiedenen Kanälen entnommen und themenbasiert in einem neuen Feed zusammengefasst werden.
 Mit Hilfe des in der RSS-Spezifikation vorgesehenen Elements \texttt{source} (siehe Abschnitt \ref{ch_rss})
 kann klientenseitig trotzdem eine genaue Aufschlüsselung der Einträge in die ursprünglichen Kanälen erfolgen.\\
 Bei der inhaltsbasierten Filterung (siehe \cite{Muehl:2001:GenericConstraints}) kann der Inhalt des durch einen Feed-Eintrag referenzierten Objektes in
 die Filterung mit einbezogen werden. Der referenzierte Inhalt könnte zusätzlich zum übermittelten RSS-Feed durch das Notifikationssystem übertragen werden, so
-dass auch an dieser Stelle serverseitig eine Einsparung des übertragenen Datenvolumens mit Hilfe des Notifikationssystems möglich ist.
+dass auch an dieser Stelle Server-seitig eine Einsparung des übertragenen Datenvolumens mit Hilfe des Notifikationssystems möglich ist.
 
 \paragraph{Sicherheitskonzepte:}
 Die Entwicklung unseres Systems basiert auf einem kooperativen Modell: ein kooperatives Verhalten der Klienten bzw. der Applikationen auf Klientenseite wird
