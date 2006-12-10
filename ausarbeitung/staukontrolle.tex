@@ -65,10 +65,15 @@ Wie schon angedeutet, werden wir die Grundideen eines PID-Reglers in unserer her
 \subsubsection{Staukontrolle bei Pub/Sub-RSS}
 \label{css:staukontrolle_pubsubrss}
 Wir fassen kurz zusammenfassen, welche primären Ziele und damit verbundenen sekundären Ziele wir verfolgen. Grundsätzlich geht es um die Bestimmung des Wertes
-$ttr$ eines Subscribers (siehe Abschnitt \ref{cs:der_grundlegende_algorithmus}).
+$ttr$ (siehe Abschnitt \ref{cs:der_grundlegende_algorithmus}).
 Zur Erinnerung: $ttr$ bezeichnet \glqq time-to-refresh\grqq{}\footnote{In Anlehnung an die Beschreibungen in Kapitel \ref{staukontrolle_tcp} werden
 wir ebenfalls englische Termini verwenden.}, also den konkreten Zeitpunkt, zu dem die nächste Anfrage an den jeweiligen RSS-Server
-gestellt werden soll. Um $ttr$ zu bestimmen, benötigen wir $\varDelta ttr$. Ein wichtiger Parameter zur Bestimmung von $\varDelta ttr$ ist der $cpp$. Um einer
+gestellt werden soll.\\
+Wir weisen darauf hin, dass ein Subscriber prinzipiell mehrere verschiedene RSS-Feeds abonnieren
+kann und somit verschiedene RSS-Server kontaktieren muss. $ttr$, $ttl$, $rto$, $ppp$, $cpp$, die verschiedenen Timer und weitere auf diese bezogene bzw. im
+Folgenden vorgestellte Parameter sind allgemein gehalten.
+Pro RSS-Server werden jedoch Instanzen dieser Parameter benötigt. Um den Text übersichtlich zu halten, werden wir jedoch nur die allgemeinen Bezeichner verwenden.\\
+Um $ttr$ zu bestimmen, benötigen wir $\varDelta ttr$. Ein wichtiger Parameter zur Bestimmung von $\varDelta ttr$ ist der $cpp$. Um einer
 längerfristigen
 Überlastung des RSS-Servers entgegenzuwirken, muss der $cpp$ eines Subscribers entsprechend der Serverbelastung angepasst werden.
 Wir müssen also ein Maß für die Serverbelastung bestimmen, was auch bei uns die roundtrip-time sein soll, also die Zeit, die zwischen Aussendung

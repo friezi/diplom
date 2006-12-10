@@ -1,6 +1,6 @@
-\chapter{Zusammenfassung und Ausblick}
+\chapter{Zusammenfassung und Bewertung}
 \label{Abschnitt:Zusammenfassung}
-In dieser Arbeit haben wir ein System konzipiert, um RSS-Feeds basierend auf dem Kommunikationsmodell von verteiltem Pub/Sub
+In dieser Arbeit haben wir ein System konzipiert, um RSS-Feeds basierend auf dem Kommunikationsmodell von verteiltem push-basiertem Pub/Sub
 an Interessenten zu verteilen. Der bisherige Ansatz, dass Klienten RSS-Feeds direkt von der Webseite des Anbieters herunterladen, bleibt bestehen.
 RSS-Feeds werden von Klienten in ein Notifikationssystem eingespeist und mit dessen Hilfe an weitere Interessenten verteilt. Zwei wesentliche Verfahren
 wurden dabei entwickelt:
@@ -10,25 +10,18 @@ wurden dabei entwickelt:
 \item ein Verfahren zur Adaption der Polling-Raten verschiedener Klienten an die Leistungsfähigkeit eines Servers -- ausschließlich lokales Wissen ist dafür
   notwendig: Kenntnis der übrigen Klienten und der Gesamtstruktur und -größe des Netzwerks ist nicht erforderlich.
 \end{itemize}
-\todo{Skalierbarkeit}
+
+Obwohl dies nicht explizit gezeigt wurde, kann davon ausgegangen werden, dass das System skalierbar ist, da auschließlich Antwortzeiten des RSS-Servers und lokale
+Broker-Informationen zur Adaption herangezogen werden. Die Zeitdauer der Ermittlung dieser Werte ist nicht abhängig von der Netzgröße.
 In Abschnitt \ref{c:experimente} haben wir an ausgewählten Beispielen gezeigt, dass solch ein System entscheidende Verbesserungen bezüglich des Aktualitätsgrades
 der RSS-Feeds im Gegensatz zum herkömmlichen Verfahren bietet. Zusätzlich kann eine Entlastung der RSS-Server und eine Verteilung des Datenverkehrs auf
-mehrere Teilbereiche des Netzes erreicht werden. Die Vorteile dieses Systems für Klienten sind also in einer besseren potenziellen Aktualität der Daten zu sehen.\\
+mehrere Teilbereiche des Netzes erreicht werden. Die Vorteile dieses Systems für Klienten sind also in einer besseren potenziellen Aktualität der Daten zu sehen.
+Darüber hinaus ist eine Modifikation von auf Serverseite bestehender Software nicht notwendig.\\
 
 Während des Entwurfs des Systems sind wir auf einige Begleiterscheinungen aufmerksam geworden, deren nachteilige Auswirkungen
 auf die Adaption des Anfrageverhaltens der Klienten an die jeweilige Serverbelastung durch geeignete Gegenmaßnahmen verringert
 werden können. Zu den Begleiterscheinungen gehören Churn (das ständige Zu- und Abwandern von Knoten) und ein Effekt, den wir als \glqq Aussperren\grqq{}
 bezeichnet haben.
-
-\section{Bewertung}
-
-\begin{notizen}
-  \begin{itemize}
-  \item Gegensatz zum herkömmlichen System
-  \item Verbesserungen: höherer Aktualitätsgrad, Modifikation bisheriger
-    Software serverseitig nicht nötig
-  \end{itemize}
-\end{notizen}
 
 \section{Ausblick}
 Wir haben während des Entwurfs eine ganze Reihe von Punkten angesprochen, auf die wir nicht näher eingehen konnten. Diese bilden Material für weiterführende

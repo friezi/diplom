@@ -1,8 +1,8 @@
 \subsection{Ausbalancierung der Polling-Perioden}
 \label{cs:ausbalancierung_der_polling-perioden}
 Wie wir schon in Abschnitt \ref{cssp:ung_u_probl:dysbalance} auf Seite \pageref{cssp:ung_u_probl:dysbalance} beschrieben haben, kann es vorkommen, dass Subscriber
-aufgrund von Dysbalancen der Polling-Perioden im System \glqq ausgesperrt\grqq{} werden: Subscriber, deren Polling-Periode sehr niedrig ist, haben fast ausschließlichen
-Zugriff auf den Server, während sich die Polling-Perioden der übrigen Subscriber stetig vergrößern, da ihre Anfragen keinen Zugang zur Server-Queue
+aufgrund von Dysbalancen der Polling-Perioden im System \glqq ausgesperrt\grqq{} werden: Subscriber, deren Polling-Periode sehr niedrig ist, haben fast
+ausschließlichen Zugriff auf den Server, während sich die Polling-Perioden der übrigen Subscriber stetig vergrößern, da ihre Anfragen keinen Zugang zur Server-Queue
 finden. Um diesem Problem beizukommen, müssen bei Dysbalancen im System Subscriber mit niedrigen Polling-Perioden diese erhöhen, während Subscriber mit hohen
 Polling-Perioden Gelegenheit bekommen müssen, diese zu erniedrigen.\\
 
@@ -50,17 +50,25 @@ Listen wir die Vorteile und möglichen Nachteile dieser Methode auf:
   \end{itemize}
 \end{itemize}
 
-Das Verfahren erfordert auf der Ebene des Notifikationssystems eine neue Datenstruktur, um den neu hinzugekommenen Wert $artt$ aufzunehmen. Folgende auf Java-Syntax
-beruhende Datenstruktur ist denkbar: \todo{Unterstützung mehrerer RSS-Server: Tupel aus Serevr und artt}
+Das Verfahren erfordert auf der Ebene des Notifikationssystems neue Datenstrukturen, um den neu hinzugekommenen Wert $artt$ aufzunehmen\footnote{Wie bereits erwähnt,
+ist pro Server ein $artt$ notwendig.}. Folgende auf Java-Syntax beruhende Datenstrukturen sind denkbar:
 
-\begin{verbatim}
+\lstset{language=Java}
+\begin{lstlisting}
 class RichRSSFeed extends RSSFeed{
 
+    LinkedList<RSSServerArtt> rssserver_artt;
+
+}
+
+class RSSServerArtt{
+
+    RSSServer rssserver;
     long artt;
 
 }
 
-\end{verbatim}
+\end{lstlisting}
 
 Nun muss bei jedem Erhalt eines RSS-Feeds der $cpp$ angepasst werden. Damit ein Subscriber zu jedem Zeitpunkt den derzeitigen Stand der gemessenen roundtrip-time
 mitteilen kann, müssen nun jedesmal, wenn $RT$ abläuft, $rtt:=rto$ gesetzt und $artt$ neu berechnet werden.
@@ -106,7 +114,7 @@ Aufrufe.}:
 \lstset{language=Java,emph={setze_icpp,berechne_mittleren_artt},emphstyle=\underbar}
 \begin{lstlisting}
 
-berechne_mittleren_artt(Feed feed){
+berechne_mittleren_artt(long feed.artt){
 
     setze_artt((feed.artt + artt) / 2);
     setze_cpp(artt);
@@ -118,7 +126,7 @@ berechne_mittleren_artt(Feed feed){
 
 aktualisiere_RQT_durch_alten_Brokerfeed {
 
-    berechne_mittleren_artt(feed);
+    berechne_mittleren_artt(long feed.artt);
 
     if ( RT_läuft_nicht ){
 
@@ -132,7 +140,7 @@ aktualisiere_RQT_durch_alten_Brokerfeed {
 
 aktualisiere_RQT_durch_neuen_Brokerfeed {
 
-    berechne_mittleren_artt(feed);
+    berechne_mittleren_artt(long feed.artt);
 
     berechne_delta_ttr(cpp);
     if ( delta_ttr < RQT.Zeitdifferenz_bis_ablauf )

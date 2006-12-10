@@ -5,17 +5,23 @@ Im schlimmsten Fall
 können einige Anfragen gar nicht beantwortet werden, da die Masse der Anfragen die zur Verfügung gestellte Speicherkapazität des Servers
 übersteigt. Ein Server unterhält im Regelfall eine Warteschlange (Queue) in der diejenigen Anfragen vorgehalten werden, welche aufgrund
 anderer in Abfertigung befindlicher Anfragen momentan nicht bearbeitet werden können. Wird die Kapazitätsgrenze dieser Warteschlange erreicht,
-können weitere überschüssige Anfragen nicht bearbeitet werden, sie werden verworfen.
+können weitere überschüssige Anfragen nicht bearbeitet werden, sie werden verworfen.\\
+
 Beim bestehenden Konzept zur Verteilung der RSS-Feeds kann es
-vorkommen, dass Subscriber, deren Anfragen sich sehr weit hinten in der Warteschlange befinden, erst sehr spät bzw. zu spät die gewünschten
+vorkommen, dass Subscriber, deren Anfragen sich sehr weit hinten in der Warteschlange eines RSS-Servers befinden, erst sehr spät bzw. zu spät die gewünschten
 Informationen erhalten. Man denke z.B. an aktuelle Börsennachrichten, welche im Sekundenbereich aktualisiert werden. Hier kann eine Nachricht
 schon als veraltet gelten, erreicht sie den Interessenten einige Sekunden zu spät. Subscriber, deren Anfragen den RSS-Server bei bereits
 ausgeschöpfter Kapazität der Warteschlange erreichen, kommen gar nicht an die gewünschte Information.\\
-\todo{Problematik der Datenmengen}
-\todo{Parameter Cloud in RSS !!!!!!!!}
-Ab der RSS-Version 0.92 wird der Parameter \texttt{cloud} unterstützt (siehe Abschnitt \ref{ch_rss}). Mit diesem Parameter kann ein Web-Service definiert werden,
-bei dem sich Subscriber registrieren können, um über Aktualisierungen eines RSS-Feeds unterrichtet zu werden. Somit kann unnötiges Pollen eines RSS-Servers vermieden werden.
-Nachteile:
+
+Ein weiteres Problem im Zusammenhang mir RSS ist der erhöhte Verbrauch von Bandbreiten durch die Übertragung redundanter Daten. Die klientenseitige
+Einstellung hoher Polling-Raten kann die wiederholte Übertragung unveränderter RSS-Feeds provozieren. Diese zusätzliche Belastung eines Web-Servers kann dazu
+führen, dass dieser seiner normalen Tätigkeit nicht mehr zufriedenstellend nachkommen kann \cite{Hicks:2004:RSSBandwith}.
+Zudem werden RSS-Feeds an jeden Klienten separat übermittelt. Gleiche Interessen und nahegelegene Positionierung von Klienten im Internet können nicht ausgenutzt
+werden, bzw. es obliegt Subnetzen durch die Einrichtung von Proxies und/oder Caches diese Vorteile auszunutzen. Um einige der oben genannten Probleme einzudämmen,
+wird ab der RSS-Version 0.92 der Parameter \texttt{cloud} unterstützt (siehe Abschnitt \ref{ch_rss}). Mit diesem Parameter kann ein Web-Service definiert werden,
+bei dem sich Subscriber registrieren können, um über Aktualisierungen eines RSS-Feeds unterrichtet zu werden (dies wird auch als
+\glqq lightweight publish/subscribe\grqq{} bezeichnet \cite{RSSSpecWi2004}). Somit kann unnötiges Pollen eines RSS-Servers
+vermieden werden. Doch können weitere, oben angesprochene Probleme damit nicht vermieden werden, und es ergeben sich zusätzliche Hürden:
 \begin{itemize}
 \item Ein Publisher muss einen Web-Service einrichten, welcher Klienten über Aktualisierungen benachrichtigt.
 \item Der Web-Service muss möglicherweise eine Vielzahl von Klienten/Subscribern verwalten.
@@ -24,11 +30,11 @@ Nachteile:
   unter den Klienten und somit eine Lastverteilung der Datenmengen ist damit nicht möglich.
 \end{itemize}
 
-\todo{Literaturangaben}
 \section{Ziele}
 \label{vs_ziele}
-Unser Ziel ist es, ein Verteilungsschema zu konzipieren, bei dem jeder Subscriber die gewünschten Informationen zeitgerecht erhält. Die Definition von komplexen Filtern,
-die die Menge der Informationen einschränkt bzw. über die bestehenden Kanäle hinaus erweitert, soll ermöglicht werden.\\
+Unser primäres Ziel ist es, ein Verteilungsschema zu konzipieren, bei dem jeder Subscriber die gewünschten Informationen zeitgerecht erhält.
+Die Definition von komplexen Filtern, die die Menge der Informationen einschränkt bzw. über die bestehenden Kanäle hinaus erweitert, soll ermöglicht werden.
+Die sekundären Ziele ergeben sich im Verlauf der Arbeit.\\
 
 Je früher ein Subscriber die neueste Information, die beim RSS-Server vorliegt, erhält, desto größer ist ihr Aktualitätsgrad.
 Führen wir uns kurz vor Augen, welche Faktoren den Aktualitätsgrad beeinflussen können. Denkbar sind drei Situationen, die den Aktualitätsgrad
@@ -44,8 +50,7 @@ Polling-Rate eine höhere Chance, dass Anfragen den RSS-Server mit geringer Verzö
 Gegenmaßnahme wäre also, die Polling-Rate eines Subscribers zu erhöhen, um die Anzahl der Anfragen, die den RSS-Server pro Zeiteinheit erreichen,
 zu erhöhen.\\
 
-Zu \ref{enum:ant_zsp}.: zu spät erhaltene Antworten können darauf zurückzuführen sein (abgesehen von langen
-Inter"-net"--Über"-tra"-gungs"-zeiten),
+Zu \ref{enum:ant_zsp}.: zu spät erhaltene Antworten können (abgesehen von langen Über"-tra"-gungs"-zeiten) darauf zurückzuführen sein,
 dass der RSS-Server mit der Beantwortung nicht nachkommt, seine Queue also zu voll ist. Abhilfe schafft hier eine Drosselung der Anzahl der
 Anfragen an den RSS-Server.\\
 

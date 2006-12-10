@@ -34,22 +34,21 @@ müssen die Nutzer in regelmäßigen
 Zeitabständen beim Server nachfragen, um über Neuigkeiten informiert zu sein (Polling). Die Definition von Filtern ist nicht vorgesehen,
 d.h. Nutzer erhalten den kompletten Feed und müssen
 sich notfalls bei vielen verschiedenen Servern subskribieren, um eine große Auswahl an Informationen zu einem zu den Channeln orthogonalen Thema zu erhalten.
-RSS-Feeds sind über die Channel zwar themenbasiert organisiert (vgl. \cite{LiuVenSirer:2005:MeasureRSSPubSub}), jedoch wird die inhaltlich thematische
+RSS-Feeds sind über die Channel zwar themenbasiert organisiert (siehe \cite{LiuVenSirer:2005:MeasureRSSPubSub}), jedoch wird die inhaltlich thematische
 Zuordnung auf Server-Seite vorgenommen. Eine thematische Filterung 
 aus Nutzersicht auf höherer Ebene kann lediglich lokal auf Nutzerseite erfolgen.\\
 Das ständige Abfragen des Servers durch möglicherweise hunderttausende von Abonnenten führt zu einer
-starken Server-seitigen Last (vgl. \cite{SandlerEtAl:2005:FeedTree},
-\cite{Hicks:2004:RSSBandwith}).
+starken Server-seitigen Last (siehe \cite{SandlerEtAl:2005:FeedTree,Hicks:2004:RSSBandwith}).
 Möchte ein Nutzer eine mit dem Publisher möglichst synchronisierte Aktualisierung der Feeds erreichen, so muss er die Polling-Rate
 unabhängig von der Aktualisierungsfrequenz hoch setzen. Dies bedeutet wiederum eine höhere Server-Belastung. Um eine hohe Belastung
 durch hohe Polling-Raten zu unterbinden, haben Server die
-Möglichkeit, einen Nutzer (abgrenzbar durch seine IP-Adresse), dessen Polling-Rate zu hoch ist, vorübergehend zu blocken.
+Möglichkeit, einen Nutzer, dessen Polling-Rate zu hoch ist, vorübergehend zu blocken (siehe \cite{Hicks:2004:RSSBandwith}).
 Dadurch ist der Grad der Aktualität der RSS-Feeds begrenzt.
 Beispiele für die Datenmengen an RSS-Feeds, die pro Tag von einzelnen Servern übermittelt werden müssen, finden sich
 in \cite{SandlerEtAl:2005:FeedTree}.
 
 \section{Ziele der Arbeit}
-Verteiltes Publish/Subscribe eignet sich hervorragend, um eine Lastverteilung, besonders auch (und damit) eine potentiell größere Aktualität
+Verteiltes Publish/Subscribe eignet sich hervorragend, um eine Lastverteilung, besonders auch (und damit) eine potenziell größere Aktualität
 der Informationen und eine höhere Flexibilität in Bezug auf die Auswahl der Informationen seitens der Nutzer zu erreichen.
 RSS-Server könnten als Publisher fungieren und neue Feeds eigenmächtig an ihre lokalen Broker
 übermitteln, welche die Feeds ihrerseits an Nutzer (Subscriber) weiterleiten. Dies würde jedoch bedeuten,

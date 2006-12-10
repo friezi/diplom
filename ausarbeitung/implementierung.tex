@@ -35,8 +35,8 @@ Zunächst stellen wir die grundlegenden Komponenten bzw. Klassen der Simulationsu
 Die Komponente, welche Ereignisse steuert, Aktionen ermöglicht und zum Zwecke der Kommunikation zwischen
 agierenden Einheiten vermittelt, ist die sogenannte \glqq Engine\grqq{} , repräsentiert durch die Klasse \texttt{Engine}. Selbständig agierende Einheiten können
 Aktionen ausführen oder Ereignisse hervorrufen. Sie repräsentieren beispielsweise Knoten in einem Netzwerk und werden durch die Klasse \texttt{Node}
-implementiert. Komponenten der Klasse \texttt{Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten zuschicken, welche mit Hilfe der Klasse
-\texttt{Message} umgesetzt wurden. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
+implementiert. Komponenten der Klasse \texttt{Node} können miteinander kommunizieren, indem sie sich untereinander Nachrichten zuschicken, welche mit Hilfe der
+Klasse \texttt{Message} umgesetzt wurden. Eine Nachricht wird mit dem Knoten adressiert, welcher die Nachricht erhalten soll, und mit der Methode
 \texttt{send()} der Klasse \texttt{Message} abgeschickt. Alle Nachrichten werden in einer Warteschlange der Klasse \texttt{Engine} gesammelt. Die Engine sorgt dafür,
 dass Knoten die ihnen zugedachten Nachrichten erhalten, indem sie die einzelnen Nachrichten der Warteschlange entnimmt und die Methode \texttt{receive()} des
 adressierten Knotens aufruft. Dieser kann die Nachricht nun verarbeiten. Den Nachrichten werden Laufzeiten zugewiesen, so dass eine

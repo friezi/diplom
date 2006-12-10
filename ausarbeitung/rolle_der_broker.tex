@@ -18,7 +18,8 @@ Simulationsumgebung. Sie erweitern die Möglichkeiten des Systems lediglich, habe
 Unser System \pubsubrss könnte mit bestehenden Pub/Sub-Systemen, welche Filtertechniken unterstützen (wie z. B. das System
 REBECA \cite{MuFiBu:2001:ArchFrameECommApp}), kombiniert werden.\\
 
-\todo{nächsten Absatz evtl. entfernen}
+Der folgende Absatz beschreibt Vorgänge, die eigentlich Teil des jeweiligen Notifikationsdienstes sind, von dem wir abstrahieren. Da jedoch ein
+spezifisches Verhalten des Notifikationsdienstes auf eine optimale Funktionsweise des Systems Einfluss nehmen kann, werden wir einige Vorgänge beschreiben.\\ 
 Um sich dem entsprechenden Broker bekannt zu machen und Filter zu hinterlegen, muss sich ein Subscriber bei diesem Broker mit einer speziellen
 Registrierungsnachricht registrieren.
 Ein Broker braucht nur an diejenigen Subscriber aktuelle Feeds zu übermitteln, welche auch tatsächlich online sind. Zusätzlich ist es also notwendig,

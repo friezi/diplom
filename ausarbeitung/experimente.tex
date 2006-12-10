@@ -47,7 +47,7 @@ gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle
     Parameter&Wert&Beschreibung\\
     \hline\hline
     &&\\
-    engineTimerPeriod & 5 & Laufzeitfaktor für Nachrichtengeschwindigkeiten\\
+    engineTimerPeriod & 5 & interner Parameter\\
     gnuplotTimeStepSecs & 5 & Abtastrate für gemessene Werte in Sekunden\\
     &&\\
     maxFeedEvents & 5 & max. Anzahl von Events innerhalb eines Feeds\\
@@ -75,7 +75,8 @@ gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle
 Zusätzlich zu den oben beschriebenen Parametern für die Netz\-werk-To\-po\-lo\-gien wurden die in Tabelle \ref{Tab:Standardparameter}
 angegebenen Parameter als Standardwerte gesetzt.\\
 
-Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot rss\-Feed\-Msg\-RT$ bzw. $engineTimerPeriod\cdot rss\-Feed\-Request\-Msg\-RT$.
+Die tatsächlichen Nachrichtenlaufzeiten berechnen sich aus $engineTimerPeriod\cdot rss\-Feed\-Msg\-RT$\footnote{Der Parameter $engineTimerPeriod$ hat
+zwar nur historische Gründe, ist aber zur Berechnung der Nachrichtenlaufzeiten relevant.} bzw. $engineTimerPeriod\cdot rss\-Feed\-Request\-Msg\-RT$.
 Wir haben bewusst relativ große
 Nachrichtenlaufzeiten gewählt, um das System unter möglichst ungünstigen Bedingungen zu testen. Große Nachrichtenlaufzeiten können bewirken,
 dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfragen wiederholen. Dies führt zunächst zu einer Mehrbelastung

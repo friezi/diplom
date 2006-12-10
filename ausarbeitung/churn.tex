@@ -49,7 +49,8 @@ Polling-Perioden der Subscriber an eine veränderte Serverbelastung wird einen lä
 Notifikationssystem verteilt werden und somit eine Ausbalancierung der Polling-Perioden in gerimgerem Maße erfolgen wird.\\
 Welche Knoten in einem Netzwerk die Rolle der Broker übernehmen, bleibt zunächst offen. Ob Broker das System benutzergesteuert verlassen können, hängt ganz von der
 jeweiligen Umsetzung des Systems ab. Denkbar sind beispielsweise dedizierte Knoten, welche dauerhaft online sind und kaum Ausfallerscheinungen aufweisen
-(Supernodes bei Gnutella und KaZaA \cite{Aberer:P2P,KaZaA}). Daher tritt Churn auf Brokerebene in Abhängigkeit des jeweiligen Notifikationssystems auf. Um die Auswirkungen
+(Supernodes bei Gnutella und KaZaA \cite{Aberer:P2P,KaZaA}). Daher tritt Churn auf Brokerebene in Abhängigkeit des jeweiligen Notifikationssystems auf.
+Um die Auswirkungen
 von Churn auf dieser Ebene zu reduzieren, wären Rekonfigurationsverfahren auf Brokerebene notwendig. Cugola et al. beschäfftigen sich mit Rekonfigurationsalgorithmen
 bei Publish-Subscribe-Systemen in \cite{cugola02towards,picco03efficient}.
 Dies soll jedoch nicht Gegenstand dieser Arbeit sein und offen bleiben für zukünftige Entwicklungen.\\
@@ -85,14 +86,16 @@ Um dieses Verfahren zu realisieren, müssen wir eine zusätzliche Datenstruktur un
 
 public class InitialBrokerRSSFeed extends RSSFeed {
 
-        zahl_lokaler_subscriber;
-        artt;
+        long zahl_lokaler_subscriber;
+        LinkedList<RSSServerArtt> rssserver_artt;
 
 }
 
-speichere_initiale_brokerinformationen(InitialBrokerRSSFeed feed) {
+speichere_initiale_brokerinformationen(
+                         long zahl_lokaler_subscriber,
+                         long feed.artt) {
 
-        if ( feed.zahl_lokaler_subscriber < 2 )
+        if ( zahl_lokaler_subscriber < 2 )
           return;
 
         if ( feed.artt < 1 )
@@ -115,6 +118,8 @@ aktualisiere_RQT_durch_initialen_brokerfeed() {
 
 \end{lstlisting}
 
+Erhält ein Subscriber eine einen RSS-Feed vom Typ \texttt{InitialBrokerRSSFeed}, so muss er pro enthaltenem RSS-Server, der von ihm verwaltet wird, die Operation
+\texttt{speichere\_\-ini\-tiale\_\-broker\-informationen} aufrufen.
 
 %%% Local Variables: 
 %%% mode: latex
