@@ -140,8 +140,8 @@ haben wir in Abbildung \ref{Abb:Variationskoeffizient_Referenzverlauf_Mittelwert
 Standardabweichung, den Variationskoeffizienten (Standardabweichung geteilt
 durch den Mittelwert\footnote{Entgegen der gängigen Praxis haben wir den Variationskoeffizienten hier nicht in Prozent angegeben. Um den prozentualen
   Variationskoeffizienten zu erhalten, sind die ermittelten Werte mit dem Faktor 100 zu multiplizieren.}), dargestellt. Der Einfluss der Größe eines Mittelwerts 
-auf die Streuung wird hierbei unterbunden. Damit sind die Variationskoeffizienten bei unterschiedlichen Messreihen mit verschiedenen Mittelwerten trotzdem vergleichbar.
-Es zeigt sich, dass der Variationskoeffizient nach einer gewissen Zeit relativ stabil bleibt und mit der Serverbelastung korreliert.\\
+auf die Streuung wird hierbei unterbunden. Damit sind die Variationskoeffizienten bei unterschiedlichen Messreihen mit verschiedenen Mittelwerten trotzdem
+vergleichbar. Es zeigt sich, dass der Variationskoeffizient nach einer gewissen Zeit relativ stabil bleibt und mit der Serverbelastung korreliert.\\
 
 Abbildung \ref{Abb:Referenzverlauf_Nachrichtenverzoegerung} zeigt den Graphen unserer in Abschnitt \ref{angestrebte_dienstguete} definierten Funktion
 $\Gamma_V$. Auffällig ist, dass direkt nach Abschluss der Beitrittsphase die Nachrichtenverzögerung am niedrigsten ist (bis auf die
@@ -187,14 +187,14 @@ wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:O
 
 \subsection{Ein Publisher}
 \label{Abschnitt:Ein_Publisher}
-In Anlehnung an das vorige Experiment (keine Staukontrolle) untersuchen wir hier die Adaptionsgüte für den Ansatz, dass sich nur ein Publisher im System befindet. Es ist irrelevant,
+Hier untersuchen wir die Adaptionsgüte für den Ansatz, bei dem sich nur ein Publisher im System befindet. Es ist irrelevant,
 ob es sich dabei um einen push-basierten Ansatz handelt, bei dem der RSS-Server Feeds selbständig in das Notifikationssystem einspeist, oder ob es sich um einen
 pull-Ansatz handelt, bei dem genau ein Klient die Rolle des Publishers übernimmt und in regelmäßigen Zeitabständen den RSS-Server pollt.\\
 In diesem Experiment übernimmt ein Klient die Rolle des Publishers und pollt den RSS-Server mit einer Polling-Periode von 1 Sekunde. Abbildung
 \ref{Abb:Ein_Publisher_Akualitaetsgrad} zeigt die Adaptionsgüte $\Gamma_A$. Der Aktualitätsgrad ist im Schnitt deutlich geringer als bei unserem Referenzexperiment.
-Abbildung \ref{Abb:Ein_Publisher_Nachrichtenverzoegerung} zeigt die Nachrichtenverzögerung $\Gamma_V$. Diese ist deutlich höher als beim Referenzexperiment. Auch wenn sich das Experiment
-auf ein spezielles Szenario bezieht, so macht es deutlich, dass bei ungünstigen Netzwerken (große Netzwerke, geringer Grad der Verzweigung zwischen Brokern, lange Übertragungszeiten)
-der in dieser Arbeit vorgestellte Ansatz dem Ansatz mit nur einem Publisher vorzuziehen ist.
+Abbildung \ref{Abb:Ein_Publisher_Nachrichtenverzoegerung} zeigt die Nachrichtenverzögerung $\Gamma_V$. Diese ist deutlich höher als beim Referenzexperiment.
+Auch wenn sich das Experiment auf ein spezielles Szenario bezieht, so macht es deutlich, dass bei ungünstigen Netzwerken (große Netzwerke, geringer Grad der
+Verzweigung zwischen Brokern, lange Übertragungszeiten) der in dieser Arbeit vorgestellte Ansatz dem Ansatz mit nur einem Publisher vorzuziehen ist.
 
 
 \subsection{Ausbalancierung}
@@ -443,13 +443,13 @@ die Adaptionsgüte $\Gamma_A$.} im Vergleich zum Referenzgraphen auswirken. Im Ve
 ist zu erkennen (siehe Abbildung \ref{Abb:Serverbelastung_NLZ_1_sekunde}), dass zu Beginn der Simulation geringfügig mehr Zeit bis zum Erreichen des maximalen
 Füllgrades der Serverqueue benötigt wird. Dies bedeutet, dass der Server in dieser Zeitspanne einer geringeren Belastung unterliegt. Die Mehrbelastung im
 Referenzgraphen ist dadurch zu erklären, dass Subscriber wiederholte Anfragen stellen, bevor eine Antwort des Servers (aufgrund der längeren Nachrichtenlaufzeiten)
-den Subscriber erreicht. Auch innerhalb der Joinphase unterliegt der Server einer höheren Belastung im Referenzgraphen. Durch die langen Nachrichtenlaufzeiten hat die
-Churn-Kompensation einen geringeren Einfluss auf die Anpassung der Pollingperioden als im Graphen \ref{Abb:Serverbelastung_NLZ_1_sekunde}, da Antworten der entsprechenden
-Broker einen Subscriber bisweilen zu spät erreichen. Im weiteren Verlauf der Graphen ist zu erkennen, dass der Graph in Abbildung \ref{Abb:Serverbelastung_NLZ_1_sekunde}
-dichter an der Queuegröße liegt, als der Graph des Referenzverlaufs. Bei kurzen Nachrichtenlaufzeiten unterliegt der Server hier also einer geringeren Belastung, als
-bei längeren Nachrichtenlaufzeiten. Abbildung \ref{Abb:Gamma_A_NLZ_1_sekunde} zeigt bei kurzer Nachrichtenlaufzeit den Verlauf der Adaptionsgüte $\Gamma_A$,
-welche sich schnell bei 100\% einpegelt.\\
-Um diese Arbeit in angemessenem Rahmen zu halten, haben wir auf weitere Analysen bezüglich Nachrichtenlaufzeiten verzichtet.
+den Subscriber erreicht. Auch innerhalb der Joinphase unterliegt der Server einer höheren Belastung im Referenzgraphen. Durch die langen Nachrichtenlaufzeiten hat
+die Churn-Kompensation einen geringeren Einfluss auf die Anpassung der Pollingperioden als im Graphen \ref{Abb:Serverbelastung_NLZ_1_sekunde}, da Antworten der
+entsprechenden Broker einen Subscriber bisweilen zu spät erreichen. Im weiteren Verlauf der Graphen ist zu erkennen, dass der Graph in Abbildung
+\ref{Abb:Serverbelastung_NLZ_1_sekunde} dichter an der Queuegröße liegt, als der Graph des Referenzverlaufs. Bei kurzen Nachrichtenlaufzeiten unterliegt der Server
+hier also einer geringeren Belastung, als bei längeren Nachrichtenlaufzeiten. Abbildung \ref{Abb:Gamma_A_NLZ_1_sekunde} zeigt bei kurzer Nachrichtenlaufzeit den
+Verlauf der Adaptionsgüte $\Gamma_A$, welche sich schnell bei 100\% einpegelt.\\
+Um diese Arbeit in angemessenem Rahmen zu halten, haben wir auf weitere Untersuchungen und Analysen bezüglich Nachrichtenlaufzeiten verzichtet.
 
 %%% Local Variables: 
 %%% mode: latex
