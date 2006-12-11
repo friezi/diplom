@@ -1,6 +1,6 @@
 TopologyClass=BRITETopology
-BRITESublayerFile=../../DiscreteAndRealtimeSimulation/1000_nodes.brite
-BRITEBrokernetFile=../../DiscreteAndRealtimeSimulation/100_nodes.brite
+BRITESublayerFile=../../DiscreteAndRealtimeSimulation/2001_nodes.brite
+BRITEBrokernetFile=../../DiscreteAndRealtimeSimulation/200_nodes.brite
 BrokerClass=AdjustingEventBroker
 PubSubClass=CongestionControlEventPubSub
 RSSServerClass=QueueingRSSServer

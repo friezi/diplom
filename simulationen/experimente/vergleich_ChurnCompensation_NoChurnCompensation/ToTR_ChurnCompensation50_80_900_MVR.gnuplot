@@ -1,6 +1,6 @@
 unset parametric
 set yrange [-12:200]
-set xlabel "Time/secs"
+set xlabel "Time/ticks"
 set ylabel "RSSFeed-Requests"
 plot 'totalTemporaryRequests_ChurnCompensation50_80_900_MeanValueRanges.gnuplotdata' w l
 load 'queue.gnuplot'

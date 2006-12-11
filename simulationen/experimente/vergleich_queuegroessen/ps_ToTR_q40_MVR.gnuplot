@@ -1,6 +1,6 @@
 set terminal postscript
 unset parametric
-set xlabel "Time/secs"
+set xlabel "Time/ticks"
 set ylabel "RSSFeed-Requests"
 plot 'totalTemporaryRequests_queue40_MeanValueRanges.gnuplotdata' w l
 load 'queue40.gnuplot'
