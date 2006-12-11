@@ -1,7 +1,7 @@
 set terminal postscript
 unset parametric
 set yrange [-12:200]
-set xlabel "Time/ticks"
+set xlabel "Time/kticks"
 set ylabel "RSSFeed-Requests"
 plot 'totalTemporaryRequests_Balancing_setServiceTimeFactor50_1_MeanValues.gnuplotdata' w l
 load 'queue.gnuplot'
