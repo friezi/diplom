@@ -35,7 +35,8 @@ Solch ein Zusammenhang wurde mit Hilfe der weiter unten beschriebenen Simulation
 
 \paragraph{Dienstgüte:}
 Wir benötigen eine Metrik,
-um die Dienstgüte (\glqq Quality of Service\grqq{}, QoS, siehe auch \cite{BeFiMu:2006:QoSPubSub}) bestimmen zu können. Mit ihrer Hilfe ist für einen Benutzer nachvollziehbar, welche eventuellen Verbesserungen
+um die Dienstgüte (\glqq Quality of Service\grqq{}, QoS, siehe auch \cite{BeFiMu:2006:QoSPubSub}) bestimmen zu können. Mit ihrer Hilfe ist für einen Benutzer
+nachvollziehbar, welche eventuellen Verbesserungen
 ihm ein neues Verfahren gegenüber dem bisherigen bietet. Dafür definieren wir zwei Funktionen: $\Gamma_V$ gibt Aufschluss über den Verzögerungsgrad
 der RSS-Feeds, $\Gamma_A$ gibt Aufschluss über den Aktualitätsgrad der RSS-Feeds.\\
 
@@ -48,7 +49,8 @@ wenn ein Feed einen Benutzer nicht innerhalb der gewünschten Zeit erreicht. $\Ga
   \end{cases}
 \end{equation}
 
-Dabei ist $\varDelta pubDate$ die Zeitspanne vom aktuellen Zeitpunkt bis zum am weitesten zurückliegenden neuen Ereignis innerhalb des letzten RSS-Feeds.\\
+Dabei ist $\varDelta pubDate$ die Zeitspanne vom aktuellen Zeitpunkt, zu dem ein Benutzer einen RSS-Feed erhält, bis zum am weitesten zurückliegenden neuen
+Ereignis innerhalb des letzten RSS-Feeds.\\
 
 $\Gamma_A$ bestimmt sich durch
 \begin{equation}

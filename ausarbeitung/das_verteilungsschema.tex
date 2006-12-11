@@ -1,13 +1,13 @@
 \section{Das Verteilungsschema bei RSS und seine Problematik}
-Ein Problem bei Dienstapplikationen im Internet ist eine starke Serverbelastung zu gewissen Stoßzeiten.
+Ein Problem bei Dienstapplikationen im Internet ist eine starke Serverbelastung zu Stoßzeiten.
 Die Masse der Anfragen an einen Server kann dazu führen, dass dieser der zeitgerechten Beantwortung nicht mehr nachkommen kann.
 Im schlimmsten Fall
-können einige Anfragen gar nicht beantwortet werden, da die Masse der Anfragen die zur Verfügung gestellte Speicherkapazität des Servers
-übersteigt. Ein Server unterhält im Regelfall eine Warteschlange (Queue) in der diejenigen Anfragen vorgehalten werden, welche aufgrund
+können einige Anfragen gar nicht beantwortet werden, da die Masse der Anfragen die zur Verfügung gestellte Verarbeitungsapazität des Servers
+übersteigt. Ein Server unterhält im Regelfall eine Warteschlange (Queue), in der diejenigen Anfragen vorgehalten werden, welche aufgrund
 anderer in Abfertigung befindlicher Anfragen momentan nicht bearbeitet werden können. Wird die Kapazitätsgrenze dieser Warteschlange erreicht,
 können weitere überschüssige Anfragen nicht bearbeitet werden, sie werden verworfen.\\
 
-Beim bestehenden Konzept zur Verteilung der RSS-Feeds kann es
+Beim bestehenden Konzept zur Verteilung von RSS-Feeds kann es
 vorkommen, dass Subscriber, deren Anfragen sich sehr weit hinten in der Warteschlange eines RSS-Servers befinden, erst sehr spät bzw. zu spät die gewünschten
 Informationen erhalten. Man denke z.B. an aktuelle Börsennachrichten, welche im Sekundenbereich aktualisiert werden. Hier kann eine Nachricht
 schon als veraltet gelten, erreicht sie den Interessenten einige Sekunden zu spät. Subscriber, deren Anfragen den RSS-Server bei bereits
@@ -40,8 +40,8 @@ Je früher ein Subscriber die neueste Information, die beim RSS-Server vorliegt, 
 Führen wir uns kurz vor Augen, welche Faktoren den Aktualitätsgrad beeinflussen können. Denkbar sind drei Situationen, die den Aktualitätsgrad
 negativ beeinflussen:
 \begin{enumerate}
-  \item Anfrage des Subscribers an den RSS-Server kommt zu spät \label{enum:anf_zsp}
-  \item Antwort des RSS-Servers erreicht den Subscriber zu spät \label{enum:ant_zsp}
+  \item Anfrage des Subscribers an den RSS-Server kommt spät \label{enum:anf_zsp}
+  \item Antwort des RSS-Servers erreicht den Subscriber spät \label{enum:ant_zsp}
   \item Subscriber erhält gar keine Antwort vom RSS-Server \label{enum:k_ant}
 \end{enumerate}
 
@@ -57,9 +57,9 @@ Anfragen an den RSS-Server.\\
 Zu \ref{enum:k_ant}.: um trotzdem an die gewünschten Informationen zu gelangen, muss dafür gesorgt werden, dass der RSS-Server nicht die einzige
 Quelle ist, von der jene Informationen bezogen werden können.\\
 
-Punkte \ref{enum:anf_zsp}. und \ref{enum:ant_zsp}. widersprechen sich zunächst. Eine Erhöhung der Anzahl der Anfragen kann also die Erfüllung
+Die Maßnahmen in den Punkten \ref{enum:anf_zsp}. und \ref{enum:ant_zsp}. widersprechen sich zunächst. Eine Erhöhung der Anzahl der Anfragen kann also die Erfüllung
 von \ref{enum:ant_zsp}. mit sich führen.
-Zudem kann dies sogar die Erfüllung von \ref{enum:k_ant}. nach sich ziehen: bei einigen RSS-Servern ist es vorgesehen, die
+Zudem kann dies sogar die Erfüllung von \ref{enum:k_ant}. nach sich ziehen: bei einigen RSS-Servern ist vorgesehen, die
 Anfragen von Subscribern, welche in zu geringen zeitlichen Abständen auf den RSS-Server treffen, zu blocken. Wir suchen also nach einer Lösung,
 bei der sich die drei Punkte nicht gegenseitig negativ beeinflussen bzw. sich die Waage halten.
 

@@ -48,7 +48,7 @@ gemessenen Wert wurden aus allen Ergebnissen Mittelwerte und Konfidenzintervalle
     \hline\hline
     &&\\
     engineTimerPeriod & 5 & interner Parameter\\
-    gnuplotTimeStepSecs & 5 & Abtastrate für gemessene Werte in Sekunden\\
+    gnuplotTimeStepSecs & 5 & Abtastrate für gemessene Werte in KTicks\\
     &&\\
     maxFeedEvents & 5 & max. Anzahl von Events innerhalb eines Feeds\\
     maxSubscriberEvents & 10 & Anzahl Events, die ein Subscriber vorhält\\
@@ -83,37 +83,42 @@ dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfrag
 des Servers. Auch wenn in der Realität dauerhaft solch hohe Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
 Adaptionsalgorithmen unter Extrembedingungen testen.\\
 
-Die Zeitdauer bei jeder Messung betrug 6.000 Ticks bzw. simulierte Sekunden.
-
-\section{Experimente -- bevorzugte Polling-Periode}
-Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Zunächst werden wir betrachten, welche
-Vorteile das vorgestellte Verfahren gegenüber dem herkömmlichen Verfahren bietet.\\
+Die Zeitdauer bei jeder Messung betrug 6.000 KTicks, wobei gilt: 1 KTick = 1000 Ticks (ein Tick ist der kleinste mögliche Simulationsschritt).
 
 \importsmallgnuplotps{Verbesserung des Aktualitätsgrades $\Gamma_A$}
 {Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_up_to_date_percent_improvement}
 
+\section{Experimente -- bevorzugte Polling-Periode}
+Alle Experimente wurden in Hinsicht auf bevorzugte Polling-Perioden als angestrebte Dienstgüte durchgeführt. Zunächst werden wir betrachten, welche
+Vorteile das vorgestellte Verfahren gegenüber einem Verfahren bietet, bei dem keine Staukontrolle eingesetzt wird. Bei beiden Verfahren profitieren
+Klienten von einer Verteilung der Feeds über das Notifikationssystem, doch schon hier lassen sich gravierende Vorteile des vorgestellten Verfahrens
+erkennen. Es sollte leicht einzusehen sein, dass diese Vorteile sich noch verstärken, falls kein Notifikationssystem zum Einsatz kommt.\\
+
 Abbildung \ref{Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber} zeigt die Verbesserung des Aktualitätsgrades
-(Gütefunktion $\Gamma_A$) in Ab\-hän\-gig\-keit von der Anzahl der Klienten im Netzwerk. Ausgangsparameter für dieses Experiment sind eine Netzgröße von 2001 Knoten,
+(Gütefunktion $\Gamma_A$) in Ab\-hän\-gig\-keit von der Anzahl der Klienten im Netzwerk. Dargestellt sind die Konfidenzintervalle mit oberer und unterer Grenze.
+Ausgangsparameter für dieses Experiment sind eine Netzgröße von 2001 Knoten,
 200 Broker, ppp=1 , rssFeedMsgRT=1 und rssFeedRequestMsgRT=1. Die Nachrichtenlaufzeiten wurden bewusst geringer gesetzt als in den übrigen Experimenten, um bei
 diesem Experiment auch für das herkömmliche Verfahren (keine Staukontrolle) zu erreichen, dass keine Verzögerungen der Nachrichten bedingt durch zu hohe
 Nachrichtenlaufzeiten auftreten.
-Die Zeiten entsprechen eher realen Bedingungen. So kann ein Schwellenwert der Anzahl der Klienten bestimmt werden, bei dem eine Divergenz der Dienstgüte eintritt.
-Der Zeitpunkt, zudem die  Messung der Dienstgüte stattfand, lag bei 6.000 Ticks. In der Abbildung ist zu sehen, dass
-bereits bei einer Anzahl von 24 Klienten eine Verbesserung des Aktualitätsgrades der Nachrichten eintritt. Mit zunehmender Zahl der Klienten im Netzwerk steigt auch
-der Grad der Verbesserung der Dienstgüte.
+Die Zeiten entsprechen eher realen Bedingungen als die Werte der Standardparameter. So kann ein Schwellenwert der Anzahl der Klienten bestimmt werden, bei dem eine
+Divergenz der Dienstgüte eintritt. Der Zeitpunkt, zu dem die  Messung der Dienstgüte stattfand, lag bei 6.000 KTicks. In der Abbildung ist zu sehen, dass
+bereits bei einer Anzahl von 24 Klienten eine dramatische Verbesserung des Aktualitätsgrades der Nachrichten eintritt. Mit zunehmender Zahl der Klienten im
+Netzwerk steigt auch der Grad der Verbesserung der Dienstgüte. Die Ursache dafür ist darin zu sehen, dass mit zunehmender Anzahl der Subscriber die Belastung
+des Servers durch vermehrte Anfragen zunimmt. Da bei dem Verfahren ohne Staukontrolle keine Anpassung stattfindet, kann der Server einer zeitgerechten Bearbeitung
+nicht mehr nachkommen.
 %\importsmallgnuplotps{Verbesserung des Verzögerungsgrades $\Gamma_V$}
 %{Abb:Verbesserung_des_Verzoegerungsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_message_delay_percent_improvement}
+\importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
 
 \section{Zusätzliche Experimente -- bevorzugte Polling-Periode}
 In diesem Abschnitt werden wir einzelne Aspekte der entwickelten Verfahren näher untersuchen. Eine Legende zu den
 Diagrammen findet sich im Anhang auf Seite \pageref{legende}.
 \subsection{Beispiel und Referenz}
-\importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf}{ToTR_Referenzverlauf_MVR}
-
+\label{Abschnitt:Referenzgraph}
 Zunächst zeigen wir in Abbildung \ref{Abb:Referenzverlauf} ein Beispielergebnis eines Experiments, welches gleichzeitig als Referenz
 für einige weitere Experimente dienen soll, da alle in den vorhergehenden Kapiteln beschriebenen Verfahren zur Anwendung kommen. Dargestellt ist
 die Entwicklung der Serverbelastung anhand der eingegangenen Feed-Requests. Von den Standardparametern
-wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1...1000$ Sekunden dem Overlay-Netzwerk bei.
+wurde nicht abgewichen. Die Subscriber treten in einer zufälligen Verteilung in der Zeitspanne $1...1000$ KTicks dem Overlay-Netzwerk bei.
 Der Faktor für die Bearbeitungszeit, die ein Server für Anfragen benötigt ($serviceTimeFactor$, siehe Kapitel \ref{c:implementierung}),
 ist hierbei 1.\\
 
@@ -131,7 +136,7 @@ und die mittlere Ankunftsrate der Anfragen in etwa gleich der mittleren Bearbeit
 \importsmallgnuplotps{Prozentsatz der gesparten Nachrichten}{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten}{relReOmRatio_Referenzverlauf_MeanValueRanges}
 
 Abbildung \ref{Abb:Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Entwicklung der Mittelwerte der Polling-Perioden aller Subscriber. Nach einem Anstieg
-bis ca. zum Zeitpunkt 3000 Sekunden zirkulieren die mittleren Polling-Perioden um einen gedachten Mittelwert von ca. 50.000 Sekunden.\\
+bis ca. zum Zeitpunkt 3000 KTicks zirkulieren die mittleren Polling-Perioden um einen gedachten Mittelwert von ca. 50.000 KTicks.\\
 
 Abbildung \ref{Abb:Standardabweichung_Referenzverlauf_Mittelwerte_der_Polling-Perioden} zeigt die Standardabweichung von den Mittelwerten der Polling-Perioden.
 Mit Zunahme der Mittelwerte nimmt also auch in gleichem Maße die Streuung zu. Bemerkenswert ist, dass trotz immer noch starker Schwankungen der Mittelwerte
@@ -165,36 +170,38 @@ der prozentuale Anteil gesparter Nachrichten. Denn in diesen Fällen erhält ein S
 RSS-Server. Im Graph in Abbildung \ref{Abb:Referenzverlauf_Prozentsatz_der_gesparten_Nachrichten} ist zu sehen, dass nach Abschluss der Beitrittsphase
 zum Zeitpunkt 1000 der Anteil an gesparten Nachrichten wieder leicht sinkt. Diese Abnahme hat ihre Ursache in der geringeren Serverbelastung als im davor
 liegenden Zeitraum.
+\importsmallgnuplotps{Serverbelastung: Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
 
 \subsection{Staukontrolle}
+\importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}
+{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}{avgUptodateRatio_NoCongCont_MeanValueRanges}
+\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}
+{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
 Der graphischen Verlauf der Serverbelastung mit Staukontrolle ist dem Referenzgraphen in Abbildung \ref{Abb:Referenzverlauf} zu entnehmen.\\
 
 Man kann sich leicht überlegen, welche Folgen eine fehlende Staukontrolle seitens der Subscriber hat. Die Auswirkungen einer fehlenden Staukontrolle
 auf die Serverbelastung haben wir ebenfalls untersucht. In Abbildung \ref{Abb:Ohne_Staukontrolle} ist zu sehen,
 dass die Serverbelastung wie erwartet stetig zunimmt.
 
-\importsmallgnuplotps{Serverbelastung: Ohne Staukontrolle}{Abb:Ohne_Staukontrolle}{ToTR_NoCongCont_MVR}
-\importsmallgnuplotps{Aktualitätsgrad $\Gamma_A$ (ohne Staukontrolle)}
-{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}{avgUptodateRatio_NoCongCont_MeanValueRanges}
-\importsmallgnuplotps{Nachrichtenverzögerung $\Gamma_V$ (ohne Staukontrolle)}
-{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}{avgMsgDelayRatio_NoCongCont_MeanValueRanges}
-
-\importsmallgnuplotps{Ein Publisher: Akualitätsgrad $\Gamma_A$}{Abb:Ein_Publisher_Akualitaetsgrad}{avgUptodateRatio_SinglePublisher_MeanValueRanges}
-\importsmallgnuplotps{Ein Publisher: Nachrichtenverzögerung $\Gamma_V$}{Abb:Ein_Publisher_Nachrichtenverzoegerung}{avgMsgDelayRatio_SinglePublisher_MeanValueRanges}
-
 Der Grad der Nachrichtenverzögerung nimmt ebenfalls stetig zu (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Nachrichtenverzoegerung}),
 wogegen der Aktualitätsgrad praktisch auf null sinkt (siehe Abbildung \ref{Abb:Ohne_Staukontrolle_Aktualitaetsgrad}).
 
 \subsection{Ein Publisher}
 \label{Abschnitt:Ein_Publisher}
+\suppressfloats
+\importsmallgnuplotps{Ein Publisher: Akualitätsgrad $\Gamma_A$}{Abb:Ein_Publisher_Akualitaetsgrad}{avgUptodateRatio_SinglePublisher_MeanValueRanges}
+\importsmallgnuplotps{Ein Publisher: Nachrichtenverzögerung $\Gamma_V$}{Abb:Ein_Publisher_Nachrichtenverzoegerung}{avgMsgDelayRatio_SinglePublisher_MeanValueRanges}
 Hier untersuchen wir die Adaptionsgüte für den Ansatz, bei dem sich nur ein Publisher im System befindet. Es ist irrelevant,
 ob es sich dabei um einen push-basierten Ansatz handelt, bei dem der RSS-Server Feeds selbständig in das Notifikationssystem einspeist, oder ob es sich um einen
 pull-Ansatz handelt, bei dem genau ein Klient die Rolle des Publishers übernimmt und in regelmäßigen Zeitabständen den RSS-Server pollt.\\
-In diesem Experiment übernimmt ein Klient die Rolle des Publishers und pollt den RSS-Server mit einer Polling-Periode von 1 Sekunde. Abbildung
+In diesem Experiment übernimmt ein Klient die Rolle des Publishers und pollt den RSS-Server mit einer Polling-Periode von 1 KTick. Dies entspricht dem naiven
+Ansatz, der auch bei CMS-ToPSS  \cite{PetrovicEtAl:2005:CMS-ToPSS} verfolgt wird (siehe Abschnitt \ref{Abschnitt:CMS-ToPSS}). Abbildung
 \ref{Abb:Ein_Publisher_Akualitaetsgrad} zeigt die Adaptionsgüte $\Gamma_A$. Der Aktualitätsgrad ist im Schnitt deutlich geringer als bei unserem Referenzexperiment.
-Abbildung \ref{Abb:Ein_Publisher_Nachrichtenverzoegerung} zeigt die Nachrichtenverzögerung $\Gamma_V$. Diese ist deutlich höher als beim Referenzexperiment.
+Abbildung \ref{Abb:Ein_Publisher_Nachrichtenverzoegerung} zeigt die Nachrichtenverzögerung $\Gamma_V$. Diese ist deutlich höher als bei dem Referenzexperiment.
 Auch wenn sich das Experiment auf ein spezielles Szenario bezieht, so macht es deutlich, dass bei ungünstigen Netzwerken (große Netzwerke, geringer Grad der
-Verzweigung zwischen Brokern, lange Übertragungszeiten) der in dieser Arbeit vorgestellte Ansatz dem Ansatz mit nur einem Publisher vorzuziehen ist.
+Verzweigung zwischen Brokern, lange Übertragungszeiten) der in dieser Arbeit vorgestellte Ansatz dem Ansatz mit nur einem Publisher vorzuziehen ist, falls ein hoher
+Aktualitätsgrad der RSS-Feeds ausschlaggegebend für die Systemwahl ist. Der Ansatz mit nur einem Publisher hat (je nach Konfiguration) eine geringere
+Serverbelastung und eine größere Lastverteilung bezüglich der Datenmengen zur Folge. Hier liegen die Stärken des Ansatzes.
 
 
 \subsection{Ausbalancierung}
@@ -240,7 +247,7 @@ dass die Polling-Perioden der verschiedenen Subscriber stark von einander abweic
 Als Vergleichsgraphen haben wir in Abbildung \ref{Abb:Ausbalancierung} den graphischen Verlauf der Serverbelastung mit Ausbalancierung bei ansonsten gleicher
 Parameterwahl dargestellt. Bei Vergleich der Graphen der Mittelwerte beider
 Verfahren fällt auf, dass sich die Mittelwerte in beiden Fällen (nach völlig unterschiedlichem Verlauf)
-etwa bei 100.000 Sekunden bewegen. Jedoch haben sich die Mittelwerte bei dem ausbalancierten Verfahren nach unten hin eingepegelt (Abbildung
+etwa bei 100.000 KTicks bewegen. Jedoch haben sich die Mittelwerte bei dem ausbalancierten Verfahren nach unten hin eingepegelt (Abbildung
 \ref{Abb:Ausbalancierung_Mittelwerte_der_Polling-Perioden}), während die Mittelwerte beim nicht-ausbalancierten Verfahren weiterhin stetig steigen
 (Abbildung \ref{Abb:Keine_Ausbalancierung_Mittelwerte_der_Polling-Perioden}).
 Ein großer Unterschied zwischen beiden Verfahren ist bei dem Vergleich der Standardabweichungen zu erkennen: beim nicht-ausbalancierten Verfahren
@@ -278,19 +285,19 @@ Die gewählten Werte für Nachrichtenlaufzeiten sind im Vergleich zu in der Realit
 Allerdings wollen wir das System unter möglichst ungünstigen Bedingungen testen. Bei geringeren Übertragungsgeschwindigkeiten verbessert sich
 die Auswirkung der Churn-Kompensation. Die hier dargestellten Werte sind Extremwerte und sollten unter realen Bedingungen weit besser ausfallen.\\
 
-Churn beginnt beim Zeitpunkt 3000 und endet beim Zeitpunkt 5000. Dabei sind nach 900 Ticks 80\% der Klienten ausgetauscht.
+Churn beginnt beim Zeitpunkt 3000 und endet beim Zeitpunkt 5000. Dabei sind nach 900 KTicks 80\% der Klienten ausgetauscht.
 Abbildung \ref{Abb:ohne_Churn-Kompensation} zeigt den Einfluss von Churn auf die Serverbelastung ohne Churn-Kompensation. Zu erkennen ist eine starke
-und stetig ansteigende Serverbelastung. Nur ab etwa dem Zeitpunkt 4600 Sekunden fällt die Kurve wieder leicht ab. Nach Beendigung der Churnphase
+und stetig ansteigende Serverbelastung. Nur ab etwa dem Zeitpunkt 4600 KTicks fällt die Kurve wieder leicht ab. Nach Beendigung der Churnphase
 pegelt sich die Kurve langsam wieder in Richtung Server-Queue ein. Dagegen zeigt der Graph mit Churn-Kompensation in
 Abbildung \ref{Abb:mit_Churn-Kompensation} eine weit geringere Serverbelastung und ein besseres Adaptionsverhalten, obwohl auch hier der Einfluss
-von Churn nicht ganz vermeidbar ist. Es fällt weiterhin auf, dass durch die Churn-Kompensation schon in der Beitrittsphase (0...1000 Sekunden)
+von Churn nicht ganz vermeidbar ist. Es fällt weiterhin auf, dass durch die Churn-Kompensation schon in der Beitrittsphase (0...1000 KTicks)
 ein besseres Adaptionsverhalten erreicht wird.\\
 
 Das beschriebene Experiment stellt nur ein ausgewähltes Beispiel für die Entwicklung der Serverbelastung mit und ohne Churn-Kompensation dar.
 Um zu ermitteln, wie der Grad der Churn-Kompensation mit der Churnrate zusammenhängt, wurden weitere Experimente durchgeführt, deren Ergebnisse
 in den Abbildungen \ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} und \ref{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen}
 veranschaulicht sind. Dabei wird die Serverbelastung bzw. die Anzahl abgewiesener Anfragen in Abhängigkeit der prozentualen Angabe der Subscriber
-dargestellt, die innerhalb einer festen Zeit (900 Ticks) das System dynamisch betreten und verlassen. Abbildung
+dargestellt, die innerhalb einer festen Zeit (900 KTicks) das System dynamisch betreten und verlassen. Abbildung
 \ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} zeigt die Mittelwerte abgewiesener Anfragen innerhalb der definierten Churnphase.
 Abbildung \ref{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen} zeigt die Spitzenwerte. In Abbildung
 \ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} ist ein annähernd linearer Kurvenverlauf zu sehen. In
@@ -355,7 +362,7 @@ In beiden Graphiken ist ein annähernd linearer Verlauf der Kurven zu erkennen.
 \subsection{Steigerung des $rto$}
 Hier soll gezeigt werden, dass eine exponentielle Steigerung des $rto$ ebenfalls ein besseres Adaptionsverhalten als eine polynomielle Steigerung
 nach sich zieht.
-Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 Sekunden wird dieser auf 400 hochgesetzt, so dass der Server
+Für dieses Experiment wurde zunächst ein $serviceTimeFactor$ von 1 gewählt. Nach 2000 KTicks wird dieser auf 400 hochgesetzt, so dass der Server
 nur noch stark zeitverzögert antworten kann. Abbildung \ref{Abb:Exponentielle_Steigerung_des_rto} zeigt die Adaptionsgüte bei exponentieller Steigerung,
 Abbildung \ref{Abb:Polynomielle_Steigerung_des_rto} die Adaptionsgüte bei polynomieller Steigerung des $rto$. Hier ist ein deutlich besserer
 Verlauf der Adaption bei exponentieller Steigerung zu sehen.
@@ -368,7 +375,7 @@ verworfen werden, da die Klienten genug Spielraum haben, um ihre Polling-Periode
 im weiteren Verlauf nur geringen Schwankungen unterliegen, da nur verworfene Feed-Requests zu zufälligen und unverhältnismäßig großen
 Steigerungen führen. Weiterhin sollten die Differenzen der Polling-Perioden zwischen den verschiedenen Klienten relativ gering sein,
 da die Bedingungen für alle Subscriber gleich sind und es nicht zu zufälligen Steigerungen kommen kann. Abbildung \ref{Abb:Queuegroesse_3000}
-zeigt die Entwicklung der Adaption. Es treten keine verworfenen Feed-Requests auf. Nach einer gewissen Zeit (etwa 5000 Sekunden) hat sich die
+zeigt die Entwicklung der Adaption. Es treten keine verworfenen Feed-Requests auf. Nach einer gewissen Zeit (etwa 5000 KTicks) hat sich die
 Kurve auf einem festen Wert (1500) eingepegelt. Das bedeutet, dass ab diesem Zeitpunkt ein ausgewogenes Verhältnis zwischen
 mittlerer Ankunftsrate der Feed-Requests und mittlerer Bearbeitungszeit erreicht ist. Abbildung \ref{Abb:Mittelwerte_Queuegroesse_3000}
 zeigt die Entwicklung der Mittelwerte der Polling-Perioden. Hier ist zu sehen, dass sich die Mittelwerte entsprechend unseren Erwartungen
@@ -404,7 +411,7 @@ nicht allmählich drosseln, sondern diesen auf die tatsächlich gemessene roundtri
 Ist ein Server für einen
 kurzen Zeitraum nicht in der Lage, Anfragen in angemessener Zeit zu bearbeiten, so wäre es nicht wünschenswert, wenn das System (bzw. die Klienten)
 mit einer starken und länger andauernden Reaktion überreagiert. Abbildung \ref{Abb:kurzzeitige_Ueberbelastung} zeigt die Reaktion des Systems
-auf eine 50-fach gesteigerte Serverbelastung, welche nach 40 Sekunden auf den ursprünglichen Wert zurückgesetzt wurde.
+auf eine 50-fach gesteigerte Serverbelastung, welche nach 40 KTicks auf den ursprünglichen Wert zurückgesetzt wurde.
 Wie zu sehen ist, ändert sich der Verlauf der Kurve nur ganz geringfügig. Abbildung
 \ref{Abb:kurzzeitige_Belastungsminderung} zeigt auch hier den umgekehrten Fall bei einem ursprünglichen $serviceTimeFactor$ von 50.
 Kurzzeitige Belastungsminderungen sind allerdings in der Praxis eher weniger wahrscheinlich.
@@ -413,18 +420,12 @@ Kurzzeitige Belastungsminderungen sind allerdings in der Praxis eher weniger wah
 
 \importsmallgnuplotps{Serverbelastung: $mpp=3600$}{Abb:mpp_3600}{ToTR_mpp3600_serviceTimeFactor50_MVR}
 \importsmallgnuplotps{Serverbelastung: $mpp=910800$}{Abb:mpp_910800}{ToTR_mpp910800_serviceTimeFactor50_MVR}
-\importsmallgnuplotps{Serverbelastung: Nachrichtenlaufzeit = 1 Tick}{Abb:Serverbelastung_NLZ_1_sekunde}
-{ToTR_Referenzverlauf_MessageRuntime_1second_MVR}
-\importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf_small}
-{ToTR_Referenzverlauf_MVR_small}
-\importsmallgnuplotps{$\Gamma_A$: Nachrichtenlaufzeit = 1 Tick}{Abb:Gamma_A_NLZ_1_sekunde}
-{avgUptodateRatio_Referenzverlauf_MessageRuntime_1second_MeanValueRanges}
 
 \paragraph{Allmähliche Belastungsänderungen:}
 Bei einer allmählichen Belastungsänderung fordern wir, dass sich das System so schnell an den veränderten Belastungsgrad anpasst, dass
 eine zusätzliche Mehr- bzw. Minderbelastung ausbleibt. Abbildungen \ref{Abb:allmaehliche_Ueberbelastung} und
 \ref{Abb:allmaehliche_Minderbelastung} zeigen als Beispiele die Graphen der Adaptionsverläufe bei allmählicher Mehr- bzw. Minderbelastung
-bei einer graduellen Steigerung des $serviceTimeFactors$ um den Wert 1 alle 40 Sekunden. Je kleiner die graduelle Steigerung
+bei einer graduellen Steigerung des $serviceTimeFactors$ um den Wert 1 alle 40 KTicks. Je kleiner die graduelle Steigerung
 bzw. je größer das Zeitintervall zwischen den graduellen Änderungen, desto homogener und unauffälliger ist die Adaption. 
 
 \subsection{Größe des $mpp$}
@@ -436,20 +437,30 @@ $mpp$ von 3600 und einem $serviceTimeFactor$ von 50. Den Verlauf der Adaption be
 gewählt werden kann.
 
 \subsection{Kurze Nachrichtenlaufzeiten}
+\importsmallgnuplotps{$\Gamma_A$: Nachrichtenlaufzeit = 1 KTick}{Abb:Gamma_A_NLZ_1_sekunde}
+{avgUptodateRatio_Referenzverlauf_MessageRuntime_1second_MeanValueRanges}
 Bisher haben wir fast alle Experimente mit relativ hohen Nachrichtenlaufzeiten durchgeführt, um z. B. eventuelle Bearbeitungszeiten bei Brokern oder
-eine verminderte Leistungsfähihkeit bei anderen auf dem Weg zwischen Sender und Empfänger liegenden Knoten zu simulieren. In diesem Experiment wollen
+eine verminderte Leistungsfähigkeit bei anderen auf dem Weg zwischen Sender und Empfänger liegenden Knoten zu simulieren. In diesem Experiment wollen
 wir darstellen, wie sich kurze Nachrichtenlaufzeiten auf die Anpassung der Polling-Perioden und auf die Adaptionsgüte\footnote{Wir beschränken uns dabei auf
-die Adaptionsgüte $\Gamma_A$.} im Vergleich zum Referenzgraphen auswirken. Im Vergleich zum Referenzgraphen (siehe Abbildung \ref{Abb:Referenzverlauf_small})
-ist zu erkennen (siehe Abbildung \ref{Abb:Serverbelastung_NLZ_1_sekunde}), dass zu Beginn der Simulation geringfügig mehr Zeit bis zum Erreichen des maximalen
-Füllgrades der Serverqueue benötigt wird. Dies bedeutet, dass der Server in dieser Zeitspanne einer geringeren Belastung unterliegt. Die Mehrbelastung im
+die Adaptionsgüte $\Gamma_A$.} im Vergleich zum Referenzgraphen (siehe Abschnitt \ref{Abschnitt:Referenzgraph}) auswirken. Im Vergleich zum Referenzgraphen
+(siehe Abbildung \ref{Abb:Referenzverlauf_small}) ist zu erkennen, dass zu Beginn der Simulation geringfügig mehr Zeit bis zum Erreichen des maximalen
+Füllgrades der Serverqueue benötigt wird (siehe Abbildung \ref{Abb:Serverbelastung_NLZ_1_sekunde}). Dies bedeutet, dass der Server in dieser Zeitspanne einer
+geringeren Belastung unterliegt. Die Mehrbelastung im
 Referenzgraphen ist dadurch zu erklären, dass Subscriber wiederholte Anfragen stellen, bevor eine Antwort des Servers (aufgrund der längeren Nachrichtenlaufzeiten)
 den Subscriber erreicht. Auch innerhalb der Joinphase unterliegt der Server einer höheren Belastung im Referenzgraphen. Durch die langen Nachrichtenlaufzeiten hat
 die Churn-Kompensation einen geringeren Einfluss auf die Anpassung der Pollingperioden als im Graphen \ref{Abb:Serverbelastung_NLZ_1_sekunde}, da Antworten der
 entsprechenden Broker einen Subscriber bisweilen zu spät erreichen. Im weiteren Verlauf der Graphen ist zu erkennen, dass der Graph in Abbildung
+
+\importsmallgnuplotps{Serverbelastung: Nachrichtenlaufzeit = 1 KTick}{Abb:Serverbelastung_NLZ_1_sekunde}
+{ToTR_Referenzverlauf_MessageRuntime_1second_MVR}
+\importsmallgnuplotps{Serverbelastung: Referenzverlauf}{Abb:Referenzverlauf_small}
+{ToTR_Referenzverlauf_MVR_small}
+
 \ref{Abb:Serverbelastung_NLZ_1_sekunde} dichter an der Queuegröße liegt, als der Graph des Referenzverlaufs. Bei kurzen Nachrichtenlaufzeiten unterliegt der Server
 hier also einer geringeren Belastung, als bei längeren Nachrichtenlaufzeiten. Abbildung \ref{Abb:Gamma_A_NLZ_1_sekunde} zeigt bei kurzer Nachrichtenlaufzeit den
 Verlauf der Adaptionsgüte $\Gamma_A$, welche sich schnell bei 100\% einpegelt.\\
-Um diese Arbeit in angemessenem Rahmen zu halten, haben wir auf weitere Untersuchungen und Analysen bezüglich Nachrichtenlaufzeiten verzichtet.
+Um diese Arbeit in angemessenem Rahmen zu halten, haben wir auf weitere Untersuchungen und Analysen bezüglich Nachrichtenlaufzeiten verzichtet. Interessant wäre
+jedoch zu untersuchen, wie der Grad der Adaption (also die resultierende Serverbelastung) von der Größe der Nachrichtenlaufzeiten abhängt.
 
 %%% Local Variables: 
 %%% mode: latex
