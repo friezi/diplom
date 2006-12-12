@@ -1,4 +1,4 @@
-\documentclass[fleqn]{scrbook}
+\documentclass[fleqn,a4paper,oneside]{scrbook}
 \usepackage[latin1]{inputenc}
 \usepackage{latexsym}
 \usepackage[german]{babel}
@@ -6,13 +6,17 @@
 \usepackage[a4paper]{geometry}
 \usepackage[sumlimits]{amsmath}
 \usepackage{graphicx}
-\usepackage{pst-all}
-\usepackage{multido}
+\usepackage{pdftricks}
+%\begin{psinputs}
+  \usepackage{pst-all}
+  \usepackage{multido}
+  \usepackage{pst-eps}
+  \usepackage{color}
+%\end{psinputs}
 \usepackage{glossar}
 \usepackage{expdlist}
 %\usepackage{nomencl}
 \pagestyle{headings}
-\usepackage{color}
 \usepackage{keyval}
 \usepackage{listings}
 % Gleitobjekte erst nach Definition einfügen

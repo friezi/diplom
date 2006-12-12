@@ -26,11 +26,17 @@
   \begin{figure*}[h]%
     \begin{center}%
       \begin{minipage}[b]{.3\linewidth}%
-        \psset{xunit=1cm,yunit=1cm,runit=1cm}%
-        \begin{pspicture}(#1,#2)%
+%        \begin{pdfpic}%
+%          \input pst-eps
+%          \TeXToEPS
+%          \SpecialCoor
+          \psset{xunit=1cm,yunit=1cm,runit=1cm}%
+          \begin{pspicture}(#1,#2)%
 }%
 {%
-        \end{pspicture}%
+          \end{pspicture}%
+%          \endTeXtoEPS
+%        \end{pdfpic}
       \end{minipage}%
     \end{center}%
     \caption{\picturehere@caption}%
@@ -43,11 +49,17 @@
   \begin{figure*}%
     \begin{center}%
       \begin{minipage}[b]{.3\linewidth}%
-        \psset{xunit=1cm,yunit=1cm,runit=1cm}%
-        \begin{pspicture}(#1,#2)%
+%        \begin{pdfpic}
+%          \input pst-eps
+%          \TeXToEPS
+%          \SpecialCoor
+          \psset{xunit=1cm,yunit=1cm,runit=1cm}%
+          \begin{pspicture}(#1,#2)%
 }%
 {%
-        \end{pspicture}%
+          \end{pspicture}%
+%          \endTeXtoEPS
+%        \end{pdfpic}
       \end{minipage}%
     \end{center}%
     \caption{\picturehere@caption}%

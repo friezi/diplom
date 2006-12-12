@@ -24,10 +24,12 @@ pdf:	$(TARGET).pdf
 
 
 $(TARGET).pdf: $(FILES)
-	pdflatex $(TARGET)
-#	bibtex $(TARGET)
-	pdflatex $(TARGET)
-	pdflatex $(TARGET)
+	pdflatex -shell-escape $(TARGET)
+	bibtex $(TARGET)
+	pdflatex -shell-escape $(TARGET)
+	makeindex -g -s glossar.ist -o $(TARGET).gls $(TARGET).glo
+	pdflatex -shell-escape $(TARGET)
+	pdflatex -shell-escape $(TARGET)
 
 $(TARGET)_latexdiff:
 	latex $(TARGET)_latexdiff
@@ -39,5 +41,5 @@ ed:
 	$(EDITOR) *.tex ../*.bib Makefile&
 
 clean:
-	\rm *.aux *.bbl *.blg *.lof *.lot *.glo *.gls *.ilg *.log *.dvi *.pdf
+	\rm *.aux *.bbl *.blg *.lof *.lot *.glo *.gls *.ilg *.log *.dvi $(TARGET).ps $(TARGET).pdf
 
