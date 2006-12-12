@@ -12,7 +12,9 @@ wurden dabei entwickelt:
 \end{itemize}
 
 Obwohl dies nicht explizit gezeigt wurde, kann davon ausgegangen werden, dass das System skalierbar ist, da auschließlich Antwortzeiten des RSS-Servers und lokale
-Broker-Informationen zur Adaption herangezogen werden. Die Zeitdauer der Ermittlung dieser Werte ist nicht abhängig von der Netzgröße.
+Broker-Informationen zur Adaption herangezogen werden. Die Zeitdauer der Ermittlung dieser Werte ist nicht abhängig von der Netzgröße. Aufgrund exponentieller
+Steigerung der Polling-Perioden sollte das System auch bei großen Netzen zufriedenstellend arbeiten.\\
+
 In Abschnitt \ref{c:experimente} haben wir an ausgewählten Beispielen gezeigt, dass solch ein System entscheidende Verbesserungen bezüglich des Aktualitätsgrades
 der RSS-Feeds im Gegensatz zum herkömmlichen Verfahren bietet. Zusätzlich kann eine Entlastung der RSS-Server und eine Verteilung des Datenverkehrs auf
 mehrere Teilbereiche des Netzes erreicht werden. Die Vorteile dieses Systems für Klienten sind also in einer besseren potenziellen Aktualität der Daten zu sehen.
@@ -21,7 +23,14 @@ Darüber hinaus ist eine Modifikation von auf Serverseite bestehender Software ni
 Während des Entwurfs des Systems sind wir auf einige Begleiterscheinungen aufmerksam geworden, deren nachteilige Auswirkungen
 auf die Adaption des Anfrageverhaltens der Klienten an die jeweilige Serverbelastung durch geeignete Gegenmaßnahmen verringert
 werden können. Zu den Begleiterscheinungen gehören Churn (das ständige Zu- und Abwandern von Knoten) und ein Effekt, den wir als \glqq Aussperren\grqq{}
-bezeichnet haben.
+bezeichnet haben.\\
+
+Wir wollen jedoch auch eventuelle Nachteile des Systems nicht verschweigen: lange Übertragungszeiten können zu einer nicht angemessenen Adaption führen, da aus
+der Sicht eines Subscribers zwischen Serverüberlastung und Übertragsungszeit nicht differenziert werden kann. Sowohl lange Übertragungszeiten als auch eine starke
+Serverbelastung führen zu einer Vergrößerung der Polling-Perioden, die jedoch nur im zweiten Fall angebracht wäre. Wie sich eine Adaption im ersten Fall auswirkt,
+müsste noch genauer untersucht werden, es ist jedoch anzunehmen, dass dies zu einem geringeren Aktualitätsgrad der RSS-Feeds führt. Auch ungünstige Netzstrukturen
+können längere Übertragungszeiten bedingen (lange Wege zwischen Subscriber und RSS-Server), weshalb es notwendig erscheint, großes Augenmerk auf die Konstruktion des
+Overlay-Netzes zu lenken.
 
 \section{Ausblick}
 Wir haben während des Entwurfs eine ganze Reihe von Punkten angesprochen, auf die wir nicht näher eingehen konnten. Diese bilden Material für weiterführende

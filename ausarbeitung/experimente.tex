@@ -4,9 +4,9 @@ In diesem Kapitel werden wir untersuchen, welche Vorteile das in dieser Arbeit v
 Des Weiteren werden wir das Adaptionsverhalten der beschriebenen Verfahren untersuchen. Dabei werden wir im Detail einzelne Aspekte
 der Verfahren genauer betrachten und ihre Auswirkungen im Gesamtkontext darstellen. Wir verwenden die in Kapitel \ref{c:implementierung} vorgestellte
 Simulationsumgebung.
-Da wir keine Vergleichsmöglichkeiten mit anderen Verfahren haben, werden wir das Verhalten des Systems bei unterschiedlichen Parametern bzw. Algorithmen
-untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Überprüfung der getroffenen Annahmen, die die Entwicklung unserer
-Verfahren motiviert haben.
+Da wir fast keine Vergleichsmöglichkeiten mit anderen Verfahren haben (bis auf den herkömmlichen Ansatz), werden wir das Verhalten des Systems bei
+unterschiedlichen Parametern bzw. Algorithmen untersuchen. Die Ergebnisse der empirischen Untersuchungen dienen dabei der Überprüfung der getroffenen Annahmen,
+die die Entwicklung unserer Verfahren motiviert haben.
 
 \section{Aufbau der Experimente}
 Damit die Experimente untereinander vergleichbar sind, haben wir eine einheitliche Parameterwahl getroffen. Parameter wurden nur dann gezielt modifiziert,
@@ -83,7 +83,8 @@ dass Antworten eines RSS-Servers zu spät erfolgen und Klienten daher ihre Anfrag
 des Servers. Auch wenn in der Realität dauerhaft solch hohe Nachrichtenlaufzeiten nicht auftreten, so lassen sich doch damit die
 Adaptionsalgorithmen unter Extrembedingungen testen.\\
 
-Die Zeitdauer bei jeder Messung betrug 6.000 KTicks, wobei gilt: 1 KTick = 1000 Ticks (ein Tick ist der kleinste mögliche Simulationsschritt).
+Die Zeitdauer bei jeder Messung betrug 6.000 KTicks, wobei gilt: 1 KTick = 1000 Ticks (ein Tick ist der kleinste mögliche Simulationsschritt). Bei der Simulation
+gehen wir davon aus, dass grundsätzlich keine Störungen auf Netzwerkebene auftreten.
 
 \importsmallgnuplotps{Verbesserung des Aktualitätsgrades $\Gamma_A$}
 {Abb:Verbesserung_des_Aktualitaetsgrades_bei_zunehmender_Anzahl_der_Subscriber}{average_up_to_date_percent_improvement}
@@ -298,7 +299,7 @@ Um zu ermitteln, wie der Grad der Churn-Kompensation mit der Churnrate zusammenh
 in den Abbildungen \ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} und \ref{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen}
 veranschaulicht sind. Dabei wird die Serverbelastung bzw. die Anzahl abgewiesener Anfragen in Abhängigkeit der prozentualen Angabe der Subscriber
 dargestellt, die innerhalb einer festen Zeit (900 KTicks) das System dynamisch betreten und verlassen. In beiden Graphiken sind die oberen und unteren Grenzen
-der Konfidenzintervalle um die Mittelwerte dargestellt. Abbildung
+der Konfidenzintervalle dargestellt, in denen sich die Mittelwerte bewegen. Abbildung
 \ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} zeigt die Mittelwerte abgewiesener Anfragen innerhalb der definierten Churnphase.
 Abbildung \ref{Abb:Churn-Kompensation_Spitzenwerte_abgewiesener_Anfragen} zeigt die Spitzenwerte. In Abbildung
 \ref{Abb:Churn-Kompensation_Mittelwerte_abgewiesener_Anfragen} ist ein annähernd linearer Kurvenverlauf zu sehen. In

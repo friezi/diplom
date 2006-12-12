@@ -8,7 +8,8 @@ Polling-Perioden Gelegenheit bekommen müssen, diese zu erniedrigen.\\
 
 Um dieses Ziel zu erreichen, verwenden wir folgendes Verfahren: speist ein Subscriber einen RSS-Feed in das Notifikationssystem ein (er sendet den Feed an den
 ihm zugewiesenen Broker), so übermittelt er als zusätzliches Attribut den von ihm gemessenen $artt$. Erhält ein Subscriber einen RSS-Feed vom Notifikationssystem,
-so stellt sein neuer $artt$-Wert den Mittelwert aus seinem eigenen $artt$ und dem übermitteltem $artt$ (im Folgenden nennen wir ihn $feed.artt$) dar, also:
+so stellt sein neuer $artt$-Wert den Mittelwert aus seinem eigenen $artt$ und dem übermitteltem $artt$ (im Folgenden nennen wir ihn $feed.artt$\footnote{Auch hier
+gilt: pro Server muss ein feed.artt übermittelt werden.}) dar, also:
 \begin{equation}
   artt:=\frac{artt+feed.artt}{2}
 \end{equation}
@@ -60,6 +61,10 @@ class RichRSSFeed extends RSSFeed{
     LinkedList<RSSServerArtt> rssserver_artt;
 
 }
+
+\end{lstlisting}
+\lstset{language=Java}
+\begin{lstlisting}
 
 class RSSServerArtt{
 
@@ -124,6 +129,10 @@ berechne_mittleren_artt(long feed.artt){
 
 }
 
+\end{lstlisting}
+\lstset{language=Java,emph={setze_icpp,berechne_mittleren_artt},emphstyle=\underbar}
+\begin{lstlisting}
+
 aktualisiere_RQT_durch_alten_Brokerfeed {
 
     berechne_mittleren_artt(long feed.artt);
@@ -138,6 +147,10 @@ aktualisiere_RQT_durch_alten_Brokerfeed {
 
 }
 
+\end{lstlisting}
+\lstset{language=Java,emph={setze_icpp,berechne_mittleren_artt},emphstyle=\underbar}
+\begin{lstlisting}
+
 aktualisiere_RQT_durch_neuen_Brokerfeed {
 
     berechne_mittleren_artt(long feed.artt);
@@ -147,6 +160,10 @@ aktualisiere_RQT_durch_neuen_Brokerfeed {
       setze_RQT(delta_ttr);
 
 }
+
+\end{lstlisting}
+\lstset{language=Java,emph={setze_icpp,berechne_mittleren_artt},emphstyle=\underbar}
+\begin{lstlisting}
 
 aktualisiere_RQT_durch_alten_Serverfeed {
 
@@ -159,6 +176,10 @@ aktualisiere_RQT_durch_alten_Serverfeed {
     setze_RQT(cpp);
 
 }
+
+\end{lstlisting}
+\lstset{language=Java,emph={setze_icpp,berechne_mittleren_artt},emphstyle=\underbar}
+\begin{lstlisting}
 
 aktualisiere_RQT_durch_neuen_Serverfeed {
 
