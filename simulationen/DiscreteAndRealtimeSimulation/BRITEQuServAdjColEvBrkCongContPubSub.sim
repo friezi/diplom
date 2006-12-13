@@ -1,7 +1,7 @@
 TopologyClass=BRITETopology
-BRITESublayerFile=1000_nodes.brite
-BRITEBrokernetFile=100_nodes.brite
+BRITESublayerFile=100_nodes.brite
+BRITEBrokernetFile=40_nodes.brite
 BrokerClass=AdjustingEventBroker
-PubSubClass=SinglePublisherEventPubSub
+PubSubClass=CongestionControlEventPubSub
 RSSServerClass=QueueingRSSServer
 RSSFeedClass=ColorEventFeed
