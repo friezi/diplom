@@ -1,4 +1,4 @@
-\documentclass[fleqn,a4paper,oneside]{scrbook}
+\documentclass[fleqn,a4paper]{scrbook}
 \usepackage[latin1]{inputenc}
 \usepackage{latexsym}
 \usepackage[german]{babel}
@@ -6,7 +6,7 @@
 \usepackage[a4paper]{geometry}
 \usepackage[sumlimits]{amsmath}
 \usepackage{graphicx}
-\usepackage{pdftricks}
+%\usepackage{pdftricks}
 %\begin{psinputs}
   \usepackage{pst-all}
   \usepackage{multido}
@@ -76,18 +76,22 @@
       & {\small\itshape Fakultät IV - Elektrotechnik und Informatik} \\ 
       & {\small\itshape Technische Universität Berlin} \\
     \end{tabular}
-
-    \newpage
-    \thispagestyle{empty}
-    \vspace*{6cm}
-    {\linespread{1.5}\selectfont \textnormal{\Large Die selbständige und eigenhändige Anfertigung versichere ich an Eides Statt.}\par}
-    \vspace{5cm}
-    \textbf{\underline{\hspace{7cm}}}\par
-    \textbf{\Large Berlin, den / Unterschrift}
   \end{center}
 \end{titlepage}
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{2}
+
+\chapter*{\begin{center}Erklärung\end{center}}
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{6cm}
+  {\linespread{1.5}\selectfont \textnormal{\Large Die selbständige und eigenhändige Anfertigung versichere ich an Eides Statt.}\par}
+  \vspace{5cm}
+  \textbf{\underline{\hspace{9cm}}}\par
+  \textbf{\Large Berlin, den / Unterschrift}
+\end{center}
+
+
 \tableofcontents
 \listoffigures
 \listoftables
