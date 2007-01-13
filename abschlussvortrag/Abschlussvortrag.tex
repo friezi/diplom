@@ -10,6 +10,9 @@
 \usetheme{Berlin}
 \mode<presentation>
 
+\newcommand{\includepng}[1]{\includegraphics[bb=-100 0 200 475, scale=0.35]{#1}}
+
+
 \title{Adaptive Informationsverbreitung mittels RSS und Publish/Subscribe}
 \author{Friedemann Zintel}
 \date{18. Januar 2007}
@@ -27,126 +30,153 @@
 \begin{frame}
 
   \tableofcontents
-
+  
 \end{frame}
 
 \section{Einleitung}
 
 \begin{frame}
-
+  
   RSS: Really-Simple-Syndication
   \vspace{0.5cm}
   \begin{itemize}
-    \item Standard zur Verbreitung von Informationen im Internet
-    \item Dateiformat ist XML-basiert 
-    \item Verbreitung mittels Pull
-    \item Beispiele: Nachrichten-Schlagzeilen, Blogs, Podcasting (anbieten von Medien-Dateien, z.B. mp3)
+  \item Standard zur Verbreitung von Informationen im Internet
+  \item Dateiformat ist XML-basiert
+  \item RSS-Feed ist einem Channel zugeordnet
+  \item Verbreitung mittels Pull
+  \item Beispiele: Nachrichten-Schlagzeilen, Blogs, Podcasting (anbieten von Medien-Dateien, z.B. mp3)
   \end{itemize}
-
+  
 \end{frame}
 
 \section{Motivation}
 \begin{frame}
-
+  
   \frametitle{Anwendersicht: Was man gerne hätte ...}
   \begin{itemize}
-    \item Automatische Benachrichtigung über Feed-Updates
-    \item Aktualität der Feeds
-    \item Definition von Filtern auf höherer Ebene: zur \dots
-      \begin{list}{}{}
-        \item \dots individuellen Vorselektion der Feeds
-	\item \dots anbieterübergreifenden Auswahl von Feeds
-      \end{list}
+  \item Automatische Benachrichtigung über Feed-Aktualisierungen
+  \item Aktualität der Feeds
+  \item Definition von komplexeren Filtern: zur \dots
+    \begin{list}{}{}
+    \item \dots individuellen Vorselektion der Feeds
+    \item \dots anbieterübergreifenden Auswahl von Feeds
+    \end{list}
   \end{itemize}
-
+  
 \end{frame}
 
 \begin{frame}
-
+  
   \frametitle{Stand der Dinge}
   \begin{itemize}
-    \item RSS: Kein push-basiertes Pub/Sub $\rightarrow$ Client/Server
-    \item Feeds müssen von Anwendersoftware heruntergeladen werden (Polling)
-    \item Vordefinierte Channel $\rightarrow$ thematische Zuordnung auf RSS-Server-Seite
-    \item Definition von Filtern nur auf Anwenderseite möglich
+  \item RSS: Kein push-basiertes Pub/Sub $\rightarrow$ Client/Server
+  \item Feeds müssen von Anwendersoftware heruntergeladen werden (Polling)
+  \item Vordefinierte Channel $\rightarrow$ thematische Zuordnung auf RSS-Server-Seite
+  \item Definition von Filtern nur auf Anwenderseite möglich
   \end{itemize}
-
+  
   \pause
   Probleme:
   \begin{itemize}
-    \item Polling:
-      \begin{list}{$\longrightarrow$}{}
-        \item Großer Datenverkehr im Netz
-	\item Hohe Server-seitige Last
-      \end{list}
-    \item Filterdefinition nur beim Anwender:
-      \begin{list}{$\longrightarrow$}{}
-        \item Alle Feeds müssen heruntergeladen werden
-      \end{list}
+  \item Polling:
+    \begin{list}{$\longrightarrow$}{}
+    \item Großer Datenverkehr im Netz
+    \item Hohe Server-seitige Last
+    \end{list}
+  \item Filterdefinition nur beim Anwender:
+    \begin{list}{$\longrightarrow$}{}
+    \item Alle Feeds müssen heruntergeladen werden
+    \end{list}
   \end{itemize}
   \nocite{Hicks:2004:RSSBandwith}
   
 \end{frame}
 
 \begin{frame}
-
+  
   \frametitle{Ziel}
   \begin{itemize}
-    \item \glqq Entlastung\grqq der RSS-Server
-    \item Reduzierung des Datenverkehrs aufgrund von Polling
-    \item Erhöhung des Aktualitätsgrades der Feeds auf Nutzerseite
-    \item Ermöglichung der Subscriber-seitigen Definition von Filtern
+  \item \glqq Entlastung\grqq der RSS-Server
+  \item Reduzierung des Datenverkehrs aufgrund von Polling
+  \item Erhöhung des Aktualitätsgrades der Feeds auf Nutzerseite
+  \item Ermöglichung der Subscriber-seitigen Definition von Filtern
   \end{itemize}
-
+  
 \end{frame}
 
 \section{Verwandte Arbeiten}
+\subsection*{FeedTree}
 
 \begin{frame}
   \frametitle{FeedTree \cite{SandlerEtAl:2005:FeedTree}}
   \begin{itemize}
   \item Basiert auf Scribe \cite{SCRIBE}
   \item Signierte RSS-Dokumente werden per Multicast an alle Subscriber gesendet, die dieses abonniert haben
-  \item Abonnement erfolgt durch Beitritt zu einer Gruppe, deren Thema der ID des angebotenen RSS-Feeds entspricht (URL)
+  \item Abonnement erfolgt durch Beitritt zu einer Gruppe
+  \item Thema einer Gruppe entspricht der ID des angebotenen RSS-Feeds (URL)
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{CMSToPSS \cite{PetrovicEtAl:2005:CMS-ToPSS}}
-\end{frame}
+  Vorteile:
+  \begin{itemize}
+  \item Zeitnahe Benachrichtgung über Feed-Aktualisierungen möglich
+  \item Bandbreiten werden gespart
+  \item Authentizitätsprüfung durch Signierung
+  \item Wiederbeschaffung von Feeds durch Zwischenspeicherung in Caches
+  \end{itemize}
+  \pause
+  \vspace{0.5cm}
+  Nachteile:
+  \begin{itemize}
+  \item Zusätzliche Software auf Anbieterseite erforderlich
+  \item keine erweiterten Filtertechniken möglich
+  \item Nur ein Publisher vorhanden $\longrightarrow$ wirkt sich nachteilig auf Aktualitätsgrad aus
+  \end{itemize}
+\end{frame}  
 
-
-\section{Umsetzung}
-\subsection{Integration von RSS in verteiltes Pub/Sub-System}
+\subsection*{CMS-ToPSS}
 
 \begin{frame}
-  \frametitle{Integration von RSS in verteiltes Pub/Sub-System}
+  \frametitle{CMS-ToPSS \cite{PetrovicEtAl:2005:CMS-ToPSS}}
+  \begin{itemize}
+  \item Erweiterung zu Content-Management-Systemen
+  \item Nutzt Notifikationssystem G-ToPSS: inhaltsbasierte Filterung durch GQL
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  Vorteile:
+  \begin{itemize}
+  \item Flexible und mächtige Filterdefinitionen sind möglich
+  \end{itemize}
+  \pause
+  \vspace{0.5cm}
+  Nachteile:
+  \begin{itemize}
+  \item Neue Software auf Anbieterseite
+  \item Nur ein Publisher vorgesehen
+  \item Dateiformat muss RDF-Syntax entsprechen
+  \end{itemize}
+\end{frame}
+
+\section{Umsetzung}
+\subsection*{Pub/Sub-RSS}
+
+\begin{frame}
+  \frametitle{Informationsverbreitung mittels RSS und Publish/Subscribe}
   Innerhalb eines Overlay-Netzwerkes wird für die Verteilung der Feeds gesorgt.\\
   \vspace{0.5cm}
   Als Grundlage kann eine schon existierende Pub/Sub-Middleware dienen (z.B. REBECA\cite{MuFiBu:2001:ArchFrameECommApp}).
 \end{frame}
 
 \begin{frame}
-  \vspace{0.5cm}
+  \frametitle{Ansatz}
   \begin{itemize}
-    \item RSS-Server könnte als Publisher fungieren
-    \item Broker sorgen für eine Verteilung der Feeds an Nutzer (Subscriber)
-  \end{itemize}
-  \vspace{0.5cm}
-
-  \pause
-  Problem:\\
-  Neue Software muss sowohl auf Server-Seite als auch auf Anwenderseite installiert werden.
-%    \item Verteilung der RSS-Feeds mittels herkömmlichem Pub/Sub $\Longrightarrow$ Notifikation der Subscriber
-\end{frame}
-
-\begin{frame}
-  \frametitle{Lösung:}
-\begin{itemize}
   \item Rolle der RSS-Server verändert sich nicht
-  \item Nutzer holen Feed in der Rolle des Publisher und speisen ihn in das Broker-Netz
-  \item Broker verteilen Feeds an Nutzer bzw. Subscriber
-\end{itemize}
+  \item Nutzer holen Feed in der Rolle des Publisher und übermitteln ihn an das Notifikationssystem
+  \item Notifikationssystem verteilt Feeds an Nutzer bzw. Subscriber
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -156,14 +186,14 @@
 \begin{frame}
   \frametitle{Ansatz: Ein Publisher}
   \begin{itemize}
-    \item Ein Publisher würde ausreichen, um Feed herunterzuladen
-    \item Alle weiteren Nutzer  bzw. Subscriber würden den Feed übers Netzwerk erhalten
+  \item Ein Publisher würde ausreichen, um Feed herunterzuladen
+  \item Alle weiteren Nutzer  bzw. Subscriber würden den Feed übers Netzwerk erhalten
   \end{itemize}
-
+  
   \pause
   Vorteil:\\
   Wenige Anfragen an den RSS-Server
-\vspace{0.5cm}
+  \vspace{0.5cm}
   
   \pause
   Problem:\\
@@ -181,14 +211,14 @@
 \begin{frame}
   \frametitle{Ansatz: Mehrere Publisher}
   \begin{itemize}
-    \item Mehrere Publisher laden Feed herunter
-    \item $\rightarrow$ Mindestens so viele, dass gewisse Aktualität der Feeds erreicht wird
-    \item $\rightarrow$ Höchstens so viele, dass Server nicht überlastet wird
+  \item Mehrere Publisher laden Feed herunter
+  \item $\rightarrow$ Mindestens so viele, dass gewisse Aktualität der Feeds erreicht wird
+  \item $\rightarrow$ Höchstens so viele, dass Server nicht überlastet wird
   \end{itemize}
-\vspace{0.5cm}
-
-$\longrightarrow$ Ein optimaler Kompromiss soll erreicht werden
-
+  \vspace{0.5cm}
+  
+  $\longrightarrow$ Ein optimaler Kompromiss soll erreicht werden
+  
 \end{frame}
 
 \begin{frame}
@@ -198,12 +228,10 @@ $\longrightarrow$ Ein optimaler Kompromiss soll erreicht werden
 
 \begin{frame}
   \frametitle{Herausforderungen}
-Entwicklung eines bzw. mehrerer Algorithmen zur \dots
+  Entwicklung eines bzw. mehrerer Algorithmen zur \dots
   \begin{itemize}
-    \item \dots Koordination der Publisher
-    \item \dots Ermittlung der RSS-Server-Auslastung
-    \item \dots Bestimmung des Update-Intervalls eines Feeds
-    \item \dots Bestimmung der Nachrichtenlaufzeiten (eventuell)
+  \item \dots Koordinierung der Publisher
+  \item \dots Ermittlung der RSS-Server-Auslastung
   \end{itemize}
 \end{frame}
 
@@ -211,10 +239,10 @@ Entwicklung eines bzw. mehrerer Algorithmen zur \dots
   \frametitle{Erwartungen an den Algorithmus}
   Der Entwurf des Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
   \begin{itemize}
-    \item Vermeidung von \glqq Hotspots\grqq
-    \item Broker sollen Parameter automatisch einstellen bzw. beziehen
-    \item Parameter sollen sich den dynamischen Gegebenheiten des Netzes anpassen
-    \item Netz soll auftretende Fehler überstehen und selbständig beseitigen
+  \item Vermeidung von \glqq Hotspots\grqq
+  \item Broker sollen Parameter automatisch einstellen bzw. beziehen
+  \item Parameter sollen sich den dynamischen Gegebenheiten des Netzes anpassen
+  \item Netz soll auftretende Fehler überstehen und selbständig beseitigen
   \end{itemize}
 \end{frame}
 
@@ -222,11 +250,35 @@ Entwicklung eines bzw. mehrerer Algorithmen zur \dots
   \frametitle{Vorteile des Ansatzes}
   Vorteile gegenüber ähnlichen Ansätzen (wie z.B. FeedTree\cite{SandlerEtAl:2005:FeedTree}):
   \begin{itemize}
-    \item Lösung kann sich problemlos in bestehende RSS-Architektur integrieren
-    \item Bestehende Client-Software kann weiter verwendet werden
-    \item Komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig\\
-      $\longrightarrow$ in REBECA\cite{MuFiBu:2001:ArchFrameECommApp} sind Filtertechniken bereits integriert
+  \item Lösung kann sich problemlos in bestehende RSS-Architektur integrieren
+  \item Bestehende Client-Software kann weiter verwendet werden
+  \item Komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig\\
+    $\longrightarrow$ in REBECA\cite{MuFiBu:2001:ArchFrameECommApp} sind Filtertechniken bereits integriert
   \end{itemize}
+\end{frame}
+
+\subsection*{Koordinierung der Publisher}
+
+\begin{frame}
+  \frametitle{Koordinierung der Publisher}
+  \begin{itemize}
+  \item Jeder Publisher wählt zufälligen Zeitpunkt innerhalb eines zeitlichen Intervalls, um nächsten Feed herunterzuladen
+  \item Erhält er neuen Feed über das Notifikationssystem, wird neuer Zeitpunkt gewählt
+  \end{itemize}
+  \frametitle{Wahl eines zufälligen Zeitpunktes}
+  \includegraphics[bb=-40 0 200 150,scale=0.5]{Platzierungen}
+\end{frame}
+
+\section{Ergebnisse}
+
+\begin{frame}
+\frametitle{Anpassung der Polling-Perioden}
+  \includepng{Referenzverlauf.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Keine Ausbalancierung}
+  \includepng{NoBalancing.png}
 \end{frame}
 
 \section{Literatur}
