@@ -2,9 +2,9 @@
 all:	Vortrag.pdf
 
 Vortrag.pdf: Vortrag.tex
-	latex Vortrag
+	pdflatex Vortrag
 	bibtex Vortrag
-	latex Vortrag
+	pdflatex Vortrag
 	pdflatex Vortrag
 
 ed:

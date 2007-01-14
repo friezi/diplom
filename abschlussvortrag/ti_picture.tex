@@ -1,0 +1,50 @@
+\documentclass[fleqn,a4paper]{scrbook}
+\usepackage[latin1]{inputenc}
+\usepackage{latexsym}
+\usepackage[german]{babel}
+%\usepackage{ngerman}
+\usepackage[a4paper]{geometry}
+\usepackage[sumlimits]{amsmath}
+\usepackage{graphicx}
+%\usepackage{pdftricks}
+%\begin{psinputs}
+  \usepackage{pst-all}
+  \usepackage{multido}
+  \usepackage{pst-eps}
+  \usepackage{pst-plot}
+  \usepackage{color}
+%\end{psinputs}
+%\usepackage{nomencl}
+\usepackage{keyval}
+\usepackage{listings}
+% Gleitobjekte erst nach Definition einfügen
+%\usepackage{flafter}
+%\usepackage{charter}
+%\geometry{textwidth=17cm, textheight=22cm} 
+\parindent0em
+\pagenumbering{none}
+
+\input{macros}
+
+\begin{document}
+
+\begin{epspicture}{3}{2}%
+  \begin{picture}(7,1)(1.5,-1)
+    \put(0,0){\vector(1,0){7}}
+    \put(0,-0.2){\line(0,1){0.4}}
+    \put(0,-0.5){$t_{0_i}$}
+    \put(3,-0.2){\line(0,1){0.4}}
+    \put(3,-0.5){$t_{x_i}$}
+    \put(6,-0.2){\line(0,1){0.4}}
+    \put(6,-0.5){$t_{x_i}+\varDelta Z_i$}
+    \put(3,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta Z_i}$}
+    \put(5,-0.1){\line(0,1){0.2}}
+    \put(4.5,0.2){$ttr_i$}
+    \put(0,0.6){$\overbrace{\hspace{5cm}}^{\varDelta ttr_i}$}
+    \put(0,-0.65){$\underbrace{\hspace{3cm}}_{\varDelta ttl_i}$}
+    \put(7.8,0){$Zeit$}
+  \end{picture}
+\end{epspicture}%
+
+
+\end{document}

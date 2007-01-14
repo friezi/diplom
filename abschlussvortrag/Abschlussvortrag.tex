@@ -1,16 +1,21 @@
 \documentclass{beamer}
 \usepackage[latin1]{inputenc}
 \usepackage{latexsym}
+\usepackage[german]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{color}
 
 \usepackage{listings}
 \lstset{language=XML,showspaces=false,showtabs=false}
 
-\usepackage[german]{babel}
 
 \usetheme{Berlin}
 \mode<presentation>
 
-\newcommand{\includepng}[1]{\includegraphics[bb=-100 0 200 475, scale=0.35]{#1}}
+\input{macros}
+
+\newcommand{\includepng}[1]{\includegraphics[bb=-100 0 200 480, scale=0.4]{#1}}
 
 
 \title{Adaptive Informationsverbreitung mittels RSS und Publish/Subscribe}
@@ -262,11 +267,56 @@
 \begin{frame}
   \frametitle{Koordinierung der Publisher}
   \begin{itemize}
-  \item Jeder Publisher wählt zufälligen Zeitpunkt innerhalb eines zeitlichen Intervalls, um nächsten Feed herunterzuladen
-  \item Erhält er neuen Feed über das Notifikationssystem, wird neuer Zeitpunkt gewählt
+  \item Jeder Publisher $i$ wählt zufälligen Zeitpunkt $ttr_i$ innerhalb eines zeitlichen Intervalls, um nächsten Feed herunterzuladen
   \end{itemize}
-  \frametitle{Wahl eines zufälligen Zeitpunktes}
+  \vspace{0.5cm}
+  \includegraphics[bb=28 656 356 725,scale=1]{ti_picture}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Veranschaulichung}
+  $ttr$s der Publisher P1 $\dots$ P5\\
+  \vspace{0.5cm}
   \includegraphics[bb=-40 0 200 150,scale=0.5]{Platzierungen}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bestimmung von nextBuild}
+  $\rightarrow$ Bestimmung über time-to-live ($ttl$):\\
+  \vspace{0.2cm}
+  \hspace{0.5cm}$nextBuild:=t_0+\varDelta ttl$
+  \begin{displaymath}
+    \hspace{0.5cm}\varDelta ttl:=\left\{\begin{array}{r@{\quad:\quad}l}
+        0 & falls\quad (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
+      \end{array}\right.
+  \end{displaymath}
+  
+  $\rightarrow$ Bestimmung über RSS-Parameter cloud:\\
+  \vspace{0.2cm}
+  \hspace{1cm}$nextBuild:=t_0$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bestimmung von time-to-live}
+  \begin{itemize}
+  \item Bereitstellung durch den Informationsanbieter (RSS-Parameter $ttl$)
+  \item heuristische Bestimmmung
+  \end{itemize}
+\end{frame}
+
+\subsection*{Angestrebte Dienstgüte: bevorzugte Polling-Periode}
+
+\begin{frame}
+  \frametitle{Angestrebte Dienstgüte: bevorzugte Polling-Periode}
+  Subscriber möchte spätestens nach einer von ihm festgesetzten Zeitspanne $ppp$ über Feed-Aktualisierungen unterrichtet werden\\
+  \vspace{0.5cm}
+  $\longrightarrow$ Polling muss mit der Frequenz $\frac{1}{ppp}$ geschehen
+\end{frame}
+  
+\begin{frame}
+  \frametitle{Problem der zu kleinen Polling-Perioden}
+  Zu kleine Polling-Perioden können Aktualitätsgrad negativ beeinflussen (Serverbelastung!)\\
+  \includegraphics[bb=30 0 200 250,scale=0.6]{Zusammenhang_Pollingrate_Aktualitaetsgrad}
 \end{frame}
 
 \section{Ergebnisse}
