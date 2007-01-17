@@ -6,4 +6,5 @@ plot 'totalTemporaryRequests_NoBalancing_MeanValueRanges.gnuplotdata' w l title 
 load 'queue.gnuplot'
 load 'markers.gnuplot'
 replot queue
+set title "Keine Ausbalancierung"
 replot 'totalTemporaryRequests_NoBalancing_MeanValues.gnuplotdata' w l title "Mittelwerte"

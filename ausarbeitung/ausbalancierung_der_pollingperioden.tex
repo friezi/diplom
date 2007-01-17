@@ -1,7 +1,7 @@
 \subsection{Ausbalancierung der Polling-Perioden}
 \label{cs:ausbalancierung_der_polling-perioden}
 Wie wir schon in Abschnitt \ref{cssp:ung_u_probl:dysbalance} auf Seite \pageref{cssp:ung_u_probl:dysbalance} beschrieben haben, kann es vorkommen, dass Subscriber
-aufgrund von Dysbalancen der Polling-Perioden im System \glqq ausgesperrt\grqq{} werden: Subscriber, deren Polling-Periode sehr niedrig ist, haben fast
+aufgrund von Dysbalancen der Polling-Perioden im System \glqq ausgesperrt\grqq{} werden: Subscriber, deren Polling-Perioden sehr niedrig sind, haben fast
 ausschließlichen Zugriff auf den Server, während sich die Polling-Perioden der übrigen Subscriber stetig vergrößern, da ihre Anfragen keinen Zugang zur Server-Queue
 finden. Um diesem Problem beizukommen, müssen bei Dysbalancen im System Subscriber mit niedrigen Polling-Perioden diese erhöhen, während Subscriber mit hohen
 Polling-Perioden Gelegenheit bekommen müssen, diese zu erniedrigen.\\

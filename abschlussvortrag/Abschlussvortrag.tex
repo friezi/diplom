@@ -15,7 +15,7 @@
 
 \input{macros}
 
-\newcommand{\includepng}[1]{\includegraphics[bb=-100 0 200 480, scale=0.4]{#1}}
+\newcommand{\includepng}[1]{\includegraphics[bb=0 200 200 480, scale=0.34]{#1}}
 
 
 \title{Adaptive Informationsverbreitung mittels RSS und Publish/Subscribe}
@@ -42,10 +42,10 @@
 
 \begin{frame}
   
-  RSS: Really-Simple-Syndication
+  RSS: Really Simple Syndication
   \vspace{0.5cm}
   \begin{itemize}
-  \item Standard zur Verbreitung von Informationen im Internet
+  \item Format-Standard zur Verbreitung von Informationen im Internet
   \item Dateiformat ist XML-basiert
   \item RSS-Feed ist einem Channel zugeordnet
   \item Verbreitung mittels Pull
@@ -54,10 +54,12 @@
   
 \end{frame}
 
-\section{Motivation}
+\subsection*{Motivation}
 \begin{frame}
   
   \frametitle{Anwendersicht: Was man gerne hätte ...}
+  Aus Sicht eines Klienten:
+  \vspace{1cm}
   \begin{itemize}
   \item Automatische Benachrichtigung über Feed-Aktualisierungen
   \item Aktualität der Feeds
@@ -66,6 +68,17 @@
     \item \dots individuellen Vorselektion der Feeds
     \item \dots anbieterübergreifenden Auswahl von Feeds
     \end{list}
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  
+  Aus Sicht eines Server-Betreibers:
+  \vspace{1cm}
+  \begin{itemize}
+  \item System sollte nicht überlastet werden
+  \item Es sollten möglichst keine Änderungen am Softwaresystem erforderlich sein
   \end{itemize}
   
 \end{frame}
@@ -99,12 +112,12 @@
 
 \begin{frame}
   
-  \frametitle{Ziel}
+  \frametitle{Ziele}
   \begin{itemize}
-  \item \glqq Entlastung\grqq der RSS-Server
+  \item optimale Ausnutzung der RSS-Server
   \item Reduzierung des Datenverkehrs aufgrund von Polling
   \item Erhöhung des Aktualitätsgrades der Feeds auf Nutzerseite
-  \item Ermöglichung der Subscriber-seitigen Definition von Filtern
+  \item Vorselektion von Informationen durch komplexere Filter soll ermöglicht werden
   \end{itemize}
   
 \end{frame}
@@ -179,7 +192,7 @@
   \frametitle{Ansatz}
   \begin{itemize}
   \item Rolle der RSS-Server verändert sich nicht
-  \item Nutzer holen Feed in der Rolle des Publisher und übermitteln ihn an das Notifikationssystem
+  \item Nutzer holen Feed und übermitteln ihn in der Rolle des Publisher an das Notifikationssystem
   \item Notifikationssystem verteilt Feeds an Nutzer bzw. Subscriber
   \end{itemize}
 \end{frame}
@@ -191,8 +204,8 @@
 \begin{frame}
   \frametitle{Ansatz: Ein Publisher}
   \begin{itemize}
-  \item Ein Publisher würde ausreichen, um Feed herunterzuladen
-  \item Alle weiteren Nutzer  bzw. Subscriber würden den Feed übers Netzwerk erhalten
+  \item Ein Publisher würde ausreichen, um einen Feed herunterzuladen
+  \item Alle weiteren Nutzer  bzw. Subscriber würden den Feed über das Pub/Sub-System erhalten
   \end{itemize}
   
   \pause
@@ -208,57 +221,42 @@
   Single Point of Failure
 \end{frame}
 
-\begin{frame}
-  \frametitle{Aktualität vs. Server-Belastung}
-  \includegraphics[bb=40 0 200 250,scale=0.5]{Verzoegerung}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Aktualität vs. Server-Belastung}
+%   \includegraphics[bb=40 0 200 250,scale=0.5]{Verzoegerung}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Ansatz: Mehrere Publisher}
+%   \begin{itemize}
+%   \item Mehrere Publisher laden Feed herunter
+%   \item $\rightarrow$ Mindestens so viele, dass gewisse Aktualität der Feeds erreicht wird
+%   \item $\rightarrow$ Höchstens so viele, dass Server nicht überlastet wird
+%   \end{itemize}
+%   \vspace{0.5cm}
+  
+%   $\longrightarrow$ Ein optimaler Kompromiss soll erreicht werden
+  
+% \end{frame}
 
 \begin{frame}
   \frametitle{Ansatz: Mehrere Publisher}
-  \begin{itemize}
-  \item Mehrere Publisher laden Feed herunter
-  \item $\rightarrow$ Mindestens so viele, dass gewisse Aktualität der Feeds erreicht wird
-  \item $\rightarrow$ Höchstens so viele, dass Server nicht überlastet wird
-  \end{itemize}
-  \vspace{0.5cm}
-  
-  $\longrightarrow$ Ein optimaler Kompromiss soll erreicht werden
-  
-\end{frame}
-
-\begin{frame}
-  \frametitle{Frage:}
+  Frage:\\
   Wie können sich die Publisher darüber abstimmen, wer als nächstes den aktuellen Feed abholt?
 \end{frame}
 
 \begin{frame}
-  \frametitle{Herausforderungen}
-  Entwicklung eines bzw. mehrerer Algorithmen zur \dots
+  \frametitle{Gesichtspunkte für die Entwicklung eines Algorithmus}
+  $\rightarrow$ geforderte Ziele
   \begin{itemize}
-  \item \dots Koordinierung der Publisher
-  \item \dots Ermittlung der RSS-Server-Auslastung
+  \item Polling durch mehrere bzw. wechselnde Klienten
+  \item Ausfall von Klienten im Overlay-Netzwerk soll Informationsverteilung nicht blockieren
   \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Erwartungen an den Algorithmus}
-  Der Entwurf des Algorithmus sollte unter folgenden Gesichtspunkten erfolgen:
+  \vspace{0.5cm}
+  $\rightarrow$ angestrebte Ziele
   \begin{itemize}
-  \item Vermeidung von \glqq Hotspots\grqq
-  \item Broker sollen Parameter automatisch einstellen bzw. beziehen
-  \item Parameter sollen sich den dynamischen Gegebenheiten des Netzes anpassen
-  \item Netz soll auftretende Fehler überstehen und selbständig beseitigen
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Vorteile des Ansatzes}
-  Vorteile gegenüber ähnlichen Ansätzen (wie z.B. FeedTree\cite{SandlerEtAl:2005:FeedTree}):
-  \begin{itemize}
-  \item Lösung kann sich problemlos in bestehende RSS-Architektur integrieren
-  \item Bestehende Client-Software kann weiter verwendet werden
-  \item Komplette Neukonstruktion eines Pub/Sub-Systems ist nicht notwendig\\
-    $\longrightarrow$ in REBECA\cite{MuFiBu:2001:ArchFrameECommApp} sind Filtertechniken bereits integriert
+  \item Anfragen an den RSS-Server sollten nicht gleichzeitig für alle Klienten geschehen 
+  \item Netzbelastung durch Abstimmungsnachrichten sollte gering gehalten werden
   \end{itemize}
 \end{frame}
 
@@ -286,21 +284,32 @@
   \vspace{0.2cm}
   \hspace{0.5cm}$nextBuild:=t_0+\varDelta ttl$
   \begin{displaymath}
-    \hspace{0.5cm}\varDelta ttl:=\left\{\begin{array}{r@{\quad:\quad}l}
+    \varDelta ttl:=\left\{\begin{array}{r@{\quad:\quad}l}
         0 & falls\quad (t_0-lastBuildDate)>ttl \\ttl-(t_0-lastBuildDate) & sonst
       \end{array}\right.
   \end{displaymath}
-  
-  $\rightarrow$ Bestimmung über RSS-Parameter cloud:\\
+  \begin{list}{}{}
+  \item $lastBuildDate$ ist der Zeitpunkt des am weitesten zurückliegenden neuen Ereignisses innerhalb des Feeds
+  \end{list}
+  \vspace{0.5cm}
+  $\rightarrow$ Bestimmung über RSS-Parameter $cloud$:\\
   \vspace{0.2cm}
-  \hspace{1cm}$nextBuild:=t_0$
+  \hspace{0.5cm}$nextBuild:=t_0$
+\end{frame}
+
+\begin{frame}
+  \includegraphics[bb=-40 0 200 150,scale=0.5]{BuildDates}
+  \\
+  \vspace{0.5cm}
+  $ttl=[lastBuildDate,nextBuild]$\\
+  $\varDelta ttl=[t_0,nextBuild]$
 \end{frame}
 
 \begin{frame}
   \frametitle{Bestimmung von time-to-live}
   \begin{itemize}
-  \item Bereitstellung durch den Informationsanbieter (RSS-Parameter $ttl$)
-  \item heuristische Bestimmmung
+  \item Bereitstellung durch den Informationsanbieter\\(RSS-Parameter $ttl$)
+  \item heuristische Bestimmung
   \end{itemize}
 \end{frame}
 
@@ -315,23 +324,189 @@
   
 \begin{frame}
   \frametitle{Problem der zu kleinen Polling-Perioden}
-  Zu kleine Polling-Perioden können Aktualitätsgrad negativ beeinflussen (Serverbelastung!)\\
+  Zu kleine Polling-Perioden können Aktualitätsgrad negativ beeinflussen (Serverüberlastung!)\\
   \includegraphics[bb=30 0 200 250,scale=0.6]{Zusammenhang_Pollingrate_Aktualitaetsgrad}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Dienstgüte}
+  $\rightarrow$ Verzögerungsgrad\\
+  \vspace{0.2cm}
+  \begin{math}
+    \Gamma_V:=\begin{cases}
+      0& \text{wenn $(\varDelta pubDate-ppp) < 0$},\\
+      \frac{100\cdot(\varDelta pubDate-ppp)}{ppp} & \text{sonst}.
+    \end{cases}
+  \end{math}
+  \\
+  \vspace{0.5cm}
+  $\rightarrow$ Aktualisierungsgrad\\
+  \vspace{0.2cm}
+  \begin{math}
+    \Gamma_A:=\begin{cases}
+      100& \text{wenn $(\varDelta pubDate-ppp) < 0$},\\
+      \frac{100\cdot ppp}{\varDelta pubDate}& \text{sonst}.
+    \end{cases}
+  \end{math}
+  \\
+  \vspace{0.5cm}
+  $\varDelta pubDate$ = Zeitspanne von $t_0$ bis zum am weitesten zurückliegenden neuen
+  Ereignis innerhalb des letzten RSS-Feeds  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Anpassung der Polling-Perioden durch Staukontrolle}
+  wichtige Parameter:
+  \begin{itemize}
+  \item $ppp$: bevorzugte Polling-Periode
+  \item $cpp$: aktuelle Polling-Periode
+  \item $mpp$: maximale Polling-Periode
+  \item $ttr$: time-to-refresh
+  \item $rto$: retransmission-timeout-intervall -- Zeit bis zu einer erneuten Aussendung
+  \item $rtt$: roundtrip-time -- Antwortzeit des Servers
+  \item $artt$: angepasste roundtrip-time
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Timer}
+  \begin{list}{$\rightarrow$}{}
+  \item RT (Retransmission-Timer): bei erfolglosem Verbindungsversuch\\
+    \begin{itemize}
+    \item wird bestimmt durch $rto$
+    \item nach jedem Ablauf wird $rto$ verdoppelt
+    \item initial: $rto:=cpp$
+    \end{itemize}
+  \end{list}
+  \vspace{0.5cm}
+  \begin{list}{$\rightarrow$}{}
+  \item RQT (Request-Timer): nach erfolgreichem Transfer eines Feeds\\
+    \begin{itemize}
+    \item wird bestimmt durch $ttr$ bzw. $\varDelta ttr:=cpp$
+    \item $artt:=2^i-1\cdot rtt$, bei $i$ Verbindungsversuchen
+    \item $cpp:=min\{mpp,max\{artt,ppp\}\}$
+    \end{itemize}
+  \end{list}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Seiteneffekt: \glqq Aussperren\grqq{} von Klienten}
+  Klienten, deren Polling-Perioden sehr niedrig sind, haben fast ausschließlichen Zugriff
+  auf den Server, während sich die Polling-Perioden der übrigen Klienten stetig vergrößern.\\
+  \vspace{1cm}
+  Lösung:
+  \begin{itemize}
+  \item Ausbalancierung der Polling-Perioden
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ausbalancierung der Polling-Perioden}
+  \begin{itemize}
+  \item ermittelter $artt$ wird zusammen mit dem Feed an Notifikationssystem weitergeleitet und verbreitet
+  \item bei Erhalt eines Feeds über das Notifikationssystem berechnte sich der neue $artt$ aus:
+  \end{itemize}
+  \hspace{1cm}
+  $artt:=\frac{artt+feed.artt}{2}$\\
+  \vspace{0.5cm}
+  Vorteile:
+  \begin{itemize}
+  \item alle Klienten profitieren von ermittelten kleinen $rtt$s
+  \item zu schneller Ansturm auf Server wird verhindert
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Phänomen: Churn}
+  Dynamisches Zu-und Abwandern von Klienten kann die Server-Belastung steigern:
+  \begin{itemize}
+  \item bei hoher Churn-Rate durch Setzen von $cpp:=ppp$ bei Eintritt in das System
+  \end{itemize}
+  \vspace{0.5cm}
+  Churn-Kompensation:
+  \begin{itemize}
+  \item bei Eintritt eines Klienten in das System übermittelt Notifikationssystem Feed und $feed.artt$
+  \item für die Entscheidung, ob $feed.artt$ zuverlässig ist, reicht lokales Wissen (Anzahl angemeldeter Subscriber beim lokalen Broker)
+  \end{itemize}
 \end{frame}
 
 \section{Ergebnisse}
 
 \begin{frame}
-\frametitle{Anpassung der Polling-Perioden}
+  \includepng{Grad_der_Verbesserung.png}
+\end{frame}
+
+\begin{frame}
   \includepng{Referenzverlauf.png}
 \end{frame}
 
 \begin{frame}
-\frametitle{Keine Ausbalancierung}
   \includepng{NoBalancing.png}
 \end{frame}
 
-\section{Literatur}
+\begin{frame}
+  \includepng{Balancing.png}
+\end{frame}
+
+\begin{frame}
+  \includepng{No_Congestioncontrol.png}
+\end{frame}
+
+\begin{frame}
+  \includepng{No_Churncompensation.png}
+\end{frame}
+
+\begin{frame}
+  \includepng{Churncompensation.png}
+\end{frame}
+
+\begin{frame}
+  \includepng{Aktualitaetsgrad_Referenz.png}
+\end{frame}
+
+\begin{frame}
+  \includepng{Aktualitaetsgrad_Ein_Publisher.png}
+\end{frame}
+  
+\section{Zusammenfassung}
+
+\begin{frame}
+  \frametitle{Zusammenfassung}
+  \begin{itemize}
+  \item Konzept eines Systems zur Verteilung von RSS-Feeds basierend auf dem Kommunikationsmodell von verteiltem Pub/Sub
+  \item bisheriger Ansatz bleibt bestehen: Klienten laden Feed direkt von der Webseite des Anbieters
+  \item Klienten speisen Feeds in ein Notifikationssystem ein
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Wissenschaftlicher Beitrag}
+  Entwicklung zweier wesentlicher Verfahren:
+  \vspace{0.5cm}
+  \begin{itemize}
+  \item Abstimmungs- bzw. Koordinierungsverfahren bezüglich des nächsten Zugriffs auf einen Server
+  \item Verfahren zur Adaption der Polling-Perioden verschiedener Klienten an die Leistungsfähigkeit eines Servers
+  \end{itemize}
+\end{frame}
+
+\section{Ausblick}
+
+\begin{frame}
+  \frametitle{Ausblick}
+  \begin{itemize}
+  \item Realisierung komplexerer Filtertechniken
+  \item Sicherheitskonzepte
+  \item alternative angestrebte Adaptionsgüte
+  \end{itemize}
+\end{frame}  
+
+\begin{frame}
+  \begin{center}
+    \textbf{\Large Danke für die Aufmerksamkeit!}
+  \end{center}
+\end{frame}
+
+\section*{Literatur}
 \begin{frame}[allowframebreaks]
   \bibliography{../bibdatabase}
 \end{frame}

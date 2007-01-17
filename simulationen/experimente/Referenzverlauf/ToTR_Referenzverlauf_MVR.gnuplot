@@ -6,4 +6,5 @@ plot 'totalTemporaryRequests_Referenzverlauf_MeanValueRanges.gnuplotdata' w l ti
 load 'queue.gnuplot'
 load 'markers.gnuplot'
 replot queue
+set title "Referenzverlauf"
 replot 'totalTemporaryRequests_Referenzverlauf_MeanValues.gnuplotdata' w l title "Mittelwerte"
