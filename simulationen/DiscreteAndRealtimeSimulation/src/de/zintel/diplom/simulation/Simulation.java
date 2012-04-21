@@ -86,15 +86,9 @@ public class Simulation {
 
 	protected static final String BRITETOPOLOGY = "BRITETopology";
 
-	protected static String topologyclass;
-
 	protected static final String BRITESUBLAYERFILE = "BRITESublayerFile";
 
 	protected static final String BRITEBROKERNETFILE = "BRITEBrokernetFile";
-
-	protected static String britesublayerfile;
-
-	protected static String britebrokernetfile;
 
 	protected static final String BROKER_CLASSKEY = "BrokerClass";
 
@@ -104,15 +98,11 @@ public class Simulation {
 
 	protected static final String ADJUSTINGEVENTBROKER = "AdjustingEventBroker";
 
-	protected static String brokerclass;
-
 	protected static final String RSSSERVER_CLASSKEY = "RSSServerClass";
 
 	protected static final String RSSSERVER = "RSSServer";
 
 	protected static final String QUEUEINGRSSSERVER = "QueueingRSSServer";
-
-	protected static String rssserverclass;
 
 	protected static final String PUBSUB_CLASSKEY = "PubSubClass";
 
@@ -146,19 +136,30 @@ public class Simulation {
 
 	protected static final String SINGLEPUBLISHEREVENTPUBSUB = "SinglePublisherEventPubSub";
 
-	protected static String pubsubclass;
-
 	protected static final String RSSFEED_CLASSKEY = "RSSFeedClass";
 
 	protected static final String COLORFEED = "ColorFeed";
 
 	protected static final String COLOREVENTFEED = "ColorEventFeed";
 
-	protected static String rssfeedclass;
+	protected String topologyclass;
 
-	protected static SimParameters params;
+	protected String britesublayerfile;
 
-	private Simulation() {
+	protected String britebrokernetfile;
+
+	protected String brokerclass;
+
+	protected String rssserverclass;
+
+	protected String rssfeedclass;
+
+	protected String pubsubclass;
+
+	protected SimParameters params;
+
+	public Simulation(SimParameters params) {
+		this.params = params;
 	}
 
 	/**
@@ -181,26 +182,7 @@ public class Simulation {
 				parameterfile = args[0];
 			}
 
-			// read parameters
-			params = new SimParameters(parameterfile);
-
-			// if a seed is defined use it
-			if ( params.getSeedValue().equals("none") == false )
-				Engine.getSingleton().getRandom().setSeed(Long.valueOf(params.getSeedValue()));
-
-			// set Topology-configuration
-			setScenarioConfiguration(params.getScenarioFile());
-
-			Engine.getSingleton().setTimerPeriod(params.getEngineTimerPeriod());
-
-			Engine.getSingleton().init(params);
-
-			Topology topology = newTopology();
-
-			if ( Engine.getSingleton().getGui() != null )
-				Engine.getSingleton().repaintGUI();
-
-			Engine.getSingleton().startInteractiveMode();
+			new Simulation(new SimParameters(parameterfile)).start();
 
 		} catch ( SimParameters.ValueOutOfRangeException e ) {
 
@@ -217,8 +199,30 @@ public class Simulation {
 		}
 
 	}
+	
+	public void start() throws Exception{
 
-	protected static Topology newTopology() throws Exception {
+		// if a seed is defined use it
+		if ( params.getSeedValue().equals("none") == false )
+			Engine.getSingleton().getRandom().setSeed(Long.valueOf(params.getSeedValue()));
+
+		// set Topology-configuration
+		setScenarioConfiguration(params.getScenarioFile());
+
+		Engine.getSingleton().setTimerPeriod(params.getEngineTimerPeriod());
+
+		Engine.getSingleton().init(params);
+
+		Topology topology = newTopology();
+
+		if ( Engine.getSingleton().getGui() != null )
+			Engine.getSingleton().repaintGUI();
+
+		Engine.getSingleton().startInteractiveMode();
+		
+	}
+
+	protected Topology newTopology() throws Exception {
 
 		String methodname = "Simulation.Topology()";
 
@@ -243,26 +247,26 @@ public class Simulation {
 
 	}
 
-	protected static RPSFactory newRPSFactory() {
+	protected RPSFactory newRPSFactory() {
 
 		return new RPSFactory() {
 			public BrokerNode newBrokerNode(int xp, int yp, SimParameters params) throws Exception {
-				return Simulation.newBrokerNode(xp, yp, params);
+				return Simulation.this.newBrokerNode(xp, yp, params);
 			}
 
 			public PubSubNode newPubSubNode(int xp, int yp, SimParameters params) throws Exception {
-				return Simulation.newPubSubNode(xp, yp, params);
+				return Simulation.this.newPubSubNode(xp, yp, params);
 			}
 
 			public RSSServerNode newRSSServerNode(int xp, int yp, SimParameters params) throws Exception {
-				return Simulation.newRSSServerNode(xp, yp, params);
+				return Simulation.this.newRSSServerNode(xp, yp, params);
 			}
 
 		};
 
 	}
 
-	protected static BrokerNode newBrokerNode(int xp, int yp, SimParameters params) throws Exception {
+	protected BrokerNode newBrokerNode(int xp, int yp, SimParameters params) throws Exception {
 
 		String methodname = "Simulation.newBrokerNode()";
 
@@ -286,7 +290,7 @@ public class Simulation {
 
 	}
 
-	protected static PubSubNode newPubSubNode(int xp, int yp, SimParameters params) throws Exception {
+	protected PubSubNode newPubSubNode(int xp, int yp, SimParameters params) throws Exception {
 
 		String methodname = "Simulation.newPubSubNode()";
 
@@ -358,7 +362,7 @@ public class Simulation {
 
 	}
 
-	protected static RSSServerNode newRSSServerNode(int xp, int yp, SimParameters params) throws Exception {
+	protected RSSServerNode newRSSServerNode(int xp, int yp, SimParameters params) throws Exception {
 
 		String methodname = "Simulation.newRSSServerNode()";
 
@@ -378,7 +382,7 @@ public class Simulation {
 
 	}
 
-	protected static RSSFeedFactory newRSSFeedFactory() {
+	protected RSSFeedFactory newRSSFeedFactory() {
 
 		String methodname = "Simulation.newRSSFeedFactoryNode()";
 
@@ -396,7 +400,7 @@ public class Simulation {
 		return new ColorFeedFactory();
 	}
 
-	protected static RSSFeedRepresentationFactory newRSSFeedRepresentationFactory() {
+	protected RSSFeedRepresentationFactory newRSSFeedRepresentationFactory() {
 		return new RSSFeedRepresentationFactory() {
 			public RSSFeedRepresentation newRSSFeedRepresentation(DisplayableObject dObj, RSSFeed feed) {
 				return new ColorFeedRepresentation(dObj, (ColorFeed) feed);
@@ -408,7 +412,7 @@ public class Simulation {
 		};
 	}
 
-	protected static void setScenarioConfiguration(String filename) throws Exception {
+	protected void setScenarioConfiguration(String filename) throws Exception {
 
 		boolean error = false;
 
@@ -469,7 +473,7 @@ public class Simulation {
 
 	}
 
-	protected static void setDefaultScenario(Properties scenarioConfiguration) {
+	protected void setDefaultScenario(Properties scenarioConfiguration) {
 
 		scenarioConfiguration.setProperty(TOPOLOGY_CLASSKEY, TOPOLOGYONESURROUNDED);
 		scenarioConfiguration.setProperty(BROKER_CLASSKEY, ADJUSTINGEVENTBROKER);
