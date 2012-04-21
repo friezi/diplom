@@ -24,11 +24,11 @@ public class TopologyAllForOne extends Topology {
 
 	private static int BR_XPOS = 150;
 
-	private static int BR_XINTV = 100; // intervall between Broker-x-Positions
+	private static int BR_XINTV = 100; // interval between Broker-x-Positions
 
 	private static int BR_YPOS = 700;
 
-	private static int BR_YINTV = 80; // intervall between Broker-y-Positions
+	private static int BR_YINTV = 80; // interval between Broker-y-Positions
 
 	private static int PS_XPOS = BR_XPOS - 15;
 
